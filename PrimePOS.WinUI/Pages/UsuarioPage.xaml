@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="PrimePOS.WinUI.Pages.UsuarioPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls">
+
+    <Grid Padding="25">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- FORMULARIO CRUD -->
+
+        <Border
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            CornerRadius="10"
+            Padding="20">
+
+            <StackPanel Spacing="15">
+
+                <TextBlock
+                    Text="Gestión de Usuarios"
+                    FontSize="22"
+                    FontWeight="SemiBold"/>
+
+                <Grid ColumnSpacing="15" RowSpacing="10">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox
+                        x:Name="txtNombre"
+                        Header="Nombre"
+                        PlaceholderText ="Ingrese nombre"/>
+
+                    <TextBox
+                        x:Name="txtApellidos"
+                        Header="Apellidos"
+                        Grid.Column="1"
+                        PlaceholderText="Ingrese apellidos "/>
+                    
+
+                    <TextBox
+                        x:Name="txtUsername"
+                        Header="Nombre Usuario"
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        PlaceholderText="Ingrese nombre de usuario"/>
+                    
+                    <PasswordBox
+                        x:Name="pwdPassword"
+                        Header="Contrasena"
+                        PlaceholderText="Ingrese la contrasena"
+                        Grid.Column="2"
+                        Grid.Row="1"/>
+
+                    <ComboBox
+                        x:Name="cmbRol"
+                        Header="Rol"
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        PlaceholderText="Seleccione el rol"
+                        DisplayMemberPath="Descripcion"
+                        SelectedValuePath="RoldId"/>
+                    
+
+                    <ToggleSwitch
+                        x:Name="tglEstado"
+                        Header="Seleccione el estado"
+                        IsOn="True"
+                        OnContent="Activo"
+                        OffContent="Inactivo"
+                        Grid.Row="3"/>
+
+                </Grid>
+
+                <!-- BOTONES CRUD -->
+
+                <StackPanel Orientation="Horizontal" Spacing="10">
+
+                    <Button
+                        Content="Crear"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Click="BtnCrear_Click"/>
+
+                    <Button
+                        Content="Actualizar"
+                        Click="BtnActualizar_Click"/>
+
+                    <Button
+                        Content="Eliminar"
+                        Click="BtnEliminar_Click"/>
+
+                    <Button
+                        Content="Limpiar"
+                        Click="BtnLimpiar_Click"/>
+
+                </StackPanel>
+
+            </StackPanel>
+
+        </Border>
+
+
+        <!-- TABLA DE USUARIOS -->
+
+        <Border
+            Grid.Row="2"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            CornerRadius="10"
+            Padding="15">
+
+            <StackPanel>
+
+                <TextBlock
+                    Text="Lista de Usuarios"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Margin="0,0,0,10"/>
+
+                <controls:DataGrid
+                    x:Name="dgUsuarios"
+                    AutoGenerateColumns="False"
+                    SelectionMode="Single"
+                    SelectionChanged="dgUsuarios_SelectionChanged">
+
+                    <controls:DataGrid.Columns>
+
+                        
+                        <controls:DataGridTextColumn
+                            Header="Nombre"
+                            Binding="{Binding Nombre}"/>
+
+                        <controls:DataGridTextColumn
+                            Header="Apellidos"
+                            Binding="{Binding Apellidos}"/>
+
+                        <controls:DataGridTextColumn
+                            Header="Username"
+                            Binding="{Binding Username}"/>
+
+                        <controls:DataGridTextColumn
+                            Header="Rol"
+                            Binding="{Binding RolId}"/>
+
+                        <controls:DataGridCheckBoxColumn
+                            Header="Activo"
+                            Binding="{Binding Estado}"/>
+                        
+                        <controls:DataGridCheckBoxColumn
+                            Header="Fecha de creado"
+                            Binding="{Binding FechaCreacion}"/>
+
+                    </controls:DataGrid.Columns>
+
+                </controls:DataGrid>
+
+            </StackPanel>
+
+        </Border>
+
+    </Grid>
+
+</Page>

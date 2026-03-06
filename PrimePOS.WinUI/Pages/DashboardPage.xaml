@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="PrimePOS.WinUI.Pages.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        CornerRadius="12"
+        Padding="20"
+        Margin="10">
+
+        <StackPanel>
+            <TextBlock Text="Ventas del día"
+                   FontSize="18"
+                   FontWeight="SemiBold"/>
+
+            <TextBlock Text="$15,430"
+                   FontSize="28"
+                   FontWeight="Bold"/>
+        </StackPanel>
+
+    </Border>
+</Page>

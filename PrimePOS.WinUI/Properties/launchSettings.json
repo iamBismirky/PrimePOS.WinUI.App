@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PrimePOS.WinUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "PrimePOS.WinUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
