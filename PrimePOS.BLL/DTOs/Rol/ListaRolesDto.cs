@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PrimePOS.BLL.DTOs.Rol
 {
-    public class ListarRolesDto
+    public class ListaRolesDto
     {
         public int RolId { get; set; }
         public string Descripcion { get; set; } = string.Empty;

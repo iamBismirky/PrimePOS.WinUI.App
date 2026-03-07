@@ -36,13 +36,14 @@
                 x:Name="txtDescripcion"
                  Header="Descripcion"
                  Width="250"/>
-            <ToggleSwitch x:Name="toggleEstado"
+            <ToggleSwitch x:Name="tgEstado"
                 Header="Estado"
                 OnContent="Activo"
                 OffContent="Inactivo"
                 IsOn="True"/>
             <Button
                 Content="Crear"
+                Style="{StaticResource AccentButtonStyle}"
                 Click="BtnCrearRol_Click"/>
 
             <Button
@@ -52,6 +53,9 @@
             <Button
                 Content="Eliminar"
                 Click="BtnEliminarRol_Click"/>
+            <Button
+                 Content="Limpiar"
+                 Click="BtnLimpiar_Click"/>
         </StackPanel>
 
         <!-- DATAGRID -->
@@ -60,9 +64,15 @@
             x:Name="dgRoles"
             AutoGenerateColumns="False"
             SelectionMode="Single"
+            SelectionChanged="dgRoles_SelectionChanged"
             IsReadOnly="True">
 
             <controls:DataGrid.Columns>
+                <controls:DataGridTextColumn
+                    Header="RolId"
+                    Binding="{Binding RolId}"
+                    Width="100"
+                    />
 
                 <controls:DataGridTextColumn
                     Header="Nombre"

@@ -30,6 +30,17 @@ namespace PrimePOS.WinUI
             contentFrame.Navigate(typeof(DashboardPage));
             //navView.SelectionChanged += navView_SelectionChanged;
         }
+        private void TitleBar_BackRequested(TitleBar sender, object args)
+        {
+            if (contentFrame.CanGoBack)
+            {
+                contentFrame.GoBack();
+            }
+        }
+        private void TitleBar_PaneToggleRequested(TitleBar sender, object args)
+        {
+            navView.IsPaneOpen = !navView.IsPaneOpen;
+        }
         private void navView_SelectionChanged(NavigationView sender,
                                        NavigationViewSelectionChangedEventArgs args)
         {

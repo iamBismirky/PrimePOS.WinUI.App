@@ -1,6 +1,7 @@
 ﻿using PrimePOS.BLL.DTOs.Rol;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
+using System.Diagnostics;
 
 namespace PrimePOS.BLL.Services;
 
@@ -71,14 +72,15 @@ public class RolService
 
     }
     //Listar roles
-    public async Task<List<ListarRolesDto>> ListarRolesAsync()
+    public async Task<List<ListaRolesDto>> ListarRolesAsync()
     {
         var roles = await _repository.ListarRolesAsync();
 
-        return roles.Select(r => new ListarRolesDto
+        return roles.Select(r => new ListaRolesDto
         {
             RolId = r.RolId,
-            Descripcion = r.Descripcion
+            Descripcion = r.Descripcion,
+            Estado = r.Estado
         }).ToList();
     }
 

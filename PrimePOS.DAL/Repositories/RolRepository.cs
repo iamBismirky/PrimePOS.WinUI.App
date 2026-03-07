@@ -3,6 +3,7 @@ using PrimePOS.DAL.Context;
 using PrimePOS.ENTITIES.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -20,7 +21,7 @@ public class RolRepository
     public async Task CrearRolAsync(Rol rol)
     {
        await _context.Roles.AddAsync(rol);
-        
+
     }
     public Task ActualizarRolAsync(Rol rol)
     {

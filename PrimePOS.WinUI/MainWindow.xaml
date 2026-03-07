@@ -14,11 +14,47 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
     
-    <Grid >
 
         <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- TITLE BAR -->
+            <TitleBar
+        x:Name="titleBar"
+        Grid.Row="0"
+        BackRequested="TitleBar_BackRequested"
+        PaneToggleRequested="TitleBar_PaneToggleRequested"
+        IsBackButtonVisible="{x:Bind contentFrame.CanGoBack, Mode=OneWay}"
+        IsPaneToggleButtonVisible="True">
+
+                <TitleBar.Content>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+
+                        <TextBlock
+                    Text="PrimePOS"
+                    FontSize="16"
+                    VerticalAlignment="Center"/>
+
+                        <AutoSuggestBox
+                    Width="250"
+                    PlaceholderText="Buscar..."/>
+
+                    </StackPanel>
+                </TitleBar.Content>
+
+            </TitleBar>
+
             <NavigationView x:Name="navView"
-                            SelectionChanged="navView_SelectionChanged">
+                            SelectionChanged="navView_SelectionChanged"
+                            Grid.Row="2"
+                            IsPaneToggleButtonVisible="False"
+                            IsSettingsVisible="False"
+                            IsBackEnabled="False">
+                
 
                 <NavigationView.MenuItems>
 
@@ -56,7 +92,6 @@
                 </NavigationView.Content>
             </NavigationView>
         </Grid>
-
-    </Grid>
+    
 
 </Window>
