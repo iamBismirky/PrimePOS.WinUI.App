@@ -33,17 +33,21 @@ public sealed partial class RolPage : Page
     public RolPage()
     {
         InitializeComponent();
-        _=CargarRoles();
+        this.Loaded += Page_Loaded;
         
+    }
+    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    {
+        await CargarRoles();
     }
     private async void BtnCrearRol_Click(object sender, RoutedEventArgs e)
     {
-        System.Diagnostics.Debug.WriteLine(tgEstado.IsOn);
+        
         try
         {
             var dto = new CrearRolDto
             {
-                Descripcion = txtDescripcion.Text,
+                Nombre = txtNombre.Text,
                 Estado = tgEstado.IsOn
 
             };
@@ -88,7 +92,7 @@ public sealed partial class RolPage : Page
             var dto = new ActualizarRolDto
             {
                 RolId = _rolIdSeleccionado,
-                Descripcion = txtDescripcion.Text,
+                Nombre = txtNombre.Text,
                 Estado = (bool)tgEstado.IsOn
 
             };
@@ -169,21 +173,21 @@ public sealed partial class RolPage : Page
         {
             System.Diagnostics.Debug.WriteLine("Fila seleccionada");
             _rolIdSeleccionado = rol.RolId;
-            txtDescripcion.Text = rol.Descripcion.ToString();
+            txtNombre.Text = rol.Nombre.ToString();
             tgEstado.IsOn = rol.Estado;
             System.Diagnostics.Debug.WriteLine(_rolIdSeleccionado);
         }
     }
     private void LimpiarCampos()
     {
-        txtDescripcion.Text = "";
+        txtNombre.Text = "";
         _rolIdSeleccionado = 0;
         tgEstado.IsOn = true;
     }
     private async Task CargarRoles()
     {
         List<ListaRolesDto> listaRoles = await Servicios.RolService.ListarRolesAsync();
-        
+        dgRoles.ItemsSource = null;
         dgRoles.ItemsSource = listaRoles;
         
     }

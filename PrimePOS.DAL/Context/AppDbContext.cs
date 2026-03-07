@@ -21,9 +21,9 @@ namespace PrimePOS.DAL.Context
         {
             modelBuilder.Entity<Rol>().HasData
              (
-                new Rol { RolId = 1, Descripcion = "Desarrollador" },
-                new Rol { RolId = 2, Descripcion = "Administrador" },
-                new Rol { RolId = 3, Descripcion = "Empleado" }
+                new Rol { RolId = 1, Nombre = "Desarrollador" },
+                new Rol { RolId = 2, Nombre = "Administrador" },
+                new Rol { RolId = 3, Nombre = "Empleado" }
              );
 
         }

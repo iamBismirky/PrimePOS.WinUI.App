@@ -19,7 +19,7 @@ public class RolService
     {
         var rol = new Rol
         {
-            Descripcion = dto.Descripcion,
+            Nombre = dto.Nombre,
             Estado = dto.Estado
         };
 
@@ -35,7 +35,7 @@ public class RolService
             throw new Exception("Rol no encontrado.");
 
 
-        rol.Descripcion = dto.Descripcion;
+        rol.Nombre = dto.Nombre;
         rol.Estado = dto.Estado;
 
         await _repository.ActualizarRolAsync(rol);
@@ -64,7 +64,7 @@ public class RolService
         return new RolDto
         {
             RolId = rol.RolId,
-            Descripcion = rol.Descripcion,
+            Nombre = rol.Nombre,
             Estado = rol.Estado,
         };
 
@@ -79,7 +79,7 @@ public class RolService
         return roles.Select(r => new ListaRolesDto
         {
             RolId = r.RolId,
-            Descripcion = r.Descripcion,
+            Nombre = r.Nombre,
             Estado = r.Estado
         }).ToList();
     }

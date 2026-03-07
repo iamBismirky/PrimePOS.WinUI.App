@@ -22,7 +22,7 @@ namespace PrimePOS.ENTITIES.Models
 
         public int RolId { get; set; } //Clave foránea para la relación con la clase Rol
         public Rol? Rol { get; set; } //Propiedad de navegación para acceder al rol asociado al usuario
-        public string? NombreRol => Rol != null ? Rol.Descripcion : string.Empty; //Propiedad calculada para obtener el nombre del rol
+        public string? NombreRol => Rol != null ? Rol.Nombre : string.Empty; //Propiedad calculada para obtener el nombre del rol
         
         public ICollection<Venta>? Ventas { get; set; } //Propiedad de navegación para acceder a las ventas realizadas por el usuario
     }

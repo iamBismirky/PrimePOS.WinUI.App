@@ -33,7 +33,7 @@
 
             
             <TextBox
-                x:Name="txtDescripcion"
+                x:Name="txtNombre"
                  Header="Descripcion"
                  Width="250"/>
             <ToggleSwitch x:Name="tgEstado"
@@ -76,7 +76,7 @@
 
                 <controls:DataGridTextColumn
                     Header="Nombre"
-                    Binding="{Binding Descripcion}"
+                    Binding="{Binding Nombre}"
                     Width="100"/>
 
                 <controls:DataGridTextColumn
