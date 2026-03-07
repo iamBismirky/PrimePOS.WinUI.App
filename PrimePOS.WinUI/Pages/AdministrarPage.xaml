@@ -15,11 +15,17 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+
+        </Grid.RowDefinitions>
 
         <!-- Card Usuario -->
         <Button Grid.Column="0"
             Margin="10"
-            Click="BtnUsuario_Click">
+            Click="BtnGestionUsuarios_Click">
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="16"
@@ -45,7 +51,7 @@
         <!-- Card Rol -->
         <Button Grid.Column="1"
             Margin="10"
-            Click="BtnGestionRol_Click">
+            Click="BtnGestionRoles_Click">
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="16"
@@ -71,7 +77,7 @@
         <!-- Card Producto -->
         <Button Grid.Column="2"
             Margin="10"
-            Click="BtnProducto_Click">
+            Click="BtnGestionProductos_Click">
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="16"
@@ -86,11 +92,39 @@
                            FontSize="16"
                            FontWeight="SemiBold"
                            HorizontalAlignment="Center"/>
+                    
 
                 </StackPanel>
 
             </Border>
         </Button>
 
+        <!-- Card Categoria -->
+        <Button Grid.Column="0"
+                Grid.Row="1"
+                Margin="10"
+                Click="BtnGestionCategorias_Click">
+
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="16"
+                Padding="20">
+
+                <StackPanel HorizontalAlignment="Center"
+                            Spacing="10">
+
+                    <SymbolIcon Symbol="Shop" Width="40" Height="40"/>
+
+                    <TextBlock Text="Gestion de categorias"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"/>
+
+                </StackPanel>
+
+            </Border>
+        </Button>
+        
+        
+        
     </Grid>
 </Page>

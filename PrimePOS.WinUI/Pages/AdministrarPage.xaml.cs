@@ -30,17 +30,21 @@ public sealed partial class AdministrarPage : Page
 }
 public partial class AdministrarPage
 {
-    private void BtnUsuario_Click(object sender, RoutedEventArgs e)
+    private void BtnGestionUsuarios_Click(object sender, RoutedEventArgs e)
     {
         Frame.Navigate(typeof(UsuarioPage));
     }
-    private void BtnGestionRol_Click(object sender, RoutedEventArgs e)
+    private void BtnGestionRoles_Click(object sender, RoutedEventArgs e)
     {
         Frame.Navigate(typeof(RolPage));
     }
-    private void BtnProducto_Click(object sender, RoutedEventArgs e)
+    private void BtnGestionProductos_Click(object sender, RoutedEventArgs e)
     {
         Frame.Navigate(typeof(ProductoPage));
     }
-    
+    private void BtnGestionCategorias_Click(object sender, RoutedEventArgs e)
+    {
+        Frame.Navigate(typeof(CategoriaPage));
+    }
+
 }

@@ -16,34 +16,49 @@
     
 
         <Grid>
+            
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <!-- TITLE BAR -->
-            <TitleBar
-        x:Name="titleBar"
-        Grid.Row="0"
-        BackRequested="TitleBar_BackRequested"
-        PaneToggleRequested="TitleBar_PaneToggleRequested"
-        IsBackButtonVisible="{x:Bind contentFrame.CanGoBack, Mode=OneWay}"
-        IsPaneToggleButtonVisible="True">
+           
+        <TitleBar
+                x:Name="titleBar"
+                Grid.Row="0"
+                Grid.Column="0"
+                BackRequested="TitleBar_BackRequested"
+                PaneToggleRequested="TitleBar_PaneToggleRequested"
+                IsBackButtonVisible="{x:Bind contentFrame.CanGoBack, Mode=OneWay}"
+                IsPaneToggleButtonVisible="True">
+                
 
-                <TitleBar.Content>
+            <TitleBar.Content>
                     <StackPanel Orientation="Horizontal" Spacing="10">
-
                         <TextBlock
-                    Text="PrimePOS"
-                    FontSize="16"
-                    VerticalAlignment="Center"/>
+                            Text="PrimePOS"
+                            
+                            FontSize="16"
+                            FontFamily="Segoe UI"
+                            VerticalAlignment="Center"/>
+
 
                         <AutoSuggestBox
-                    Width="250"
-                    PlaceholderText="Buscar..."/>
+                             Width="250"
+                             PlaceholderText="Buscar..."/>
+                        <ToggleSwitch x:Name="tsModo"
+                             
+                             Toggled="tsModo_Toggled"
+                                      IsOn="True"
+                             OnContent="Modo Noche"
+                             OffContent="Modo Dia"
+                             RequestedTheme="Light"
+                                      VerticalAlignment="Center"/>
+                        
 
-                    </StackPanel>
+                </StackPanel>
                 </TitleBar.Content>
 
             </TitleBar>
@@ -53,7 +68,8 @@
                             Grid.Row="2"
                             IsPaneToggleButtonVisible="False"
                             IsSettingsVisible="False"
-                            IsBackEnabled="False">
+                            IsBackEnabled="False"
+                            IsBackButtonVisible="Collapsed">
                 
 
                 <NavigationView.MenuItems>
@@ -72,7 +88,7 @@
                     <NavigationViewItem Content="Reportes"
                                 Tag="reportes"
                                 Icon="Contact"/>
-                    <NavigationViewItem Content="Tu maldita madre"
+                    <NavigationViewItem Content="Administrar"
                                 Tag="administrar"
                                 Icon="Home"/>
 

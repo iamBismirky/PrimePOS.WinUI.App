@@ -42,7 +42,12 @@ public class RolRepository
     {
         return await _context.Roles.ToListAsync();
     }
-     public Task GuardarCambiosAsync()
+    public async Task<bool> ExisteRol(string nombre)
+    {
+        return await _context.Roles
+            .AnyAsync(r => r.Nombre == nombre);
+    }
+    public Task GuardarCambiosAsync()
     {
         return _context.SaveChangesAsync();
     }

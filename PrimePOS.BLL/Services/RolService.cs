@@ -1,7 +1,6 @@
 ﻿using PrimePOS.BLL.DTOs.Rol;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
-using System.Diagnostics;
 
 namespace PrimePOS.BLL.Services;
 
@@ -17,6 +16,8 @@ public class RolService
     //Crear un rol
     public async Task CrearRolAsync(CrearRolDto dto)
     {
+        await Validar(dto);
+
         var rol = new Rol
         {
             Nombre = dto.Nombre,
@@ -29,11 +30,19 @@ public class RolService
     //Actualizar rol
     public async Task<bool> ActualizarRolAsync(ActualizarRolDto dto)
     {
+        if (string.IsNullOrWhiteSpace(dto.Nombre))
+        {
+            throw new Exception("El nombre del rol es obligario");
+        }
         var rol = await _repository.ObtenerPorIdAsync(dto.RolId);
 
         if (rol == null)
             throw new Exception("Rol no encontrado.");
 
+        if (dto.Nombre == rol.Nombre)
+        {
+            throw new Exception("Ya existe un rol con este nombree");
+        }
 
         rol.Nombre = dto.Nombre;
         rol.Estado = dto.Estado;
@@ -83,5 +92,14 @@ public class RolService
             Estado = r.Estado
         }).ToList();
     }
+    private async Task Validar(CrearRolDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Nombre))
+            throw new Exception("El nombre del rol es obligatorio");
 
+        var existe = await _repository.ExisteRol(dto.Nombre);
+
+        if (existe)
+            throw new Exception("Ya existe un rol con ese nombre");
+    }
 }

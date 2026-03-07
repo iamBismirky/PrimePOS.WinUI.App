@@ -37,6 +37,23 @@ namespace PrimePOS.WinUI
                 contentFrame.GoBack();
             }
         }
+        private void tsModo_Toggled(object sender, RoutedEventArgs e)
+        {
+            
+                // Selecciona el tema según el ToggleSwitch
+                ElementTheme tema = tsModo.IsOn ? ElementTheme.Dark : ElementTheme.Light;
+
+            // Cambia el tema para toda la ventana
+            SetThemeForWindow(this, tema);
+        }
+
+        private void SetThemeForWindow(Window window, ElementTheme theme)
+        {
+            if (window.Content is FrameworkElement root)
+            {
+                root.RequestedTheme = theme;
+            }
+        }
         private void TitleBar_PaneToggleRequested(TitleBar sender, object args)
         {
             navView.IsPaneOpen = !navView.IsPaneOpen;
