@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using PrimePOS.BLL.DTOs.Categoria;
+using PrimePOS.BLL.DTOs.Rol;
 using PrimePOS.DAL.Context;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PrimePOS.BLL.Services;
 
@@ -19,51 +22,67 @@ public class CategoriaService
         _repository = repository;
     }
 
-    public void AgregarCategoria(string nombre, bool estado)
+    public async Task CrearCategoriaAsync(CategoriaDto dto)
     {
-        if (string.IsNullOrWhiteSpace(nombre))
+        if (string.IsNullOrWhiteSpace(dto.Nombre))
             throw new Exception("La categoría no puede estar vacía.");
 
-        if (_repository.ExisteNombre(nombre))
-            throw new Exception("Ya existe una categoría con ese nombre.");
+        var existe = await _repository.ExisteCategoriaAsync(dto.Nombre);
+
+        if(existe)
+            throw new Exception("Ya existe una categoría con este nombre.");
 
         var categoria = new Categoria
         {
-            Nombre = nombre,
-            Estado = estado
+            Nombre = dto.Nombre,
+            Estado = dto.Estado
         };
 
-        _repository.Agregar(categoria);
+        await _repository.CrearCategoriaAsync(categoria);
+        await _repository.GuardarCambiosAsync();
     }
 
-    public List<Categoria> ListarCategorias()
+    public async Task<List<CategoriaDto>> ListarCategoriasAsync()
     {
-        return _repository.Listar();
+        var categorias = await _repository.ListarCategoriaAsync();
+        return categorias.Select(c => new CategoriaDto
+        {
+            CategoriaId = c.CategoriaId,
+            Nombre = c.Nombre,
+            Estado = c.Estado
+        }).ToList();
     }
 
-    public void ActualizarCategoria(int id, string nombre, bool estado)
+    public async Task<bool> ActualizarCategoriaAsync(CategoriaDto dto)
     {
-        var categoria = _repository.ObtenerPorId(id)
+        var categoria = await _repository.ObtenerPorIdAsync(dto.CategoriaId)
             ?? throw new Exception("Categoría no encontrada.");
 
-        if (string.IsNullOrWhiteSpace(nombre))
+        if (string.IsNullOrWhiteSpace(dto.Nombre))
             throw new Exception("La categoría no puede estar vacía.");
 
-        if (_repository.ExisteNombre(nombre, id))
+        var existe = await _repository.ExisteCategoriaAsync(dto.Nombre);
+        if (existe)
             throw new Exception("Ya existe una categoría con ese nombre.");
 
-        categoria.Nombre = nombre;
-        categoria.Estado = estado;
+        categoria.Nombre = dto.Nombre;
+        categoria.Estado = dto.Estado;
 
-        _repository.Actualizar(categoria);
+        await _repository.ActualizarCategoriaAsync(categoria);
+        await _repository.GuardarCambiosAsync();
+        return true;
     }
 
-    public void EliminarCategoria(int id)
+    public async Task<bool> EliminarCategoriaAsync(CategoriaDto dto)
     {
-        var categoria = _repository.ObtenerPorId(id)
-            ?? throw new Exception("Categoría no encontrada.");
+        var categoria = await _repository.ObtenerPorIdAsync(dto.CategoriaId);
 
-        _repository.Eliminar(categoria);
+            if(categoria == null)
+            throw new Exception("Categoría no encontrada.");
+
+        await _repository.EliminarCategoriaAsync(categoria);
+        await _repository.GuardarCambiosAsync();
+        return true;
     }
 }
 

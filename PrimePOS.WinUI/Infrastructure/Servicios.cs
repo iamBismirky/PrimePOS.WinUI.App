@@ -16,6 +16,7 @@ namespace PrimePOS.WinUI.Infrastructure
 
         public static UsuarioService UsuarioService { get; private set; } = null!;
         public static RolService RolService { get; private set; } = null!;
+        public static CategoriaService CategoriaService { get; private set; } = null!;
 
         
         public static void Inicializar()
@@ -35,10 +36,12 @@ namespace PrimePOS.WinUI.Infrastructure
             // Crear repositorio
             var usuarioRepository = new UsuarioRepository(_context);
             var rolRepository = new RolRepository(_context);
+            var categoriaRepository = new CategoriaRepository(_context);
 
             // Crear service
             UsuarioService = new UsuarioService(usuarioRepository);
             RolService = new RolService(rolRepository);
+            CategoriaService = new CategoriaService(categoriaRepository);
         }
     }
 }

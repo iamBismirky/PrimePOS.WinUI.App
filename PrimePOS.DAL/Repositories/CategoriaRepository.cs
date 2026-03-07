@@ -1,4 +1,5 @@
-﻿using PrimePOS.DAL.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using PrimePOS.DAL.Context;
 using PrimePOS.ENTITIES.Models;
 using System;
 using System.Collections.Generic;
@@ -17,38 +18,37 @@ public class CategoriaRepository
         _context = context;
     }
 
-    public void Agregar(Categoria categoria)
+    public async Task CrearCategoriaAsync(Categoria categoria)
     {
-        _context.Categorias.Add(categoria);
-        _context.SaveChanges();
-    }
+        await _context.Categorias.AddAsync(categoria);
 
-    public List<Categoria> Listar()
-    {
-        return _context.Categorias.ToList();
     }
-
-    public Categoria? ObtenerPorId(int id)
-    {
-        return _context.Categorias.Find(id);
-    }
-
-    public void Actualizar(Categoria categoria)
+    public Task ActualizarCategoriaAsync(Categoria categoria)
     {
         _context.Categorias.Update(categoria);
-        _context.SaveChanges();
+        return Task.CompletedTask;
     }
-
-    public void Eliminar(Categoria categoria)
+    public Task EliminarCategoriaAsync(Categoria categoria)
     {
         _context.Categorias.Remove(categoria);
-        _context.SaveChanges();
+        return Task.CompletedTask;
     }
-
-    public bool ExisteNombre(string nombre, int? excluirId = null)
+    public async Task<Categoria?> ObtenerPorIdAsync(int categoriaId)
     {
-        return _context.Categorias
-            .Any(c => c.Nombre == nombre &&
-                     (excluirId == null || c.CategoriaId != excluirId));
+        return await _context.Categorias.FindAsync(categoriaId);
+
+    }
+    public async Task<List<Categoria>> ListarCategoriaAsync()
+    {
+        return await _context.Categorias.ToListAsync();
+    }
+    public async Task<bool> ExisteCategoriaAsync(string nombre)
+    {
+        return await _context.Categorias
+            .AnyAsync(c => c.Nombre == nombre);
+    }
+    public Task GuardarCambiosAsync()
+    {
+        return _context.SaveChangesAsync();
     }
 }

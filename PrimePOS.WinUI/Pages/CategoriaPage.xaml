@@ -69,7 +69,7 @@
 
             <controls:DataGrid.Columns>
                 <controls:DataGridTextColumn
-                    Header="RolId"
+                    Header="CategoriaId"
                     Binding="{Binding CategoriaId}"
                     Width="100"
                     />

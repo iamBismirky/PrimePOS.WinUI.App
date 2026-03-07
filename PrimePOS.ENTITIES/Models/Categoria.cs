@@ -13,7 +13,7 @@ namespace PrimePOS.ENTITIES.Models
     {
         [Key]
         public int CategoriaId { get; set; }
-        public string? Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
         public bool Estado { get; set; } 
         public DateTime FechaRegistro { get; set; } = DateTime.Today;
 
