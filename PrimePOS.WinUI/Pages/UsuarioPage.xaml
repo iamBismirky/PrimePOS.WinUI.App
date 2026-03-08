@@ -59,6 +59,7 @@
                     <TextBox
                         x:Name="txtUsername"
                         Header="Nombre Usuario"
+                        CharacterCasing="Upper"
                         Grid.Column="0"
                         Grid.Row="1"
                         PlaceholderText="Ingrese nombre de usuario"/>
@@ -92,26 +93,47 @@
 
                 <!-- BOTONES CRUD -->
 
+                <!-- BOTONES -->
                 <StackPanel Orientation="Horizontal" Spacing="10">
 
-                    <Button
-                        Content="Crear"
-                        Style="{StaticResource AccentButtonStyle}"
-                        Click="BtnCrear_Click"/>
+                    <Button Click="BtnCrear_Click">
 
-                    <Button
-                        Content="Actualizar"
-                        Click="BtnActualizar_Click"/>
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <SymbolIcon Symbol="Add"/>
+                            <TextBlock Text="Crear"/>
+                        </StackPanel>
 
-                    <Button
-                        Content="Eliminar"
-                        Click="BtnEliminar_Click"/>
+                    </Button>
 
-                    <Button
-                        Content="Limpiar"
-                        Click="BtnLimpiar_Click"/>
+                    <Button Click="BtnActualizar_Click">
+
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <SymbolIcon Symbol="Edit"/>
+                            <TextBlock Text="Actualizar"/>
+                        </StackPanel>
+
+                    </Button>
+
+                    <Button Click="BtnEliminar_Click">
+
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <SymbolIcon Symbol="Delete"/>
+                            <TextBlock Text="Eliminar"/>
+                        </StackPanel>
+
+                    </Button>
+
+                    <Button Click="BtnLimpiar_Click">
+
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <SymbolIcon Symbol="Refresh"/>
+                            <TextBlock Text="Limpiar"/>
+                        </StackPanel>
+
+                    </Button>
 
                 </StackPanel>
+
 
             </StackPanel>
 
@@ -142,7 +164,6 @@
 
                     <controls:DataGrid.Columns>
 
-                        
                         <controls:DataGridTextColumn
                             Header="Nombre"
                             Binding="{Binding Nombre}"/>
@@ -163,9 +184,9 @@
                             Header="Activo"
                             Binding="{Binding Estado}"/>
                         
-                        <controls:DataGridCheckBoxColumn
-                            Header="Fecha de creado"
-                            Binding="{Binding FechaCreacion}"/>
+                        <controls:DataGridTextColumn
+                            Header="Fecha de Registro"
+                            Binding="{Binding FechaRegistro}"/>
 
                     </controls:DataGrid.Columns>
 

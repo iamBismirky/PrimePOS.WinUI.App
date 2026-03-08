@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
 using PrimePOS.ENTITIES.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimePOS.DAL.Repositories;
 
@@ -17,15 +12,7 @@ public class ProductoRepository
     {
         _context = context;
     }
-
-    public List<Producto> Listar()
-    {
-        return _context.Productos
-            .Include(p => p.Categoria)
-            .ToList();
-    }
-
-    public void Agregar(Producto producto)
+    public void Crear(Producto producto)
     {
         _context.Productos.Add(producto);
     }
@@ -39,34 +26,40 @@ public class ProductoRepository
     {
         _context.Productos.Remove(producto);
     }
-
-    public Producto? ObtenerPorId(int id)
+    public async Task<List<Producto>> ListarAsync()
     {
-        return _context.Productos
+        return await _context.Productos
             .Include(p => p.Categoria)
-            .FirstOrDefault(p => p.ProductoId == id);
+            .ToListAsync();
     }
 
-    public Producto? BuscarPorCodigo(string codigo)
+    public async Task<Producto?> ObtenerPorIdAsync(int id)
     {
-        return _context.Productos
-            .FirstOrDefault(p => p.Codigo == codigo);
+        return await _context.Productos
+            .Include(p => p.Categoria)
+            .FirstOrDefaultAsync(p => p.ProductoId == id);
     }
 
-    public Producto? BuscarPorCodigoONombre(string buscar)
+    public async Task<Producto?> BuscarPorCodigoAsync(string codigo)
     {
-        return _context.Productos
-            .FirstOrDefault(p => p.Codigo == buscar || p.Nombre!.Contains(buscar));
+        return await _context.Productos
+            .FirstOrDefaultAsync(p => p.Codigo == codigo);
     }
 
-    public bool ExisteCodigo(string codigo, int? excluirId = null)
+    public async Task<Producto?> BuscarPorCodigoONombreAsync(string buscar)
     {
-        return _context.Productos
-            .Any(p => p.Codigo == codigo &&
+        return await _context.Productos
+            .FirstOrDefaultAsync(p => p.Codigo == buscar || p.Nombre!.Contains(buscar));
+    }
+
+    public async Task<bool> ExisteCodigoAsync(string codigo, int? excluirId = null)
+    {
+        return await _context.Productos
+            .AnyAsync(p => p.Codigo == codigo &&
                       (excluirId == null || p.ProductoId != excluirId));
     }
-    public void GuardarCambios()
+    public async Task GuardarCambiosAsync()
     {
-        _context.SaveChanges();
-    }   
+        await _context.SaveChangesAsync();
+    }
 }

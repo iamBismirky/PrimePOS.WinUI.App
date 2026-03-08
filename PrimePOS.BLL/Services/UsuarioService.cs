@@ -1,40 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
+﻿using PrimePOS.BLL.DTOs;
 using PrimePOS.BLL.DTOs.Usuario;
 using PrimePOS.BLL.Security;
-using PrimePOS.DAL.Context;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimePOS.BLL.Services
 {
-    public class UsuarioService 
+    public class UsuarioService
     {
-        private readonly UsuarioRepository _repository;
+        private readonly UsuarioRepository _usuarioRepository;
 
         public UsuarioService(UsuarioRepository repository)
         {
-            _repository = repository;
+            _usuarioRepository = repository;
         }
 
-        public async Task AgregarUsuarioAsync(CrearUsuarioDto dto)
+        public async Task CrearUsuarioAsync(CrearUsuarioDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Nombre) ||
-                string.IsNullOrWhiteSpace(dto.Apellidos) ||
-                string.IsNullOrWhiteSpace(dto.Username) ||
-                string.IsNullOrWhiteSpace(dto.Password))
-                throw new Exception("Todos los campos son obligatorios.");
-
-            if (dto.RolId == 0)
-                throw new Exception("Seleccione un rol.");
-
-            if (await _repository.ExisteUsernameAsync(dto.Username))
-                throw new Exception("Ya existe un usuario con ese username.");
+            await ValidarUsuario(dto);
 
             var usuario = new Usuario
             {
@@ -43,25 +26,23 @@ namespace PrimePOS.BLL.Services
                 Username = dto.Username,
                 Password = PasswordService.Hash(dto.Password),
                 Estado = dto.Estado,
-                FechaCreacion = DateTime.Now,
                 RolId = dto.RolId
             };
 
-            await _repository.CrearUsuarioAsync(usuario);
-            await _repository.GuardarCambiosAsync();
+            _usuarioRepository.Crear(usuario);
+            await _usuarioRepository.GuardarCambiosAsync();
+            
         }
 
-        public async Task<List<Usuario>> ObtenerUsuariosAsync()
-        {
-            return await _repository.ListarUsuariosAsync();
-        }
+        
 
-        public async Task<bool> ActualizarUsuarioAsync(ActualizarUsuarioDto dto)
+        public async Task ActualizarUsuarioAsync(ActualizarUsuarioDto dto)
         {
-            var usuario = await _repository.ObtenerUsuarioPorIdAsync(dto.UsuarioId)
-                ?? throw new Exception("Usuario no encontrado.");
+            
+            var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
+                ?? throw new Exception("Usuario no encontrado. Seleccione uno.");
 
-            if (await _repository.ExisteUsernameAsync(dto.Username, dto.UsuarioId))
+            if (await _usuarioRepository.ExisteUsernameAsync(dto.Username, dto.UsuarioId))
                 throw new Exception("Ya existe un usuario con ese username.");
 
             usuario.Nombre = dto.Nombre;
@@ -70,32 +51,50 @@ namespace PrimePOS.BLL.Services
             usuario.Estado = dto.Estado;
             usuario.RolId = dto.RolId;
 
-            await _repository.ActualizarUsuarioAsync(usuario);
-            await _repository.GuardarCambiosAsync();
-            return true;
+            _usuarioRepository.Actualizar(usuario);
+            await _usuarioRepository.GuardarCambiosAsync();
+            
         }
 
         public async Task<bool> EliminarUsuarioAsync(EliminarUsuarioDto dto)
         {
-            var usuario = await _repository.ObtenerUsuarioPorIdAsync(dto.UsuarioId)
-                ?? throw new Exception("Usuario no encontrado.");
+            var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
+                ?? throw new Exception("Usuario no encontrado. Seleccione uno");
 
-            await _repository.EliminarUsuarioAsync(usuario);
-            await _repository.GuardarCambiosAsync();
+            _usuarioRepository.Eliminar(usuario);
+            await _usuarioRepository.GuardarCambiosAsync();
             return true;
         }
 
         public async Task CambiarEstadoAsync(int id, bool nuevoEstado)
         {
-            var usuario = await _repository.ObtenerUsuarioPorIdAsync(id)
+            var usuario = await _usuarioRepository.ObtenerPorId(id)
                 ?? throw new Exception("Usuario no encontrado.");
 
             usuario.Estado = nuevoEstado;
 
-            await _repository.ActualizarUsuarioAsync(usuario);
-            await _repository.GuardarCambiosAsync();
+            _usuarioRepository.Actualizar(usuario);
+            await _usuarioRepository.GuardarCambiosAsync();
         }
+        public async Task<Usuario?> ObtenerUsuarioPorIdAsync(UsuarioDto dto)
+        {
+            return await _usuarioRepository.ObtenerPorId(dto.UsuarioId);
+        }
+        public async Task<List<UsuarioDto>> ListarUsuariosAsync()
+        {
+            var usuarios = await _usuarioRepository.ListarUsuariosAsync();
 
+            return usuarios.Select(u => new UsuarioDto
+            {
+                UsuarioId = u.UsuarioId,
+                Nombre = u.Nombre,
+                Apellidos = u.Apellidos,
+                Username = u.Username,
+                RolId = u.RolId,
+                Estado = u.Estado,
+                FechaRegistro = u.FechaRegistro
+            }).ToList();
+        }
         public async Task CambiarContraseñaAsync(int id, string contraseñaActual, string contraseñaNueva, string confirmacion)
         {
             if (string.IsNullOrWhiteSpace(contraseñaActual))
@@ -110,7 +109,7 @@ namespace PrimePOS.BLL.Services
             if (contraseñaNueva != confirmacion)
                 throw new Exception("La confirmación no coincide con la nueva contraseña.");
 
-            var usuario = await _repository.ObtenerUsuarioPorIdAsync(id)
+            var usuario = await _usuarioRepository.ObtenerPorId(id)
                 ?? throw new Exception("Usuario no encontrado.");
 
             bool esValida = PasswordService.Verify(contraseñaActual, usuario.Password);
@@ -123,8 +122,8 @@ namespace PrimePOS.BLL.Services
 
             usuario.Password = PasswordService.Hash(contraseñaNueva);
 
-            await _repository.ActualizarUsuarioAsync(usuario);
-            await _repository.GuardarCambiosAsync();
+            _usuarioRepository.Actualizar(usuario);
+            await _usuarioRepository.GuardarCambiosAsync();
         }
 
         public async Task<Usuario> AutenticarAsync(string username, string clave)
@@ -133,7 +132,7 @@ namespace PrimePOS.BLL.Services
                 string.IsNullOrWhiteSpace(clave))
                 throw new Exception("Usuario y clave obligatorios.");
 
-            var usuario = await _repository.ObtenerPorUsernameAsync(username)
+            var usuario = await _usuarioRepository.ObtenerPorUsernameAsync(username)
                 ?? throw new Exception("Usuario o clave incorrectos.");
 
             if (!usuario.Estado)
@@ -147,9 +146,28 @@ namespace PrimePOS.BLL.Services
             return usuario;
         }
 
-        public async Task<List<Rol>> ListarRolesAsync()
+        
+        private async Task ValidarUsuario(CrearUsuarioDto dto, bool esActualizacion = false)
         {
-            return await _repository.ListarRolesAsync();
+            if (string.IsNullOrWhiteSpace(dto.Nombre))
+                throw new Exception("El nombre es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(dto.Apellidos))
+                throw new Exception("Los apellidos son obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(dto.Username))
+                throw new Exception("El nombre de usuario es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(dto.Password))
+                throw new Exception("La contraseña es obligatoria.");
+
+            if (dto.Password.Length < 6)
+                throw new Exception("La contraseña debe tener mínimo 6 caracteres.");
+
+            if (dto.RolId <= 0)
+                throw new Exception("Debe seleccionar un rol.");
+
+            var existeUsuario = await _usuarioRepository.ExisteUsernameAsync(dto.Username);
         }
     }
 }

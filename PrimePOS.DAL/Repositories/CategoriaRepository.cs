@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
 using PrimePOS.ENTITIES.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimePOS.DAL.Repositories;
 
@@ -18,20 +13,20 @@ public class CategoriaRepository
         _context = context;
     }
 
-    public async Task CrearCategoriaAsync(Categoria categoria)
+    public void Crear(Categoria categoria)
     {
-        await _context.Categorias.AddAsync(categoria);
+        _context.Categorias.Add(categoria);
 
     }
-    public Task ActualizarCategoriaAsync(Categoria categoria)
+    public void Actualizar(Categoria categoria)
     {
         _context.Categorias.Update(categoria);
-        return Task.CompletedTask;
+
     }
-    public Task EliminarCategoriaAsync(Categoria categoria)
+    public void Eliminar(Categoria categoria)
     {
         _context.Categorias.Remove(categoria);
-        return Task.CompletedTask;
+
     }
     public async Task<Categoria?> ObtenerPorIdAsync(int categoriaId)
     {
@@ -47,8 +42,8 @@ public class CategoriaRepository
         return await _context.Categorias
             .AnyAsync(c => c.Nombre == nombre);
     }
-    public Task GuardarCambiosAsync()
+    public async Task GuardarCambiosAsync()
     {
-        return _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 }

@@ -24,7 +24,7 @@ public class RolService
             Estado = dto.Estado
         };
 
-        await _repository.CrearRolAsync(rol);
+        _repository.Crear(rol);
         await _repository.GuardarCambiosAsync();
     }
     //Actualizar rol
@@ -47,7 +47,7 @@ public class RolService
         rol.Nombre = dto.Nombre;
         rol.Estado = dto.Estado;
 
-        await _repository.ActualizarRolAsync(rol);
+        _repository.Actualizar(rol);
         await _repository.GuardarCambiosAsync();
         return true;
     }
@@ -59,7 +59,7 @@ public class RolService
         if (rol == null)
             throw new Exception("Rol no encontrado");
 
-        await _repository.EliminarRolAsync(rol);
+        _repository.Eliminar(rol);
         await _repository.GuardarCambiosAsync();
         return true;
     }

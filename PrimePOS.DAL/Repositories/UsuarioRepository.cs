@@ -1,15 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
 using PrimePOS.ENTITIES.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimePOS.DAL.Repositories;
 
-public class UsuarioRepository 
+public class UsuarioRepository
 {
     private readonly AppDbContext _context;
 
@@ -18,24 +13,24 @@ public class UsuarioRepository
         _context = context;
     }
 
-    public async Task CrearUsuarioAsync(Usuario usuario)
+    public void Crear(Usuario usuario)
     {
-        await _context.Usuarios.AddAsync(usuario);
+        _context.Usuarios.Add(usuario);
     }
 
-    public Task ActualizarUsuarioAsync(Usuario usuario)
+    public void Actualizar(Usuario usuario)
     {
         _context.Usuarios.Update(usuario);
-        return Task.CompletedTask;
+
     }
 
-    public Task EliminarUsuarioAsync(Usuario usuario)
+    public void Eliminar(Usuario usuario)
     {
         _context.Usuarios.Remove(usuario);
-        return Task.CompletedTask;
+
     }
 
-    public async Task<Usuario?> ObtenerUsuarioPorIdAsync(int id)
+    public async Task<Usuario?> ObtenerPorId(int id)
     {
         return await _context.Usuarios
             .Include(u => u.Rol)
@@ -63,10 +58,7 @@ public class UsuarioRepository
             .FirstOrDefaultAsync(u => u.Username == username);
     }
 
-    public async Task<List<Rol>> ListarRolesAsync()
-    {
-        return await _context.Roles.ToListAsync();
-    }
+  
 
     public async Task GuardarCambiosAsync()
     {

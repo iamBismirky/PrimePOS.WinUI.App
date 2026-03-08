@@ -1,20 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.Extensions.DependencyInjection;
+using PrimePOS.BLL.DTOs.Usuario;
 using PrimePOS.WinUI.Infrastructure;
+using System;
 using System.Threading.Tasks;
+using Windows.Networking.Proximity;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -27,90 +18,172 @@ namespace PrimePOS.WinUI.Pages;
 /// </summary>
 public sealed partial class UsuarioPage : Page
 {
+    private int usuarioIdSeleccionado = 0;
     public UsuarioPage()
     {
         InitializeComponent();
-        _ = ListarRoles();
+
     }
-    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
+        base.OnNavigatedTo(e);
+
         await ListarRoles();
+        await ListarUsuarios();
     }
+
     public void btnCancelar_Click(object sender, RoutedEventArgs e)
     {
         Frame.GoBack();
     }
-    public async void BtnGuardar_Click(object sender, RoutedEventArgs e)
+    public async void BtnCrear_Click(object sender, RoutedEventArgs e)
     {
-    //    try
-    //    {
-    //        var service = new UsuarioApiService();
-
-    //        var nuevoUsuario = new CrearUsuarioDto
-    //            {
-    //                Nombre = txtNombre.Text,
-    //                Apellido = txtApellido.Text,
-    //                Username = txtUsername.Text,
-    //                Password = pwdPassword.Password,
-    //                RolId = (int)cbRol.SelectedValue,
-    //                Estado = (bool)toggleEstado.IsOn
+        try
+        {
 
 
-    //        };
-    //        bool resultado =  await service.CrearUsuarioAsync(nuevoUsuario);
+            var usuario = new CrearUsuarioDto
+            {
+                Nombre = txtNombre.Text.Trim(),
+                Apellidos = txtApellidos.Text.Trim(),
+                Username = txtUsername.Text.Trim(),
+                Password = pwdPassword.Password.Trim(),
+                RolId = cmbRol.SelectedValue != null ? (int)cmbRol.SelectedValue : 0,
+                Estado = (bool)tsEstado.IsOn
 
-    //         if (resultado)
-    //        {
-    //            var dialog = new ContentDialog
-    //            {
-    //                Title = "Éxito",
-    //                Content = "Usuario creado exitosamente.",
-    //                CloseButtonText = "Aceptar"
-    //            };
-    //             await dialog.ShowAsync();
-    //            Frame.GoBack();
-    //        }
-    //        else
-    //        {
-    //            var dialog = new ContentDialog
-    //            {
-    //                Title = "Error",
-    //                Content = "No se pudo crear el usuario.",
-    //                CloseButtonText = "Aceptar",
-    //                XamlRoot = this.XamlRoot
-    //            };
-    //             await dialog.ShowAsync();
-    //        }
 
-    //    }
-    //    catch(Exception ex) {
-    //        ContentDialog errorDialog = new ContentDialog
-    //        {
-    //            Title = "Error",
-    //            Content = ex.Message,
-    //            CloseButtonText = "OK",
-    //            XamlRoot = this.XamlRoot
-    //        };
-    //        await errorDialog.ShowAsync();
-    //    }
+            };
+            await Servicios.UsuarioService.CrearUsuarioAsync(usuario);
+
+
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Usuario creado correctamente");
+
+            await ListarUsuarios();
+            LimpiarCampos();
+
+
+
+
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+        }
     }
-    private void BtnCrear_Click(object sender, RoutedEventArgs e) { }
-    private void BtnActualizar_Click(object sender, RoutedEventArgs e) { }
-    private void BtnEliminar_Click(object sender, RoutedEventArgs e) { }
-    private void BtnLimpiar_Click(object sender, RoutedEventArgs e) { }
-    private void dgUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
-    
+    private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            
+                
+                var usuario = new ActualizarUsuarioDto
+                {
+                    UsuarioId = usuarioIdSeleccionado,
+                    Nombre = txtNombre.Text.Trim(),
+                    Apellidos = txtApellidos.Text.Trim(),
+                    Username = txtUsername.Text.Trim(),
+                    RolId = cmbRol.SelectedValue != null ? (int)cmbRol.SelectedValue : 0,
+                    Estado = tsEstado.IsOn,
+
+                };
+                await Servicios.UsuarioService.ActualizarUsuarioAsync(usuario);
+
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Usuario actualizado correctamente");
+
+                await ListarUsuarios();
+                LimpiarCampos();
+            
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+        }
+
+    }
+    private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var usuario = new EliminarUsuarioDto
+            {
+                UsuarioId = usuarioIdSeleccionado,
+
+
+            };
+            await Servicios.UsuarioService.EliminarUsuarioAsync(usuario);
+
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Usuario eliminado correctamente");
+
+            await ListarUsuarios();
+            LimpiarCampos();
+
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+        }
+
+    }
+    private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
+    {
+        LimpiarCampos();
+    }
+    private void dgUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (dgUsuarios.SelectedItem is UsuarioDto dto)
+        {
+            usuarioIdSeleccionado = dto.UsuarioId;
+            txtNombre.Text = dto.Nombre;
+            txtApellidos.Text = dto.Apellidos;
+            txtUsername.Text = dto.Username;
+            cmbRol.SelectedValue = dto.RolId;
+            tsEstado.IsOn = dto.Estado;
+
+        }
+        pwdPassword.IsEnabled = false;
+    }
+
     private async Task ListarRoles()
     {
-        var roles =  await Servicios.RolService.ListarRolesAsync();
-        if(roles != null)
+        try
         {
-            cmbRol.ItemsSource = roles;
-            cmbRol.ItemsSource = roles;
-            cmbRol.DisplayMemberPath = "Nombre";
-            cmbRol.SelectedValuePath = "RolId";
-        }
-        
+            var roles = await Servicios.RolService.ListarRolesAsync();
+            if (roles != null)
+            {
 
+                cmbRol.ItemsSource = roles;
+                cmbRol.DisplayMemberPath = "Nombre";
+                cmbRol.SelectedValuePath = "RolId";
+            }
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+
+
+        }
+    }
+    private async Task ListarUsuarios()
+    {
+        try
+        {
+            var lista = await Servicios.UsuarioService.ListarUsuariosAsync();
+            dgUsuarios.ItemsSource = lista;
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+        }
+    }
+    private void LimpiarCampos()
+    {
+        txtNombre.Text = "";
+        txtApellidos.Text = "";
+        txtUsername.Text = "";
+        pwdPassword.Password = "";
+        cmbRol.SelectedIndex = -1;
+        tsEstado.IsOn = true;
+        usuarioIdSeleccionado = 0;
+        pwdPassword.IsEnabled = true;
     }
 }

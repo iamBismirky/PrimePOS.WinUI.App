@@ -11,20 +11,20 @@ public class RolRepository
     {
         _context = context;
     }
-    public async Task CrearRolAsync(Rol rol)
+    public void Crear(Rol rol)
     {
-        await _context.Roles.AddAsync(rol);
+        _context.Roles.Add(rol);
 
     }
-    public Task ActualizarRolAsync(Rol rol)
+    public void Actualizar(Rol rol)
     {
         _context.Roles.Update(rol);
-        return Task.CompletedTask;
+        
     }
-    public Task EliminarRolAsync(Rol rol)
+    public void Eliminar(Rol rol)
     {
         _context.Roles.Remove(rol);
-        return Task.CompletedTask;
+        
     }
     public async Task<Rol?> ObtenerPorIdAsync(int rolId)
     {
@@ -40,9 +40,9 @@ public class RolRepository
         return await _context.Roles
             .AnyAsync(r => r.Nombre == nombre);
     }
-    public Task GuardarCambiosAsync()
+    public async Task GuardarCambiosAsync()
     {
-        return _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 
 }

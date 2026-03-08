@@ -30,7 +30,7 @@ public class CategoriaService
             Estado = dto.Estado
         };
 
-        await _repository.CrearCategoriaAsync(categoria);
+        _repository.Crear(categoria);
         await _repository.GuardarCambiosAsync();
     }
 
@@ -60,7 +60,7 @@ public class CategoriaService
         categoria.Nombre = dto.Nombre;
         categoria.Estado = dto.Estado;
 
-        await _repository.ActualizarCategoriaAsync(categoria);
+        _repository.Actualizar(categoria);
         await _repository.GuardarCambiosAsync();
         return true;
     }
@@ -72,7 +72,7 @@ public class CategoriaService
         if (categoria == null)
             throw new Exception("Categoría no encontrada.");
 
-        await _repository.EliminarCategoriaAsync(categoria);
+        _repository.Eliminar(categoria);
         await _repository.GuardarCambiosAsync();
         return true;
     }

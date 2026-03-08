@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using PrimePOS.BLL.DTOs.Cliente;
 using PrimePOS.WinUI.Infrastructure;
 using System.Threading.Tasks;
@@ -18,7 +19,13 @@ namespace PrimePOS.WinUI.Pages
         public ClientePage()
         {
             InitializeComponent();
-            ListarClientes();
+            
+        }
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            await ListarClientesAsync();
         }
         private async void BtnCrear_Click(object sender, RoutedEventArgs e)
         {
@@ -64,7 +71,7 @@ namespace PrimePOS.WinUI.Pages
             }
 
         }
-        private async Task ListarClientes()
+        private async Task ListarClientesAsync()
         {
             var clientes = await Servicios.ClienteService.ListarClientes();
             dgClientes.ItemsSource = clientes;

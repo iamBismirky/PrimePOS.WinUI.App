@@ -12,5 +12,6 @@ namespace PrimePOS.BLL.DTOs.Usuario
         public string Username { get; set; } = string.Empty;
         public int RolId { get; set; } 
         public bool Estado { get; set; }
+        public DateTime FechaRegistro { get; set; }
     }
 }
