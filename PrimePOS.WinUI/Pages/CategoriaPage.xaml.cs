@@ -1,21 +1,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using PrimePOS.BLL.DTOs.Categoria;
-using PrimePOS.BLL.DTOs.Rol;
 using PrimePOS.WinUI.Infrastructure;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -33,9 +20,17 @@ namespace PrimePOS.WinUI.Pages
             InitializeComponent();
             ListarCategorias();
         }
-        
-        private void dgCategorias_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
-        private async void BtnCrearCategoria_Click(object sender, RoutedEventArgs e) 
+
+        private void dgCategorias_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgCategorias.SelectedItem is CategoriaDto categoria)
+            {
+                _categoriaIdSeleccionado = categoria.CategoriaId;
+                txtNombre.Text = categoria.Nombre;
+                tgEstado.IsOn = categoria.Estado;
+            }
+        }
+        private async void BtnCrearCategoria_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -118,7 +113,7 @@ namespace PrimePOS.WinUI.Pages
                     ContentDialog dialog = new ContentDialog
                     {
                         Title = "Error",
-                        Content = "Debe de seleccionar un rol para eliminar",
+                        Content = "Debe de seleccionar una categoria para eliminar",
                         CloseButtonText = "Aceptar",
                         XamlRoot = this.XamlRoot
                     };
@@ -126,13 +121,13 @@ namespace PrimePOS.WinUI.Pages
 
                 }
 
-                var dto = new EliminarRolDto
+                var dto = new CategoriaDto
                 {
-                    RolId = _categoriaIdSeleccionado
+                    CategoriaId = _categoriaIdSeleccionado
 
                 };
 
-                await Servicios.RolService.EliminarRolAsync(dto);
+                await Servicios.CategoriaService.EliminarCategoriaAsync(dto);
                 ListarCategorias();
                 LimpiarCampos();
 
@@ -152,7 +147,7 @@ namespace PrimePOS.WinUI.Pages
                 await dialog.ShowAsync();
             }
         }
-        private void BtnLimpiar_Click(object sender, RoutedEventArgs e) 
+        private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
         {
             LimpiarCampos();
         }
@@ -165,7 +160,7 @@ namespace PrimePOS.WinUI.Pages
         private void LimpiarCampos()
         {
             txtNombre.Text = "";
-            
+
         }
 
     }

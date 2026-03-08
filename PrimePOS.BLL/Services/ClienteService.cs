@@ -1,49 +1,94 @@
-﻿using PrimePOS.DAL.Repositories;
+﻿using PrimePOS.BLL.DTOs.Cliente;
+using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrimePOS.BLL.Services;
 
 
-public class ClienteService  
+public class ClienteService
 {
     private readonly ClienteRepository _clienteRepository;
-    public ClienteService (ClienteRepository clienteRepository)
+    public ClienteService(ClienteRepository clienteRepository)
     {
         _clienteRepository = clienteRepository;
     }
-    public void AgregarCliente(Cliente cliente)
+    public async Task CrearClienteAsync(ClienteDto dto)
     {
-        if (cliente == null) throw new ArgumentNullException(nameof(cliente));
 
-        if (string.IsNullOrWhiteSpace(cliente.Nombre))
+
+        if (string.IsNullOrWhiteSpace(dto.Nombre))
             throw new Exception("El nombre del cliente es obligatorio.");
-        if(cliente.Estado == null)
+        if (!dto.Estado)
             throw new Exception("El estado del cliente es obligatorio.");
 
+        var cliente = new Cliente
+        {
+            Nombre = dto.Nombre,
+            Documento = dto.Documento,
+            Telefono = dto.Telefono,
+            Email = dto.Email,
+            Direccion = dto.Direccion,
+            Estado = dto.Estado,
+
+        };
+
+        _clienteRepository.Crear(cliente);
+        await _clienteRepository.GuardarCambios();
+    }
+    public async Task ActualizarCliente(ClienteDto dto)
+    {
+        if (dto == null)
+            throw new Exception("Datos inválidos.");
+
+        if (string.IsNullOrWhiteSpace(dto.Nombre))
+            throw new Exception("El nombre del cliente es obligatorio.");
 
 
-        _clienteRepository.Agregar(cliente);
-        _clienteRepository.GuardarCambios();
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId)
+            ?? throw new Exception("Cliente no encontrado.");
+
+        if (cliente == null)
+            throw new Exception("Cliente no encontrado");
+
+        cliente.Nombre = dto.Nombre;
+        cliente.Documento = dto.Documento;
+        cliente.Direccion = dto.Direccion;
+        cliente.Email = dto.Email;
+        cliente.Telefono = dto.Telefono;
+        cliente.Estado = dto.Estado;
+
+
+        _clienteRepository.Actualizar(cliente);
+        await _clienteRepository.GuardarCambios();
+    }
+    public async Task EliminarCliente(ClienteDto dto)
+    {
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
+
+        if (cliente == null)
+            throw new Exception("Cliente no encontrado.");
+
+
+
+        _clienteRepository.Eliminar(cliente);
+        await _clienteRepository.GuardarCambios();
     }
     // Listar
-    public List<Cliente> ListarClientes()
+    public async Task<List<Cliente>> ListarClientes()
     {
-        return _clienteRepository.Listar();
+        return await _clienteRepository.ListarClientesAsync();
     }
 
     // Buscar por Id
-    public Cliente? ObtenerPorId(int id)
+    public async Task<Cliente?> ObtenerPorId(int id)
     {
-        return _clienteRepository.ObtenerPorId(id);
+        return await _clienteRepository.ObtenerPorIdAsync(id);
     }
 
     // Eliminar lógico
-    public void DesactivarCliente(int id)
+    public async Task DesactivarCliente(ClienteDto dto)
     {
-        var cliente = _clienteRepository.ObtenerPorId(id);
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
 
         if (cliente == null)
             throw new Exception("Cliente no encontrado.");
@@ -51,44 +96,8 @@ public class ClienteService
         cliente.Estado = false;
 
         _clienteRepository.Actualizar(cliente);
-        _clienteRepository.GuardarCambios();
+        await _clienteRepository.GuardarCambios();
     }
-    public void ActualizarCliente(Cliente cliente)
-    {
-        if (cliente == null)
-            throw new Exception("Datos inválidos.");
-
-        if (string.IsNullOrWhiteSpace(cliente.Nombre))
-            throw new Exception("El nombre del cliente es obligatorio.");
-        if (cliente.Estado == null)
-            throw new Exception("El estado del cliente es obligatorio.");
 
 
-        var clienteBD = _clienteRepository.ObtenerPorId(cliente.ClienteId)
-            ?? throw new Exception("Cliente no encontrado.");
-
-        
-
-        clienteBD.Nombre = cliente.Nombre;
-        clienteBD.Documento = cliente.Documento;
-        clienteBD.Direccion = cliente.Direccion;
-        clienteBD.Email = cliente.Email;
-        clienteBD.Telefono = cliente.Telefono;
-
-
-        _clienteRepository.Actualizar(clienteBD);
-        _clienteRepository.GuardarCambios();
-    }
-    public void EliminarCliente(int id)
-    {
-        var cliente = _clienteRepository.ObtenerPorId(id);
-
-        if (cliente == null)
-            throw new Exception("Cliente no encontrado.");
-
-       
-
-        _clienteRepository.Eliminar(cliente);
-        _clienteRepository.GuardarCambios();
-    }
 }

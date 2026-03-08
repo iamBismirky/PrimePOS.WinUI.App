@@ -30,7 +30,7 @@ public sealed partial class UsuarioPage : Page
     public UsuarioPage()
     {
         InitializeComponent();
-        
+        _ = ListarRoles();
     }
     private async void Page_Loaded(object sender, RoutedEventArgs e)
     {
@@ -106,6 +106,9 @@ public sealed partial class UsuarioPage : Page
         if(roles != null)
         {
             cmbRol.ItemsSource = roles;
+            cmbRol.ItemsSource = roles;
+            cmbRol.DisplayMemberPath = "Nombre";
+            cmbRol.SelectedValuePath = "RolId";
         }
         
 

@@ -1,8 +1,6 @@
-﻿using PrimePOS.DAL.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using PrimePOS.DAL.Context;
 using PrimePOS.ENTITIES.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrimePOS.DAL.Repositories;
 
@@ -13,16 +11,9 @@ public class ClienteRepository
     public ClienteRepository(AppDbContext context)
     {
         _context = context;
+
     }
-    public List<Cliente> Listar()
-    {
-        return _context.Clientes.ToList();
-    }
-    public Cliente? ObtenerPorId(int id)
-    {
-        return _context.Clientes.Find(id);
-    }
-    public void Agregar(Cliente cliente)
+    public void Crear(Cliente cliente)
     {
         _context.Clientes.Add(cliente);
     }
@@ -32,12 +23,21 @@ public class ClienteRepository
     }
     public void Eliminar(Cliente cliente)
     {
-        
+
         _context.Clientes.Remove(cliente);
     }
-    public void GuardarCambios()
+    public async Task<List<Cliente>> ListarClientesAsync()
     {
-        _context.SaveChanges();
+        return await _context.Clientes.ToListAsync();
+    }
+    public async Task<Cliente?> ObtenerPorIdAsync(int id)
+    {
+        return await _context.Clientes.FindAsync(id);
+    }
+
+    public async Task GuardarCambios()
+    {
+        await _context.SaveChangesAsync();
     }
 
 }

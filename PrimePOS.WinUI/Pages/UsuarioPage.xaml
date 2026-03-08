@@ -81,7 +81,7 @@
                     
 
                     <ToggleSwitch
-                        x:Name="tglEstado"
+                        x:Name="tsEstado"
                         Header="Seleccione el estado"
                         IsOn="True"
                         OnContent="Activo"

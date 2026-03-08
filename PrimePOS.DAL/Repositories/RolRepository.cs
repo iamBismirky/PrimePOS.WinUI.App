@@ -1,13 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
 using PrimePOS.ENTITIES.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimePOS.DAL.Repositories;
 
@@ -20,7 +13,7 @@ public class RolRepository
     }
     public async Task CrearRolAsync(Rol rol)
     {
-       await _context.Roles.AddAsync(rol);
+        await _context.Roles.AddAsync(rol);
 
     }
     public Task ActualizarRolAsync(Rol rol)

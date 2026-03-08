@@ -1,15 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PrimePOS.BLL.DTOs.Categoria;
-using PrimePOS.BLL.DTOs.Rol;
-using PrimePOS.DAL.Context;
+﻿using PrimePOS.BLL.DTOs.Categoria;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimePOS.BLL.Services;
 
@@ -29,7 +21,7 @@ public class CategoriaService
 
         var existe = await _repository.ExisteCategoriaAsync(dto.Nombre);
 
-        if(existe)
+        if (existe)
             throw new Exception("Ya existe una categoría con este nombre.");
 
         var categoria = new Categoria
@@ -77,7 +69,7 @@ public class CategoriaService
     {
         var categoria = await _repository.ObtenerPorIdAsync(dto.CategoriaId);
 
-            if(categoria == null)
+        if (categoria == null)
             throw new Exception("Categoría no encontrada.");
 
         await _repository.EliminarCategoriaAsync(categoria);

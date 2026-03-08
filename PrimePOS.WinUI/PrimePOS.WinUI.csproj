@@ -16,6 +16,7 @@
   <ItemGroup>
     <None Remove="Pages\AdministrarPage.xaml" />
     <None Remove="Pages\CategoriaPage.xaml" />
+    <None Remove="Pages\ClientePage.xaml" />
     <None Remove="Pages\DashboardPage.xaml" />
     <None Remove="Pages\InventarioPage.xaml" />
     <None Remove="Pages\PerfilPage.xaml" />
@@ -61,6 +62,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PrimePOS.BLL\PrimePOS.BLL.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\ClientePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\CategoriaPage.xaml">
