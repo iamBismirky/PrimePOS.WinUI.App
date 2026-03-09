@@ -1,4 +1,4 @@
-﻿using PrimePOS.BLL.DTOs;
+﻿using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
 

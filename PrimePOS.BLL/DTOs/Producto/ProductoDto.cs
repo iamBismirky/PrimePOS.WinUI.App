@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PrimePOS.BLL.DTOs
+namespace PrimePOS.BLL.DTOs.Producto
 {
     public class ProductoDto
     {

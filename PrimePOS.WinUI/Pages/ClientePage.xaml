@@ -80,6 +80,7 @@
                     <!-- Estado -->
                     <ToggleSwitch x:Name="tsEstado"
                               Header="Estado"
+                              IsOn="True"
                               OnContent="Activo"
                               OffContent="Inactivo"
                               Grid.Row="2"
@@ -149,7 +150,9 @@
 
                 <controls:DataGrid x:Name="dgClientes"
                       AutoGenerateColumns="False"
-                      SelectionChanged="dgClientes_SelectionChanged">
+                      SelectionChanged="dgClientes_SelectionChanged"
+                      SelectionMode="Extended"
+                      IsReadOnly="True">
 
                     <controls:DataGrid.Columns>
 

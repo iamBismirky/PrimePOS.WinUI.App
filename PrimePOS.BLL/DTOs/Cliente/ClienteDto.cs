@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrimePOS.BLL.DTOs.Cliente
+﻿namespace PrimePOS.BLL.DTOs.Cliente
 {
     public class ClienteDto
     {
@@ -18,7 +14,7 @@ namespace PrimePOS.BLL.DTOs.Cliente
 
         public string Direccion { get; set; } = string.Empty;
 
-        public bool Estado { get; set; } 
+        public bool Estado { get; set; }
 
     }
 }

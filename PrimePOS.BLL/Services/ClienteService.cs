@@ -12,7 +12,7 @@ public class ClienteService
     {
         _clienteRepository = clienteRepository;
     }
-    public async Task CrearClienteAsync(ClienteDto dto)
+    public async Task CrearClienteAsync(CrearClienteDto dto)
     {
 
 
@@ -35,7 +35,7 @@ public class ClienteService
         _clienteRepository.Crear(cliente);
         await _clienteRepository.GuardarCambios();
     }
-    public async Task ActualizarCliente(ClienteDto dto)
+    public async Task ActualizarClienteAsync(ActualizarClienteDto dto)
     {
         if (dto == null)
             throw new Exception("Datos inválidos.");
@@ -61,7 +61,7 @@ public class ClienteService
         _clienteRepository.Actualizar(cliente);
         await _clienteRepository.GuardarCambios();
     }
-    public async Task EliminarCliente(ClienteDto dto)
+    public async Task EliminarClienteAsync(EliminarClienteDto dto)
     {
         var cliente = await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
 
@@ -74,15 +74,43 @@ public class ClienteService
         await _clienteRepository.GuardarCambios();
     }
     // Listar
-    public async Task<List<Cliente>> ListarClientes()
+    public async Task<List<ClienteDto>> ListarClientes()
     {
-        return await _clienteRepository.ListarClientesAsync();
+        var clientes =  await _clienteRepository.ListarClientesAsync();
+
+        return clientes.Select(c => new ClienteDto
+        {
+
+            ClienteId = c.ClienteId,
+            Nombre = c.Nombre,
+            Documento = c.Documento,
+            Direccion = c.Direccion,
+            Email = c.Email,
+            Telefono = c.Telefono,
+            Estado = c.Estado,
+            
+
+        }).ToList();
     }
 
     // Buscar por Id
-    public async Task<Cliente?> ObtenerPorId(int id)
+    public async Task<ClienteDto?> ObtenerPorId(int id)
     {
-        return await _clienteRepository.ObtenerPorIdAsync(id);
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(id);
+
+        if (cliente == null)
+            return null;
+
+        return new ClienteDto
+        {
+            ClienteId = cliente.ClienteId,
+            Nombre = cliente.Nombre,
+            Documento = cliente.Documento,  
+            Direccion= cliente.Direccion,
+            Email = cliente.Email,
+            Telefono= cliente.Telefono,
+            Estado = cliente.Estado,
+        };
     }
 
     // Eliminar lógico
