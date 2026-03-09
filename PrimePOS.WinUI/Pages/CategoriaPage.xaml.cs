@@ -47,15 +47,9 @@ namespace PrimePOS.WinUI.Pages
             catch (Exception ex)
             {
 
-                ContentDialog dialog = new ContentDialog
-                {
-                    Title = "Error",
-                    Content = ex.Message,
-                    CloseButtonText = "Aceptar",
-                    XamlRoot = this.XamlRoot
-                };
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
 
-                await dialog.ShowAsync();
+
             }
 
         }
@@ -63,18 +57,6 @@ namespace PrimePOS.WinUI.Pages
         {
             try
             {
-                if (_categoriaIdSeleccionado == 0)
-                {
-                    ContentDialog dialog = new ContentDialog
-                    {
-                        Title = "Error",
-                        Content = "Debe de seleccionar un rol para editar",
-                        CloseButtonText = "Aceptar",
-                        XamlRoot = this.XamlRoot
-                    };
-                    return;
-
-                }
 
                 var dto = new CategoriaDto
                 {
@@ -93,33 +75,14 @@ namespace PrimePOS.WinUI.Pages
             catch (Exception ex)
             {
 
-                ContentDialog dialog = new ContentDialog
-                {
-                    Title = "Error",
-                    Content = ex.Message,
-                    CloseButtonText = "Aceptar",
-                    XamlRoot = this.XamlRoot
-                };
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
 
-                await dialog.ShowAsync();
             }
         }
         private async void BtnEliminarCategoria_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (_categoriaIdSeleccionado == 0)
-                {
-                    ContentDialog dialog = new ContentDialog
-                    {
-                        Title = "Error",
-                        Content = "Debe de seleccionar una categoria para eliminar",
-                        CloseButtonText = "Aceptar",
-                        XamlRoot = this.XamlRoot
-                    };
-                    return;
-
-                }
 
                 var dto = new CategoriaDto
                 {
@@ -135,16 +98,8 @@ namespace PrimePOS.WinUI.Pages
             }
             catch (Exception ex)
             {
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
 
-                ContentDialog dialog = new ContentDialog
-                {
-                    Title = "Error",
-                    Content = ex.Message,
-                    CloseButtonText = "Aceptar",
-                    XamlRoot = this.XamlRoot
-                };
-
-                await dialog.ShowAsync();
             }
         }
         private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
@@ -154,12 +109,22 @@ namespace PrimePOS.WinUI.Pages
 
         private async void ListarCategorias()
         {
-            var categorias = await Servicios.CategoriaService.ListarCategoriasAsync();
-            dgCategorias.ItemsSource = categorias;
+            try
+            {
+                var categorias = await Servicios.CategoriaService.ListarCategoriasAsync();
+                dgCategorias.ItemsSource = categorias;
+            }
+            catch (Exception ex)
+            {
+
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+
+            }
         }
         private void LimpiarCampos()
         {
             txtNombre.Text = "";
+            _categoriaIdSeleccionado = 0;
 
         }
 

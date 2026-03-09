@@ -48,15 +48,9 @@ public sealed partial class RolPage : Page
         catch (Exception ex)
         {
 
-            ContentDialog dialog = new ContentDialog
-            {
-                Title = "Error",
-                Content = ex.Message,
-                CloseButtonText = "Aceptar",
-                XamlRoot = this.XamlRoot
-            };
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
 
-            await dialog.ShowAsync();
+
         }
 
     }
@@ -64,18 +58,6 @@ public sealed partial class RolPage : Page
     {
         try
         {
-            if (_rolIdSeleccionado == 0)
-            {
-                ContentDialog dialog = new ContentDialog
-                {
-                    Title = "Error",
-                    Content = "Debe de seleccionar un rol para editar",
-                    CloseButtonText = "Aceptar",
-                    XamlRoot = this.XamlRoot
-                };
-                return;
-
-            }
 
             var dto = new ActualizarRolDto
             {
@@ -94,33 +76,15 @@ public sealed partial class RolPage : Page
         catch (Exception ex)
         {
 
-            ContentDialog dialog = new ContentDialog
-            {
-                Title = "Error",
-                Content = ex.Message,
-                CloseButtonText = "Aceptar",
-                XamlRoot = this.XamlRoot
-            };
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
 
-            await dialog.ShowAsync();
         }
     }
     private async void BtnEliminarRol_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            if (_rolIdSeleccionado == 0)
-            {
-                ContentDialog dialog = new ContentDialog
-                {
-                    Title = "Error",
-                    Content = "Debe de seleccionar un rol para eliminar",
-                    CloseButtonText = "Aceptar",
-                    XamlRoot = this.XamlRoot
-                };
-                return;
 
-            }
 
             var dto = new EliminarRolDto
             {
@@ -136,16 +100,8 @@ public sealed partial class RolPage : Page
         }
         catch (Exception ex)
         {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
 
-            ContentDialog dialog = new ContentDialog
-            {
-                Title = "Error",
-                Content = ex.Message,
-                CloseButtonText = "Aceptar",
-                XamlRoot = this.XamlRoot
-            };
-
-            await dialog.ShowAsync();
         }
 
     }
@@ -154,15 +110,23 @@ public sealed partial class RolPage : Page
         LimpiarCampos();
     }
 
-    private void dgRoles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private async void dgRoles_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-
-        if (dgRoles.SelectedItem is ListaRolesDto rol)
+        try
         {
 
-            _rolIdSeleccionado = rol.RolId;
-            txtNombre.Text = rol.Nombre.ToString();
-            tgEstado.IsOn = rol.Estado;
+            if (dgRoles.SelectedItem is ListaRolesDto rol)
+            {
+
+                _rolIdSeleccionado = rol.RolId;
+                txtNombre.Text = rol.Nombre.ToString();
+                tgEstado.IsOn = rol.Estado;
+            }
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+
         }
     }
     private void LimpiarCampos()
@@ -173,9 +137,18 @@ public sealed partial class RolPage : Page
     }
     private async Task CargarRoles()
     {
-        List<ListaRolesDto> listaRoles = await Servicios.RolService.ListarRolesAsync();
-        dgRoles.ItemsSource = null;
-        dgRoles.ItemsSource = listaRoles;
+        try
+        {
+            List<ListaRolesDto> listaRoles = await Servicios.RolService.ListarRolesAsync();
+            dgRoles.ItemsSource = null;
+            dgRoles.ItemsSource = listaRoles;
+        }
+        catch (Exception ex)
+        {
+
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+
+        }
 
     }
 }

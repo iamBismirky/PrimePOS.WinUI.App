@@ -15,7 +15,7 @@
     </Window.SystemBackdrop>
     
 
-        <Grid>
+        <Grid x:Name="RootGrid">
             
 
             <Grid.RowDefinitions>
@@ -28,7 +28,6 @@
         <TitleBar
                 x:Name="titleBar"
                 Grid.Row="0"
-                Grid.Column="0"
                 BackRequested="TitleBar_BackRequested"
                 PaneToggleRequested="TitleBar_PaneToggleRequested"
                 IsBackButtonVisible="{x:Bind contentFrame.CanGoBack, Mode=OneWay}"
@@ -36,29 +35,71 @@
                 
 
             <TitleBar.Content>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock
-                            Text="PrimePOS"
+
+                <Grid HorizontalAlignment="Stretch">
+
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                            <!-- IZQUIERDA (Nombre App) -->
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        Margin="-10,0,0,0">
+                            <Image
+                                         Source="Assets/PrimePOS.png"
+                                         Width="26"
+                                         Height="26"
+                                         VerticalAlignment="Center"/>
+                            <TextBlock
+                                        Text="PrimePOS"
+                                        FontSize="18"
+                                        FontWeight="SemiBold"
+                                        VerticalAlignment="Center"
+                                        KeyDown="TextBlock_KeyDown"/>
+                            </StackPanel>
+
                             
-                            FontSize="16"
-                            FontFamily="Segoe UI"
-                            VerticalAlignment="Center"/>
+                            <!-- DERECHA (Usuario + Modo) -->
+                             <StackPanel
+                                        Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        Spacing="15"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        Margin="500,0,0,0">
+
+                                        <Button
+                                        x:Name="btnTema"
+                                        Width="42"
+                                        Height="40"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        BorderThickness="0"
+                                        Background="Transparent"
+                                        Margin="1"
+                                        Click="BtnTema_Click">
+
+                                        <FontIcon
+                                        x:Name="iconTema"
+                                        Glyph="&#xE708;"
+                                        FontFamily="Segoe MDL2 Assets"/>
+
+                                        </Button>
+
+                        <TextBlock
+                                         Text="Bismirky"
+                                         VerticalAlignment="Center"/>
+
+                            </StackPanel>
 
 
-                        <AutoSuggestBox
-                             Width="250"
-                             PlaceholderText="Buscar..."/>
-                        <ToggleSwitch x:Name="tsModo"
-                             
-                             Toggled="tsModo_Toggled"
-                                      IsOn="True"
-                             OnContent="Modo Noche"
-                             OffContent="Modo Dia"
-                             RequestedTheme="Light"
-                                      VerticalAlignment="Center"/>
-                        
 
-                </StackPanel>
+                </Grid>    
                 </TitleBar.Content>
 
             </TitleBar>

@@ -68,21 +68,16 @@
             IsReadOnly="True">
 
             <controls:DataGrid.Columns>
-                <controls:DataGridTextColumn
-                    Header="RolId"
-                    Binding="{Binding RolId}"
-                    Width="100"
-                    />
 
                 <controls:DataGridTextColumn
                     Header="Nombre"
                     Binding="{Binding Nombre}"
-                    Width="100"/>
+                    Width="auto"/>
 
-                <controls:DataGridTextColumn
+                <controls:DataGridCheckBoxColumn
                     Header="Estado"
                     Binding="{Binding Estado}"
-                    Width="*"/>
+                    Width="auto"/>
 
             </controls:DataGrid.Columns>
 

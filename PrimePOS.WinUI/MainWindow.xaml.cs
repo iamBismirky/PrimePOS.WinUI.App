@@ -1,18 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using PrimePOS.WinUI.Pages;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -28,6 +16,9 @@ namespace PrimePOS.WinUI
         {
             InitializeComponent();
             contentFrame.Navigate(typeof(DashboardPage));
+            RootGrid.RequestedTheme = App.TemaActual;
+            this.ExtendsContentIntoTitleBar = true;
+            
             //navView.SelectionChanged += navView_SelectionChanged;
         }
         private void TitleBar_BackRequested(TitleBar sender, object args)
@@ -37,16 +28,21 @@ namespace PrimePOS.WinUI
                 contentFrame.GoBack();
             }
         }
-        private void tsModo_Toggled(object sender, RoutedEventArgs e)
+        private void BtnTema_Click(object sender, RoutedEventArgs e)
         {
-            
-                // Selecciona el tema según el ToggleSwitch
-                ElementTheme tema = tsModo.IsOn ? ElementTheme.Dark : ElementTheme.Light;
-
-            // Cambia el tema para toda la ventana
-            SetThemeForWindow(this, tema);
+            if (App.TemaActual == ElementTheme.Light)
+            {
+                RootGrid.RequestedTheme = ElementTheme.Dark;
+                iconTema.Glyph = "\uE708"; // luna
+                App.TemaActual = ElementTheme.Dark;
+            }
+            else
+            {
+                RootGrid.RequestedTheme = ElementTheme.Light;
+                iconTema.Glyph = "\uE706"; // sol
+                App.TemaActual = ElementTheme.Light;
+            }
         }
-
         private void SetThemeForWindow(Window window, ElementTheme theme)
         {
             if (window.Content is FrameworkElement root)
@@ -63,7 +59,8 @@ namespace PrimePOS.WinUI
         {
 
             if (args.SelectedItemContainer is NavigationViewItem item
-        && contentFrame != null) { 
+        && contentFrame != null)
+            {
                 switch (item.Tag?.ToString())
                 {
                     case "dashboard":
@@ -85,12 +82,15 @@ namespace PrimePOS.WinUI
                     case "perfil":
                         contentFrame?.Navigate(typeof(PerfilPage));
                         break;
-                    
-                    
+
+
                 }
             }
         }
 
-        
+        private void TextBlock_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+
+        }
     }
 }

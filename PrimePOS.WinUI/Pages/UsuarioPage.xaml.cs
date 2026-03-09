@@ -186,4 +186,9 @@ public sealed partial class UsuarioPage : Page
         usuarioIdSeleccionado = 0;
         pwdPassword.IsEnabled = true;
     }
+
+    private void dgUsuarios_CurrentCellChanged(object sender, EventArgs e)
+    {
+
+    }
 }

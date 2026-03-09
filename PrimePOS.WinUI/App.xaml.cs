@@ -31,18 +31,20 @@ namespace PrimePOS.WinUI
     public partial class App : Application
     {
         private Window? _window;
+        public static ElementTheme TemaActual = ElementTheme.Light;
 
-       
         public App()
         {
             InitializeComponent();
             Servicios.Inicializar();
+            RequestedTheme = ApplicationTheme.Light;
         }
         
        
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            _window = new MainWindow();
+            _window = new LoginWindow();
+            //_window = new MainWindow();
             _window.Activate();
         }
     }

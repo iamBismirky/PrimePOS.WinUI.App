@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="PrimePOS.WinUI.LoginWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PrimePOS.WinUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="LoginWindow">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+    <Grid x:Name="RootGrid">
+        
+             <Grid.RowDefinitions>
+                 <RowDefinition Height="40"/>
+                 <RowDefinition Height="*"/>
+             </Grid.RowDefinitions>
+        
+        <Grid x:Name="AppTitleBar"
+          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+          Grid.Row="0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+            Text="PrimePOS"
+            VerticalAlignment="Center"
+            Margin="10,0"
+            FontSize="16"/>
+
+            
+        </Grid>
+        <Grid Grid.Row="2">
+            
+        
+        <Border
+            Width="350"
+            Height="550"
+            Padding="50"
+            CornerRadius="12"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            
+            <StackPanel Spacing="15">
+                <Button
+                    x:Name="btnTema"
+                    Width="42"
+                    Height="40"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    BorderThickness="0"
+                    Background="Transparent"
+                    Margin="1"
+                    Click="BtnTema_Click">
+
+                    <FontIcon
+                    x:Name="iconTema"
+                    Glyph="&#xE708;"
+                    FontFamily="Segoe MDL2 Assets"/>
+
+                </Button>
+                <!-- LOGO -->
+                <Image
+                    Source="Assets/PrimePOS.png"
+                    Width="80"
+                    Height="80"
+                    HorizontalAlignment="Center"/>
+
+                <!-- TITULO -->
+                <TextBlock
+                    Text="PrimePOS"
+                    FontSize="26"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"/>
+
+                <!-- USUARIO -->
+                <TextBox
+                    x:Name="txtUsername"
+                    PlaceholderText="Usuario"/>
+
+                <!-- PASSWORD -->
+                <PasswordBox
+                    x:Name="pwdPassword"
+                    PlaceholderText="Contraseña"/>
+
+                <!-- BOTON -->
+                <Button
+                    Content="Iniciar Sesión"
+                    Click="BtnLogin_Click"
+                    Height="40"
+                    HorizontalAlignment="Center"/>
+                
+                <!-- ERROR -->
+                <TextBlock
+                    x:Name="txtError"
+                    Foreground="Red"
+                    TextAlignment="Center"/>
+
+            </StackPanel>
+
+        </Border>
+        </Grid>
+    </Grid>
+</Window>

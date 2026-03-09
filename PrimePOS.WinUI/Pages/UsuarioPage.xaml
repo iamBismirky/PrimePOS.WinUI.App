@@ -100,10 +100,10 @@
 
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <SymbolIcon Symbol="Add"/>
-                            <TextBlock Text="Crear"/>
+                            <TextBlock Text="Crear" />
                         </StackPanel>
 
-                    </Button>
+                    </Button> 
 
                     <Button Click="BtnActualizar_Click">
 
@@ -159,34 +159,42 @@
                 <controls:DataGrid
                     x:Name="dgUsuarios"
                     AutoGenerateColumns="False"
-                    SelectionMode="Single"
-                    SelectionChanged="dgUsuarios_SelectionChanged">
-
+                    SelectionMode="Extended"
+                    SelectionChanged="dgUsuarios_SelectionChanged"
+                    IsReadOnly="True">
+                    
+                    
                     <controls:DataGrid.Columns>
 
                         <controls:DataGridTextColumn
                             Header="Nombre"
-                            Binding="{Binding Nombre}"/>
+                            Binding="{Binding Nombre}"
+                            Width="auto"/>
 
                         <controls:DataGridTextColumn
                             Header="Apellidos"
-                            Binding="{Binding Apellidos}"/>
+                            Binding="{Binding Apellidos}"
+                            Width="auto"/>
 
                         <controls:DataGridTextColumn
                             Header="Username"
-                            Binding="{Binding Username}"/>
+                            Binding="{Binding Username}"
+                            Width="auto"/>
 
                         <controls:DataGridTextColumn
                             Header="Rol"
-                            Binding="{Binding RolId}"/>
+                            Binding="{Binding RolId}"
+                            Width="auto"/>
 
                         <controls:DataGridCheckBoxColumn
                             Header="Activo"
-                            Binding="{Binding Estado}"/>
+                            Binding="{Binding Estado}"
+                            Width="auto"/>
                         
                         <controls:DataGridTextColumn
                             Header="Fecha de Registro"
-                            Binding="{Binding FechaRegistro}"/>
+                            Binding="{Binding FechaRegistro}"
+                            Width="auto"/>
 
                     </controls:DataGrid.Columns>
 

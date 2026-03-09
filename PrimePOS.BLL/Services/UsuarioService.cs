@@ -126,22 +126,22 @@ namespace PrimePOS.BLL.Services
             await _usuarioRepository.GuardarCambiosAsync();
         }
 
-        public async Task<Usuario> AutenticarAsync(string username, string clave)
+        public async Task<Usuario> AutenticarUsuarioAsync(AutenticaUsuarioDto dto)
         {
-            if (string.IsNullOrWhiteSpace(username) ||
-                string.IsNullOrWhiteSpace(clave))
+            if (string.IsNullOrWhiteSpace(dto.Username) ||
+                string.IsNullOrWhiteSpace(dto.Password))
                 throw new Exception("Usuario y clave obligatorios.");
 
-            var usuario = await _usuarioRepository.ObtenerPorUsernameAsync(username)
-                ?? throw new Exception("Usuario o clave incorrectos.");
+            var usuario = await _usuarioRepository.ObtenerPorUsernameAsync(dto.Username)
+                ?? throw new Exception("Usuario o contraseña incorrectos.");
 
             if (!usuario.Estado)
                 throw new Exception("Usuario inactivo.");
 
-            bool esValida = PasswordService.Verify(clave, usuario.Password);
+            bool esValida = PasswordService.Verify(dto.Password, usuario.Password);
 
             if (!esValida)
-                throw new Exception("Usuario o clave incorrectos.");
+                throw new Exception("Usuario o contraseña incorrectos.");
 
             return usuario;
         }

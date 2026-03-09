@@ -4,8 +4,6 @@ using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services;
 
-
-
 public class RolService
 {
     private readonly RolRepository _repository;
@@ -30,14 +28,14 @@ public class RolService
     //Actualizar rol
     public async Task<bool> ActualizarRolAsync(ActualizarRolDto dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.Nombre))
-        {
-            throw new Exception("El nombre del rol es obligario");
-        }
+        //if (string.IsNullOrWhiteSpace(dto.Nombre))
+        //{
+        //    throw new Exception("El nombre del rol es obligario");
+        //}
         var rol = await _repository.ObtenerPorIdAsync(dto.RolId);
 
         if (rol == null)
-            throw new Exception("Rol no encontrado.");
+            throw new Exception("Debe seleccionar un Rol");
 
         if (dto.Nombre == rol.Nombre)
         {
@@ -57,7 +55,7 @@ public class RolService
         var rol = await _repository.ObtenerPorIdAsync(dto.RolId);
 
         if (rol == null)
-            throw new Exception("Rol no encontrado");
+            throw new Exception("Debe seleccionar un Rol");
 
         _repository.Eliminar(rol);
         await _repository.GuardarCambiosAsync();

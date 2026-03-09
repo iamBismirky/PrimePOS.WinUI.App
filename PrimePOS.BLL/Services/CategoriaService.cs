@@ -48,7 +48,7 @@ public class CategoriaService
     public async Task<bool> ActualizarCategoriaAsync(CategoriaDto dto)
     {
         var categoria = await _repository.ObtenerPorIdAsync(dto.CategoriaId)
-            ?? throw new Exception("Categoría no encontrada.");
+            ?? throw new Exception("Debe seleccionar una categoria");
 
         if (string.IsNullOrWhiteSpace(dto.Nombre))
             throw new Exception("La categoría no puede estar vacía.");
@@ -70,7 +70,7 @@ public class CategoriaService
         var categoria = await _repository.ObtenerPorIdAsync(dto.CategoriaId);
 
         if (categoria == null)
-            throw new Exception("Categoría no encontrada.");
+            throw new Exception("Debe de seleccionar una categoria");
 
         _repository.Eliminar(categoria);
         await _repository.GuardarCambiosAsync();
