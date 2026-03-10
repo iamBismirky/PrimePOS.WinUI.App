@@ -88,6 +88,7 @@ public class ClienteService
             Email = c.Email,
             Telefono = c.Telefono,
             Estado = c.Estado,
+            FechaRegistro = c.FechaRegistro,
             
 
         }).ToList();
@@ -110,6 +111,7 @@ public class ClienteService
             Email = cliente.Email,
             Telefono= cliente.Telefono,
             Estado = cliente.Estado,
+            FechaRegistro = cliente.FechaRegistro,
         };
     }
 

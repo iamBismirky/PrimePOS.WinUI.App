@@ -1,6 +1,7 @@
 ﻿using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
+using System.Reflection.Metadata.Ecma335;
 
 namespace PrimePOS.BLL.Services;
 
@@ -12,13 +13,9 @@ public class ProductoService
     {
         _productoRepository = repository;
     }
-    public async Task<List<Producto>> ListarProductosAsync()
+    public async Task CrearProductoAsync(CrearProductoDto dto)
     {
-        return await _productoRepository.ListarAsync();
-    }
-    public async Task CrearProducto(ProductoDto dto)
-    {
-        ValidarProducto(dto);
+        
 
         var producto = new Producto
         {
@@ -30,19 +27,19 @@ public class ProductoService
             PrecioCompra = dto.PrecioCompra,
             PrecioVenta = dto.PrecioVenta,
             Existencia = dto.Existencia,
-            ExistenciaMinimo = dto.ExistenciaMinimo,
-            Estado = dto.Estado
+            Estado = dto.Estado,
+            FechaRegistro = DateTime.Now,
         };
 
         _productoRepository.Crear(producto);
         await _productoRepository.GuardarCambiosAsync();
     }
-    public async Task ActualizarProducto(ProductoDto dto)
+    public async Task ActualizarProductoAsync(ActualizarProductoDto dto)
     {
         if (dto.ProductoId == 0)
             throw new Exception("Seleccione un producto.");
 
-        ValidarProducto(dto);
+        
 
         var producto = await _productoRepository.ObtenerPorIdAsync(dto.ProductoId);
 
@@ -66,7 +63,7 @@ public class ProductoService
         await _productoRepository.GuardarCambiosAsync();
 
     }
-    public async Task EliminarProducto(ProductoDto dto)
+    public async Task EliminarProductoAsync(EliminarProductoDto dto)
     {
         var producto = await _productoRepository.ObtenerPorIdAsync(dto.ProductoId);
 
@@ -77,7 +74,7 @@ public class ProductoService
         await _productoRepository.GuardarCambiosAsync();
 
     }
-    public async Task<Producto?> BuscarProducto(ProductoDto dto)
+    public async Task<Producto?> BuscarProducto(BuscarProductoDto dto)
     {
         return await _productoRepository.BuscarPorCodigoONombreAsync(dto.Nombre);
     }
@@ -100,8 +97,50 @@ public class ProductoService
         if (dto.Existencia < 0)
             throw new Exception("La existencia no puede ser negativa.");
     }
-    public async Task<Producto?> ObtenerProductoPorIdAsync(int id)
+    public async Task<ProductoDto?> ObtenerProductoPorIdAsync(int id)
     {
-        return await _productoRepository.ObtenerPorIdAsync(id);
+        var producto =  await _productoRepository.ObtenerPorIdAsync(id);
+
+        if (producto == null) return null;
+
+        return new ProductoDto
+        {
+            Codigo = producto.Codigo,
+            CodigoBarra = producto.CodigoBarra,
+            Nombre = producto.Nombre,
+            Descripcion = producto.Descripcion,
+            CategoriaId = producto.CategoriaId,
+            NombreCategoria = producto.Categoria?.Nombre ?? "",
+            PrecioCompra = producto.PrecioCompra,
+            PrecioVenta = producto.PrecioVenta,
+            Existencia = producto.Existencia,
+            Estado = producto.Estado,
+            FechaRegistro = producto.FechaRegistro,
+
+        };
+    }
+
+    public async Task<List<ProductoDto>> ListarProductosAsync()
+    {
+        var productos = await _productoRepository.ListarAsync();
+
+        return productos.Select(p => new ProductoDto
+        {
+            ProductoId = p.ProductoId,
+            Codigo = p.Codigo,
+            CodigoBarra = p.CodigoBarra,
+            Nombre = p.Nombre,
+            Descripcion = p.Descripcion,
+            CategoriaId= p.CategoriaId,
+            NombreCategoria = p.Categoria?.Nombre ?? "",
+            PrecioCompra = p.PrecioCompra,
+            PrecioVenta = p.PrecioVenta,
+            Existencia = p.Existencia,
+            Estado = p.Estado,
+            FechaRegistro = p.FechaRegistro,
+
+
+
+        }).ToList();
     }
 }

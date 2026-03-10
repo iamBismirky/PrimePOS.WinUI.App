@@ -27,4 +27,23 @@ public sealed partial class VentasPage : Page
     {
         InitializeComponent();
     }
+    private void BtnBorrarProducto_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void BtnGenerarFactura_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void BtnAgregar_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
 }

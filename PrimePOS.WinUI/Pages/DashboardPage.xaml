@@ -1,81 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="PrimePOS.WinUI.Pages.DashboardPage"
-    
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls">
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid Margin="20">
-        <!-- Definimos columnas y filas -->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="3*"/>
-        </Grid.ColumnDefinitions>
+    <Grid Padding="20" RowSpacing="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- Header -->
+            <RowDefinition Height="Auto"/>
+            <!-- Cards -->
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <!-- Gráficos y accesos rápidos -->
         </Grid.RowDefinitions>
 
-        <!-- Saludo al usuario -->
-        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" FontSize="24" FontWeight="Bold"
-                   Text="{Binding UsuarioLoggeado}" Margin="0,0,0,20"/>
+        <!-- 1️⃣ Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,20">
+            <TextBlock Text="Dashboard" FontSize="28" FontWeight="Bold"/>
+            <TextBlock x:Name="txtFecha" Text="fechaActual"/>
+        </StackPanel>
 
-        <!-- Ventas del día -->
-        <Border Grid.Row="1" Grid.Column="0" CornerRadius="10" Background="White"
-                Padding="20" Margin="0,0,20,20" BorderBrush="#DDD" BorderThickness="1">
-            <StackPanel>
-                <TextBlock Text="Ventas del Día" FontSize="18" FontWeight="SemiBold"/>
-                <TextBlock Text="{Binding VentasDelDiaFormato}"
-                           FontSize="28" FontWeight="Bold" Foreground="Green"/>
+        <!-- 2️⃣ Cards resumen -->
+        <Grid Grid.Row="1" ColumnSpacing="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Card 1: Ventas -->
+            <Border Grid.Column="0" Background="#FF2D89EF" CornerRadius="10" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Ventas Hoy" FontWeight="SemiBold" Foreground="White"/>
+                    <TextBlock Text="Total ventas de hoy"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 2: Productos -->
+            <Border Grid.Column="1" Background="#FF1E7145" CornerRadius="10" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Productos" FontWeight="SemiBold" Foreground="White"/>
+                    <TextBlock Text="Total Productos"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 3: Clientes -->
+            <Border Grid.Column="2" Background="#FFDA532C" CornerRadius="10" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Clientes" FontWeight="SemiBold" Foreground="White"/>
+                    <TextBlock Text="Total Clientes"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 4: Facturas -->
+            <Border Grid.Column="3" Background="#FF603CBA" CornerRadius="10" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Facturas Hoy" FontWeight="SemiBold" Foreground="White"/>
+                    <TextBlock Text="Total Facturas hoy"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- 3️⃣ Gráficos y accesos rápidos -->
+        <Grid Grid.Row="2" ColumnSpacing="20" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <!-- Gráfico -->
+                <ColumnDefinition Width="2*"/>
+                <!-- Accesos rápidos -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Placeholder gráfico de ventas -->
+            <Border Grid.Column="0" Background="#FFEAEAEA" CornerRadius="10" Padding="10">
+                <StackPanel>
+                    <TextBlock Text="Gráfico de Ventas (mensual)" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <Rectangle Fill="#FFB0B0B0" Height="200" RadiusX="5" RadiusY="5"/>
+                    <!-- Aquí luego puedes integrar librerías de gráficos como LiveCharts -->
+                </StackPanel>
+            </Border>
+
+            <!-- Accesos rápidos -->
+            <StackPanel Grid.Column="1" Spacing="10">
+                <Button Content="Ventas" Height="60" Background="#FF2D89EF" Foreground="White"/>
+                <Button Content="Inventario" Height="60" Background="#FF1E7145" Foreground="White"/>
+                <Button Content="Clientes" Height="60" Background="#FFDA532C" Foreground="White"/>
+                <Button Content="Facturas" Height="60" Background="#FF603CBA" Foreground="White"/>
             </StackPanel>
-        </Border>
-
-        <!-- Últimas 5 facturas -->
-        <Border Grid.Row="1" Grid.Column="1" CornerRadius="10" Background="White"
-                Padding="20" Margin="0,0,0,20" BorderBrush="#DDD" BorderThickness="1">
-            <StackPanel>
-                <TextBlock Text="Últimas 5 Facturas" FontSize="18" FontWeight="SemiBold"/>
-                <ListView ItemsSource="{Binding UltimasFacturas}" Margin="0,10,0,0" Height="200">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="120"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding NumeroFactura}" Grid.Column="0"/>
-                                <TextBlock Text="{Binding Cliente}" Grid.Column="1"/>
-                                <!-- Usar conversor en lugar de StringFormat -->
-                                <TextBlock Text="{Binding Tota}" Grid.Column="2" HorizontalAlignment="Right"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackPanel>
-        </Border>
-
-        <!-- Calendario -->
-        <Border Grid.Row="2" Grid.Column="0" CornerRadius="10" Background="White"
-                Padding="20" Margin="0,0,20,0" BorderBrush="#DDD" BorderThickness="1">
-            <StackPanel>
-                <TextBlock Text="Selecciona una Fecha" FontSize="18" FontWeight="SemiBold"/>
-                <CalendarDatePicker Margin="0,10,0,0" HorizontalAlignment="Stretch"/>
-            </StackPanel>
-        </Border>
-
-        <!-- Usuario loggeado -->
-        <Border Grid.Row="2" Grid.Column="1" CornerRadius="10" Background="White"
-                Padding="20" Margin="0,0,0,0" BorderBrush="#DDD" BorderThickness="1">
-            <StackPanel>
-                <TextBlock Text="Usuario Loggeado" FontSize="18" FontWeight="SemiBold"/>
-                <TextBlock Text="{Binding UsuarioLoggeado}" FontSize="20" FontWeight="Bold" Margin="0,10,0,0"/>
-                <TextBlock Text="{Binding RolUsuario}" FontSize="16" Foreground="Gray"/>
-            </StackPanel>
-        </Border>
-
+        </Grid>
     </Grid>
-</Page>   
-            
+</Page>

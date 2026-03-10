@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <Grid Padding="20" RowSpacing="20">
@@ -158,27 +159,30 @@
 
                         <controls:DataGridTextColumn Header="Nombre"
                                         Binding="{Binding Nombre}"
-                                        Width="*"/>
+                                        Width="auto"/>
 
                         <controls:DataGridTextColumn Header="Documento"
                                         Binding="{Binding Documento}"
-                                        Width="*"/>
+                                        Width="auto"/>
 
                         <controls:DataGridTextColumn Header="Teléfono"
                                         Binding="{Binding Telefono}"
-                                        Width="*"/>
+                                        Width="auto"/>
 
                         <controls:DataGridTextColumn Header="Email"
                                         Binding="{Binding Email}"
-                                        Width="*"/>
+                                        Width="auto"/>
 
                         <controls:DataGridTextColumn Header="Dirección"
                                         Binding="{Binding Direccion}"
-                                        Width="*"/>
+                                        Width="auto"/>
 
                         <controls:DataGridCheckBoxColumn Header="Estado"
-                                            Binding="{Binding Estado}"
-                                            Width="120"/>
+                                       Binding="{Binding Estado}"
+                                       Width="auto"/>
+                        <controls:DataGridTextColumn Header="Fecha de registro"
+                                        Binding="{Binding FechaRegistro}"
+                                        Width="auto"/>
 
                     </controls:DataGrid.Columns>
 

@@ -16,5 +16,6 @@
 
         public bool Estado { get; set; }
 
+        public DateTime FechaRegistro { get; set; }
     }
 }

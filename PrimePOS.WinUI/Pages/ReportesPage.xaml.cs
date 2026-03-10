@@ -27,4 +27,23 @@ public sealed partial class ReportesPage : Page
     {
         InitializeComponent();
     }
+    private void BtnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void BtnGenerarReporte_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void BtnExportarPDF_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void BtnExportarExcel_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
 }

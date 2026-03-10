@@ -21,6 +21,7 @@ public class Cliente
 
     public bool Estado { get; set; } 
 
+    public DateTime FechaRegistro { get; set; } 
     // Relación con Ventas
     public ICollection<Venta>? Ventas { get; set; } = new List<Venta>();
 }

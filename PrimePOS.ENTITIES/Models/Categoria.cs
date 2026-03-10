@@ -15,7 +15,6 @@ namespace PrimePOS.ENTITIES.Models
         public int CategoriaId { get; set; }
         public string Nombre { get; set; } = string.Empty;
         public bool Estado { get; set; } 
-        public DateTime FechaRegistro { get; set; } = DateTime.Today;
 
         public ICollection<Producto>? Productos { get; set; }
     }

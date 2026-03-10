@@ -5,10 +5,239 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PrimePOS.WinUI.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
+    
+    
+    <Grid Padding="20" RowSpacing="20">
 
-    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- CARD FORMULARIO -->
+        <Border Grid.Row="0"
+        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        CornerRadius="12"
+        Padding="20">
+
+            <StackPanel Spacing="15">
+
+                <TextBlock Text="Gestión de Productos"
+                   FontSize="24"
+                   FontWeight="SemiBold"/>
+
+                <Grid ColumnSpacing="15" RowSpacing="10">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    
+
+                    
+                    <!-- Nombre -->
+                    <TextBox x:Name="txtNombre"
+                     Header="Nombre"
+                     Grid.Row="0"
+                     Grid.Column="0"/>
+                    
+                    <!-- Descripcion -->
+                    <TextBox x:Name="txtDescripcion"
+                     Header="Descripcion"
+                     Grid.Row="0"
+                     Grid.Column="1"/>
+                    
+                    <!-- Codigo -->
+                    <TextBox x:Name="txtCodigo"
+                     Header="Codigo"
+                     Grid.Row="1"
+                     Grid.Column="0"/>
+                    <!-- Codigo Barra -->
+                    <TextBox x:Name="txtCodigoBarra"
+                     Header="Codigo Barra"
+                     Grid.Row="1"
+                     Grid.Column="1"/>
+
+
+
+                    <!-- Categoria -->
+                    <ComboBox x:Name="cmbCategoria"
+                     Header="Categoria"
+                              PlaceholderText="Seleccione una categoria"
+                     Width="auto"
+                     Grid.Row="3"
+                     Grid.Column="0"/>
+
+
+                    <!-- Precio de compra -->
+                    <NumberBox x:Name="nbPrecioCompra"
+                     Header="Precio Compra"
+                     PlaceholderText="0.00"
+                     Minimum="0"
+                     SpinButtonPlacementMode="Compact"
+                     SmallChange="1"
+                               Value="0"
+                     LargeChange="1000000"
+                     Grid.Row="0"
+                     Grid.Column="2"/>
+
+                    <!-- Precio de venta -->
+                    <NumberBox x:Name="nbPrecioVenta"
+                     Header="Precio Venta"
+                     PlaceholderText="0.00"
+                     Minimum="0"
+                     SpinButtonPlacementMode="Compact"
+                     SmallChange="1"
+                     LargeChange="1000000"
+                     Grid.Row="1"
+                     Grid.Column="3"/>
+
+                    <!-- Existencia -->
+                    <NumberBox x:Name="nbExistencia"
+                     Header="Existencia"
+                     PlaceholderText="0.00"
+                     Minimum="0"
+                     SpinButtonPlacementMode="Compact"
+                     SmallChange="1"
+                     LargeChange="1000000"
+                     Grid.Row="3"
+                     Grid.Column="2"/>
+                    
+                    <!-- Estado -->
+                    <ToggleSwitch x:Name="tsEstado"
+                          Header="Estado"
+                          IsOn="True"
+                          OnContent="Activo"
+                          OffContent="Inactivo"
+                          Grid.Row="2"
+                          Grid.Column="1"/>
+
+                </Grid>
+
+
+                <!-- BOTONES -->
+                <StackPanel Orientation="Horizontal" Spacing="10">
+
+                    <Button Click="BtnCrear_Click">
+
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <SymbolIcon Symbol="Add"/>
+                            <TextBlock Text="Crear"/>
+                        </StackPanel>
+
+                    </Button>
+
+                    <Button Click="BtnActualizar_Click">
+
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <SymbolIcon Symbol="Edit"/>
+                            <TextBlock Text="Actualizar"/>
+                        </StackPanel>
+
+                    </Button>
+
+                    <Button Click="BtnEliminar_Click">
+
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <SymbolIcon Symbol="Delete"/>
+                            <TextBlock Text="Eliminar"/>
+                        </StackPanel>
+
+                    </Button>
+
+                    <Button Click="BtnLimpiar_Click">
+
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <SymbolIcon Symbol="Refresh"/>
+                            <TextBlock Text="Limpiar"/>
+                        </StackPanel>
+
+                    </Button>
+
+                </StackPanel>
+
+            </StackPanel>
+
+        </Border>
+
+
+
+        <!-- CARD DATAGRID -->
+        <Border Grid.Row="1"
+        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        CornerRadius="12"
+        Padding="20">
+
+            <StackPanel Spacing="10">
+
+                <TextBlock Text="Lista de Productos"
+                   FontSize="18"
+                   FontWeight="SemiBold"/>
+
+                <controls:DataGrid x:Name="dgProductos"
+                  AutoGenerateColumns="False"
+                  SelectionChanged="dgProductos_SelectionChanged"
+                  SelectionMode="Extended"
+                  IsReadOnly="True">
+
+                    <controls:DataGrid.Columns>
+
+                        <controls:DataGridTextColumn Header="Codigo"
+                                    Binding="{Binding Codigo}"
+                                    Width="auto"/>
+
+                        <controls:DataGridTextColumn Header="Codigo de Barras"
+                                    Binding="{Binding CodigoBarra}"
+                                    Width="auto"/>
+
+                        <controls:DataGridTextColumn Header="Nombre"
+                                    Binding="{Binding Nombre}"
+                                    Width="auto"/>
+
+                        <controls:DataGridTextColumn Header="Descripcion"
+                                    Binding="{Binding Descripcion}"
+                                    Width="auto"/>
+
+                        <controls:DataGridTextColumn Header="Categoria"
+                                    Binding="{Binding NombreCategoria}"
+                                    Width="auto"/>
+
+                        <controls:DataGridTextColumn Header="Precio de Compra"
+                                   Binding="{Binding PrecioCompra}"
+                                   Width="auto"/>
+                        <controls:DataGridTextColumn Header="Precio de Venta"
+                                    Binding="{Binding PrecioVenta}"
+                                    Width="auto"/>
+                        <controls:DataGridTextColumn Header="Existencia"
+                                    Binding="{Binding Existencia}"
+                                    Width="auto"/>
+                        <controls:DataGridCheckBoxColumn Header="Estado"
+                                     Binding="{Binding Estado}"
+                                     Width="auto"/>
+                        <controls:DataGridTextColumn Header="Fecha de Registro"
+                                     Binding="{Binding FechaRegistro}"
+                                     Width="auto"/>
+                    </controls:DataGrid.Columns>
+
+                </controls:DataGrid>
+
+            </StackPanel>
+
+        </Border>
 
     </Grid>
 </Page>

@@ -9,7 +9,7 @@ namespace PrimePOS.ENTITIES.Models;
 public class Venta
 {
     public int VentaId { get; set; }
-    public DateTime Fecha { get; set; } = DateTime.Now;
+    public DateTime FechaRegistro { get; set; }
 
     public int UsuarioId { get; set; }
     public Usuario? Usuario { get; set; }

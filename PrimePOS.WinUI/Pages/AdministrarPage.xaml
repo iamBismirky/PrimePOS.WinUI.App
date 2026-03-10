@@ -6,6 +6,7 @@
     xmlns:local="using:PrimePOS.WinUI.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <Grid Padding="50">
@@ -22,7 +23,10 @@
 
         </Grid.RowDefinitions>
 
-        <!-- Card Usuario -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="-30,-40,0,0">
+            <TextBlock Text="Administrar" FontSize="28" FontWeight="Bold"/>
+        </StackPanel>
+        <!-- Card Usuario --> 
         <Button Grid.Column="0"
             Margin="10"
             Click="BtnGestionUsuarios_Click">
@@ -92,7 +96,7 @@
                            FontSize="16"
                            FontWeight="SemiBold"
                            HorizontalAlignment="Center"/>
-                    
+
 
                 </StackPanel>
 
