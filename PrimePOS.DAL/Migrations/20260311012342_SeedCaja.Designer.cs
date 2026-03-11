@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrimePOS.DAL.Context;
 
@@ -11,9 +12,11 @@ using PrimePOS.DAL.Context;
 namespace PrimePOS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260311012342_SeedCaja")]
+    partial class SeedCaja
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,19 +144,6 @@ namespace PrimePOS.DAL.Migrations
                     b.HasKey("ClienteId");
 
                     b.ToTable("Clientes");
-
-                    b.HasData(
-                        new
-                        {
-                            ClienteId = 1,
-                            Direccion = "",
-                            Documento = "",
-                            Email = "",
-                            Estado = true,
-                            FechaRegistro = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Nombre = "Consumidor Final",
-                            Telefono = ""
-                        });
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.DetalleVenta", b =>
