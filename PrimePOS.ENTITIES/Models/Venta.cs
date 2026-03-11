@@ -23,6 +23,10 @@ public class Venta
     public int MetodoPagoId { get; set; }
     public MetodoPago? MetodoPago { get; set; }
 
+    public int AperturaCajaId { get; set; }
+    public AperturaCaja? AperturaCaja { get; set; }
+
+    public string NumeroComprobante { get; set; } = string.Empty;
     public decimal Subtotal { get; set; }
     public decimal Impuesto { get; set; }
     public decimal Descuento { get; set; }
