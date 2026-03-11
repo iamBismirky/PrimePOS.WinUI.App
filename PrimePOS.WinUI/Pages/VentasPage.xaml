@@ -32,35 +32,42 @@
 
             <!-- 2️⃣ Buscador de producto -->
             <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10">
+
+            <AutoSuggestBox x:Name="txtBuscarProducto" 
+                            TextChanged="txtBuscarProducto_TextChanged"
+                            QuerySubmitted="txtBuscarProducto_QuerySubmitted"
+                            SuggestionChosen="txtBuscarProducto_SuggestionChosen"
+                            KeyDown="txtBuscarProducto_KeyDown"
+                            Width="300"
+                            DisplayMemberPath="Nombre"
+                            PlaceholderText="Buscar producto por código o nombre..." />
                 
-                <AutoSuggestBox
-                    x:Name="txtBuscarProducto" 
-                    TextChanged="txtBuscarProducto_TextChanged"
-                    QuerySubmitted="txtBuscarProducto_QuerySubmitted"
-                    KeyDown="txtBuscarProducto_KeyDown"
-                    Width="300"
-                    PlaceholderText="Buscar producto por código o nombre..." />
+                
                 
                 <Button Content="Agregar al carrito"
                         Click="BtnAgregarProductoCarrito_Click"/>
                 
             </StackPanel>
+            
 
             <!--  DataGrid como carrito -->
-            <controls:DataGrid Grid.Row="2" x:Name="dgCarrito"
-                  AutoGenerateColumns="False"
-                  SelectionMode="Single"
-                  RowHeight="40"
-                  ColumnHeaderHeight="40"
-                  FontSize="14"
-                  ItemsSource="{x:Bind Vm.Carrito}">
+            <controls:DataGrid Grid.Row="2" 
+                               x:Name="dgCarrito"
+                               AutoGenerateColumns="False"
+                               SelectionMode="Single"
+                               Width="auto"
+                               RowHeight="40"
+                               ColumnHeaderHeight="40"
+                               FontSize="14">
+
                 <controls:DataGrid.Columns>
-                    <controls:DataGridTextColumn Header="Producto" Binding="{Binding ProductoId}" Width="2*"/>
-                    <controls:DataGridTextColumn Header="Codigo" Binding="{Binding Codigo}" Width="*"/>
-                    <controls:DataGridTextColumn Header="Precio" Binding="{Binding Precio}" Width="*"/>
-                    <controls:DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*"/>
-                    <controls:DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="*"/>
+                <controls:DataGridTextColumn Header="Codigo" Binding="{Binding Codigo}" Width="*"/>
+                <controls:DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
+                <controls:DataGridTextColumn Header="Precio" Binding="{Binding Precio}" Width="*"/>
+                <controls:DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*"/>
+                <controls:DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="*"/>
                 </controls:DataGrid.Columns>
+                
             </controls:DataGrid>
 
             <!-- 4️⃣ Totales y botones -->
@@ -74,9 +81,9 @@
 
                 <!-- Totales -->
                 <StackPanel Grid.Column="0" Spacing="5" HorizontalAlignment="Left">
-                    <TextBlock FontSize="14" Text="{x:Bind Vm.Subtotal}"/>
-                    <TextBlock FontSize="14" Text="{x:Bind Vm.Impuesto}"/>
-                    <TextBlock FontSize="16" FontWeight="Bold" Text="{x:Bind Vm.Total}"/>
+                    <TextBlock FontSize="14" Text="Subtotal" x:Name="txtSubtotal"/>
+                <TextBlock FontSize="14" Text="Impuesto" x:Name="txtImpuesto"/>
+                <TextBlock FontSize="16" FontWeight="Bold" Text="Total" x:Name="txtTotal"/>
                 </StackPanel>
 
                 <!-- Botones de acción -->

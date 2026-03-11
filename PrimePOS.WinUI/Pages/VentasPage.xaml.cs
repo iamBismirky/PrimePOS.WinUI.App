@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using PrimePOS.BLL.DTOs.Producto;
+using PrimePOS.BLL.DTOs.Venta;
 using PrimePOS.ENTITIES.Models;
 using PrimePOS.WinUI.Infrastructure;
 using PrimePOS.WinUI.ViewModel;
@@ -28,10 +29,27 @@ namespace PrimePOS.WinUI.Pages;
 public sealed partial class VentasPage : Page
 {
     public VentasViewModel Vm { get; set; } = new();
+
+    private DispatcherTimer _timer;
+
     public VentasPage()
     {
         InitializeComponent();
         DataContext = Vm;
+
+        _timer = new DispatcherTimer();
+        _timer.Interval = TimeSpan.FromMilliseconds(1000);
+
+        _timer.Tick += async (s, e) =>
+        {
+            _timer.Stop();
+
+            var productos = await Servicios.ProductoService
+                .BuscarProductoCodigoONombreListAsync(txtBuscarProducto.Text);
+
+            txtBuscarProducto.ItemsSource = productos;
+        };
+
     }
     private void BtnBorrarProducto_Click(object sender, RoutedEventArgs e)
     {
@@ -55,12 +73,20 @@ public sealed partial class VentasPage : Page
 
         if (producto != null)
         {
-            Vm.AgregarProducto(producto);
+            Servicios.VentaService.AgregarProductoCarrito(producto);
+            dgCarrito.ItemsSource = Servicios.VentaService.Carrito;
+            
+            txtSubtotal.Text = Servicios.VentaService.Subtotal.ToString("N2");
+            txtImpuesto.Text = Servicios.VentaService.Impuesto.ToString("N2");
+            txtTotal.Text = Servicios.VentaService.Total.ToString("N2");
+
             txtBuscarProducto.Text = "";
+            txtBuscarProducto.Focus(FocusState.Programmatic);
         }
 
 
     }
+    private async void txtBuscarProducto_DoubleClick(object sender, RoutedEventArgs e) { }
     
     private async void txtBuscarProducto_KeyDown(object sender, KeyRoutedEventArgs e)
     {
@@ -71,37 +97,68 @@ public sealed partial class VentasPage : Page
 
             if (producto != null)
             {
-                Vm.AgregarProducto(producto);
+
+                Servicios.VentaService.AgregarProductoCarrito(producto);
+                dgCarrito.ItemsSource = Servicios.VentaService.Carrito;
+
+                txtSubtotal.Text = Servicios.VentaService.Subtotal.ToString("N2");
+                txtImpuesto.Text = Servicios.VentaService.Impuesto.ToString("N2");
+                txtTotal.Text = Servicios.VentaService.Total.ToString("N2");
+
                 txtBuscarProducto.Text = "";
+                txtBuscarProducto.Focus(FocusState.Programmatic);
             }
         }
 
     }
     private async void txtBuscarProducto_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
+        if (txtBuscarProducto.Text.Length < 3)
+        {
+            txtBuscarProducto.ItemsSource = null;
+            return;
+        }
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                _timer.Stop();
+                _timer.Start();
+            }
         
-        //if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-        //{
-        //    var lista = await Servicios.ProductoService.BuscarProductoCodigoONombreListAsync(sender.Text);
-
-        //    sender.ItemsSource = lista;
-        //}
     }
-    private void txtBuscarProducto_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+
+    private async void txtBuscarProducto_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
-        ProductoDto? producto = null;
 
-        if (args.ChosenSuggestion != null)
         {
-            producto = (ProductoDto)args.ChosenSuggestion;
-        }
+            var texto = sender.Text;
 
-        if (producto != null)
-        {
-            Vm.AgregarProducto(producto);
+            var producto = await Servicios.ProductoService
+                .BuscarProductoCodigoONombreAsync(texto);
 
-            sender.Text = "";
-            sender.ItemsSource = null;
+            if (producto != null)
+            {
+                Servicios.VentaService.AgregarProductoCarrito(producto);
+
+                dgCarrito.ItemsSource = Servicios.VentaService.Carrito;
+
+                CalcularTotales();
+
+                sender.Text = "";
+                sender.Focus(FocusState.Programmatic);
+            }
         }
     }
+    private void txtBuscarProducto_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+    {
+        var producto = (ProductoDto)args.SelectedItem;
+
+        sender.Text = producto.Nombre + producto.Codigo;
+    }
+    private void CalcularTotales()
+    {
+        txtSubtotal.Text = Servicios.VentaService.Subtotal.ToString("N2");
+        txtImpuesto.Text = Servicios.VentaService.Impuesto.ToString("N2");
+        txtTotal.Text = Servicios.VentaService.Total.ToString("N2");
+    }
+
 }

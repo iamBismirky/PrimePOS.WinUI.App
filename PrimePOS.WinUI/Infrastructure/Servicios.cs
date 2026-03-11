@@ -15,6 +15,7 @@ namespace PrimePOS.WinUI.Infrastructure
         public static CategoriaService CategoriaService { get; private set; } = null!;
         public static ClienteService ClienteService { get; private set; } = null!;
         public static ProductoService ProductoService { get; private set; } =null!;
+        public static VentaService VentaService { get; private set; } = null!;
 
 
         public static void Inicializar()
@@ -36,7 +37,8 @@ namespace PrimePOS.WinUI.Infrastructure
             var rolRepository = new RolRepository(_context);
             var categoriaRepository = new CategoriaRepository(_context);
             var clienteRepository = new ClienteRepository(_context);
-            var productoRepository = new ProductoRepository(_context);  
+            var productoRepository = new ProductoRepository(_context);
+            var VentaRepository = new VentaRepository(_context);
 
             // Crear service
             UsuarioService = new UsuarioService(usuarioRepository);
@@ -44,6 +46,7 @@ namespace PrimePOS.WinUI.Infrastructure
             CategoriaService = new CategoriaService(categoriaRepository);
             ClienteService = new ClienteService(clienteRepository);
             ProductoService = new ProductoService(productoRepository);
+            VentaService = new VentaService(VentaRepository);
         }
     }
 }

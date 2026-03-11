@@ -19,7 +19,7 @@ namespace PrimePOS.WinUI.ViewModel
 
         public decimal Total => Subtotal + Impuesto;
 
-        public void AgregarProducto(ProductoDto producto)
+        public void AgregarProducto(CarritoItemVm producto)
         {
             var existente = Carrito
                 .FirstOrDefault(p => p.ProductoId == producto.ProductoId);
@@ -35,7 +35,7 @@ namespace PrimePOS.WinUI.ViewModel
                     ProductoId = producto.ProductoId,
                     Codigo = producto.Codigo,
                     Nombre = producto.Nombre,
-                    Precio = producto.PrecioVenta,
+                    Precio = producto.Precio,
                     Cantidad = 1
                 });
             }
@@ -51,9 +51,6 @@ namespace PrimePOS.WinUI.ViewModel
             Carrito.Clear();
         }
 
-        internal void AgregarProducto(Producto producto)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
