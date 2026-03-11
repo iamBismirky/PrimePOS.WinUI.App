@@ -51,7 +51,12 @@ public class ProductoRepository
         return await _context.Productos
             .FirstOrDefaultAsync(p => p.Codigo == buscar || p.Nombre!.Contains(buscar));
     }
-
+    public async Task<List<Producto>> BuscarPorCodigoONombreListAsync(string buscar)
+    {
+        return await _context.Productos
+            .Where(p => p.Codigo.Contains(buscar) || p.Nombre!.Contains(buscar)).Take(10)
+        .ToListAsync();
+    }
     public async Task<bool> ExisteCodigoAsync(string codigo, int? excluirId = null)
     {
         return await _context.Productos

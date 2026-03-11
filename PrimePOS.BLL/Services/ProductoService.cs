@@ -74,9 +74,34 @@ public class ProductoService
         await _productoRepository.GuardarCambiosAsync();
 
     }
-    public async Task<Producto?> BuscarProducto(BuscarProductoDto dto)
+    public async Task<List<ProductoDto>> BuscarProductoCodigoONombreListAsync(string buscar)
     {
-        return await _productoRepository.BuscarPorCodigoONombreAsync(dto.Nombre);
+        var producto = await _productoRepository.BuscarPorCodigoONombreListAsync(buscar);
+        
+
+        return producto.Select(p => new ProductoDto
+        {
+            ProductoId = p.ProductoId,
+            Nombre = p.Nombre,
+            Codigo = p.Codigo,
+            PrecioVenta = p.PrecioVenta
+        }).ToList();
+    
+    }
+    public async Task<ProductoDto?> BuscarProductoCodigoONombreAsync(string buscar)
+    {
+        var producto = await _productoRepository.BuscarPorCodigoONombreAsync(buscar);
+        if (producto == null)
+            return null;
+
+        return new ProductoDto
+        {
+            ProductoId = producto.ProductoId,
+            Nombre = producto.Nombre,
+            Codigo = producto.Codigo,
+            PrecioVenta = producto.PrecioVenta
+        };
+
     }
     private void ValidarProducto(ProductoDto dto)
     {
@@ -143,4 +168,5 @@ public class ProductoService
 
         }).ToList();
     }
+
 }

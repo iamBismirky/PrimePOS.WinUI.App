@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
 using PrimePOS.ENTITIES.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimePOS.DAL.Repositories;
 
@@ -16,12 +11,12 @@ public class VentaRepository
     {
         _context = context;
     }
-    public void Agregar(Venta venta)
+    public void Crear(Venta venta)
     {
         _context.Add(venta);
     }
     public void Actualizar(Venta venta)
-    { 
+    {
         _context.Update(venta);
     }
     public void Anular(Venta venta)
@@ -39,8 +34,8 @@ public class VentaRepository
     {
         return _context.Ventas.Include(v => v.Detalles).ToList();
     }
-    public void GuardarCambios()
+    public async Task GuardarCambiosAsync()
     {
-        _context.SaveChanges();
-    }   
+        await _context.SaveChangesAsync();
+    }
 }

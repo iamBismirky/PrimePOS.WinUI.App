@@ -43,8 +43,8 @@ namespace PrimePOS.WinUI
        
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            _window = new LoginWindow();
-            //_window = new MainWindow();
+            //_window = new LoginWindow();
+            _window = new MainWindow();
             _window.Activate();
         }
     }
