@@ -1,6 +1,7 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using PrimePOS.BLL.DTOs.Usuario;
 using PrimePOS.WinUI.Infrastructure;
 using System;
@@ -21,8 +22,8 @@ namespace PrimePOS.WinUI
             InitializeComponent();
             // Quitar barra de título
             this.ExtendsContentIntoTitleBar = true;
-            
-            
+
+            this.SystemBackdrop = new MicaBackdrop();
             var hwnd = WindowNative.GetWindowHandle(this);
             var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
             var appWindow = AppWindow.GetFromWindowId(windowId);
@@ -53,13 +54,21 @@ namespace PrimePOS.WinUI
         {
             try
             {
-                var usuario = new AutenticaUsuarioDto
+                var loginDto = new AutenticarUsuarioDto
                 {
                     Username = txtUsername.Text,
                     Password = pwdPassword.Password
 
                 };
-                await Servicios.UsuarioService.AutenticarUsuarioAsync(usuario);
+                
+                var usuarioSesion = await Servicios.UsuarioService.AutenticarUsuarioAsync(loginDto);
+
+                SesionUsuario.UsuarioId = usuarioSesion.UsuarioId;
+                SesionUsuario.UsuarioNombre = usuarioSesion.UsuarioNombre;
+                SesionUsuario.RolId = usuarioSesion.RolId;
+                SesionUsuario.RolNombre = usuarioSesion.RolNombre;
+                SesionUsuario.Activa = true;
+
                 MainWindow main = new MainWindow();
                 main.Activate();
                 this.Close();

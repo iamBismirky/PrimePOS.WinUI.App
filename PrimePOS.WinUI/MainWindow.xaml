@@ -66,11 +66,11 @@
                             
                             <!-- DERECHA (Usuario + Modo) -->
                              <StackPanel
-                                        Grid.Column="2"
+                                        Grid.Column="1"
                                         Orientation="Horizontal"
-                                        Spacing="15"
+                                        Spacing="5"
                                         VerticalAlignment="Center"
-                                        HorizontalAlignment="Right"
+                                        HorizontalAlignment="Center"
                                         Margin="500,0,0,0">
 
                                         <Button
@@ -90,12 +90,19 @@
                                         FontFamily="Segoe MDL2 Assets"/>
 
                                         </Button>
+                        <StackPanel>
+                               <TextBlock
+                                        Text="{x:Bind UsuarioNombre}"
+                                        VerticalAlignment="Center"/>
 
-                        <TextBlock
-                                         Text="Bismirky"
-                                         VerticalAlignment="Center"/>
+                               <TextBlock
+                                        Text="{x:Bind RolNombre}"
+                                        VerticalAlignment="Center"/>
 
-                            </StackPanel>
+
+                        </StackPanel>
+                                        
+                    </StackPanel>
 
 
 

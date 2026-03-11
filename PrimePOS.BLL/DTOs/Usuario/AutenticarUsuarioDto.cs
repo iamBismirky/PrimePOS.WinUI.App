@@ -4,9 +4,11 @@ using System.Text;
 
 namespace PrimePOS.BLL.DTOs.Usuario
 {
-    public class AutenticaUsuarioDto
+    public class AutenticarUsuarioDto
     {
+        
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public bool Estado { get; set; }
     }
 }

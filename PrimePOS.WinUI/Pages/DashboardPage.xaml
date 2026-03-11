@@ -19,7 +19,6 @@
         <!-- 1️⃣ Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,20">
             <TextBlock Text="Dashboard" FontSize="28" FontWeight="Bold"/>
-            <TextBlock x:Name="txtFecha" Text="fechaActual"/>
         </StackPanel>
 
         <!-- 2️⃣ Cards resumen -->
@@ -74,7 +73,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Placeholder gráfico de ventas -->
-            <Border Grid.Column="0" Background="#FFEAEAEA" CornerRadius="10" Padding="10">
+            <Border Grid.Column="0" Background="Transparent" CornerRadius="10" Padding="10">
                 <StackPanel>
                     <TextBlock Text="Gráfico de Ventas (mensual)" FontWeight="SemiBold" Margin="0,0,0,10"/>
                     <Rectangle Fill="#FFB0B0B0" Height="200" RadiusX="5" RadiusY="5"/>

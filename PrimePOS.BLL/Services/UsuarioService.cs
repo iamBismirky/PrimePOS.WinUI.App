@@ -126,7 +126,7 @@ namespace PrimePOS.BLL.Services
             await _usuarioRepository.GuardarCambiosAsync();
         }
 
-        public async Task<Usuario> AutenticarUsuarioAsync(AutenticaUsuarioDto dto)
+        public async Task<AppSesionUsuarioDto> AutenticarUsuarioAsync(AutenticarUsuarioDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Username) ||
                 string.IsNullOrWhiteSpace(dto.Password))
@@ -143,7 +143,13 @@ namespace PrimePOS.BLL.Services
             if (!esValida)
                 throw new Exception("Usuario o contraseña incorrectos.");
 
-            return usuario;
+            return new AppSesionUsuarioDto
+            {
+                UsuarioId = usuario.UsuarioId,
+                UsuarioNombre = usuario.Nombre +" "+ usuario.Apellidos,
+                RolId = usuario.RolId,
+                RolNombre = usuario.Rol?.Nombre ?? ""
+            };
         }
 
         

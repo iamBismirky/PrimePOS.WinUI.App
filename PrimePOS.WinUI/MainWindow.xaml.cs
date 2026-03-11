@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PrimePOS.WinUI.Infrastructure;
 using PrimePOS.WinUI.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -12,13 +13,14 @@ namespace PrimePOS.WinUI
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        public string UsuarioNombre => SesionUsuario.UsuarioNombre;
+        public string RolNombre => SesionUsuario.RolNombre;
         public MainWindow()
         {
             InitializeComponent();
             contentFrame.Navigate(typeof(DashboardPage));
             RootGrid.RequestedTheme = App.TemaActual;
             this.ExtendsContentIntoTitleBar = true;
-            
             //navView.SelectionChanged += navView_SelectionChanged;
         }
         private void TitleBar_BackRequested(TitleBar sender, object args)
