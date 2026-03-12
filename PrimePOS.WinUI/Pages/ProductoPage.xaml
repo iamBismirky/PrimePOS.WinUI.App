@@ -7,11 +7,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:controls1="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:helpers="using:PrimePOS.WinUI.Infrastructure"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
-    
-    
+
+    <Page.Resources>
+        <helpers:NumeroConverter x:Key="NumeroConverter"/>
+    </Page.Resources>
+
     <Grid Padding="20" RowSpacing="20">
 
         <Grid.RowDefinitions>
@@ -22,15 +27,15 @@
 
         <!-- CARD FORMULARIO -->
         <Border Grid.Row="0"
-        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-        CornerRadius="12"
-        Padding="20">
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="12"
+                Padding="20">
 
             <StackPanel Spacing="15">
 
                 <TextBlock Text="Gestión de Productos"
-                   FontSize="24"
-                   FontWeight="SemiBold"/>
+                            FontSize="24"
+                            FontWeight="SemiBold"/>
 
                 <Grid ColumnSpacing="15" RowSpacing="10">
 
@@ -61,16 +66,11 @@
                      Grid.Row="0"
                      Grid.Column="1"/>
                     
-                    <!-- Codigo -->
-                    <TextBox x:Name="txtCodigo"
-                     Header="Codigo"
-                     Grid.Row="1"
-                     Grid.Column="0"/>
                     <!-- Codigo Barra -->
                     <TextBox x:Name="txtCodigoBarra"
                      Header="Codigo Barra"
                      Grid.Row="1"
-                     Grid.Column="1"/>
+                     Grid.Column="0"/>
 
 
 
@@ -79,52 +79,54 @@
                      Header="Categoria"
                               PlaceholderText="Seleccione una categoria"
                      Width="auto"
-                     Grid.Row="3"
-                     Grid.Column="0"/>
+                     Grid.Row="1"
+                     Grid.Column="1"/>
 
 
                     <!-- Precio de compra -->
                     <NumberBox x:Name="nbPrecioCompra"
-                     Header="Precio Compra"
-                     PlaceholderText="0.00"
-                     Minimum="0"
-                     SpinButtonPlacementMode="Compact"
-                     SmallChange="1"
+                               Header="Precio Compra"
+                               PlaceholderText="0.00"
+                               Minimum="0"
+                               SpinButtonPlacementMode="Compact"
+                               SmallChange="1"
                                Value="0"
-                     LargeChange="1000000"
-                     Grid.Row="0"
-                     Grid.Column="2"/>
+                               LargeChange="1000000"
+                               Grid.Row="0"
+                               Grid.Column="2"/>
 
                     <!-- Precio de venta -->
                     <NumberBox x:Name="nbPrecioVenta"
-                     Header="Precio Venta"
-                     PlaceholderText="0.00"
-                     Minimum="0"
-                     SpinButtonPlacementMode="Compact"
-                     SmallChange="1"
-                     LargeChange="1000000"
-                     Grid.Row="1"
-                     Grid.Column="3"/>
+                               Header="Precio Venta"
+                               PlaceholderText="0.00"
+                               Minimum="0"
+                               SpinButtonPlacementMode="Compact"
+                               SmallChange="1"
+                               LargeChange="1000000"
+                               Value="0"
+                               Grid.Row="1"
+                               Grid.Column="3"/>
 
                     <!-- Existencia -->
                     <NumberBox x:Name="nbExistencia"
-                     Header="Existencia"
-                     PlaceholderText="0.00"
-                     Minimum="0"
-                     SpinButtonPlacementMode="Compact"
-                     SmallChange="1"
-                     LargeChange="1000000"
-                     Grid.Row="3"
-                     Grid.Column="2"/>
+                               Header="Existencia"
+                               PlaceholderText="0"
+                               Minimum="0"
+                               SpinButtonPlacementMode="Compact"
+                               SmallChange="1"
+                               LargeChange="1000000"
+                               Value="0"
+                               Grid.Row="3"
+                               Grid.Column="2"/>
                     
                     <!-- Estado -->
                     <ToggleSwitch x:Name="tsEstado"
-                          Header="Estado"
-                          IsOn="True"
-                          OnContent="Activo"
-                          OffContent="Inactivo"
-                          Grid.Row="2"
-                          Grid.Column="1"/>
+                                  Header="Estado"
+                                  IsOn="True"
+                                  OnContent="Activo"
+                                  OffContent="Inactivo"
+                                  Grid.Row="2"
+                                  Grid.Column="1"/>
 
                 </Grid>
 
@@ -178,31 +180,33 @@
 
         <!-- CARD DATAGRID -->
         <Border Grid.Row="1"
-        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-        CornerRadius="12"
-        Padding="20">
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="12"
+                Padding="20">
 
             <StackPanel Spacing="10">
 
                 <TextBlock Text="Lista de Productos"
-                   FontSize="18"
-                   FontWeight="SemiBold"/>
+                           FontSize="18"
+                           FontWeight="SemiBold"/>
 
                 <controls:DataGrid x:Name="dgProductos"
-                  AutoGenerateColumns="False"
-                  SelectionChanged="dgProductos_SelectionChanged"
-                  SelectionMode="Extended"
-                  IsReadOnly="True">
+                                   AutoGenerateColumns="False"
+                                   SelectionChanged="dgProductos_SelectionChanged"
+                                   SelectionMode="Extended"
+                                   IsReadOnly="True"
+                                   IsTabStop="false">
 
                     <controls:DataGrid.Columns>
 
                         <controls:DataGridTextColumn Header="Codigo"
-                                    Binding="{Binding Codigo}"
-                                    Width="auto"/>
+                                                     Binding="{Binding Codigo}"
+                                                     Width="auto"/>
+                        
 
                         <controls:DataGridTextColumn Header="Codigo de Barras"
-                                    Binding="{Binding CodigoBarra}"
-                                    Width="auto"/>
+                                                     Binding="{Binding CodigoBarra}"
+                                                     Width="auto"/>
 
                         <controls:DataGridTextColumn Header="Nombre"
                                     Binding="{Binding Nombre}"
@@ -217,10 +221,10 @@
                                     Width="auto"/>
 
                         <controls:DataGridTextColumn Header="Precio de Compra"
-                                   Binding="{Binding PrecioCompra}"
+                                   Binding="{Binding PrecioCompra, Converter={StaticResource NumeroConverter}}"
                                    Width="auto"/>
                         <controls:DataGridTextColumn Header="Precio de Venta"
-                                    Binding="{Binding PrecioVenta}"
+                                    Binding="{Binding PrecioVenta, Converter={StaticResource NumeroConverter}}"
                                     Width="auto"/>
                         <controls:DataGridTextColumn Header="Existencia"
                                     Binding="{Binding Existencia}"

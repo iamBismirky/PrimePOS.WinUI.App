@@ -17,19 +17,31 @@ public sealed partial class ProductoPage : Page
     public ProductoPage()
     {
         InitializeComponent();
-
-
-        //Aplicar formato a los NumericBox decimales
-        NumberBoxHelper.AplicarFormatoMoneda(nbPrecioCompra);
-        NumberBoxHelper.AplicarFormatoMoneda(nbPrecioVenta);
-        NumberBoxHelper.AplicarFormatoMoneda(nbExistencia);
     }
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
 
-        await ListarProductosAsync();
-        await ListarCategoriasAsync();
+        try
+        {
+            //Cargar listado de productos (DataGrid) y categorias(ComboBox)
+            await ListarProductosAsync();
+            await ListarCategoriasAsync();
+
+            //Foco en el textBox Nombre
+            txtNombre.Focus(FocusState.Programmatic);
+
+            //Aplicar formato a los NumericBox decimales
+            NumberBoxHelper.AplicarFormatoMoneda(nbPrecioCompra);
+            NumberBoxHelper.AplicarFormatoMoneda(nbPrecioVenta);
+
+        }
+        catch (Exception ex)
+        {
+
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+
+        }
     }
     private async void BtnCrear_Click(object sender, RoutedEventArgs e)
     {
@@ -37,14 +49,14 @@ public sealed partial class ProductoPage : Page
         {
             var dto = new CrearProductoDto
             {
-                Codigo = txtCodigo.Text,
+
                 CodigoBarra = txtCodigoBarra.Text,
                 Nombre = txtNombre.Text,
                 Descripcion = txtDescripcion.Text,
-                CategoriaId = (int)cmbCategoria.SelectedValue,
+                CategoriaId = cmbCategoria.SelectedValue != null ? (int)cmbCategoria.SelectedValue : 0,
                 PrecioCompra = (decimal)nbPrecioCompra.Value,
                 PrecioVenta = (decimal)nbPrecioVenta.Value,
-                Existencia = (int)nbPrecioVenta.Value,
+                Existencia = (int)nbExistencia.Value,
                 Estado = tsEstado.IsOn
 
             };
@@ -66,14 +78,13 @@ public sealed partial class ProductoPage : Page
             var dto = new ActualizarProductoDto
             {
                 ProductoId = _productoIdSeleccionado,
-                Codigo = txtCodigo.Text,
                 CodigoBarra = txtCodigoBarra.Text,
                 Nombre = txtNombre.Text,
                 Descripcion = txtDescripcion.Text,
-                CategoriaId = (int)cmbCategoria.SelectedValue,
+                CategoriaId = cmbCategoria.SelectedValue != null ? (int)cmbCategoria.SelectedValue : 0,
                 PrecioCompra = (decimal)nbPrecioCompra.Value,
                 PrecioVenta = (decimal)nbPrecioVenta.Value,
-                Existencia = (int)nbPrecioVenta.Value,
+                Existencia = (int)nbExistencia.Value,
                 Estado = tsEstado.IsOn
 
             };
@@ -120,7 +131,6 @@ public sealed partial class ProductoPage : Page
         if (dgProductos.SelectedItem is ProductoDto dto)
         {
             _productoIdSeleccionado = dto.ProductoId;
-            txtCodigo.Text = dto.Codigo;
             txtCodigoBarra.Text = dto.CodigoBarra;
             txtNombre.Text = dto.Nombre;
             txtDescripcion.Text = dto.Descripcion;
@@ -165,7 +175,6 @@ public sealed partial class ProductoPage : Page
     private void LimpiarCampos()
     {
         txtNombre.Text = "";
-        txtCodigo.Text = "";
         txtCodigoBarra.Text = "";
         txtDescripcion.Text = "";
         cmbCategoria.SelectedIndex = -1;

@@ -1,4 +1,5 @@
 ﻿using PrimePOS.BLL.DTOs.Producto;
+using PrimePOS.BLL.Validators;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
 using System.Reflection.Metadata.Ecma335;
@@ -15,11 +16,16 @@ public class ProductoService
     }
     public async Task CrearProductoAsync(CrearProductoDto dto)
     {
-        
+        ProductoValidator.ValidarCrearProducto(dto);
+
+        var existe = await _productoRepository.BuscarPorCodigoONombreAsync(dto.Nombre);
+
+        if (existe != null) 
+            throw new Exception("Ya existe un producto con este nombre");
 
         var producto = new Producto
         {
-            Codigo = dto.Codigo,
+            
             CodigoBarra = dto.CodigoBarra,
             Nombre = dto.Nombre,
             Descripcion = dto.Descripcion,
@@ -41,20 +47,14 @@ public class ProductoService
     }
     public async Task ActualizarProductoAsync(ActualizarProductoDto dto)
     {
-        if (dto.ProductoId == 0)
-            throw new Exception("Seleccione un producto.");
-
-        
+        ProductoValidator.ValidarActualizar(dto);
 
         var producto = await _productoRepository.ObtenerPorIdAsync(dto.ProductoId);
 
         if (producto == null)
-            throw new Exception("Producto no encontrado.");
+            throw new Exception("Producto no existe.");
 
-        var ExisteProducto = await _productoRepository.ExisteCodigoAsync(dto.Codigo, dto.ProductoId);
-        if (!ExisteProducto) throw new Exception("Ya existe un producto con ese codigo");
-
-        producto.Codigo = dto.Codigo;
+        
         producto.CodigoBarra = dto.CodigoBarra;
         producto.Nombre = dto.Nombre;
         producto.Descripcion = dto.Descripcion;
@@ -70,12 +70,15 @@ public class ProductoService
     }
     public async Task EliminarProductoAsync(EliminarProductoDto dto)
     {
+        ProductoValidator.ValidarEliminar(dto.ProductoId);
+
         var producto = await _productoRepository.ObtenerPorIdAsync(dto.ProductoId);
 
         if (producto == null)
             throw new Exception("Producto no encontrado.");
 
         _productoRepository.Eliminar(producto);
+
         await _productoRepository.GuardarCambiosAsync();
 
     }
@@ -108,25 +111,7 @@ public class ProductoService
         };
 
     }
-    private void ValidarProducto(ProductoDto dto)
-    {
-        if (string.IsNullOrWhiteSpace(dto.Codigo) ||
-            string.IsNullOrWhiteSpace(dto.Nombre) ||
-            string.IsNullOrWhiteSpace(dto.Descripcion))
-            throw new Exception("Todos los campos son obligatorios.");
-
-        if (dto.CategoriaId == 0)
-            throw new Exception("Seleccione una categoría.");
-
-        if (dto.PrecioCompra <= 0 || dto.PrecioVenta <= 0)
-            throw new Exception("Los precios deben ser mayores que cero.");
-
-        if (dto.PrecioVenta <= dto.PrecioCompra)
-            throw new Exception("El precio de venta debe ser mayor al precio de compra.");
-
-        if (dto.Existencia < 0)
-            throw new Exception("La existencia no puede ser negativa.");
-    }
+    
     public async Task<ProductoDto?> ObtenerProductoPorIdAsync(int id)
     {
         var producto =  await _productoRepository.ObtenerPorIdAsync(id);
