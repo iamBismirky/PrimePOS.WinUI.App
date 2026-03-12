@@ -1,38 +1,29 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.Windows.Foundation;
-using PrimePOS.BLL.DTOs.Cliente;
 using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.WinUI.Infrastructure;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+
 
 namespace PrimePOS.WinUI.Pages;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
+
 public sealed partial class ProductoPage : Page
 {
+    private int _productoIdSeleccionado = 0;
     public ProductoPage()
     {
         InitializeComponent();
+
+
+        //Aplicar formato a los NumericBox decimales
+        NumberBoxHelper.AplicarFormatoMoneda(nbPrecioCompra);
+        NumberBoxHelper.AplicarFormatoMoneda(nbPrecioVenta);
+        NumberBoxHelper.AplicarFormatoMoneda(nbExistencia);
     }
-    private int _productoIdSeleccionado = 0;
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
@@ -134,7 +125,7 @@ public sealed partial class ProductoPage : Page
             txtNombre.Text = dto.Nombre;
             txtDescripcion.Text = dto.Descripcion;
             cmbCategoria.SelectedValue = dto.CategoriaId;
-            nbPrecioCompra.Value = (double)(decimal)dto.PrecioCompra; 
+            nbPrecioCompra.Value = (double)(decimal)dto.PrecioCompra;
             nbPrecioVenta.Value = (double)(decimal)dto.PrecioVenta;
             nbExistencia.Value = (int)dto.Existencia;
             tsEstado.IsOn = dto.Estado;

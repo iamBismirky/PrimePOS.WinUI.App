@@ -32,12 +32,11 @@ public class ProductoService
         };
 
         _productoRepository.Crear(producto);
-        
-
-
         await _productoRepository.GuardarCambiosAsync();
+
         producto.Codigo = GenerarCodigoProducto(producto.ProductoId);
         _productoRepository.Actualizar(producto);
+
         await _productoRepository.GuardarCambiosAsync();
     }
     public async Task ActualizarProductoAsync(ActualizarProductoDto dto)
