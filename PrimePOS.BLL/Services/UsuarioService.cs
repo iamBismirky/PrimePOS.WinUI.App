@@ -1,8 +1,10 @@
 ﻿using PrimePOS.BLL.DTOs;
 using PrimePOS.BLL.DTOs.Usuario;
 using PrimePOS.BLL.Security;
+using PrimePOS.BLL.Validators;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PrimePOS.BLL.Services
 {
@@ -17,7 +19,7 @@ namespace PrimePOS.BLL.Services
 
         public async Task CrearUsuarioAsync(CrearUsuarioDto dto)
         {
-            await ValidarUsuario(dto);
+            UsuarioValidator.ValidarCrear(dto);
 
             var usuario = new Usuario
             {
@@ -38,6 +40,7 @@ namespace PrimePOS.BLL.Services
 
         public async Task ActualizarUsuarioAsync(ActualizarUsuarioDto dto)
         {
+            UsuarioValidator.ValidarActualizar(dto);
             
             var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
                 ?? throw new Exception("Usuario no encontrado. Seleccione uno.");
@@ -76,9 +79,24 @@ namespace PrimePOS.BLL.Services
             _usuarioRepository.Actualizar(usuario);
             await _usuarioRepository.GuardarCambiosAsync();
         }
-        public async Task<Usuario?> ObtenerUsuarioPorIdAsync(UsuarioDto dto)
+        public async Task<UsuarioDto?> ObtenerUsuarioPorIdAsync(int id)
         {
-            return await _usuarioRepository.ObtenerPorId(dto.UsuarioId);
+            var usuario =  await _usuarioRepository.ObtenerPorId(id);
+
+            if(usuario == null) return null;
+
+            return new UsuarioDto
+            {
+                UsuarioId = usuario.UsuarioId,
+                Nombre = usuario.Nombre,
+                Apellidos = usuario.Apellidos,
+                Username = usuario.Username,
+                RolId = usuario.RolId,
+                RolNombre = usuario.Rol?.Nombre ?? "",
+                Estado = usuario.Estado,
+                FechaRegistro = usuario.FechaRegistro
+
+            };
         }
         public async Task<List<UsuarioDto>> ListarUsuariosAsync()
         {
@@ -91,6 +109,7 @@ namespace PrimePOS.BLL.Services
                 Apellidos = u.Apellidos,
                 Username = u.Username,
                 RolId = u.RolId,
+                RolNombre = u.Rol?.Nombre ?? "",
                 Estado = u.Estado,
                 FechaRegistro = u.FechaRegistro
             }).ToList();
@@ -153,28 +172,6 @@ namespace PrimePOS.BLL.Services
         }
 
         
-        private async Task ValidarUsuario(CrearUsuarioDto dto, bool esActualizacion = false)
-        {
-            if (string.IsNullOrWhiteSpace(dto.Nombre))
-                throw new Exception("El nombre es obligatorio.");
-
-            if (string.IsNullOrWhiteSpace(dto.Apellidos))
-                throw new Exception("Los apellidos son obligatorio.");
-
-            if (string.IsNullOrWhiteSpace(dto.Username))
-                throw new Exception("El nombre de usuario es obligatorio.");
-
-            if (string.IsNullOrWhiteSpace(dto.Password))
-                throw new Exception("La contraseña es obligatoria.");
-
-            if (dto.Password.Length < 6)
-                throw new Exception("La contraseña debe tener mínimo 6 caracteres.");
-
-            if (dto.RolId <= 0)
-                throw new Exception("Debe seleccionar un rol.");
-
-            var existeUsuario = await _usuarioRepository.ExisteUsernameAsync(dto.Username);
-        }
     }
 }
 

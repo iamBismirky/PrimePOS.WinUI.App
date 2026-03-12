@@ -50,9 +50,9 @@ public sealed partial class ProductoPage : Page
             var dto = new CrearProductoDto
             {
 
-                CodigoBarra = txtCodigoBarra.Text,
-                Nombre = txtNombre.Text,
-                Descripcion = txtDescripcion.Text,
+                CodigoBarra = txtCodigoBarra.Text.Trim(),
+                Nombre = txtNombre.Text.Trim(),
+                Descripcion = txtDescripcion.Text.Trim(),
                 CategoriaId = cmbCategoria.SelectedValue != null ? (int)cmbCategoria.SelectedValue : 0,
                 PrecioCompra = (decimal)nbPrecioCompra.Value,
                 PrecioVenta = (decimal)nbPrecioVenta.Value,
@@ -78,9 +78,9 @@ public sealed partial class ProductoPage : Page
             var dto = new ActualizarProductoDto
             {
                 ProductoId = _productoIdSeleccionado,
-                CodigoBarra = txtCodigoBarra.Text,
-                Nombre = txtNombre.Text,
-                Descripcion = txtDescripcion.Text,
+                CodigoBarra = txtCodigoBarra.Text.Trim(),
+                Nombre = txtNombre.Text.Trim(),
+                Descripcion = txtDescripcion.Text.Trim(),
                 CategoriaId = cmbCategoria.SelectedValue != null ? (int)cmbCategoria.SelectedValue : 0,
                 PrecioCompra = (decimal)nbPrecioCompra.Value,
                 PrecioVenta = (decimal)nbPrecioVenta.Value,

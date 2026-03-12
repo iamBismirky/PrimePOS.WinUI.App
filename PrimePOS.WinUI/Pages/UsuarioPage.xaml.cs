@@ -5,17 +5,11 @@ using PrimePOS.BLL.DTOs.Usuario;
 using PrimePOS.WinUI.Infrastructure;
 using System;
 using System.Threading.Tasks;
-using Windows.Networking.Proximity;
 
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace PrimePOS.WinUI.Pages;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
+
 public sealed partial class UsuarioPage : Page
 {
     private int usuarioIdSeleccionado = 0;
@@ -24,18 +18,32 @@ public sealed partial class UsuarioPage : Page
         InitializeComponent();
 
     }
-    protected override async void OnNavigatedTo(NavigationEventArgs e)
-    {
-        base.OnNavigatedTo(e);
-
-        await ListarRoles();
-        await ListarUsuarios();
-    }
-
     public void btnCancelar_Click(object sender, RoutedEventArgs e)
     {
         Frame.GoBack();
     }
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+
+        try
+        {
+            //Cargar listado de usuarios (DataGrid) y Roles (ComboBox)
+            await ListarRoles();
+            await ListarUsuarios();
+
+            //Foco en el textBox Nombre
+            txtNombre.Focus(FocusState.Programmatic);
+
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+
+        }
+    }
+
+
     public async void BtnCrear_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -55,9 +63,6 @@ public sealed partial class UsuarioPage : Page
             };
             await Servicios.UsuarioService.CrearUsuarioAsync(usuario);
 
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Usuario creado correctamente");
-
             await ListarUsuarios();
             LimpiarCampos();
 
@@ -74,25 +79,23 @@ public sealed partial class UsuarioPage : Page
     {
         try
         {
-            
-                
-                var usuario = new ActualizarUsuarioDto
-                {
-                    UsuarioId = usuarioIdSeleccionado,
-                    Nombre = txtNombre.Text.Trim(),
-                    Apellidos = txtApellidos.Text.Trim(),
-                    Username = txtUsername.Text.Trim(),
-                    RolId = cmbRol.SelectedValue != null ? (int)cmbRol.SelectedValue : 0,
-                    Estado = tsEstado.IsOn,
 
-                };
-                await Servicios.UsuarioService.ActualizarUsuarioAsync(usuario);
 
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Usuario actualizado correctamente");
+            var usuario = new ActualizarUsuarioDto
+            {
+                UsuarioId = usuarioIdSeleccionado,
+                Nombre = txtNombre.Text.Trim(),
+                Apellidos = txtApellidos.Text.Trim(),
+                Username = txtUsername.Text.Trim(),
+                RolId = cmbRol.SelectedValue != null ? (int)cmbRol.SelectedValue : 0,
+                Estado = tsEstado.IsOn,
 
-                await ListarUsuarios();
-                LimpiarCampos();
-            
+            };
+            await Servicios.UsuarioService.ActualizarUsuarioAsync(usuario);
+
+            await ListarUsuarios();
+            LimpiarCampos();
+
         }
         catch (Exception ex)
         {

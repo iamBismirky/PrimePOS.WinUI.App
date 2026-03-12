@@ -147,7 +147,7 @@ public class ProductoService
             Nombre = p.Nombre,
             Descripcion = p.Descripcion,
             CategoriaId= p.CategoriaId,
-            NombreCategoria = p.Categoria?.Nombre ?? "",
+            NombreCategoria = p.Categoria?.Nombre ?? "",    
             PrecioCompra = p.PrecioCompra,
             PrecioVenta = p.PrecioVenta,
             Existencia = p.Existencia,
