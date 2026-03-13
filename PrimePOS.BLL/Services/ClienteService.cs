@@ -29,11 +29,17 @@ public class ClienteService
             Email = dto.Email,
             Direccion = dto.Direccion,
             Estado = dto.Estado,
+            FechaRegistro = DateTime.Now,
 
         };
 
         _clienteRepository.Crear(cliente);
-        await _clienteRepository.GuardarCambios();
+        await _clienteRepository.GuardarCambiosAsync();
+
+        cliente.Codigo = GenerarCodigoCliente(cliente.ClienteId);
+
+        _clienteRepository.Actualizar(cliente);
+        await _clienteRepository.GuardarCambiosAsync();
     }
     public async Task ActualizarClienteAsync(ActualizarClienteDto dto)
     {
@@ -59,7 +65,7 @@ public class ClienteService
 
 
         _clienteRepository.Actualizar(cliente);
-        await _clienteRepository.GuardarCambios();
+        await _clienteRepository.GuardarCambiosAsync();
     }
     public async Task EliminarClienteAsync(EliminarClienteDto dto)
     {
@@ -71,7 +77,7 @@ public class ClienteService
 
 
         _clienteRepository.Eliminar(cliente);
-        await _clienteRepository.GuardarCambios();
+        await _clienteRepository.GuardarCambiosAsync();
     }
     // Listar
     public async Task<List<ClienteDto>> ListarClientes()
@@ -82,6 +88,7 @@ public class ClienteService
         {
 
             ClienteId = c.ClienteId,
+            Codigo = c.Codigo,
             Nombre = c.Nombre,
             Documento = c.Documento,
             Direccion = c.Direccion,
@@ -105,6 +112,7 @@ public class ClienteService
         return new ClienteDto
         {
             ClienteId = cliente.ClienteId,
+            Codigo = cliente.Codigo,
             Nombre = cliente.Nombre,
             Documento = cliente.Documento,  
             Direccion= cliente.Direccion,
@@ -126,8 +134,12 @@ public class ClienteService
         cliente.Estado = false;
 
         _clienteRepository.Actualizar(cliente);
-        await _clienteRepository.GuardarCambios();
+        await _clienteRepository.GuardarCambiosAsync();
     }
 
+    private string GenerarCodigoCliente(int clienteId)
+    {
+        return $"CLIENT-{clienteId:D4}";
+    }
 
 }

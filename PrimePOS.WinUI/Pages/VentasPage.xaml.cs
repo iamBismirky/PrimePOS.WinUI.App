@@ -35,6 +35,7 @@ public sealed partial class VentasPage : Page
     public VentasPage()
     {
         InitializeComponent();
+        NavigationCacheMode = NavigationCacheMode.Required;
         DataContext = Vm;
 
         _timer = new DispatcherTimer();
@@ -76,9 +77,9 @@ public sealed partial class VentasPage : Page
             Servicios.VentaService.AgregarProductoCarrito(producto);
             dgCarrito.ItemsSource = Servicios.VentaService.Carrito;
             
-            txtSubtotal.Text = Servicios.VentaService.Subtotal.ToString("N2");
-            txtImpuesto.Text = Servicios.VentaService.Impuesto.ToString("N2");
-            txtTotal.Text = Servicios.VentaService.Total.ToString("N2");
+            txtSubtotal.Text =$"Subtotal: ${Servicios.VentaService.Subtotal.ToString("N2")}";
+            txtImpuesto.Text = $"Impuesto: ${Servicios.VentaService.Impuesto.ToString("N2")}";
+            txtTotal.Text =$"Total: ${ Servicios.VentaService.Total.ToString("N2")}";
 
             txtBuscarProducto.Text = "";
             txtBuscarProducto.Focus(FocusState.Programmatic);

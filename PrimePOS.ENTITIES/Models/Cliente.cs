@@ -9,6 +9,7 @@ public class Cliente
     [Key]
     public int ClienteId { get; set; }
 
+    public string Codigo { get; set; } = string.Empty;
     public string Nombre { get; set; } = string.Empty;
 
     public string Documento { get; set; } = string.Empty;
@@ -22,7 +23,6 @@ public class Cliente
     public bool Estado { get; set; } 
 
     public DateTime FechaRegistro { get; set; } 
-    // Relación con Ventas
     public ICollection<Venta>? Ventas { get; set; } = new List<Venta>();
 }
 

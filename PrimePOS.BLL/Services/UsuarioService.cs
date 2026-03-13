@@ -178,9 +178,9 @@ namespace PrimePOS.BLL.Services
             };
         }
 
-        private string GenerarCodigoUsuario(int productoId)
+        private string GenerarCodigoUsuario(int UsuarioId)
         {
-            return $"PRO-{productoId:D4}";
+            return $"USER-{UsuarioId:D4}";
         }
     }
 }

@@ -157,6 +157,10 @@
 
                     <controls:DataGrid.Columns>
 
+                        <controls:DataGridTextColumn Header="Codigo"
+                                        Binding="{Binding Codigo}"
+                                        Width="auto"/>
+
                         <controls:DataGridTextColumn Header="Nombre"
                                         Binding="{Binding Nombre}"
                                         Width="auto"/>

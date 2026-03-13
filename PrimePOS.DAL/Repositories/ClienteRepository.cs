@@ -35,7 +35,7 @@ public class ClienteRepository
         return await _context.Clientes.FindAsync(id);
     }
 
-    public async Task GuardarCambios()
+    public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();
     }

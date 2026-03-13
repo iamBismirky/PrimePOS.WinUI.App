@@ -4,9 +4,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PrimePOS.WinUI"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:helpers="using:PrimePOS.WinUI.Infrastructure"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    
+
+    <Page.Resources>
+        <helpers:NumeroConverter x:Key="NumeroConverter"/>
+    </Page.Resources>
     
         <Grid Padding="20" RowSpacing="15">
             <Grid.RowDefinitions>
@@ -16,6 +21,7 @@
             <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
+            <!--Header-->
             <TextBlock  Grid.Row="0"
                         FontSize="28"
                         FontWeight="Bold"
@@ -30,10 +36,27 @@
                         HorizontalAlignment="Right"
                         Text="Fecha Actual"/>
 
-            <!-- 2️⃣ Buscador de producto -->
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10">
-
-            <AutoSuggestBox x:Name="txtBuscarProducto" 
+            <!-- Buscador de producto -->
+            <Grid Grid.Row="1" Margin="10" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+              
+            <Border BorderThickness="1"
+                    BorderBrush="#DDD"
+                    CornerRadius="10"
+                    Padding="15"
+                    Grid.Column="0">
+                
+                <controls:WrapPanel Orientation="Vertical" >
+                <TextBlock Text="Buscar producto" FontWeight="Bold"  FontFamily="Segoe UI"/>
+                <AutoSuggestBox Grid.Column="0"
+                            x:Name="txtBuscarProducto" 
                             TextChanged="txtBuscarProducto_TextChanged"
                             QuerySubmitted="txtBuscarProducto_QuerySubmitted"
                             SuggestionChosen="txtBuscarProducto_SuggestionChosen"
@@ -41,13 +64,68 @@
                             Width="300"
                             DisplayMemberPath="Nombre"
                             PlaceholderText="Buscar producto por código o nombre..." />
-                
-                
-                
-                <Button Content="Agregar al carrito"
+
+
+
+                <Button Grid.Column="1"
+                        Content="Agregar al carrito"
                         Click="BtnAgregarProductoCarrito_Click"/>
+                </controls:WrapPanel>
+            </Border>
                 
-            </StackPanel>
+                
+             <!--Cliente--> 
+            <Border BorderThickness="1"
+                    BorderBrush="#DDD"
+                    CornerRadius="10"
+                    Padding="15"
+                    Grid.Column="1"
+                    Width="300"
+                    Margin="10">
+
+                <controls:WrapPanel Orientation="Vertical" >
+                    
+                    <TextBlock Text="Cliente" FontWeight="Bold"  FontFamily="Segoe UI"/>
+                    <ComboBox PlaceholderText="Buscar cliente"/>
+                </controls:WrapPanel>
+            </Border>
+            <!--<controls:WrapPanel>
+                <TextBlock Text="Cliente"/>
+                <ComboBox Grid.Column="3"/>
+
+
+
+            </controls:WrapPanel>-->
+            
+            <!--<ComboBox Grid.Column="3"/>-->
+
+            <Border BorderThickness="1"
+        BorderBrush="#DDD"
+        CornerRadius="10"
+        Padding="15"
+        Grid.Column="2">
+
+                <controls:WrapPanel Orientation="Vertical" >
+                    <TextBlock Text="Buscar producto" FontWeight="Bold"  FontFamily="Segoe UI"/>
+                    <AutoSuggestBox Grid.Column="0"
+                x:Name="ff" 
+                TextChanged="txtBuscarProducto_TextChanged"
+                QuerySubmitted="txtBuscarProducto_QuerySubmitted"
+                SuggestionChosen="txtBuscarProducto_SuggestionChosen"
+                KeyDown="txtBuscarProducto_KeyDown"
+                Width="300"
+                DisplayMemberPath="Nombre"
+                PlaceholderText="Buscar producto por código o nombre..." />
+
+
+
+                    <Button Grid.Column="1"
+            Content="Agregar al carrito"
+            Click="BtnAgregarProductoCarrito_Click"/>
+                </controls:WrapPanel>
+            </Border>
+
+        </Grid>
             
 
             <!--  DataGrid como carrito -->
@@ -63,9 +141,9 @@
                 <controls:DataGrid.Columns>
                 <controls:DataGridTextColumn Header="Codigo" Binding="{Binding Codigo}" Width="*"/>
                 <controls:DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
-                <controls:DataGridTextColumn Header="Precio" Binding="{Binding Precio}" Width="*"/>
+                <controls:DataGridTextColumn Header="Precio" Binding="{Binding Precio, Converter={StaticResource NumeroConverter}}" Width="*"/>
                 <controls:DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*"/>
-                <controls:DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="*"/>
+                <controls:DataGridTextColumn Header="Total" Binding="{Binding Total, Converter={StaticResource NumeroConverter}}" Width="*"/>
                 </controls:DataGrid.Columns>
                 
             </controls:DataGrid>
@@ -81,9 +159,9 @@
 
                 <!-- Totales -->
                 <StackPanel Grid.Column="0" Spacing="5" HorizontalAlignment="Left">
-                    <TextBlock FontSize="14" Text="Subtotal" x:Name="txtSubtotal"/>
-                <TextBlock FontSize="14" Text="Impuesto" x:Name="txtImpuesto"/>
-                <TextBlock FontSize="16" FontWeight="Bold" Text="Total" x:Name="txtTotal"/>
+                <TextBlock FontSize="24" FontWeight="SemiBold" Text="Subtotal" x:Name="txtSubtotal"/>
+                <TextBlock FontSize="24" FontWeight="SemiBold" Text="Impuesto" x:Name="txtImpuesto"/>
+                <TextBlock FontSize="26" FontWeight="Bold" Text="Total" x:Name="txtTotal"/>
                 </StackPanel>
 
                 <!-- Botones de acción -->
