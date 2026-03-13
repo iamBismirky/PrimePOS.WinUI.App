@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 public class VentaService
 {
-    private VentaRepository _ventaRepository;
+    private readonly VentaRepository _ventaRepository;
 
     public VentaService(VentaRepository ventaRepository)
     {

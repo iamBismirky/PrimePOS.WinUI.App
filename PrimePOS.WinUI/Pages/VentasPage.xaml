@@ -7,74 +7,89 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:helpers="using:PrimePOS.WinUI.Infrastructure"
+    Loaded="Page_loaded"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
         <helpers:NumeroConverter x:Key="NumeroConverter"/>
     </Page.Resources>
-    
-        <Grid Padding="20" RowSpacing="15">
-            <Grid.RowDefinitions>
+
+    <Grid Padding="20" RowSpacing="15">
+        <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            
-            <!--Header-->
-            <TextBlock  Grid.Row="0"
-                        FontSize="28"
-                        FontWeight="Bold"
-                        HorizontalAlignment="Left"
-                        Text="Ventas"/>
-            
-           
-            <TextBlock  Grid.Row="0" 
-                        x:Name="txtFecha"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        HorizontalAlignment="Right"
-                        Text="Fecha Actual"/>
+        </Grid.RowDefinitions>
 
-            <!-- Buscador de producto -->
-            <Grid Grid.Row="1" Margin="10" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-              
+        <!--Header-->
+        <TextBlock  Grid.Row="0"
+                    FontSize="28"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Left"
+                    Text="Ventas"/>
+
+
+        <TextBlock  Grid.Row="0" 
+                    x:Name="txtFecha"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Right"
+                    Text="Fecha Actual"/>
+
+        <!-- Buscador de producto -->
+        <Grid Grid.Row="1" Margin="10" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
             <Border BorderThickness="1"
                     BorderBrush="#DDD"
                     CornerRadius="10"
                     Padding="15"
                     Grid.Column="0">
-                
+
                 <controls:WrapPanel Orientation="Vertical" >
-                <TextBlock Text="Buscar producto" FontWeight="Bold"  FontFamily="Segoe UI"/>
-                <AutoSuggestBox Grid.Column="0"
-                            x:Name="txtBuscarProducto" 
-                            TextChanged="txtBuscarProducto_TextChanged"
-                            QuerySubmitted="txtBuscarProducto_QuerySubmitted"
-                            SuggestionChosen="txtBuscarProducto_SuggestionChosen"
-                            KeyDown="txtBuscarProducto_KeyDown"
-                            Width="300"
-                            DisplayMemberPath="Nombre"
-                            PlaceholderText="Buscar producto por código o nombre..." />
+
+                    <TextBlock Text="Buscar producto" FontWeight="Bold"  FontFamily="Segoe UI"/>
+                    <AutoSuggestBox Grid.Column="0"
+                                    x:Name="txtBuscarProducto" 
+                                    TextChanged="txtBuscarProducto_TextChanged"
+                                    QuerySubmitted="txtBuscarProducto_QuerySubmitted"
+                                    SuggestionChosen="txtBuscarProducto_SuggestionChosen"
+                                    KeyDown="txtBuscarProducto_KeyDown"
+                                    Width="300"
+                                    PlaceholderText="Buscar producto por código o nombre...">
 
 
+                        <AutoSuggestBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="{Binding Codigo}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding Nombre}"/>
+                                    <TextBlock>
+                                        <Run Text="$"/>
+                                        <Run Text="{Binding PrecioVenta, Converter={StaticResource NumeroConverter}}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                        </DataTemplate>
+                    </AutoSuggestBox.ItemTemplate>
+                    </AutoSuggestBox>
 
-                <Button Grid.Column="1"
-                        Content="Agregar al carrito"
-                        Click="BtnAgregarProductoCarrito_Click"/>
+                    <Button Grid.Column="1"
+                            Content="Agregar al carrito"
+                            Click="BtnAgregarProductoCarrito_Click"/>
+                    
                 </controls:WrapPanel>
             </Border>
-                
-                
-             <!--Cliente--> 
+
+
+            <!--Cliente-->
             <Border BorderThickness="1"
                     BorderBrush="#DDD"
                     CornerRadius="10"
@@ -84,52 +99,32 @@
                     Margin="10">
 
                 <controls:WrapPanel Orientation="Vertical" >
-                    
+
                     <TextBlock Text="Cliente" FontWeight="Bold"  FontFamily="Segoe UI"/>
-                    <ComboBox PlaceholderText="Buscar cliente"/>
+                    <ComboBox x:Name="cmbCliente"  SelectedIndex="0"/>
                 </controls:WrapPanel>
             </Border>
-            <!--<controls:WrapPanel>
-                <TextBlock Text="Cliente"/>
-                <ComboBox Grid.Column="3"/>
-
-
-
-            </controls:WrapPanel>-->
             
-            <!--<ComboBox Grid.Column="3"/>-->
-
+             <!--Metodo de pago-->
             <Border BorderThickness="1"
-        BorderBrush="#DDD"
-        CornerRadius="10"
-        Padding="15"
-        Grid.Column="2">
+                    BorderBrush="#DDD"
+                    CornerRadius="10"
+                    Padding="15"
+                    Grid.Column="2">
 
                 <controls:WrapPanel Orientation="Vertical" >
-                    <TextBlock Text="Buscar producto" FontWeight="Bold"  FontFamily="Segoe UI"/>
-                    <AutoSuggestBox Grid.Column="0"
-                x:Name="ff" 
-                TextChanged="txtBuscarProducto_TextChanged"
-                QuerySubmitted="txtBuscarProducto_QuerySubmitted"
-                SuggestionChosen="txtBuscarProducto_SuggestionChosen"
-                KeyDown="txtBuscarProducto_KeyDown"
-                Width="300"
-                DisplayMemberPath="Nombre"
-                PlaceholderText="Buscar producto por código o nombre..." />
 
+                    <TextBlock Text="Metodo de Pago" FontWeight="Bold"  FontFamily="Segoe UI"/>
+                    <ComboBox x:Name="cmbMetodoPago" SelectedIndex="0"/>
 
-
-                    <Button Grid.Column="1"
-            Content="Agregar al carrito"
-            Click="BtnAgregarProductoCarrito_Click"/>
                 </controls:WrapPanel>
             </Border>
 
         </Grid>
-            
 
-            <!--  DataGrid como carrito -->
-            <controls:DataGrid Grid.Row="2" 
+
+        <!--  DataGrid como carrito -->
+        <controls:DataGrid Grid.Row="2" 
                                x:Name="dgCarrito"
                                AutoGenerateColumns="False"
                                SelectionMode="Single"
@@ -138,39 +133,39 @@
                                ColumnHeaderHeight="40"
                                FontSize="14">
 
-                <controls:DataGrid.Columns>
+            <controls:DataGrid.Columns>
                 <controls:DataGridTextColumn Header="Codigo" Binding="{Binding Codigo}" Width="*"/>
                 <controls:DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
                 <controls:DataGridTextColumn Header="Precio" Binding="{Binding Precio, Converter={StaticResource NumeroConverter}}" Width="*"/>
                 <controls:DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*"/>
                 <controls:DataGridTextColumn Header="Total" Binding="{Binding Total, Converter={StaticResource NumeroConverter}}" Width="*"/>
-                </controls:DataGrid.Columns>
-                
-            </controls:DataGrid>
+            </controls:DataGrid.Columns>
 
-            <!-- 4️⃣ Totales y botones -->
-            <Grid Grid.Row="3" ColumnSpacing="20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <!-- Totales -->
-                    <ColumnDefinition Width="2*"/>
-                    <!-- Botones -->
-                </Grid.ColumnDefinitions>
+        </controls:DataGrid>
 
+        <!-- 4️⃣ Totales y botones -->
+        <Grid Grid.Row="3" ColumnSpacing="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
                 <!-- Totales -->
-                <StackPanel Grid.Column="0" Spacing="5" HorizontalAlignment="Left">
+                <ColumnDefinition Width="2*"/>
+                <!-- Botones -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Totales -->
+            <StackPanel Grid.Column="0" Spacing="5" HorizontalAlignment="Left">
                 <TextBlock FontSize="24" FontWeight="SemiBold" Text="Subtotal" x:Name="txtSubtotal"/>
                 <TextBlock FontSize="24" FontWeight="SemiBold" Text="Impuesto" x:Name="txtImpuesto"/>
                 <TextBlock FontSize="26" FontWeight="Bold" Text="Total" x:Name="txtTotal"/>
-                </StackPanel>
+            </StackPanel>
 
-                <!-- Botones de acción -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
-                    <Button Content="Borrar Producto" Click="BtnBorrarProducto_Click"/>
-                    <Button Content="Generar Factura" Click="BtnGenerarFactura_Click" Background="#FF2D89EF" Foreground="White"/>
-                    <Button Content="Limpiar Pantalla" Click="BtnLimpiar_Click"/>
-                </StackPanel>
-            </Grid>
+            <!-- Botones de acción -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                <Button Content="Borrar Producto" Click="BtnBorrarProducto_Click"/>
+                <Button Content="Generar Factura" Click="BtnGenerarFactura_Click" Background="#FF2D89EF" Foreground="White"/>
+                <Button Content="Limpiar Pantalla" Click="BtnLimpiar_Click"/>
+            </StackPanel>
         </Grid>
-    
+    </Grid>
+
 </Page>

@@ -39,13 +39,16 @@ public class ProductoRepository
             .Include(p => p.Categoria)
             .FirstOrDefaultAsync(p => p.ProductoId == id);
     }
-
     public async Task<Producto?> BuscarPorCodigoAsync(string codigo)
+
     {
         return await _context.Productos
             .FirstOrDefaultAsync(p => p.Codigo == codigo);
     }
-
+    public async Task<Producto?> BuscarPorNombreAsync(string nombre)
+    {
+        return await _context.Productos.FirstOrDefaultAsync(p => p.Nombre == nombre);
+    }
     public async Task<Producto?> BuscarPorCodigoONombreAsync(string buscar)
     {
         return await _context.Productos

@@ -2,7 +2,6 @@
 using PrimePOS.BLL.Validators;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
-using System.Reflection.Metadata.Ecma335;
 
 namespace PrimePOS.BLL.Services;
 
@@ -20,12 +19,12 @@ public class ProductoService
 
         var existe = await _productoRepository.BuscarPorCodigoONombreAsync(dto.Nombre);
 
-        if (existe != null) 
+        if (existe != null)
             throw new Exception("Ya existe un producto con este nombre");
 
         var producto = new Producto
         {
-            
+
             CodigoBarra = dto.CodigoBarra,
             Nombre = dto.Nombre,
             Descripcion = dto.Descripcion,
@@ -54,7 +53,7 @@ public class ProductoService
         if (producto == null)
             throw new Exception("Producto no existe.");
 
-        
+
         producto.CodigoBarra = dto.CodigoBarra;
         producto.Nombre = dto.Nombre;
         producto.Descripcion = dto.Descripcion;
@@ -85,7 +84,7 @@ public class ProductoService
     public async Task<List<ProductoDto>> BuscarProductoCodigoONombreListAsync(string buscar)
     {
         var producto = await _productoRepository.BuscarPorCodigoONombreListAsync(buscar);
-        
+
 
         return producto.Select(p => new ProductoDto
         {
@@ -94,7 +93,7 @@ public class ProductoService
             Codigo = p.Codigo,
             PrecioVenta = p.PrecioVenta
         }).ToList();
-    
+
     }
     public async Task<ProductoDto?> BuscarProductoCodigoONombreAsync(string buscar)
     {
@@ -111,10 +110,10 @@ public class ProductoService
         };
 
     }
-    
+
     public async Task<ProductoDto?> ObtenerProductoPorIdAsync(int id)
     {
-        var producto =  await _productoRepository.ObtenerPorIdAsync(id);
+        var producto = await _productoRepository.ObtenerPorIdAsync(id);
 
         if (producto == null) return null;
 
@@ -146,8 +145,8 @@ public class ProductoService
             CodigoBarra = p.CodigoBarra,
             Nombre = p.Nombre,
             Descripcion = p.Descripcion,
-            CategoriaId= p.CategoriaId,
-            NombreCategoria = p.Categoria?.Nombre ?? "",    
+            CategoriaId = p.CategoriaId,
+            NombreCategoria = p.Categoria?.Nombre ?? "",
             PrecioCompra = p.PrecioCompra,
             PrecioVenta = p.PrecioVenta,
             Existencia = p.Existencia,
@@ -160,6 +159,6 @@ public class ProductoService
     }
     private string GenerarCodigoProducto(int productoId)
     {
-        return $"PRO-{productoId:D4}";
+        return $"PROD-{productoId:D4}";
     }
 }
