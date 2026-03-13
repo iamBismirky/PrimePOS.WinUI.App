@@ -230,7 +230,7 @@ namespace PrimePOS.DAL.Migrations
                         {
                             MetodoPagoId = 3,
                             Estado = true,
-                            Nombre = "Teansferencia"
+                            Nombre = "Transferencia"
                         });
                 });
 
@@ -335,6 +335,10 @@ namespace PrimePOS.DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UsuarioId"));
 
                     b.Property<string>("Apellidos")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Codigo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

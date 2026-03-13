@@ -67,8 +67,8 @@
                     
                     <PasswordBox
                         x:Name="pwdPassword"
-                        Header="Contrasena"
-                        PlaceholderText="Ingrese la contrasena"
+                        Header="Contraseña"
+                        PlaceholderText="Ingrese la contraseña"
                         Grid.Column="2"
                         Grid.Row="1"/>
 
@@ -163,9 +163,14 @@
                     SelectionMode="Extended"
                     SelectionChanged="dgUsuarios_SelectionChanged"
                     IsReadOnly="True">
-                    
-                    
+
+
                     <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn
+                            Header="Codigo"
+                            Binding="{Binding Codigo}"
+                            Width="auto"/>
+
 
                         <controls:DataGridTextColumn
                             Header="Nombre"
@@ -184,7 +189,7 @@
 
                         <controls:DataGridTextColumn
                             Header="Rol"
-                            Binding="{Binding RolId}"
+                            Binding="{Binding RolNombre}"
                             Width="auto"/>
 
                         <controls:DataGridCheckBoxColumn

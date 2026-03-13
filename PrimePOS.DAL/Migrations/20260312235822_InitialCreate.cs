@@ -14,14 +14,46 @@ namespace PrimePOS.DAL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AperturaCajas",
+                columns: table => new
+                {
+                    AperturaCajaId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CajaId = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    FechaApertura = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MontoInicial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontoCierre = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    FechaCierre = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AperturaCajas", x => x.AperturaCajaId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cajas",
+                columns: table => new
+                {
+                    CajaId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cajas", x => x.CajaId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categorias",
                 columns: table => new
                 {
                     CategoriaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Estado = table.Column<bool>(type: "bit", nullable: false),
-                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -35,15 +67,30 @@ namespace PrimePOS.DAL.Migrations
                     ClienteId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Documento = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Estado = table.Column<bool>(type: "bit", nullable: true)
+                    Documento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clientes", x => x.ClienteId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MetodoPagos",
+                columns: table => new
+                {
+                    MetodoPagoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MetodoPagos", x => x.MetodoPagoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,7 +99,7 @@ namespace PrimePOS.DAL.Migrations
                 {
                     RolId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -67,9 +114,9 @@ namespace PrimePOS.DAL.Migrations
                     ProductoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CodigoBarra = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CodigoBarra = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoriaId = table.Column<int>(type: "int", nullable: false),
                     PrecioCompra = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PrecioVenta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -95,12 +142,13 @@ namespace PrimePOS.DAL.Migrations
                 {
                     UsuarioId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Apellidos = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false),
-                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RolId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -120,24 +168,45 @@ namespace PrimePOS.DAL.Migrations
                 {
                     VentaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     ClienteId = table.Column<int>(type: "int", nullable: false),
+                    CajaId = table.Column<int>(type: "int", nullable: false),
+                    MetodoPagoId = table.Column<int>(type: "int", nullable: false),
+                    AperturaCajaId = table.Column<int>(type: "int", nullable: false),
+                    NumeroComprobante = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalImpuesto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Impuesto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Descuento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MetodoPago = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ventas", x => x.VentaId);
                     table.ForeignKey(
+                        name: "FK_Ventas_AperturaCajas_AperturaCajaId",
+                        column: x => x.AperturaCajaId,
+                        principalTable: "AperturaCajas",
+                        principalColumn: "AperturaCajaId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ventas_Cajas_CajaId",
+                        column: x => x.CajaId,
+                        principalTable: "Cajas",
+                        principalColumn: "CajaId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Ventas_Clientes_ClienteId",
                         column: x => x.ClienteId,
                         principalTable: "Clientes",
                         principalColumn: "ClienteId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ventas_MetodoPagos_MetodoPagoId",
+                        column: x => x.MetodoPagoId,
+                        principalTable: "MetodoPagos",
+                        principalColumn: "MetodoPagoId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Ventas_Usuarios_UsuarioId",
@@ -155,7 +224,6 @@ namespace PrimePOS.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     VentaId = table.Column<int>(type: "int", nullable: false),
                     ProductoId = table.Column<int>(type: "int", nullable: false),
-                    NombreProducto = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Cantidad = table.Column<int>(type: "int", nullable: false),
                     PrecioUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Impuesto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -180,13 +248,33 @@ namespace PrimePOS.DAL.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "RolId", "Descripcion", "Estado" },
+                table: "Cajas",
+                columns: new[] { "CajaId", "Estado", "Nombre" },
+                values: new object[] { 1, true, "Caja Principal" });
+
+            migrationBuilder.InsertData(
+                table: "Clientes",
+                columns: new[] { "ClienteId", "Direccion", "Documento", "Email", "Estado", "FechaRegistro", "Nombre", "Telefono" },
+                values: new object[] { 1, "", "", "", true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Consumidor Final", "" });
+
+            migrationBuilder.InsertData(
+                table: "MetodoPagos",
+                columns: new[] { "MetodoPagoId", "Estado", "Nombre" },
                 values: new object[,]
                 {
-                    { 1, "Desarrollador", false },
-                    { 2, "Administrador", false },
-                    { 3, "Empleado", false }
+                    { 1, true, "Efectivo" },
+                    { 2, true, "Tarjeta" },
+                    { 3, true, "Transferencia" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "RolId", "Estado", "Nombre" },
+                values: new object[,]
+                {
+                    { 1, false, "Desarrollador" },
+                    { 2, false, "Administrador" },
+                    { 3, false, "Cajero" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -210,9 +298,24 @@ namespace PrimePOS.DAL.Migrations
                 column: "RolId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ventas_AperturaCajaId",
+                table: "Ventas",
+                column: "AperturaCajaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ventas_CajaId",
+                table: "Ventas",
+                column: "CajaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ventas_ClienteId",
                 table: "Ventas",
                 column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ventas_MetodoPagoId",
+                table: "Ventas",
+                column: "MetodoPagoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ventas_UsuarioId",
@@ -236,7 +339,16 @@ namespace PrimePOS.DAL.Migrations
                 name: "Categorias");
 
             migrationBuilder.DropTable(
+                name: "AperturaCajas");
+
+            migrationBuilder.DropTable(
+                name: "Cajas");
+
+            migrationBuilder.DropTable(
                 name: "Clientes");
+
+            migrationBuilder.DropTable(
+                name: "MetodoPagos");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");

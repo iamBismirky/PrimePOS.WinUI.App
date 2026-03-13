@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimePOS.ENTITIES.Models
 {
@@ -13,6 +8,7 @@ namespace PrimePOS.ENTITIES.Models
     {
         [Key]
         public int UsuarioId { get; set; }
+        public string Codigo { get; set; } = string.Empty;
         public string Nombre { get; set; } = string.Empty;
         public string Apellidos { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
@@ -22,8 +18,7 @@ namespace PrimePOS.ENTITIES.Models
 
         public int RolId { get; set; } //Clave foránea para la relación con la clase Rol
         public Rol? Rol { get; set; } //Propiedad de navegación para acceder al rol asociado al usuario
-        public string? NombreRol => Rol != null ? Rol.Nombre : string.Empty; //Propiedad calculada para obtener el nombre del rol
-        
+
         public ICollection<Venta>? Ventas { get; set; } //Propiedad de navegación para acceder a las ventas realizadas por el usuario
     }
 }

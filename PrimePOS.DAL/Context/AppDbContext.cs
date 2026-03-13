@@ -17,8 +17,6 @@ namespace PrimePOS.DAL.Context
         public DbSet<Caja> Cajas { get; set; }
         public DbSet<AperturaCaja> AperturaCajas { get; set; }
         public DbSet<MetodoPago> MetodoPagos { get; set; }
-
-
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<DetalleVenta> DetalleVentas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,7 +31,7 @@ namespace PrimePOS.DAL.Context
              (
                 new MetodoPago { MetodoPagoId = 1, Nombre = "Efectivo", Estado = true },
                 new MetodoPago { MetodoPagoId = 2, Nombre = "Tarjeta", Estado = true },
-                new MetodoPago { MetodoPagoId = 3, Nombre = "Teansferencia", Estado = true }
+                new MetodoPago { MetodoPagoId = 3, Nombre = "Transferencia", Estado = true }
              );
             modelBuilder.Entity<Caja>().HasData
              (
@@ -46,7 +44,7 @@ namespace PrimePOS.DAL.Context
 
              );
 
-
+            base.OnModelCreating(modelBuilder);
         }      
 
 

@@ -12,8 +12,8 @@ using PrimePOS.DAL.Context;
 namespace PrimePOS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260307054248_NewNameNombreTableRol")]
-    partial class NewNameNombreTableRol
+    [Migration("20260312235822_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,68 @@ namespace PrimePOS.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.AperturaCaja", b =>
+                {
+                    b.Property<int>("AperturaCajaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AperturaCajaId"));
+
+                    b.Property<int>("CajaId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaApertura")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaCierre")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("MontoCierre")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MontoInicial")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AperturaCajaId");
+
+                    b.ToTable("AperturaCajas");
+                });
+
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.Caja", b =>
+                {
+                    b.Property<int>("CajaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CajaId"));
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CajaId");
+
+                    b.ToTable("Cajas");
+
+                    b.HasData(
+                        new
+                        {
+                            CajaId = 1,
+                            Estado = true,
+                            Nombre = "Caja Principal"
+                        });
+                });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Categoria", b =>
                 {
@@ -36,10 +98,8 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("FechaRegistro")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Nombre")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CategoriaId");
@@ -56,27 +116,47 @@ namespace PrimePOS.DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClienteId"));
 
                     b.Property<string>("Direccion")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Documento")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("Estado")
+                    b.Property<bool>("Estado")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telefono")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ClienteId");
 
                     b.ToTable("Clientes");
+
+                    b.HasData(
+                        new
+                        {
+                            ClienteId = 1,
+                            Direccion = "",
+                            Documento = "",
+                            Email = "",
+                            Estado = true,
+                            FechaRegistro = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Nombre = "Consumidor Final",
+                            Telefono = ""
+                        });
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.DetalleVenta", b =>
@@ -92,10 +172,6 @@ namespace PrimePOS.DAL.Migrations
 
                     b.Property<decimal>("Impuesto")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("NombreProducto")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PrecioUnitario")
                         .HasColumnType("decimal(18,2)");
@@ -121,6 +197,46 @@ namespace PrimePOS.DAL.Migrations
                     b.ToTable("DetalleVentas");
                 });
 
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.MetodoPago", b =>
+                {
+                    b.Property<int>("MetodoPagoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MetodoPagoId"));
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MetodoPagoId");
+
+                    b.ToTable("MetodoPagos");
+
+                    b.HasData(
+                        new
+                        {
+                            MetodoPagoId = 1,
+                            Estado = true,
+                            Nombre = "Efectivo"
+                        },
+                        new
+                        {
+                            MetodoPagoId = 2,
+                            Estado = true,
+                            Nombre = "Tarjeta"
+                        },
+                        new
+                        {
+                            MetodoPagoId = 3,
+                            Estado = true,
+                            Nombre = "Transferencia"
+                        });
+                });
+
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Producto", b =>
                 {
                     b.Property<int>("ProductoId")
@@ -137,9 +253,11 @@ namespace PrimePOS.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CodigoBarra")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Descripcion")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Estado")
@@ -207,7 +325,7 @@ namespace PrimePOS.DAL.Migrations
                         {
                             RolId = 3,
                             Estado = false,
-                            Nombre = "Empleado"
+                            Nombre = "Cajero"
                         });
                 });
 
@@ -223,10 +341,14 @@ namespace PrimePOS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("FechaCreacion")
+                    b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Nombre")
@@ -259,6 +381,12 @@ namespace PrimePOS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VentaId"));
 
+                    b.Property<int>("AperturaCajaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CajaId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
@@ -268,10 +396,17 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("Fecha")
+                    b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("MetodoPago")
+                    b.Property<decimal>("Impuesto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("MetodoPagoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NumeroComprobante")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Subtotal")
@@ -280,15 +415,18 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("TotalImpuesto")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("VentaId");
 
+                    b.HasIndex("AperturaCajaId");
+
+                    b.HasIndex("CajaId");
+
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("MetodoPagoId");
 
                     b.HasIndex("UsuarioId");
 
@@ -338,9 +476,27 @@ namespace PrimePOS.DAL.Migrations
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Venta", b =>
                 {
+                    b.HasOne("PrimePOS.ENTITIES.Models.AperturaCaja", "AperturaCaja")
+                        .WithMany()
+                        .HasForeignKey("AperturaCajaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrimePOS.ENTITIES.Models.Caja", "Caja")
+                        .WithMany()
+                        .HasForeignKey("CajaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PrimePOS.ENTITIES.Models.Cliente", "Cliente")
                         .WithMany("Ventas")
                         .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrimePOS.ENTITIES.Models.MetodoPago", "MetodoPago")
+                        .WithMany()
+                        .HasForeignKey("MetodoPagoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -350,7 +506,13 @@ namespace PrimePOS.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("AperturaCaja");
+
+                    b.Navigation("Caja");
+
                     b.Navigation("Cliente");
+
+                    b.Navigation("MetodoPago");
 
                     b.Navigation("Usuario");
                 });

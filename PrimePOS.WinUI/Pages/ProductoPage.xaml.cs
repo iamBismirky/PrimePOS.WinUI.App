@@ -17,6 +17,14 @@ public sealed partial class ProductoPage : Page
     public ProductoPage()
     {
         InitializeComponent();
+        
+
+        //Foco en el textBox Nombre
+        txtNombre.Focus(FocusState.Programmatic);
+
+        //Aplicar formato a los NumericBox decimales
+        NumberBoxHelper.AplicarFormatoMoneda(nbPrecioCompra);
+        NumberBoxHelper.AplicarFormatoMoneda(nbPrecioVenta);
     }
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
@@ -27,13 +35,6 @@ public sealed partial class ProductoPage : Page
             //Cargar listado de productos (DataGrid) y categorias(ComboBox)
             await ListarProductosAsync();
             await ListarCategoriasAsync();
-
-            //Foco en el textBox Nombre
-            txtNombre.Focus(FocusState.Programmatic);
-
-            //Aplicar formato a los NumericBox decimales
-            NumberBoxHelper.AplicarFormatoMoneda(nbPrecioCompra);
-            NumberBoxHelper.AplicarFormatoMoneda(nbPrecioVenta);
 
         }
         catch (Exception ex)

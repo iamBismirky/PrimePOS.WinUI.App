@@ -7,7 +7,7 @@ namespace PrimePOS.WinUI.Infrastructure
 {
     public static class DialogHelper
     {
-        public static async Task MostrarMensaje(XamlRoot xamlRoot, string titulo, string mensaje)
+        public static async Task<ContentDialogResult> MostrarMensaje(XamlRoot xamlRoot, string titulo, string mensaje)
         {
             var dialog = new ContentDialog
             {
@@ -17,7 +17,7 @@ namespace PrimePOS.WinUI.Infrastructure
                 XamlRoot = xamlRoot
             };
 
-            await dialog.ShowAsync();
+            return await dialog.ShowAsync();
         }
     }
 }

@@ -1,10 +1,8 @@
-﻿using PrimePOS.BLL.DTOs;
-using PrimePOS.BLL.DTOs.Usuario;
+﻿using PrimePOS.BLL.DTOs.Usuario;
 using PrimePOS.BLL.Security;
 using PrimePOS.BLL.Validators;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PrimePOS.BLL.Services
 {
@@ -28,20 +26,26 @@ namespace PrimePOS.BLL.Services
                 Username = dto.Username,
                 Password = PasswordService.Hash(dto.Password),
                 Estado = dto.Estado,
-                RolId = dto.RolId
+                RolId = dto.RolId,
+                FechaRegistro = DateTime.Now,
             };
 
             _usuarioRepository.Crear(usuario);
             await _usuarioRepository.GuardarCambiosAsync();
-            
+
+            usuario.Codigo = GenerarCodigoUsuario(usuario.UsuarioId);
+
+            _usuarioRepository.Actualizar(usuario);
+            await _usuarioRepository.GuardarCambiosAsync();
+    
         }
 
-        
+
 
         public async Task ActualizarUsuarioAsync(ActualizarUsuarioDto dto)
         {
             UsuarioValidator.ValidarActualizar(dto);
-            
+
             var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
                 ?? throw new Exception("Usuario no encontrado. Seleccione uno.");
 
@@ -56,7 +60,7 @@ namespace PrimePOS.BLL.Services
 
             _usuarioRepository.Actualizar(usuario);
             await _usuarioRepository.GuardarCambiosAsync();
-            
+
         }
 
         public async Task<bool> EliminarUsuarioAsync(EliminarUsuarioDto dto)
@@ -81,14 +85,16 @@ namespace PrimePOS.BLL.Services
         }
         public async Task<UsuarioDto?> ObtenerUsuarioPorIdAsync(int id)
         {
-            var usuario =  await _usuarioRepository.ObtenerPorId(id);
+            var usuario = await _usuarioRepository.ObtenerPorId(id);
 
-            if(usuario == null) return null;
+            if (usuario == null) return null;
 
             return new UsuarioDto
             {
                 UsuarioId = usuario.UsuarioId,
+                
                 Nombre = usuario.Nombre,
+                Codigo = usuario.Codigo,
                 Apellidos = usuario.Apellidos,
                 Username = usuario.Username,
                 RolId = usuario.RolId,
@@ -105,6 +111,7 @@ namespace PrimePOS.BLL.Services
             return usuarios.Select(u => new UsuarioDto
             {
                 UsuarioId = u.UsuarioId,
+                Codigo=u.Codigo,
                 Nombre = u.Nombre,
                 Apellidos = u.Apellidos,
                 Username = u.Username,
@@ -165,13 +172,16 @@ namespace PrimePOS.BLL.Services
             return new AppSesionUsuarioDto
             {
                 UsuarioId = usuario.UsuarioId,
-                UsuarioNombre = usuario.Nombre +" "+ usuario.Apellidos,
+                UsuarioNombre = usuario.Nombre + " " + usuario.Apellidos,
                 RolId = usuario.RolId,
                 RolNombre = usuario.Rol?.Nombre ?? ""
             };
         }
 
-        
+        private string GenerarCodigoUsuario(int productoId)
+        {
+            return $"PRO-{productoId:D4}";
+        }
     }
 }
 

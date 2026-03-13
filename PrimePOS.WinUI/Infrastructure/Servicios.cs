@@ -9,7 +9,6 @@ namespace PrimePOS.WinUI.Infrastructure
     public static class Servicios
     {
         public static AppDbContext _context = null!;
-
         public static UsuarioService UsuarioService { get; private set; } = null!;
         public static RolService RolService { get; private set; } = null!;
         public static CategoriaService CategoriaService { get; private set; } = null!;
@@ -21,16 +20,17 @@ namespace PrimePOS.WinUI.Infrastructure
         public static void Inicializar()
         {
             //Cadena de conexión
-            string connectionString = @"Server=(localdb)\MSSQLLocalDB;Database=PrimePOS.DB.WEB;Trusted_Connection=True;TrustServerCertificate=True;";
+            string connectionString = @"Server=(localdb)\MSSQLLocalDB;Database=PrimePOS_DB;Trusted_Connection=True;TrustServerCertificate=True;";
 
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseSqlServer(connectionString)
                 .Options;
 
-
-
+           
 
             _context = new AppDbContext(options);
+
+           
 
             // Crear repositorio
             var usuarioRepository = new UsuarioRepository(_context);
