@@ -82,7 +82,7 @@ public class ClienteService
     // Listar
     public async Task<List<ClienteDto>> ListarClientes()
     {
-        var clientes =  await _clienteRepository.ListarClientesAsync();
+        var clientes = await _clienteRepository.ListarClientesAsync();
 
         return clientes.Select(c => new ClienteDto
         {
@@ -96,7 +96,7 @@ public class ClienteService
             Telefono = c.Telefono,
             Estado = c.Estado,
             FechaRegistro = c.FechaRegistro,
-            
+
 
         }).ToList();
     }
@@ -114,10 +114,10 @@ public class ClienteService
             ClienteId = cliente.ClienteId,
             Codigo = cliente.Codigo,
             Nombre = cliente.Nombre,
-            Documento = cliente.Documento,  
-            Direccion= cliente.Direccion,
+            Documento = cliente.Documento,
+            Direccion = cliente.Direccion,
             Email = cliente.Email,
-            Telefono= cliente.Telefono,
+            Telefono = cliente.Telefono,
             Estado = cliente.Estado,
             FechaRegistro = cliente.FechaRegistro,
         };
@@ -136,7 +136,36 @@ public class ClienteService
         _clienteRepository.Actualizar(cliente);
         await _clienteRepository.GuardarCambiosAsync();
     }
+    public async Task<ClienteDto?> BuscarClienteCodigoONombreAsync(string buscar)
+    {
+        var cliente = await _clienteRepository.BuscarPorCodigoONombreAsync(buscar);
+        if (cliente == null)
+            return null;
 
+        return new ClienteDto
+        {
+            ClienteId = cliente.ClienteId,
+            Nombre = cliente.Nombre,
+            Codigo = cliente.Codigo,
+            Documento = cliente.Documento,
+
+        };
+
+    }
+    public async Task<List<ClienteDto>> BuscarClienteCodigoONombreListAsync(string buscar)
+    {
+        var cliente = await _clienteRepository.BuscarPorCodigoONombreListAsync(buscar);
+
+
+        return cliente.Select(c => new ClienteDto
+        {
+            ClienteId = c.ClienteId,
+            Codigo = c.Codigo,
+            Nombre = c.Nombre,
+            Documento = c.Documento,
+
+        }).ToList();
+    }
     private string GenerarCodigoCliente(int clienteId)
     {
         return $"CLIENT-{clienteId:D4}";

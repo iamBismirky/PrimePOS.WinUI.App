@@ -96,12 +96,30 @@
                     Padding="15"
                     Grid.Column="1"
                     Width="300"
-                    Margin="10">
+                    Margin="0">
 
                 <controls:WrapPanel Orientation="Vertical" >
 
                     <TextBlock Text="Cliente" FontWeight="Bold"  FontFamily="Segoe UI"/>
                     <ComboBox x:Name="cmbCliente"  SelectedIndex="0"/>
+                    <AutoSuggestBox Grid.Column="0"
+                                    x:Name="txtBuscarCliente" 
+                                    
+                                    TextChanged="txtBuscarCliente_TextChanged"
+                                    QuerySubmitted="txtBuscarCliente_QuerySubmitted"
+                                    SuggestionChosen="txtBuscarCliente_SuggestionChosen"
+                                    Width="300">
+
+
+                        <AutoSuggestBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="{Binding Codigo}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding Nombre}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </AutoSuggestBox.ItemTemplate>
+                    </AutoSuggestBox>
                 </controls:WrapPanel>
             </Border>
             
@@ -139,6 +157,20 @@
                 <controls:DataGridTextColumn Header="Precio" Binding="{Binding Precio, Converter={StaticResource NumeroConverter}}" Width="*"/>
                 <controls:DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*"/>
                 <controls:DataGridTextColumn Header="Total" Binding="{Binding Total, Converter={StaticResource NumeroConverter}}" Width="*"/>
+
+                <controls:DataGridTemplateColumn  Width="*" >
+                    <controls:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Button Click="BtnEliminarProducto_Click"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                    <FontIcon Glyph="&#xE74D;"/>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </controls:DataGridTemplateColumn.CellTemplate>
+                </controls:DataGridTemplateColumn>
             </controls:DataGrid.Columns>
 
         </controls:DataGrid>
@@ -154,9 +186,21 @@
 
             <!-- Totales -->
             <StackPanel Grid.Column="0" Spacing="5" HorizontalAlignment="Left">
-                <TextBlock FontSize="24" FontWeight="SemiBold" Text="Subtotal" x:Name="txtSubtotal"/>
-                <TextBlock FontSize="24" FontWeight="SemiBold" Text="Impuesto" x:Name="txtImpuesto"/>
-                <TextBlock FontSize="26" FontWeight="Bold" Text="Total" x:Name="txtTotal"/>
+                <TextBlock>
+                    <Run Text="SubTotal: " FontSize="20" FontWeight="SemiBold" />
+                    <Run FontSize="20" FontWeight="SemiBold"  x:Name="txtSubtotal"/>
+                </TextBlock>
+                
+                <TextBlock>
+                    <Run Text="Impuesto: " FontSize="20" FontWeight="SemiBold" />
+                    <Run FontSize="20" FontWeight="SemiBold"  x:Name="txtImpuesto"/>
+                </TextBlock>
+                
+                <TextBlock>
+                    <Run Text="Total: " FontSize="24" FontWeight="Bold" />
+                    <Run FontSize="24" FontWeight="SemiBold"  x:Name="txtTotal"/>
+                </TextBlock>
+
             </StackPanel>
 
             <!-- Botones de acción -->

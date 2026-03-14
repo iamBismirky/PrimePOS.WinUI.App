@@ -2,7 +2,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
+using PrimePOS.BLL.DTOs.Cliente;
 using PrimePOS.BLL.DTOs.Producto;
+using PrimePOS.BLL.DTOs.Venta;
 using PrimePOS.WinUI.Infrastructure;
 using System;
 using System.Threading.Tasks;
@@ -15,11 +17,14 @@ public sealed partial class VentasPage : Page
 {
 
     private DispatcherTimer _timer = new DispatcherTimer();
+    private ClienteDto? clienteSeleccionado;
 
     public VentasPage()
     {
         InitializeComponent();
-        InicializarBuscadorProductos();
+        InicializarBuscador();
+
+
         NavigationCacheMode = NavigationCacheMode.Required;
 
 
@@ -28,6 +33,21 @@ public sealed partial class VentasPage : Page
     {
         await ListarClientes();
         await ListarMetodosPagos();
+        await CargarConsumidorFinal();
+        txtBuscarProducto.Focus(FocusState.Programmatic);
+    }
+    private void BtnEliminarProducto_Click(object sender, RoutedEventArgs e)
+    {
+        var button = sender as Button;
+        var item = button?.DataContext as CarritoItem;
+
+        if (item == null)
+            return;
+
+        Servicios.VentaService.EliminarProducto(item.ProductoId);
+
+        txtBuscarProducto.Focus(FocusState.Programmatic);
+
     }
     private void BtnBorrarProducto_Click(object sender, RoutedEventArgs e)
     {
@@ -41,9 +61,9 @@ public sealed partial class VentasPage : Page
 
     private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        LimpiarCampos();
+        txtBuscarProducto.Focus(FocusState.Programmatic);
     }
-
     private async void BtnAgregarProductoCarrito_Click(object sender, RoutedEventArgs e)
     {
         var producto = await Servicios.ProductoService
@@ -64,7 +84,6 @@ public sealed partial class VentasPage : Page
 
 
     }
-    private async void txtBuscarProducto_DoubleClick(object sender, RoutedEventArgs e) { }
 
     private async void txtBuscarProducto_KeyDown(object sender, KeyRoutedEventArgs e)
     {
@@ -106,7 +125,23 @@ public sealed partial class VentasPage : Page
 
 
     }
+    private async void txtBuscarCliente_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+    {
+        if (string.IsNullOrWhiteSpace(sender.Text) || sender.Text.Length < 3)
+        {
+            sender.ItemsSource = null;
+            _timer?.Stop();
+            return;
+        }
 
+        if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+        {
+            _timer?.Stop();
+            _timer?.Start();
+        }
+
+
+    }
 
     private async void txtBuscarProducto_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
@@ -131,11 +166,29 @@ public sealed partial class VentasPage : Page
             }
         }
     }
+    private async void txtBuscarCliente_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+    {
+
+        {
+            var texto = sender.Text;
+
+            var cliente = await Servicios.ClienteService
+                .BuscarClienteCodigoONombreListAsync(texto);
+
+
+        }
+    }
     private void txtBuscarProducto_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
     {
         var producto = (ProductoDto)args.SelectedItem;
 
         sender.Text = producto.Nombre;
+    }
+    private void txtBuscarCliente_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+    {
+        var cliente = (ClienteDto)args.SelectedItem;
+
+        sender.Text = cliente.Nombre;
     }
     private void CalcularTotales()
     {
@@ -167,31 +220,48 @@ public sealed partial class VentasPage : Page
 
     }
 
-    private void InicializarBuscadorProductos()
+    private void InicializarBuscador()
     {
         _timer = new DispatcherTimer
         {
             Interval = TimeSpan.FromMilliseconds(1000)
         };
 
-        _timer.Tick += TimerBuscarProducto_Tick;
+        _timer.Tick += TimerBuscar_Tick;
     }
+    private async Task BuscarProductosAsync()
+    {
+        if (string.IsNullOrWhiteSpace(txtBuscarProducto.Text) || txtBuscarProducto.Text.Length < 3)
+        {
+            txtBuscarProducto.ItemsSource = null;
+            return;
+        }
 
-    private async void TimerBuscarProducto_Tick(object? sender, object e)
+        var productos = await Servicios.ProductoService
+            .BuscarProductoCodigoONombreListAsync(txtBuscarProducto.Text);
+
+        txtBuscarProducto.ItemsSource = productos;
+    }
+    private async Task BuscarClientesAsync()
+    {
+        if (string.IsNullOrWhiteSpace(txtBuscarCliente.Text) || txtBuscarCliente.Text.Length < 3)
+        {
+            txtBuscarCliente.ItemsSource = null;
+            return;
+        }
+
+        var clientes = await Servicios.ClienteService
+            .BuscarClienteCodigoONombreListAsync(txtBuscarCliente.Text);
+
+        txtBuscarCliente.ItemsSource = clientes;
+    }
+    private async void TimerBuscar_Tick(object? sender, object e)
     {
         try
         {
             _timer.Stop();
-            if (string.IsNullOrWhiteSpace(txtBuscarProducto.Text) || txtBuscarProducto.Text.Length < 3)
-            {
-                txtBuscarProducto.ItemsSource = null;
-                return;
-            }
-
-            var productos = await Servicios.ProductoService
-                .BuscarProductoCodigoONombreListAsync(txtBuscarProducto.Text);
-
-            txtBuscarProducto.ItemsSource = productos;
+            await BuscarProductosAsync();
+            await BuscarClientesAsync();
 
 
         }
@@ -200,6 +270,31 @@ public sealed partial class VentasPage : Page
 
             await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
         }
+
+    }
+    private async Task CargarConsumidorFinal()
+    {
+        var cliente = await Servicios.ClienteService.ObtenerPorId(1);
+        if (cliente != null)
+        {
+            clienteSeleccionado = cliente;
+            txtBuscarCliente.Text = cliente.Nombre;
+        }
+    }
+    private void LimpiarCampos()
+    {
+        txtBuscarProducto.Text = "";
+
+        dgCarrito.ItemsSource = null;
+        Servicios.VentaService.VaciarCarrito();
+
+        txtSubtotal.Text = null;
+        txtImpuesto.Text = null;
+        txtTotal.Text = null;
+
+        txtBuscarProducto.Focus(FocusState.Programmatic);
+
+
 
     }
 }

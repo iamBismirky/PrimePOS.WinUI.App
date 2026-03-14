@@ -34,7 +34,17 @@ public class ClienteRepository
     {
         return await _context.Clientes.FindAsync(id);
     }
-
+    public async Task<Cliente?> BuscarPorCodigoONombreAsync(string buscar)
+    {
+        return await _context.Clientes
+            .FirstOrDefaultAsync(c => c.Codigo == buscar || c.Nombre!.Contains(buscar));
+    }
+    public async Task<List<Cliente>> BuscarPorCodigoONombreListAsync(string buscar)
+    {
+        return await _context.Clientes
+            .Where(c => c.Codigo.Contains(buscar) || c.Nombre!.Contains(buscar)).Take(10)
+        .ToListAsync();
+    }
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();

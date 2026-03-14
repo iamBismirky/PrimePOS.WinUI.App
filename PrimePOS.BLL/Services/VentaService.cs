@@ -27,6 +27,7 @@ public class VentaService
         if (existente != null)
         {
             existente.Cantidad++;
+
         }
         else
         {
