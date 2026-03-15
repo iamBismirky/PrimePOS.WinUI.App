@@ -62,9 +62,10 @@
                                     TextChanged="txtBuscarProducto_TextChanged"
                                     QuerySubmitted="txtBuscarProducto_QuerySubmitted"
                                     SuggestionChosen="txtBuscarProducto_SuggestionChosen"
-                                    KeyDown="txtBuscarProducto_KeyDown"
                                     Width="300"
-                                    PlaceholderText="Buscar producto por código o nombre...">
+                                    PlaceholderText="Buscar producto por código o nombre..."
+                                    QueryIcon="Find"
+                                    UpdateTextOnSelect="True">
 
 
                         <AutoSuggestBox.ItemTemplate>
@@ -104,11 +105,12 @@
                     <ComboBox x:Name="cmbCliente"  SelectedIndex="0"/>
                     <AutoSuggestBox Grid.Column="0"
                                     x:Name="txtBuscarCliente" 
-                                    
                                     TextChanged="txtBuscarCliente_TextChanged"
                                     QuerySubmitted="txtBuscarCliente_QuerySubmitted"
                                     SuggestionChosen="txtBuscarCliente_SuggestionChosen"
-                                    Width="300">
+                                    Width="220"
+                                    QueryIcon="Find"
+                                    UpdateTextOnSelect="True">
 
 
                         <AutoSuggestBox.ItemTemplate>
@@ -149,7 +151,8 @@
                                Width="auto"
                                RowHeight="40"
                                ColumnHeaderHeight="40"
-                               FontSize="14">
+                               FontSize="14"
+                               IsReadOnly="True">
 
             <controls:DataGrid.Columns>
                 <controls:DataGridTextColumn Header="Codigo" Binding="{Binding Codigo}" Width="*"/>
