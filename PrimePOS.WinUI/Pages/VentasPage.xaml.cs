@@ -25,6 +25,7 @@ public sealed partial class VentasPage : Page
         InitializeComponent();
         InicializarBuscador();
 
+        txtFecha.Text = DateTime.Now.ToString("dd/MM/yyy");
 
         NavigationCacheMode = NavigationCacheMode.Required;
 
@@ -374,6 +375,11 @@ public sealed partial class VentasPage : Page
         txtBuscarProducto.Focus(FocusState.Programmatic);
         await CargarConsumidorFinal();
 
+
+    }
+
+    private void cmbDescuento_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
 
     }
 }
