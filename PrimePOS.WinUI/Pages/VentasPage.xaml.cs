@@ -225,6 +225,7 @@ public sealed partial class VentasPage : Page
     private void CalcularTotales()
     {
         txtSubtotal.Text = Servicios.VentaService.Subtotal.ToString("N2");
+        txtDescuento.Text = Servicios.VentaService.DescuentoMonto.ToString("N2");
         txtImpuesto.Text = Servicios.VentaService.Impuesto.ToString("N2");
         txtTotal.Text = Servicios.VentaService.Total.ToString("N2");
     }
@@ -380,6 +381,12 @@ public sealed partial class VentasPage : Page
 
     private void cmbDescuento_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+
+        decimal porcentaje = Convert.ToDecimal(cmbDescuento.SelectedValue);
+
+        Servicios.VentaService.AplicarDescuento(porcentaje);
+        CalcularTotales();
+
 
     }
 }

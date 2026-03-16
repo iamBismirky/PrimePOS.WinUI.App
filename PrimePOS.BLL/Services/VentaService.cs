@@ -17,8 +17,10 @@ public class VentaService
     public decimal Subtotal => Carrito.Sum(x => x.Total);
 
     public decimal Impuesto => Subtotal * 0.18m;
-
-    public decimal Total => Subtotal + Impuesto;
+    public decimal DescuentoPorcentaje { get; set; }
+    public decimal DescuentoMonto => Subtotal * (DescuentoPorcentaje / 100);
+    public decimal SubtotalConDescuento => Subtotal - DescuentoMonto;
+    public decimal Total => Subtotal + Impuesto - DescuentoMonto;
 
     public void AgregarProductoCarrito(ProductoDto producto)
     {
@@ -53,6 +55,19 @@ public class VentaService
     public void VaciarCarrito()
     {
         Carrito.Clear();
+    }
+    public void AplicarDescuento(decimal porcentaje)
+    {
+        DescuentoPorcentaje = porcentaje;
+    }
+    public void CalcularTotales()
+    {
+        decimal subtotal = Carrito.Sum(x => x.Total);
+
+        decimal descuento = subtotal * (DescuentoPorcentaje / 100);
+
+        decimal total = subtotal - descuento;
+
     }
 
 }
