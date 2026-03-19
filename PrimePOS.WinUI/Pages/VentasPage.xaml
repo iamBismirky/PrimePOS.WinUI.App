@@ -6,14 +6,15 @@
     xmlns:local="using:PrimePOS.WinUI"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:helpers="using:PrimePOS.WinUI.Infrastructure"
+    xmlns:helpers="using:PrimePOS.WinUI.Helpers"
     Loaded="Page_loaded"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <helpers:NumeroConverter x:Key="NumeroConverter"/>
+        <helpers:NumeroConverterHelper x:Key="NumeroConverterHelper"/>
     </Page.Resources>
-
+     
+    
     <Grid Padding="20" RowSpacing="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -21,6 +22,30 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <ContentDialog
+    x:Name="dlgAperturaCaja"
+    Title="Apertura de Caja"
+    PrimaryButtonText="Abrir Caja"
+    CloseButtonText="Cancelar"
+    PrimaryButtonClick="dlgAperturaCaja_PrimaryButtonClick">
+
+            <StackPanel Spacing="10">
+
+                <NumberBox
+            x:Name="nbMontoInicial"
+            Header="Monto inicial"
+            PlaceholderText="0.00"/>
+
+                <ComboBox x:Name="cmbTurno" SelectedValuePath="Tag">
+
+                    <ComboBoxItem Content="Turno 1" Tag="1" IsSelected="True"/>
+                    <ComboBoxItem Content="Turno 2" Tag="2"/>
+
+                </ComboBox>
+
+            </StackPanel>
+
+        </ContentDialog>
 
         <!--Header-->
 
@@ -80,7 +105,7 @@
                                     <TextBlock Text="{Binding Nombre}"/>
                                     <TextBlock>
                                         <Run Text="$"/>
-                                        <Run Text="{Binding PrecioVenta, Converter={StaticResource NumeroConverter}}"/>
+                                        <Run Text="{Binding PrecioVenta, Converter={StaticResource NumeroConverterHelper}}"/>
                                     </TextBlock>
                                 </StackPanel>
                             </DataTemplate>
@@ -163,9 +188,9 @@
                 <controls:DataGrid.Columns>
                     <controls:DataGridTextColumn Header="Codigo" Binding="{Binding Codigo}" Width="*"/>
                     <controls:DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
-                    <controls:DataGridTextColumn Header="Precio" Binding="{Binding Precio, Converter={StaticResource NumeroConverter}}" Width="*"/>
+                    <controls:DataGridTextColumn Header="Precio" Binding="{Binding Precio, Converter={StaticResource NumeroConverterHelper}}" Width="*"/>
                     <controls:DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*"/>
-                    <controls:DataGridTextColumn Header="Total" Binding="{Binding Total, Converter={StaticResource NumeroConverter}}" Width="*"/>
+                    <controls:DataGridTextColumn Header="Total" Binding="{Binding Total, Converter={StaticResource NumeroConverterHelper}}" Width="*"/>
 
                     <controls:DataGridTemplateColumn  Width="*" >
                         <controls:DataGridTemplateColumn.CellTemplate>

@@ -1,24 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PrimePOS.ENTITIES.Models
+namespace PrimePOS.ENTITIES.Models;
+
+[Table("Usuarios")]
+public class Usuario
 {
-    [Table("Usuarios")]
-    public class Usuario
-    {
-        [Key]
-        public int UsuarioId { get; set; }
-        public string Codigo { get; set; } = string.Empty;
-        public string Nombre { get; set; } = string.Empty;
-        public string Apellidos { get; set; } = string.Empty;
-        public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public bool Estado { get; set; }
-        public DateTime FechaRegistro { get; set; }
+    [Key]
+    public int UsuarioId { get; set; }
+    public string Codigo { get; set; } = string.Empty;
+    public string Nombre { get; set; } = string.Empty;
+    public string Apellidos { get; set; } = string.Empty;
+    public string Username { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public bool Estado { get; set; }
+    public DateTime FechaRegistro { get; set; }
 
-        public int RolId { get; set; } //Clave foránea para la relación con la clase Rol
-        public Rol? Rol { get; set; } //Propiedad de navegación para acceder al rol asociado al usuario
+    public int RolId { get; set; } //Clave foránea para la relación con la clase Rol
+    public Rol? Rol { get; set; } //Propiedad de navegación para acceder al rol asociado al usuario
 
-        public ICollection<Venta>? Ventas { get; set; } //Propiedad de navegación para acceder a las ventas realizadas por el usuario
-    }
+    public ICollection<Venta>? Ventas { get; set; } //Propiedad de navegación para acceder a las ventas realizadas por el usuario
 }

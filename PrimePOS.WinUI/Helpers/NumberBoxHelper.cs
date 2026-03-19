@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Windows.Globalization.NumberFormatting;
 
-namespace PrimePOS.WinUI.Infrastructure
+namespace PrimePOS.WinUI.Helpers
 {
     public static class NumberBoxHelper
 

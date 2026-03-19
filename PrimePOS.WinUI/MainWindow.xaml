@@ -6,8 +6,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PrimePOS.WinUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:controls="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d"
+    xmlns:helpers="using:PrimePOS.WinUI.Helpers"
     Title="PrimePOS.WinUI">
 
     <Window.SystemBackdrop>
@@ -59,8 +61,7 @@
                                         Text="PrimePOS"
                                         FontSize="18"
                                         FontWeight="SemiBold"
-                                        VerticalAlignment="Center"
-                                        KeyDown="TextBlock_KeyDown"/>
+                                        VerticalAlignment="Center"/>
                             </StackPanel>
 
                             

@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using PrimePOS.BLL.DTOs.Usuario;
+using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
 using System;
 using System.Threading.Tasks;

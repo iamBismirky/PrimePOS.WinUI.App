@@ -21,6 +21,8 @@ namespace PrimePOS.WinUI
             contentFrame.Navigate(typeof(DashboardPage));
             RootGrid.RequestedTheme = App.TemaActual;
             this.ExtendsContentIntoTitleBar = true;
+
+
             //navView.SelectionChanged += navView_SelectionChanged;
         }
         private void TitleBar_BackRequested(TitleBar sender, object args)
@@ -90,9 +92,6 @@ namespace PrimePOS.WinUI
             }
         }
 
-        private void TextBlock_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
-        {
 
-        }
     }
 }

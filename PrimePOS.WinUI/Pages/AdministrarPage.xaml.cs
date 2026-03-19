@@ -38,4 +38,8 @@ public partial class AdministrarPage
     {
         Frame.Navigate(typeof(ClientePage));
     }
+    private void BtnGestionCajas_Click(object sender, RoutedEventArgs e)
+    {
+        Frame.Navigate(typeof(GestionCajasPage));
+    }
 }

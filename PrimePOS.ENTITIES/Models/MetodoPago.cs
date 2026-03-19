@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PrimePOS.ENTITIES.Models
+namespace PrimePOS.ENTITIES.Models;
+
+[Table("MetodoPagos")]
+public class MetodoPago
 {
-    public class MetodoPago
-    {
-        public int MetodoPagoId { get; set; }
+    [Key]
+    public int MetodoPagoId { get; set; }
 
-        public string Nombre { get; set; } = string.Empty;
+    public string Nombre { get; set; } = string.Empty;
 
-        public bool Estado { get; set; }
-    }
+    public bool Estado { get; set; }
 }

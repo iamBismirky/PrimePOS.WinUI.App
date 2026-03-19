@@ -17,7 +17,7 @@ namespace PrimePOS.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.3")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -48,10 +48,17 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<decimal>("MontoInicial")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("Turno")
+                        .HasColumnType("int");
+
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("AperturaCajaId");
+
+                    b.HasIndex("CajaId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("AperturaCajas");
                 });
@@ -181,6 +188,9 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ProductoId1")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(18,2)");
 
@@ -193,6 +203,8 @@ namespace PrimePOS.DAL.Migrations
                     b.HasKey("DetalleVentaId");
 
                     b.HasIndex("ProductoId");
+
+                    b.HasIndex("ProductoId1");
 
                     b.HasIndex("VentaId");
 
@@ -364,6 +376,9 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("RolId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RolId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -371,6 +386,8 @@ namespace PrimePOS.DAL.Migrations
                     b.HasKey("UsuarioId");
 
                     b.HasIndex("RolId");
+
+                    b.HasIndex("RolId1");
 
                     b.ToTable("Usuarios");
                 });
@@ -386,10 +403,10 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("AperturaCajaId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CajaId")
+                    b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ClienteId")
+                    b.Property<int?>("ClienteId1")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Descuento")
@@ -424,9 +441,9 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasIndex("AperturaCajaId");
 
-                    b.HasIndex("CajaId");
-
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("ClienteId1");
 
                     b.HasIndex("MetodoPagoId");
 
@@ -435,18 +452,41 @@ namespace PrimePOS.DAL.Migrations
                     b.ToTable("Ventas");
                 });
 
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.AperturaCaja", b =>
+                {
+                    b.HasOne("PrimePOS.ENTITIES.Models.Caja", "Caja")
+                        .WithMany()
+                        .HasForeignKey("CajaId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PrimePOS.ENTITIES.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Caja");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.DetalleVenta", b =>
                 {
                     b.HasOne("PrimePOS.ENTITIES.Models.Producto", "Producto")
-                        .WithMany("Detalles")
+                        .WithMany()
                         .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("PrimePOS.ENTITIES.Models.Producto", null)
+                        .WithMany("Detalles")
+                        .HasForeignKey("ProductoId1");
 
                     b.HasOne("PrimePOS.ENTITIES.Models.Venta", "Venta")
                         .WithMany("Detalles")
                         .HasForeignKey("VentaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Producto");
@@ -468,10 +508,14 @@ namespace PrimePOS.DAL.Migrations
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Usuario", b =>
                 {
                     b.HasOne("PrimePOS.ENTITIES.Models.Rol", "Rol")
-                        .WithMany("Usuarios")
+                        .WithMany()
                         .HasForeignKey("RolId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("PrimePOS.ENTITIES.Models.Rol", null)
+                        .WithMany("Usuarios")
+                        .HasForeignKey("RolId1");
 
                     b.Navigation("Rol");
                 });
@@ -479,44 +523,45 @@ namespace PrimePOS.DAL.Migrations
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Venta", b =>
                 {
                     b.HasOne("PrimePOS.ENTITIES.Models.AperturaCaja", "AperturaCaja")
-                        .WithMany()
+                        .WithMany("Ventas")
                         .HasForeignKey("AperturaCajaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PrimePOS.ENTITIES.Models.Caja", "Caja")
-                        .WithMany()
-                        .HasForeignKey("CajaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("PrimePOS.ENTITIES.Models.Cliente", "Cliente")
-                        .WithMany("Ventas")
+                        .WithMany()
                         .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("PrimePOS.ENTITIES.Models.Cliente", null)
+                        .WithMany("Ventas")
+                        .HasForeignKey("ClienteId1");
 
                     b.HasOne("PrimePOS.ENTITIES.Models.MetodoPago", "MetodoPago")
                         .WithMany()
                         .HasForeignKey("MetodoPagoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("PrimePOS.ENTITIES.Models.Usuario", "Usuario")
                         .WithMany("Ventas")
                         .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("AperturaCaja");
-
-                    b.Navigation("Caja");
 
                     b.Navigation("Cliente");
 
                     b.Navigation("MetodoPago");
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.AperturaCaja", b =>
+                {
+                    b.Navigation("Ventas");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Categoria", b =>

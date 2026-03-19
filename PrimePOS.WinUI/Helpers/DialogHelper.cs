@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Threading.Tasks;
 
-namespace PrimePOS.WinUI.Infrastructure
+namespace PrimePOS.WinUI.Helpers
 {
     public static class DialogHelper
     {

@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.BLL.DTOs.Categoria;
+using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
 using System;
 

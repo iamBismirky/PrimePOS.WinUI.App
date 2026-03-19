@@ -8,15 +8,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:helpers="using:PrimePOS.WinUI.Infrastructure"
+    xmlns:helpers="using:PrimePOS.WinUI.Helpers"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <Page.Resources>
-        <helpers:NumeroConverter x:Key="NumeroConverter"/>
+        <helpers:NumeroConverterHelper x:Key="NumeroConverterHelper"/>
     </Page.Resources>
 
-    <Grid Padding="20" RowSpacing="20">
+    <Grid Padding="20" RowSpacing="20" >
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -63,7 +63,8 @@
                     <TextBox x:Name="txtDescripcion"
                      Header="Descripcion"
                      Grid.Row="0"
-                     Grid.Column="1"/>
+                     Grid.Column="1"
+                             IsTabStop="True"/>
                     
                     <!-- Codigo Barra -->
                     <TextBox x:Name="txtCodigoBarra"
@@ -220,10 +221,10 @@
                                     Width="auto"/>
 
                         <controls:DataGridTextColumn Header="Precio de Compra"
-                                   Binding="{Binding PrecioCompra, Converter={StaticResource NumeroConverter}}"
+                                   Binding="{Binding PrecioCompra, Converter={StaticResource NumeroConverterHelper}}"
                                    Width="auto"/>
                         <controls:DataGridTextColumn Header="Precio de Venta"
-                                    Binding="{Binding PrecioVenta, Converter={StaticResource NumeroConverter}}"
+                                    Binding="{Binding PrecioVenta, Converter={StaticResource NumeroConverterHelper}}"
                                     Width="auto"/>
                         <controls:DataGridTextColumn Header="Existencia"
                                     Binding="{Binding Existencia}"

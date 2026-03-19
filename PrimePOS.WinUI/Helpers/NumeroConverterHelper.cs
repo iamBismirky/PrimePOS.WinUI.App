@@ -2,9 +2,9 @@
 using System;
 using System.Globalization;
 
-namespace PrimePOS.WinUI.Infrastructure
+namespace PrimePOS.WinUI.Helpers
 {
-    public class NumeroConverter : IValueConverter
+    public class NumeroConverterHelper : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

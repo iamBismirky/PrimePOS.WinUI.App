@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PrimePOS.ENTITIES.Models
+namespace PrimePOS.ENTITIES.Models;
+
+[Table("Cajas")]
+public class Caja
 {
-    public class Caja
-    {
-        public int CajaId { get; set; }
+    [Key]
+    public int CajaId { get; set; }
 
-        public string Nombre { get; set; } = string.Empty;
+    public string Nombre { get; set; } = string.Empty;
 
-        public bool Estado { get; set; }
-    }
+    public bool Estado { get; set; }
 }

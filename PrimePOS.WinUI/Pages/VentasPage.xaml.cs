@@ -1,13 +1,16 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using PrimePOS.BLL.DTOs.Caja;
 using PrimePOS.BLL.DTOs.Cliente;
 using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.BLL.DTOs.Venta;
+using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 
 
 namespace PrimePOS.WinUI.Pages;
@@ -33,6 +36,11 @@ public sealed partial class VentasPage : Page
     }
     private async void Page_loaded(object sender, RoutedEventArgs e)
     {
+        //if (!Servicios.CajaService.CajaAbierta())
+        //{
+        await dlgAperturaCaja.ShowAsync();
+        //    return;
+        //}
         try
         {
             await ListarClientes();
@@ -388,5 +396,20 @@ public sealed partial class VentasPage : Page
         CalcularTotales();
 
 
+    }
+    private async void dlgAperturaCaja_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+    {
+        var caja = new AperturaCajaDto
+        {
+            //CajaId = 1,
+            //UsuarioId = SesionUsuario.UsuarioId,
+            MontoInicial = Convert.ToDecimal(nbMontoInicial.Value),
+            Turno = Convert.ToInt32(cmbTurno.SelectedValue),
+
+        };
+
+
+        await Servicios.AperturaCajaService.AbrirCajaAsync(caja);
+        dlgAperturaCaja.Hide();
     }
 }

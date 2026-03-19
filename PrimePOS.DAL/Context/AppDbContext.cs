@@ -21,6 +21,8 @@ namespace PrimePOS.DAL.Context
         public DbSet<DetalleVenta> DetalleVentas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Rol>().HasData
              (
                 new Rol { RolId = 1, Nombre = "Desarrollador" },
@@ -44,8 +46,90 @@ namespace PrimePOS.DAL.Context
 
              );
 
-            base.OnModelCreating(modelBuilder);
-        }      
+
+            // =========================
+            // 🔹 USUARIO → VENTA
+            // =========================
+            modelBuilder.Entity<Venta>()
+                .HasOne(v => v.Usuario)
+                .WithMany(u => u.Ventas)
+                .HasForeignKey(v => v.UsuarioId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // =========================
+            // 🔹 USUARIO → APERTURA CAJA
+            // =========================
+            modelBuilder.Entity<AperturaCaja>()
+                .HasOne(a => a.Usuario)
+                .WithMany() // 👈 sin colección
+                .HasForeignKey(a => a.UsuarioId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // =========================
+            // 🔹 CAJA → APERTURA CAJA
+            // =========================
+            modelBuilder.Entity<AperturaCaja>()
+                .HasOne(a => a.Caja)
+                .WithMany()
+                .HasForeignKey(a => a.CajaId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // =========================
+            // 🔹 APERTURA CAJA → VENTA
+            // =========================
+            modelBuilder.Entity<Venta>()
+                .HasOne(v => v.AperturaCaja)
+                .WithMany(a => a.Ventas)
+                .HasForeignKey(v => v.AperturaCajaId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // =========================
+            // 🔹 CLIENTE → VENTA
+            // =========================
+            modelBuilder.Entity<Venta>()
+                .HasOne(v => v.Cliente)
+                .WithMany()
+                .HasForeignKey(v => v.ClienteId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // =========================
+            // 🔹 METODO PAGO → VENTA
+            // =========================
+            modelBuilder.Entity<Venta>()
+                .HasOne(v => v.MetodoPago)
+                .WithMany()
+                .HasForeignKey(v => v.MetodoPagoId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // =========================
+            // 🔹 VENTA → DETALLE VENTA
+            // =========================
+            modelBuilder.Entity<DetalleVenta>()
+                .HasOne(d => d.Venta)
+                .WithMany(v => v.Detalles)
+                .HasForeignKey(d => d.VentaId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // =========================
+            // 🔹 PRODUCTO → DETALLE VENTA
+            // =========================
+            modelBuilder.Entity<DetalleVenta>()
+                .HasOne(d => d.Producto)
+                .WithMany()
+                .HasForeignKey(d => d.ProductoId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // =========================
+            // 🔹 USUARIO → ROL
+            // =========================
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.Rol)
+                .WithMany()
+                .HasForeignKey(u => u.RolId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
+        }
 
 
     }

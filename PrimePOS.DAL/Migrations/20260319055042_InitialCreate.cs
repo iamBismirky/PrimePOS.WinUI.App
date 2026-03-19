@@ -14,25 +14,6 @@ namespace PrimePOS.DAL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AperturaCajas",
-                columns: table => new
-                {
-                    AperturaCajaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CajaId = table.Column<int>(type: "int", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false),
-                    FechaApertura = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MontoInicial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MontoCierre = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    FechaCierre = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Estado = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AperturaCajas", x => x.AperturaCajaId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Cajas",
                 columns: table => new
                 {
@@ -66,6 +47,7 @@ namespace PrimePOS.DAL.Migrations
                 {
                     ClienteId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Documento = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -149,7 +131,8 @@ namespace PrimePOS.DAL.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false),
                     FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RolId = table.Column<int>(type: "int", nullable: false)
+                    RolId = table.Column<int>(type: "int", nullable: false),
+                    RolId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -158,8 +141,42 @@ namespace PrimePOS.DAL.Migrations
                         name: "FK_Usuarios_Roles_RolId",
                         column: x => x.RolId,
                         principalTable: "Roles",
-                        principalColumn: "RolId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "RolId");
+                    table.ForeignKey(
+                        name: "FK_Usuarios_Roles_RolId1",
+                        column: x => x.RolId1,
+                        principalTable: "Roles",
+                        principalColumn: "RolId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AperturaCajas",
+                columns: table => new
+                {
+                    AperturaCajaId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CajaId = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    FechaApertura = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MontoInicial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontoCierre = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    FechaCierre = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Turno = table.Column<int>(type: "int", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AperturaCajas", x => x.AperturaCajaId);
+                    table.ForeignKey(
+                        name: "FK_AperturaCajas_Cajas_CajaId",
+                        column: x => x.CajaId,
+                        principalTable: "Cajas",
+                        principalColumn: "CajaId");
+                    table.ForeignKey(
+                        name: "FK_AperturaCajas_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "UsuarioId");
                 });
 
             migrationBuilder.CreateTable(
@@ -171,7 +188,6 @@ namespace PrimePOS.DAL.Migrations
                     FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     ClienteId = table.Column<int>(type: "int", nullable: false),
-                    CajaId = table.Column<int>(type: "int", nullable: false),
                     MetodoPagoId = table.Column<int>(type: "int", nullable: false),
                     AperturaCajaId = table.Column<int>(type: "int", nullable: false),
                     NumeroComprobante = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -179,7 +195,8 @@ namespace PrimePOS.DAL.Migrations
                     Impuesto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Descuento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    ClienteId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -188,32 +205,27 @@ namespace PrimePOS.DAL.Migrations
                         name: "FK_Ventas_AperturaCajas_AperturaCajaId",
                         column: x => x.AperturaCajaId,
                         principalTable: "AperturaCajas",
-                        principalColumn: "AperturaCajaId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Ventas_Cajas_CajaId",
-                        column: x => x.CajaId,
-                        principalTable: "Cajas",
-                        principalColumn: "CajaId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "AperturaCajaId");
                     table.ForeignKey(
                         name: "FK_Ventas_Clientes_ClienteId",
                         column: x => x.ClienteId,
                         principalTable: "Clientes",
-                        principalColumn: "ClienteId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ClienteId");
+                    table.ForeignKey(
+                        name: "FK_Ventas_Clientes_ClienteId1",
+                        column: x => x.ClienteId1,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteId");
                     table.ForeignKey(
                         name: "FK_Ventas_MetodoPagos_MetodoPagoId",
                         column: x => x.MetodoPagoId,
                         principalTable: "MetodoPagos",
-                        principalColumn: "MetodoPagoId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "MetodoPagoId");
                     table.ForeignKey(
                         name: "FK_Ventas_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuarios",
-                        principalColumn: "UsuarioId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UsuarioId");
                 });
 
             migrationBuilder.CreateTable(
@@ -228,7 +240,8 @@ namespace PrimePOS.DAL.Migrations
                     PrecioUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Impuesto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductoId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -237,14 +250,17 @@ namespace PrimePOS.DAL.Migrations
                         name: "FK_DetalleVentas_Productos_ProductoId",
                         column: x => x.ProductoId,
                         principalTable: "Productos",
-                        principalColumn: "ProductoId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ProductoId");
+                    table.ForeignKey(
+                        name: "FK_DetalleVentas_Productos_ProductoId1",
+                        column: x => x.ProductoId1,
+                        principalTable: "Productos",
+                        principalColumn: "ProductoId");
                     table.ForeignKey(
                         name: "FK_DetalleVentas_Ventas_VentaId",
                         column: x => x.VentaId,
                         principalTable: "Ventas",
-                        principalColumn: "VentaId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "VentaId");
                 });
 
             migrationBuilder.InsertData(
@@ -254,8 +270,8 @@ namespace PrimePOS.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "Clientes",
-                columns: new[] { "ClienteId", "Direccion", "Documento", "Email", "Estado", "FechaRegistro", "Nombre", "Telefono" },
-                values: new object[] { 1, "", "", "", true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Consumidor Final", "" });
+                columns: new[] { "ClienteId", "Codigo", "Direccion", "Documento", "Email", "Estado", "FechaRegistro", "Nombre", "Telefono" },
+                values: new object[] { 1, "", "", "", "", true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Consumidor Final", "" });
 
             migrationBuilder.InsertData(
                 table: "MetodoPagos",
@@ -278,9 +294,24 @@ namespace PrimePOS.DAL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AperturaCajas_CajaId",
+                table: "AperturaCajas",
+                column: "CajaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AperturaCajas_UsuarioId",
+                table: "AperturaCajas",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DetalleVentas_ProductoId",
                 table: "DetalleVentas",
                 column: "ProductoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DetalleVentas_ProductoId1",
+                table: "DetalleVentas",
+                column: "ProductoId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DetalleVentas_VentaId",
@@ -298,19 +329,24 @@ namespace PrimePOS.DAL.Migrations
                 column: "RolId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_RolId1",
+                table: "Usuarios",
+                column: "RolId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ventas_AperturaCajaId",
                 table: "Ventas",
                 column: "AperturaCajaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ventas_CajaId",
-                table: "Ventas",
-                column: "CajaId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Ventas_ClienteId",
                 table: "Ventas",
                 column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ventas_ClienteId1",
+                table: "Ventas",
+                column: "ClienteId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ventas_MetodoPagoId",
@@ -342,13 +378,13 @@ namespace PrimePOS.DAL.Migrations
                 name: "AperturaCajas");
 
             migrationBuilder.DropTable(
-                name: "Cajas");
-
-            migrationBuilder.DropTable(
                 name: "Clientes");
 
             migrationBuilder.DropTable(
                 name: "MetodoPagos");
+
+            migrationBuilder.DropTable(
+                name: "Cajas");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
