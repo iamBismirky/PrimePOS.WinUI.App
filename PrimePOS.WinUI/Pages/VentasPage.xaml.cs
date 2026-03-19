@@ -1,7 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using PrimePOS.BLL.DTOs.Caja;
 using PrimePOS.BLL.DTOs.Cliente;
 using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.BLL.DTOs.Venta;
@@ -27,20 +26,23 @@ public sealed partial class VentasPage : Page
     {
         InitializeComponent();
         InicializarBuscador();
-
         txtFecha.Text = DateTime.Now.ToString("dd/MM/yyy");
-
         NavigationCacheMode = NavigationCacheMode.Required;
 
 
     }
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+
+        if (Sesion.CajaId == 0 || Sesion.TurnoId == 0)
+        {
+            await MostrarDialogoTurnoAsync();
+        }
+    }
     private async void Page_loaded(object sender, RoutedEventArgs e)
     {
-        //if (!Servicios.CajaService.CajaAbierta())
-        //{
-        await dlgAperturaCaja.ShowAsync();
-        //    return;
-        //}
+
         try
         {
             await ListarClientes();
@@ -72,12 +74,10 @@ public sealed partial class VentasPage : Page
     {
         throw new NotImplementedException();
     }
-
     private void BtnGenerarFactura_Click(object sender, RoutedEventArgs e)
     {
         throw new NotImplementedException();
     }
-
     private async void BtnLimpiar_Click(object sender, RoutedEventArgs e)
     {
         LimpiarCampos();
@@ -112,9 +112,6 @@ public sealed partial class VentasPage : Page
 
 
     }
-
-
-
     private async void txtBuscarProducto_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
         if (args.Reason != AutoSuggestionBoxTextChangeReason.UserInput)
@@ -135,8 +132,7 @@ public sealed partial class VentasPage : Page
     }
     private async void txtBuscarCliente_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
-        if (_updatingTextProgrammatically)
-            return; // ignorar cambios programáticos
+
         if (args.Reason != AutoSuggestionBoxTextChangeReason.UserInput)
             return;
 
@@ -154,7 +150,6 @@ public sealed partial class VentasPage : Page
 
 
     }
-
     private async void txtBuscarProducto_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
 
@@ -216,19 +211,12 @@ public sealed partial class VentasPage : Page
 
         sender.Text = producto.Nombre;
     }
-    private bool _updatingTextProgrammatically = false;
     private async void txtBuscarCliente_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
     {
-        if (args.SelectedItem is ClienteDto cliente)
-        {
-            _updatingTextProgrammatically = true;
-            sender.Text = cliente.Nombre; // solo mostrar nombre
-            _updatingTextProgrammatically = false;
-        }
 
-        //var clienteSeleccionado = (ClienteDto)args.SelectedItem;
+        var clienteSeleccionado = (ClienteDto)args.SelectedItem;
 
-        //sender.Text = clienteSeleccionado.Nombre;
+        sender.Text = clienteSeleccionado.Nombre;
     }
     private void CalcularTotales()
     {
@@ -268,7 +256,6 @@ public sealed partial class VentasPage : Page
 
 
     }
-
     private void InicializarBuscador()
     {
         _timerProducto = new DispatcherTimer
@@ -283,7 +270,6 @@ public sealed partial class VentasPage : Page
         };
         _timerCliente.Tick += TimerBuscarCliente_Tick;
     }
-
     private async void TimerBuscarProducto_Tick(object? sender, object e)
     {
         try
@@ -300,7 +286,6 @@ public sealed partial class VentasPage : Page
             await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
         }
     }
-
     private async void TimerBuscarCliente_Tick(object? sender, object e)
     {
         try
@@ -317,7 +302,6 @@ public sealed partial class VentasPage : Page
             await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
         }
     }
-
     private async Task BuscarProductosAsync()
     {
         try
@@ -353,8 +337,6 @@ public sealed partial class VentasPage : Page
 
         }
     }
-
-
     private async Task CargarConsumidorFinal()
     {
         try
@@ -386,7 +368,6 @@ public sealed partial class VentasPage : Page
 
 
     }
-
     private void cmbDescuento_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
 
@@ -397,19 +378,31 @@ public sealed partial class VentasPage : Page
 
 
     }
-    private async void dlgAperturaCaja_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+    private async Task MostrarDialogoTurnoAsync()
     {
-        var caja = new AperturaCajaDto
+        var dialog = new TurnoDialog();
+        if (this.XamlRoot == null)
+            throw new Exception("XamlRoot no está listo. Espera a Loaded.");
+        dialog.XamlRoot = this.XamlRoot;
+
+        var result = await dialog.ShowAsync();
+
+        if (result == ContentDialogResult.Primary)
         {
-            //CajaId = 1,
-            //UsuarioId = SesionUsuario.UsuarioId,
-            MontoInicial = Convert.ToDecimal(nbMontoInicial.Value),
-            Turno = Convert.ToInt32(cmbTurno.SelectedValue),
+            Sesion.CajaId = dialog.CajaSeleccionada.CajaId;
+            Sesion.TurnoId = dialog.TurnoSeleccionado.TurnoId;
 
-        };
+            HabilitarVentas();
+        }
+    }
 
+    private void HabilitarVentas()
+    {
+        panelVentas.Visibility = Visibility.Visible;
+    }
 
-        await Servicios.AperturaCajaService.AbrirCajaAsync(caja);
-        dlgAperturaCaja.Hide();
+    private void DeshabilitarVentas()
+    {
+        panelVentas.Visibility = Visibility.Collapsed;
     }
 }

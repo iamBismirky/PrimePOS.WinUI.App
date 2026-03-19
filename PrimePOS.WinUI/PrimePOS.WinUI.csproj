@@ -10,7 +10,8 @@
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <WinUISDKReferences>true</WinUISDKReferences>
-    <EnableMsixTooling>true</EnableMsixTooling>
+    <EnableMsixTooling>false</EnableMsixTooling>
+	  <WindowsPackageType>None</WindowsPackageType>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
@@ -85,6 +86,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PrimePOS.BLL\PrimePOS.BLL.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\TurnoDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\GestionCajasPage.xaml">

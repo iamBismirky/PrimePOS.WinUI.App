@@ -17,7 +17,7 @@ namespace PrimePOS.WinUI.Infrastructure
         public static VentaService VentaService { get; private set; } = null!;
         public static MetodoPagoService MetodoPagoService { get; private set; } = null!;
         public static CajaService CajaService { get; private set; } = null!;
-        public static AperturaCajaService AperturaCajaService { get; private set; } = null!;
+        public static TurnoService TurnoService { get; private set; } = null!;
 
 
         public static void Inicializar()
@@ -44,7 +44,7 @@ namespace PrimePOS.WinUI.Infrastructure
             var VentaRepository = new VentaRepository(_context);
             var MetodoPagoRepository = new MetodoPagoRepository(_context);
             var CajaRepository = new CajaRepository(_context);
-            var AperturaCajaRepository = new AperturaCajaRepository(_context);
+            var TurnoRepository = new TurnoRepository(_context);
 
             // Crear service
             UsuarioService = new UsuarioService(usuarioRepository);
@@ -55,7 +55,7 @@ namespace PrimePOS.WinUI.Infrastructure
             VentaService = new VentaService(VentaRepository);
             MetodoPagoService = new MetodoPagoService(MetodoPagoRepository);
             CajaService = new CajaService(CajaRepository);
-            AperturaCajaService = new AperturaCajaService(AperturaCajaRepository);
+            TurnoService = new TurnoService(TurnoRepository, CajaRepository, _context);
         }
     }
 }

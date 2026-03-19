@@ -1,0 +1,51 @@
+﻿using Microsoft.EntityFrameworkCore;
+using PrimePOS.DAL.Context;
+using PrimePOS.ENTITIES.Models;
+
+namespace PrimePOS.DAL.Repositories;
+
+public class TurnoRepository
+{
+    private readonly AppDbContext _context;
+
+    public TurnoRepository(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task AgregarAsync(Turno turno)
+    {
+        await _context.Turnos.AddAsync(turno);
+    }
+    public async Task GuardarCambiosAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
+    public async Task<bool> ObtenerTurnoAbiertoAsync(int cajaId)
+    {
+        return await _context.Turnos.AnyAsync(t => t.CajaId == cajaId && t.EstaAbierto);
+    }
+
+    public async Task<List<Turno>> GetTurnosPorFecha(int cajaId, DateTime fecha)
+    {
+        return await _context.Turnos
+            .Where(t => t.CajaId == cajaId &&
+                        t.FechaApertura.Date == fecha)
+            .ToListAsync();
+    }
+    public async Task<Turno?> ObtenerUltimoTurnoDelDiaAsync(int cajaId, DateTime fecha)
+    {
+        return await _context.Turnos
+            .Where(t => t.CajaId == cajaId &&
+                        t.FechaApertura.Date == fecha)
+            .OrderByDescending(t => t.TurnoId)
+            .FirstOrDefaultAsync();
+    }
+    public async Task<List<Turno>> ObtenerPorCajaAsync(int cajaId)
+    {
+        return await _context.Turnos
+            .Where(t => t.CajaId == cajaId)
+            .OrderByDescending(t => t.FechaApertura)
+            .ToListAsync();
+    }
+}

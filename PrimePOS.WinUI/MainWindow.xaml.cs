@@ -13,8 +13,8 @@ namespace PrimePOS.WinUI
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        public string UsuarioNombre => SesionUsuario.UsuarioNombre;
-        public string RolNombre => SesionUsuario.RolNombre;
+        public string UsuarioNombre => Sesion.UsuarioNombre;
+        public string RolNombre => Sesion.RolNombre;
         public MainWindow()
         {
             InitializeComponent();

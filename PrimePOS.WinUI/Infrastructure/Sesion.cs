@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrimePOS.WinUI.Infrastructure
+﻿namespace PrimePOS.WinUI.Infrastructure
 {
-    public static class SesionUsuario
+    public static class Sesion
     {
+        //Usuario
         public static int UsuarioId { get; set; } = 0;
-        public static string UsuarioNombre { get; set; } =string.Empty;
-        public static int RolId {  get; set; } 
+        public static string UsuarioNombre { get; set; } = string.Empty;
+        public static int RolId { get; set; }
         public static string RolNombre { get; set; } = string.Empty;
-        public static bool Activa { get; set; } 
+        public static bool Activa { get; set; }
+
+
+        //Caja
+        public static int CajaId { get; set; } = 0;
+        public static int TurnoId { get; set; } = 0;
 
         public static void Iniciar(int usuarioId, string nombreUsuario, int rolId, string rolNombre)
         {
@@ -27,7 +27,7 @@ namespace PrimePOS.WinUI.Infrastructure
             UsuarioId = 0;
             UsuarioNombre = string.Empty;
             RolNombre = string.Empty;
-            RolId = 0;   
+            RolId = 0;
             Activa = false;
         }
     }

@@ -63,11 +63,11 @@ namespace PrimePOS.WinUI
                 
                 var usuarioSesion = await Servicios.UsuarioService.AutenticarUsuarioAsync(loginDto);
 
-                SesionUsuario.UsuarioId = usuarioSesion.UsuarioId;
-                SesionUsuario.UsuarioNombre = usuarioSesion.UsuarioNombre;
-                SesionUsuario.RolId = usuarioSesion.RolId;
-                SesionUsuario.RolNombre = usuarioSesion.RolNombre;
-                SesionUsuario.Activa = true;
+                Sesion.UsuarioId = usuarioSesion.UsuarioId;
+                Sesion.UsuarioNombre = usuarioSesion.UsuarioNombre;
+                Sesion.RolId = usuarioSesion.RolId;
+                Sesion.RolNombre = usuarioSesion.RolNombre;
+                Sesion.Activa = true;
 
                 MainWindow main = new MainWindow();
                 main.Activate();

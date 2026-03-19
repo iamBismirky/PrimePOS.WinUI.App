@@ -39,5 +39,10 @@ namespace PrimePOS.DAL.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> ExisteCajaAsync(int cajaId)
+        {
+            return await _context.Turnos.AnyAsync(c => c.CajaId == cajaId);
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace PrimePOS.DAL.Context
         public DbSet<Rol> Roles { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Caja> Cajas { get; set; }
-        public DbSet<AperturaCaja> AperturaCajas { get; set; }
+        public DbSet<Turno> Turnos { get; set; }
         public DbSet<MetodoPago> MetodoPagos { get; set; }
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<DetalleVenta> DetalleVentas { get; set; }
@@ -37,7 +37,7 @@ namespace PrimePOS.DAL.Context
              );
             modelBuilder.Entity<Caja>().HasData
              (
-                new Caja { CajaId = 1, Nombre = "Caja Principal", Estado = true }
+                new Caja { CajaId = 1, Nombre = "Caja Principal" }
 
              );
             modelBuilder.Entity<Cliente>().HasData
@@ -59,7 +59,7 @@ namespace PrimePOS.DAL.Context
             // =========================
             // 🔹 USUARIO → APERTURA CAJA
             // =========================
-            modelBuilder.Entity<AperturaCaja>()
+            modelBuilder.Entity<Turno>()
                 .HasOne(a => a.Usuario)
                 .WithMany() // 👈 sin colección
                 .HasForeignKey(a => a.UsuarioId)
@@ -68,7 +68,7 @@ namespace PrimePOS.DAL.Context
             // =========================
             // 🔹 CAJA → APERTURA CAJA
             // =========================
-            modelBuilder.Entity<AperturaCaja>()
+            modelBuilder.Entity<Turno>()
                 .HasOne(a => a.Caja)
                 .WithMany()
                 .HasForeignKey(a => a.CajaId)
@@ -78,9 +78,9 @@ namespace PrimePOS.DAL.Context
             // 🔹 APERTURA CAJA → VENTA
             // =========================
             modelBuilder.Entity<Venta>()
-                .HasOne(v => v.AperturaCaja)
+                .HasOne(v => v.Turno)
                 .WithMany(a => a.Ventas)
-                .HasForeignKey(v => v.AperturaCajaId)
+                .HasForeignKey(v => v.TurnoId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // =========================
