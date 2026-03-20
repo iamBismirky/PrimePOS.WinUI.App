@@ -30,19 +30,17 @@ public sealed partial class VentasPage : Page
         NavigationCacheMode = NavigationCacheMode.Required;
 
 
+
+
     }
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
 
-        if (Sesion.CajaId == 0 || Sesion.TurnoId == 0)
-        {
-            await MostrarDialogoTurnoAsync();
-        }
+
     }
     private async void Page_loaded(object sender, RoutedEventArgs e)
     {
-
         try
         {
             await ListarClientes();
@@ -378,31 +376,5 @@ public sealed partial class VentasPage : Page
 
 
     }
-    private async Task MostrarDialogoTurnoAsync()
-    {
-        var dialog = new TurnoDialog();
-        if (this.XamlRoot == null)
-            throw new Exception("XamlRoot no está listo. Espera a Loaded.");
-        dialog.XamlRoot = this.XamlRoot;
 
-        var result = await dialog.ShowAsync();
-
-        if (result == ContentDialogResult.Primary)
-        {
-            Sesion.CajaId = dialog.CajaSeleccionada.CajaId;
-            Sesion.TurnoId = dialog.TurnoSeleccionado.TurnoId;
-
-            HabilitarVentas();
-        }
-    }
-
-    private void HabilitarVentas()
-    {
-        panelVentas.Visibility = Visibility.Visible;
-    }
-
-    private void DeshabilitarVentas()
-    {
-        panelVentas.Visibility = Visibility.Collapsed;
-    }
 }

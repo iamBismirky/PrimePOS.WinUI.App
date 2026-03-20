@@ -14,7 +14,7 @@
         <helpers:NumeroConverterHelper x:Key="NumeroConverterHelper"/>
     </Page.Resources>
 
-    <Border  x:Name="panelVentas" Visibility="Collapsed">
+    <Border  x:Name="panelVentas" Visibility="Visible">
     <Grid Padding="20" RowSpacing="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ContentDialog
+        <!--<ContentDialog
                 x:Name="dlgAbrirTurno"
                 Title="Apertura de Turno"
                 PrimaryButtonText="Confirmar"
@@ -48,7 +48,7 @@
 
             </StackPanel>
 
-        </ContentDialog>
+        </ContentDialog>-->
 
         <!--Header-->
 
@@ -61,14 +61,6 @@
                     HorizontalAlignment="Left"
                     Text="Ventas"/>
 
-
-            <TextBlock   
-                    x:Name="txtFecha"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    HorizontalAlignment="Right"
-                    Text="Fecha Actual"
-                    VerticalAlignment="Center"/>
         </StackPanel>
         <!-- Buscador de producto -->
         <Grid Grid.Row="1" ColumnSpacing="20" >
@@ -82,15 +74,15 @@
             </Grid.ColumnDefinitions>
 
             <Border BorderThickness="1"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                     CornerRadius="10"
                     Padding="15"
                     Grid.Column="0">
 
-                <controls:WrapPanel Orientation="Vertical" >
+                <controls:WrapPanel Orientation="Vertical" VerticalSpacing="15" >
 
                     <TextBlock Text="Buscar producto" FontWeight="Bold"  FontFamily="Segoe UI"/>
-                    <AutoSuggestBox Grid.Column="0"
+                        <AutoSuggestBox Grid.Column="0"
                                     x:Name="txtBuscarProducto" 
                                     TextChanged="txtBuscarProducto_TextChanged"
                                     QuerySubmitted="txtBuscarProducto_QuerySubmitted"
@@ -101,41 +93,37 @@
                                     UpdateTextOnSelect="True">
 
 
-                        <AutoSuggestBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <TextBlock Text="{Binding Codigo}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding Nombre}"/>
-                                    <TextBlock>
+                            <AutoSuggestBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock Text="{Binding Codigo}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Nombre}"/>
+                                        <TextBlock>
                                         <Run Text="$"/>
                                         <Run Text="{Binding PrecioVenta, Converter={StaticResource NumeroConverterHelper}}"/>
-                                    </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </AutoSuggestBox.ItemTemplate>
-                    </AutoSuggestBox>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </AutoSuggestBox.ItemTemplate>
+                        </AutoSuggestBox>
 
-                    <Button Grid.Column="1"
-                            Content="Agregar al carrito"
-                            Click="BtnAgregarProductoCarrito_Click"/>
-
-                </controls:WrapPanel>
+                    </controls:WrapPanel>
             </Border>
 
 
             <!--Cliente-->
             <Border BorderThickness="1"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                     CornerRadius="10"
                     Padding="15"
                     Grid.Column="1"
                     Width="300"
-                    Margin="0">
+                    >
 
-                <controls:WrapPanel Orientation="Vertical" >
+                <controls:WrapPanel Orientation="Vertical" VerticalSpacing="15" >
 
                     <TextBlock Text="Cliente" FontWeight="Bold"  FontFamily="Segoe UI"/>
-                    <ComboBox x:Name="cmbCliente"  SelectedIndex="0"/>
+                    
                     <AutoSuggestBox Grid.Column="0"
                                     x:Name="txtBuscarCliente" 
                                     TextChanged="txtBuscarCliente_TextChanged"
@@ -160,20 +148,54 @@
 
             <!--Metodo de pago-->
             <Border BorderThickness="1"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                     CornerRadius="10"
                     Padding="15"
                     Grid.Column="2">
 
-                <controls:WrapPanel Orientation="Vertical" >
+                <controls:WrapPanel Orientation="Vertical" VerticalSpacing="15" >
 
                     <TextBlock Text="Metodo de Pago" FontWeight="Bold"  FontFamily="Segoe UI"/>
                     <ComboBox x:Name="cmbMetodoPago" SelectedIndex="0"/>
 
                 </controls:WrapPanel>
             </Border>
+                <!--Caja-->
+                <Border BorderThickness="1"
+                        BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                        CornerRadius="10"
+                        Padding="15"
+                        Grid.Column="3"
+                        Width="200">
 
-        </Grid>
+                    <controls:WrapPanel Orientation="Vertical" >
+
+                       
+                        <TextBlock>
+                            <Run Text="Usuario" FontFamily="Segoe UI" FontWeight="Bold"/>
+                            <Run x:Name="txtUsuario"/>
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Rol" FontFamily="Segoe UI" FontWeight="Bold"/>
+                            <Run x:Name="txtRol"/>
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Caja" FontFamily="Segoe UI" FontWeight="Bold"/>
+                            <Run x:Name="txtCaja"/>
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Turno" FontFamily="Segoe UI" FontWeight="Bold"/>
+                            <Run x:Name="txtTurno"/>
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Fecha" FontFamily="Segoe UI" FontWeight="Bold"/>
+                            <Run x:Name="txtFecha"/>
+                        </TextBlock>
+
+                    </controls:WrapPanel>
+                </Border>
+
+            </Grid>
 
 
         <!--  DataGrid como carrito -->
@@ -223,7 +245,7 @@
 
                 <!--Card totales-->
                 <Border BorderThickness="1"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                     CornerRadius="10"
                     Padding="15"
                     Grid.Column="0">
@@ -254,11 +276,11 @@
 
                 <!--Card aplicar descuento-->
                 <Border BorderThickness="1"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                     CornerRadius="10"
                     Padding="15"
                     Grid.Column="1">
-                    <StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="15">
                         <TextBlock Text="Aplicar Descuento" FontWeight="Bold"  FontFamily="Segoe UI"/>
                         <ComboBox x:Name="cmbDescuento" 
                                   SelectionChanged="cmbDescuento_SelectionChanged" 
@@ -276,7 +298,7 @@
                 <!-- Botones de acción -->
                 <Border Grid.Column="2"
                         BorderThickness="1"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                     CornerRadius="10"
                     Padding="15"
                     >
