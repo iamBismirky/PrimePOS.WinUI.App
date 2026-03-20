@@ -47,7 +47,7 @@ public class ProductoRepository
     }
     public async Task<Producto?> BuscarPorNombreAsync(string nombre)
     {
-        return await _context.Productos.FirstOrDefaultAsync(p => p.Nombre == nombre);
+        return await _context.Productos.FirstOrDefaultAsync(p => p.Nombre.Contains(nombre));
     }
     public async Task<Producto?> BuscarPorCodigoONombreAsync(string buscar)
     {
@@ -60,11 +60,10 @@ public class ProductoRepository
             .Where(p => p.Codigo.Contains(buscar) || p.Nombre!.Contains(buscar)).Take(10)
         .ToListAsync();
     }
-    public async Task<bool> ExisteCodigoAsync(string codigo, int? excluirId = null)
+    public async Task<bool> ExisteCodigoONombreAsync(string codigoBarra, string nombre)
     {
         return await _context.Productos
-            .AnyAsync(p => p.Codigo == codigo &&
-                      (excluirId == null || p.ProductoId != excluirId));
+            .AnyAsync(p => p.CodigoBarra == codigoBarra || p.Nombre == nombre);
     }
     public async Task GuardarCambiosAsync()
     {

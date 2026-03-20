@@ -1,15 +1,16 @@
-﻿using PrimePOS.BLL.DTOs.Producto;
-using PrimePOS.BLL.DTOs.Venta;
+﻿using PrimePOS.BLL.DTOs.Venta;
 using PrimePOS.DAL.Repositories;
 using System.Collections.ObjectModel;
 
 public class VentaService
 {
     private readonly VentaRepository _ventaRepository;
+    private readonly ProductoRepository _productoRepository;
 
-    public VentaService(VentaRepository ventaRepository)
+    public VentaService(VentaRepository ventaRepository, ProductoRepository productoRepository)
     {
         _ventaRepository = ventaRepository;
+        _productoRepository = productoRepository;
     }
 
     public ObservableCollection<CarritoItem> Carrito { get; set; } = new();
@@ -22,9 +23,9 @@ public class VentaService
     public decimal SubtotalConDescuento => Subtotal - DescuentoMonto;
     public decimal Total => Subtotal + Impuesto - DescuentoMonto;
 
-    public void AgregarProductoCarrito(ProductoDto producto)
+    public async Task AgregarProductoCarrito(int productoId)
     {
-        var existente = Carrito.FirstOrDefault(p => p.ProductoId == producto.ProductoId);
+        var existente = Carrito.FirstOrDefault(p => p.ProductoId == productoId);
 
         if (existente != null)
         {
@@ -33,6 +34,10 @@ public class VentaService
         }
         else
         {
+            var producto = await _productoRepository.ObtenerPorIdAsync(productoId);
+            if (producto == null)
+                return;
+
             Carrito.Add(new CarritoItem
             {
                 ProductoId = producto.ProductoId,

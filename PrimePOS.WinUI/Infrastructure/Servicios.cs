@@ -52,7 +52,7 @@ namespace PrimePOS.WinUI.Infrastructure
             CategoriaService = new CategoriaService(categoriaRepository);
             ClienteService = new ClienteService(clienteRepository);
             ProductoService = new ProductoService(productoRepository);
-            VentaService = new VentaService(VentaRepository);
+            VentaService = new VentaService(VentaRepository, productoRepository);
             MetodoPagoService = new MetodoPagoService(MetodoPagoRepository);
             CajaService = new CajaService(CajaRepository);
             TurnoService = new TurnoService(TurnoRepository, CajaRepository, _context);

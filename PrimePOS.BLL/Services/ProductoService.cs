@@ -17,10 +17,10 @@ public class ProductoService
     {
         ProductoValidator.ValidarCrearProducto(dto);
 
-        var existe = await _productoRepository.BuscarPorCodigoONombreAsync(dto.Nombre);
+        var existe = await _productoRepository.ExisteCodigoONombreAsync(dto.CodigoBarra.Trim(), dto.Nombre.Trim());
 
-        if (existe != null)
-            throw new Exception("Ya existe un producto con este nombre");
+        if (existe)
+            throw new Exception("Ya existe un producto con este nombre o codigo barras");
 
         var producto = new Producto
         {
@@ -97,9 +97,21 @@ public class ProductoService
     }
     public async Task<ProductoDto?> BuscarProductoCodigoONombreAsync(string buscar)
     {
-        var producto = await _productoRepository.BuscarPorCodigoONombreAsync(buscar);
+        if (string.IsNullOrWhiteSpace(buscar))
+            return null;
+
+        buscar = buscar.Trim();
+
+        var producto = await _productoRepository.BuscarPorCodigoAsync(buscar);
+
+        if (producto == null)
+        {
+            producto = await _productoRepository.BuscarPorNombreAsync(buscar);
+        }
+
         if (producto == null)
             return null;
+
 
         return new ProductoDto
         {

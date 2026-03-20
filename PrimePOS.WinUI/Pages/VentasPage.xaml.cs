@@ -21,6 +21,7 @@ public sealed partial class VentasPage : Page
     private DispatcherTimer _timerProducto = new DispatcherTimer();
     private DispatcherTimer _timerCliente = new DispatcherTimer();
     private ClienteDto? _clienteSeleccionado;
+    private ProductoDto? _productoSeleccionado;
 
     public VentasPage()
     {
@@ -90,7 +91,7 @@ public sealed partial class VentasPage : Page
 
             if (producto != null)
             {
-                Servicios.VentaService.AgregarProductoCarrito(producto);
+                await Servicios.VentaService.AgregarProductoCarrito(producto.ProductoId);
                 dgCarrito.ItemsSource = Servicios.VentaService.Carrito;
 
                 txtSubtotal.Text = $"Subtotal: ${Servicios.VentaService.Subtotal.ToString("N2")}";
@@ -150,36 +151,45 @@ public sealed partial class VentasPage : Page
     }
     private async void txtBuscarProducto_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
-
         try
         {
+            ProductoDto? producto = null;
 
+            // ✅ 1. Si el usuario eligió de la lista (flechas + enter o click)
+            if (args.ChosenSuggestion != null)
+            {
+                producto = (ProductoDto)args.ChosenSuggestion;
+            }
+            else
+            {
+                // ⚠️ 2. Si escribió manual (ej: código de barras)
+                var texto = sender.Text;
 
-            var texto = sender.Text;
-            if (string.IsNullOrEmpty(texto))
-                return;
+                if (string.IsNullOrEmpty(texto))
+                    return;
 
-            var producto = await Servicios.ProductoService
-                .BuscarProductoCodigoONombreAsync(texto);
+                producto = await Servicios.ProductoService
+                    .BuscarProductoCodigoONombreAsync(texto);
+            }
 
             if (producto != null)
             {
-                Servicios.VentaService.AgregarProductoCarrito(producto);
+                await Servicios.VentaService.AgregarProductoCarrito(producto.ProductoId);
 
                 dgCarrito.ItemsSource = Servicios.VentaService.Carrito;
 
                 CalcularTotales();
 
-
                 sender.Text = "";
+                _productoSeleccionado = null;
                 sender.Focus(FocusState.Programmatic);
             }
-
         }
         catch (Exception ex)
         {
             await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
         }
+
     }
     private async void txtBuscarCliente_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
     {
@@ -205,9 +215,9 @@ public sealed partial class VentasPage : Page
     private void txtBuscarProducto_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
     {
 
-        var producto = (ProductoDto)args.SelectedItem;
+        _productoSeleccionado = (ProductoDto)args.SelectedItem;
 
-        sender.Text = producto.Nombre;
+        sender.Text = _productoSeleccionado.Nombre;
     }
     private async void txtBuscarCliente_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
     {
@@ -225,21 +235,21 @@ public sealed partial class VentasPage : Page
     }
     private async Task ListarClientes()
     {
-        try
-        {
-            var lista = await Servicios.ClienteService.ListarClientes();
+        //try
+        //{
+        //    var lista = await Servicios.ClienteService.ListarClientes();
 
-            cmbCliente.ItemsSource = lista;
+        //    cmbCliente.ItemsSource = lista;
 
-            cmbCliente.DisplayMemberPath = "Nombre";
-            cmbCliente.SelectedValuePath = "ClienteId";
-            cmbCliente.SelectedIndex = 0;
-        }
-        catch (Exception ex)
-        {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+        //    cmbCliente.DisplayMemberPath = "Nombre";
+        //    cmbCliente.SelectedValuePath = "ClienteId";
+        //    cmbCliente.SelectedIndex = 0;
+        //}
+        //catch (Exception ex)
+        //{
+        //    await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
 
-        }
+        //}
 
     }
     private async Task ListarMetodosPagos()

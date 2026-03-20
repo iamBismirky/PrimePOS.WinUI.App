@@ -90,7 +90,7 @@
                                     Width="300"
                                     PlaceholderText="Buscar producto por código o nombre..."
                                     QueryIcon="Find"
-                                    UpdateTextOnSelect="True">
+                                    UpdateTextOnSelect="False">
 
 
                             <AutoSuggestBox.ItemTemplate>
@@ -131,7 +131,7 @@
                                     SuggestionChosen="txtBuscarCliente_SuggestionChosen"
                                     Width="220"
                                     QueryIcon="Find"
-                                    UpdateTextOnSelect="True">
+                                    UpdateTextOnSelect="False">
 
 
                         <AutoSuggestBox.ItemTemplate>
