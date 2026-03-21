@@ -39,6 +39,14 @@ public class ClienteRepository
         return await _context.Clientes
             .FirstOrDefaultAsync(c => c.Codigo == buscar || c.Nombre!.Contains(buscar));
     }
+    public async Task<Cliente?> BuscarClientePorCodigoAsync(string codigo)
+    {
+        return await _context.Clientes.FirstOrDefaultAsync(c => c.Codigo == codigo);
+    }
+    public async Task<Cliente?> BuscarClientePorNombreAsync(string nombre)
+    {
+        return await _context.Clientes.FirstOrDefaultAsync(c => c.Nombre.Contains(nombre));
+    }
     public async Task<List<Cliente>> BuscarPorCodigoONombreListAsync(string buscar)
     {
         return await _context.Clientes

@@ -44,7 +44,7 @@ public sealed partial class VentasPage : Page
     {
         try
         {
-            await ListarClientes();
+
             await ListarMetodosPagos();
             await CargarConsumidorFinal();
             CalcularTotales();
@@ -81,35 +81,6 @@ public sealed partial class VentasPage : Page
     {
         LimpiarCampos();
         txtBuscarProducto.Focus(FocusState.Programmatic);
-    }
-    private async void BtnAgregarProductoCarrito_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var producto = await Servicios.ProductoService
-                    .BuscarProductoCodigoONombreAsync(txtBuscarProducto.Text);
-
-            if (producto != null)
-            {
-                await Servicios.VentaService.AgregarProductoCarrito(producto.ProductoId);
-                dgCarrito.ItemsSource = Servicios.VentaService.Carrito;
-
-                txtSubtotal.Text = $"Subtotal: ${Servicios.VentaService.Subtotal.ToString("N2")}";
-                txtImpuesto.Text = $"Impuesto: ${Servicios.VentaService.Impuesto.ToString("N2")}";
-                txtTotal.Text = $"Total: ${Servicios.VentaService.Total.ToString("N2")}";
-
-                txtBuscarProducto.Text = "";
-                txtBuscarProducto.Focus(FocusState.Programmatic);
-            }
-        }
-        catch (Exception ex)
-        {
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-        }
-
-
     }
     private async void txtBuscarProducto_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
@@ -155,14 +126,14 @@ public sealed partial class VentasPage : Page
         {
             ProductoDto? producto = null;
 
-            // ✅ 1. Si el usuario eligió de la lista (flechas + enter o click)
+            // Si el usuario eligió de la lista (flechas + enter o click)
             if (args.ChosenSuggestion != null)
             {
                 producto = (ProductoDto)args.ChosenSuggestion;
             }
             else
             {
-                // ⚠️ 2. Si escribió manual (ej: código de barras)
+                // Si escribió manual (ej: código de barras)
                 var texto = sender.Text;
 
                 if (string.IsNullOrEmpty(texto))
@@ -196,14 +167,32 @@ public sealed partial class VentasPage : Page
 
         try
         {
+            ClienteDto? cliente = null;
 
-            var texto = sender.Text;
 
-            if (string.IsNullOrEmpty(texto))
-                return;
+            if (args.ChosenSuggestion != null)
+            {
+                cliente = (ClienteDto)args.ChosenSuggestion;
+            }
+            else
+            {
 
-            var cliente = await Servicios.ClienteService
-                .BuscarClienteCodigoONombreAsync(texto);
+                var texto = sender.Text;
+
+                if (string.IsNullOrEmpty(texto))
+                    return;
+
+                cliente = await Servicios.ClienteService
+                    .BuscarClienteCodigoONombreAsync(texto);
+            }
+            if (cliente != null)
+            {
+                txtCodigoCliente.Text = cliente.Codigo;
+                txtNombreCliente.Text = cliente.Nombre;
+                txtDocumentoCliente.Text = cliente.Documento;
+                txtBuscarCliente.Text = "";
+            }
+
         }
         catch (Exception ex)
         {
@@ -225,6 +214,7 @@ public sealed partial class VentasPage : Page
         var clienteSeleccionado = (ClienteDto)args.SelectedItem;
 
         sender.Text = clienteSeleccionado.Nombre;
+        sender.Text = "";
     }
     private void CalcularTotales()
     {
@@ -232,25 +222,6 @@ public sealed partial class VentasPage : Page
         txtDescuento.Text = Servicios.VentaService.DescuentoMonto.ToString("N2");
         txtImpuesto.Text = Servicios.VentaService.Impuesto.ToString("N2");
         txtTotal.Text = Servicios.VentaService.Total.ToString("N2");
-    }
-    private async Task ListarClientes()
-    {
-        //try
-        //{
-        //    var lista = await Servicios.ClienteService.ListarClientes();
-
-        //    cmbCliente.ItemsSource = lista;
-
-        //    cmbCliente.DisplayMemberPath = "Nombre";
-        //    cmbCliente.SelectedValuePath = "ClienteId";
-        //    cmbCliente.SelectedIndex = 0;
-        //}
-        //catch (Exception ex)
-        //{
-        //    await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-        //}
-
     }
     private async Task ListarMetodosPagos()
     {
@@ -283,10 +254,8 @@ public sealed partial class VentasPage : Page
         try
         {
             _timerProducto.Stop();
-
-            await BuscarProductosAsync();
-
-
+            var productos = await Servicios.ProductoService.BuscarProductoCodigoONombreListAsync(txtBuscarProducto.Text);
+            txtBuscarProducto.ItemsSource = productos;
         }
         catch (Exception ex)
         {
@@ -299,50 +268,17 @@ public sealed partial class VentasPage : Page
         try
         {
             _timerCliente.Stop();
-
-            await BuscarClientesAsync();
-
-
-        }
-        catch (Exception ex)
-        {
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-        }
-    }
-    private async Task BuscarProductosAsync()
-    {
-        try
-        {
-
-
-            var productos = await Servicios.ProductoService
-                .BuscarProductoCodigoONombreListAsync(txtBuscarProducto.Text);
-
-
-            txtBuscarProducto.ItemsSource = productos;
-
-        }
-        catch (Exception ex)
-        {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-        }
-    }
-    private async Task BuscarClientesAsync()
-    {
-
-        try
-        {
             var cliente = await Servicios.ClienteService
             .BuscarClienteCodigoONombreListAsync(txtBuscarCliente.Text);
 
             txtBuscarCliente.ItemsSource = cliente;
+
+
         }
         catch (Exception ex)
         {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
 
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
         }
     }
     private async Task CargarConsumidorFinal()
@@ -353,7 +289,9 @@ public sealed partial class VentasPage : Page
             if (cliente != null)
             {
                 _clienteSeleccionado = cliente;
-                txtBuscarCliente.Text = cliente.Nombre;
+                txtCodigoCliente.Text = cliente.Codigo;
+                txtNombreCliente.Text = cliente.Nombre;
+                txtDocumentoCliente.Text = cliente.Documento;
             }
         }
         catch (Exception ex)
@@ -365,12 +303,10 @@ public sealed partial class VentasPage : Page
     private async void LimpiarCampos()
     {
         txtBuscarProducto.Text = "";
-
         dgCarrito.ItemsSource = null;
         Servicios.VentaService.VaciarCarrito();
-
         CalcularTotales();
-
+        txtBuscarCliente.Text = "";
         txtBuscarProducto.Focus(FocusState.Programmatic);
         await CargarConsumidorFinal();
 

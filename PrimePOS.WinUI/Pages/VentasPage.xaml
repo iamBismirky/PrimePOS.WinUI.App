@@ -117,34 +117,63 @@
                     CornerRadius="10"
                     Padding="15"
                     Grid.Column="1"
-                    Width="300"
-                    >
+                    Width="auto">
+                
+                    <Grid ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                                
+                        <controls:WrapPanel Grid.Column="0" Orientation="Vertical" VerticalSpacing="15" >
 
-                <controls:WrapPanel Orientation="Vertical" VerticalSpacing="15" >
+                            <TextBlock Text="Cliente" FontWeight="Bold"  FontFamily="Segoe UI"/>
 
-                    <TextBlock Text="Cliente" FontWeight="Bold"  FontFamily="Segoe UI"/>
-                    
-                    <AutoSuggestBox Grid.Column="0"
-                                    x:Name="txtBuscarCliente" 
-                                    TextChanged="txtBuscarCliente_TextChanged"
-                                    QuerySubmitted="txtBuscarCliente_QuerySubmitted"
-                                    SuggestionChosen="txtBuscarCliente_SuggestionChosen"
-                                    Width="220"
-                                    QueryIcon="Find"
-                                    UpdateTextOnSelect="False">
+                            <AutoSuggestBox Grid.Column="0"
+                                            x:Name="txtBuscarCliente" 
+                                            TextChanged="txtBuscarCliente_TextChanged"
+                                            QuerySubmitted="txtBuscarCliente_QuerySubmitted"
+                                            SuggestionChosen="txtBuscarCliente_SuggestionChosen"
+                                            PlaceholderText="Buscar cliente por codigo o nombre"
+                                            Width="300"
+                                            QueryIcon="Find"
+                                            UpdateTextOnSelect="False">
 
 
-                        <AutoSuggestBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <TextBlock Text="{Binding Codigo}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding Nombre}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </AutoSuggestBox.ItemTemplate>
-                    </AutoSuggestBox>
-                </controls:WrapPanel>
-            </Border>
+                                <AutoSuggestBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="{Binding Codigo}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding Nombre}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </AutoSuggestBox.ItemTemplate>
+                            </AutoSuggestBox>
+                        </controls:WrapPanel>
+                        
+                        <Border Grid.Column="1"
+                                BorderThickness="1"
+                                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                CornerRadius="10"
+                                Padding="15">
+                                <controls:WrapPanel Orientation="Vertical" >
+                                    <TextBlock>
+                                <Run Text="Codigo"/>
+                                <Run x:Name="txtCodigoCliente"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                <Run Text="Nombre"/>
+                                <Run x:Name="txtNombreCliente"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                <Run Text="Documento"/>
+                                <Run x:Name="txtDocumentoCliente"/>
+                                    </TextBlock>
+                                </controls:WrapPanel>
+                        </Border>
+                       
+                    </Grid>
+                </Border>
 
             <!--Metodo de pago-->
             <Border BorderThickness="1"

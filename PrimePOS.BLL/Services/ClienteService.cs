@@ -138,7 +138,14 @@ public class ClienteService
     }
     public async Task<ClienteDto?> BuscarClienteCodigoONombreAsync(string buscar)
     {
+        buscar = buscar.Trim();
+
         var cliente = await _clienteRepository.BuscarPorCodigoONombreAsync(buscar);
+
+        if (cliente == null)
+        {
+            cliente = await _clienteRepository.BuscarClientePorNombreAsync(buscar);
+        }
         if (cliente == null)
             return null;
 

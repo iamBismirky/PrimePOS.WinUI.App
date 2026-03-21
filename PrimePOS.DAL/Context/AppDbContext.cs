@@ -37,12 +37,12 @@ namespace PrimePOS.DAL.Context
              );
             modelBuilder.Entity<Caja>().HasData
              (
-                new Caja { CajaId = 1, Nombre = "Caja Principal" }
+                new Caja { CajaId = 1, Nombre = "Principal", Estado = true }
 
              );
             modelBuilder.Entity<Cliente>().HasData
              (
-                new Cliente { ClienteId = 1, Nombre = "Consumidor Final", Estado = true }
+                new Cliente { ClienteId = 1, Codigo = "CLIENT-0001", Nombre = "Consumidor Final", Estado = true }
 
              );
 
