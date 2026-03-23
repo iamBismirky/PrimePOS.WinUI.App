@@ -1,15 +1,99 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="PrimePOS.WinUI.Pages.PerfilPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:PrimePOS.WinUI.Pages"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid>
+
+        <!-- CONTENEDOR CENTRADO -->
+        <Grid HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              MaxWidth="420"
+              Width="800">
+
+            <Border Padding="25"
+                    CornerRadius="16"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+
+                <StackPanel Spacing="20">
+
+                    <!-- HEADER -->
+                    <StackPanel Spacing="6" HorizontalAlignment="Center">
+                        <TextBlock Text="Mi Perfil"
+                                   FontSize="24"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock Text="Gestiona tu cuenta"
+                                   Opacity="0.6"
+                                   FontSize="13"/>
+                    </StackPanel>
+
+                    <!-- AVATAR -->
+                    <Grid Width="80" Height="80"
+                          HorizontalAlignment="Center"
+                          CornerRadius="40"
+                          Background="{ThemeResource AccentFillColorDefaultBrush}">
+
+                        <FontIcon Glyph="&#xE77B;"
+                                  FontSize="36"
+                                  Foreground="White"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- INFO -->
+                    <StackPanel Spacing="10">
+
+                        <StackPanel>
+                            <TextBlock Text="Usuario" Opacity="0.6"/>
+                            <TextBlock x:Name="txtUsuario"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="Rol" Opacity="0.6"/>
+                            <TextBlock x:Name="txtRol"
+                                       FontSize="15"/>
+                        </StackPanel>
+
+                    </StackPanel>
+
+                    <!-- DIVIDER -->
+                    <Rectangle Height="1"
+                               Fill="{ThemeResource DividerStrokeColorDefaultBrush}"
+                               Opacity="0.5"/>
+
+                    <!-- CAMBIAR CONTRASEÑA -->
+                    <StackPanel Spacing="12">
+
+                        <TextBlock Text="Cambiar contraseña"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"/>
+
+                        <PasswordBox x:Name="pwdActual"
+                                     PlaceholderText="Contraseña actual"
+                                     PasswordChar="#"/>
+
+                        <PasswordBox x:Name="pwdNueva"
+                                     PlaceholderText="Nueva contraseña"
+                                     PasswordChar="#"/>
+
+                        <PasswordBox x:Name="pwdConfirmar"
+                                     PlaceholderText="Confirmar contraseña"
+                                     PasswordChar="#"/>
+
+                        <Button Content="Actualizar contraseña"
+                                Click="BtnActualizarPassword_Click"
+                                HorizontalAlignment="Stretch"
+                                Style="{ThemeResource AccentButtonStyle}"/>
+
+                    </StackPanel>
+
+                </StackPanel>
+
+            </Border>
+        </Grid>
 
     </Grid>
 </Page>

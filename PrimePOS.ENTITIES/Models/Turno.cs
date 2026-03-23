@@ -14,8 +14,9 @@ public class Turno
     public int UsuarioId { get; set; }
     public Usuario? Usuario { get; set; }
 
-    public string CodigoTurno { get; set; } = string.Empty;
+    public int NumeroTurno { get; set; }
     public DateTime FechaApertura { get; set; }
+    public DateTime FechaOperacion { get; set; }
     public decimal MontoInicial { get; set; }
     public decimal? MontoCierre { get; set; }
     public DateTime? FechaCierre { get; set; }

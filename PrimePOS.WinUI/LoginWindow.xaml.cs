@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Media;
 using PrimePOS.BLL.DTOs.Usuario;
 using PrimePOS.WinUI.Infrastructure;
 using System;
-using System.Drawing;
 using WinRT.Interop;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -13,16 +12,15 @@ using WinRT.Interop;
 
 namespace PrimePOS.WinUI
 {
-    
+
     public sealed partial class LoginWindow : Window
     {
-        
+
         public LoginWindow()
         {
             InitializeComponent();
-            // Quitar barra de título
+            txtUsername.Focus(FocusState.Programmatic);
             this.ExtendsContentIntoTitleBar = true;
-
             this.SystemBackdrop = new MicaBackdrop();
             var hwnd = WindowNative.GetWindowHandle(this);
             var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
@@ -35,12 +33,12 @@ namespace PrimePOS.WinUI
                 presenter.IsMaximizable = false;
                 presenter.IsMinimizable = false;
                 presenter.IsResizable = false;
-                
+
             }
-            
+
             // Tamaño ventana
             appWindow.Resize(new Windows.Graphics.SizeInt32(420, 700));
-            
+
             // Centrar ventana
             var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
             var area = displayArea.WorkArea;
@@ -48,9 +46,9 @@ namespace PrimePOS.WinUI
             appWindow.Move(new Windows.Graphics.PointInt32(
                 (area.Width - 420) / 2,
                 (area.Height - 700) / 2));
-            
+
         }
-        private async void BtnLogin_Click(object sender, RoutedEventArgs e) 
+        private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -60,7 +58,7 @@ namespace PrimePOS.WinUI
                     Password = pwdPassword.Password
 
                 };
-                
+
                 var usuarioSesion = await Servicios.UsuarioService.AutenticarUsuarioAsync(loginDto);
 
                 Sesion.UsuarioId = usuarioSesion.UsuarioId;
@@ -93,15 +91,18 @@ namespace PrimePOS.WinUI
             if (App.TemaActual == ElementTheme.Light)
             {
                 RootGrid.RequestedTheme = ElementTheme.Dark;
-                iconTema.Glyph = "\uE708"; // luna
+                iconTema.Glyph = "\uE706"; // luna
                 App.TemaActual = ElementTheme.Dark;
             }
             else
             {
                 RootGrid.RequestedTheme = ElementTheme.Light;
-                iconTema.Glyph = "\uE706"; // sol
+                iconTema.Glyph = "\uE708"; // sol
                 App.TemaActual = ElementTheme.Light;
             }
         }
+
+
     }
+
 }

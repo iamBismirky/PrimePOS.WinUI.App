@@ -28,7 +28,11 @@
             UsuarioNombre = string.Empty;
             RolNombre = string.Empty;
             RolId = 0;
-            Activa = false;
+
+            CajaId = 0;
+            TurnoId = 0;
         }
+
+
     }
 }

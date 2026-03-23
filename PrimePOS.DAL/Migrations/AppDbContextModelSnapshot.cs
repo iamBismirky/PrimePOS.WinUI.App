@@ -313,10 +313,6 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("CajaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CodigoTurno")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("EstaAbierto")
                         .HasColumnType("bit");
 
@@ -326,13 +322,22 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<DateTime?>("FechaCierre")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("FechaOperacion")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal?>("MontoCierre")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("MontoInicial")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("NumeroTurno")
+                        .HasColumnType("int");
+
                     b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsuarioId1")
                         .HasColumnType("int");
 
                     b.HasKey("TurnoId");
@@ -340,6 +345,8 @@ namespace PrimePOS.DAL.Migrations
                     b.HasIndex("CajaId");
 
                     b.HasIndex("UsuarioId");
+
+                    b.HasIndex("UsuarioId1");
 
                     b.ToTable("Turnos");
                 });
@@ -501,6 +508,10 @@ namespace PrimePOS.DAL.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("PrimePOS.ENTITIES.Models.Usuario", null)
+                        .WithMany("Turnos")
+                        .HasForeignKey("UsuarioId1");
+
                     b.Navigation("Caja");
 
                     b.Navigation("Usuario");
@@ -587,6 +598,8 @@ namespace PrimePOS.DAL.Migrations
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Usuario", b =>
                 {
+                    b.Navigation("Turnos");
+
                     b.Navigation("Ventas");
                 });
 

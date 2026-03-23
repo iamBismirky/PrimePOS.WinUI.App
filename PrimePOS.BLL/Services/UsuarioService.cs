@@ -37,7 +37,7 @@ namespace PrimePOS.BLL.Services
 
             _usuarioRepository.Actualizar(usuario);
             await _usuarioRepository.GuardarCambiosAsync();
-    
+
         }
 
 
@@ -92,7 +92,7 @@ namespace PrimePOS.BLL.Services
             return new UsuarioDto
             {
                 UsuarioId = usuario.UsuarioId,
-                
+
                 Nombre = usuario.Nombre,
                 Codigo = usuario.Codigo,
                 Apellidos = usuario.Apellidos,
@@ -111,7 +111,7 @@ namespace PrimePOS.BLL.Services
             return usuarios.Select(u => new UsuarioDto
             {
                 UsuarioId = u.UsuarioId,
-                Codigo=u.Codigo,
+                Codigo = u.Codigo,
                 Nombre = u.Nombre,
                 Apellidos = u.Apellidos,
                 Username = u.Username,
@@ -121,32 +121,32 @@ namespace PrimePOS.BLL.Services
                 FechaRegistro = u.FechaRegistro
             }).ToList();
         }
-        public async Task CambiarContraseñaAsync(int id, string contraseñaActual, string contraseñaNueva, string confirmacion)
+        public async Task CambiarContraseñaAsync(CambiarContraseñaDto dto)
         {
-            if (string.IsNullOrWhiteSpace(contraseñaActual))
+            if (string.IsNullOrWhiteSpace(dto.ContraseñaActual))
                 throw new Exception("La contraseña actual es obligatoria.");
 
-            if (string.IsNullOrWhiteSpace(contraseñaNueva))
+            if (string.IsNullOrWhiteSpace(dto.ContraseñaNueva))
                 throw new Exception("La nueva contraseña es obligatoria.");
 
-            if (string.IsNullOrWhiteSpace(confirmacion))
+            if (string.IsNullOrWhiteSpace(dto.Confirmar))
                 throw new Exception("Confirme la contraseña.");
 
-            if (contraseñaNueva != confirmacion)
+            if (dto.ContraseñaNueva != dto.Confirmar)
                 throw new Exception("La confirmación no coincide con la nueva contraseña.");
 
-            var usuario = await _usuarioRepository.ObtenerPorId(id)
+            var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
                 ?? throw new Exception("Usuario no encontrado.");
 
-            bool esValida = PasswordService.Verify(contraseñaActual, usuario.Password);
+            bool esValida = PasswordService.Verify(dto.ContraseñaActual, usuario.Password);
 
             if (!esValida)
                 throw new Exception("La contraseña actual es incorrecta.");
 
-            if (PasswordService.Verify(contraseñaNueva, usuario.Password))
+            if (PasswordService.Verify(dto.ContraseñaNueva, usuario.Password))
                 throw new Exception("La nueva contraseña no puede ser igual a la actual.");
 
-            usuario.Password = PasswordService.Hash(contraseñaNueva);
+            usuario.Password = PasswordService.Hash(dto.ContraseñaNueva);
 
             _usuarioRepository.Actualizar(usuario);
             await _usuarioRepository.GuardarCambiosAsync();

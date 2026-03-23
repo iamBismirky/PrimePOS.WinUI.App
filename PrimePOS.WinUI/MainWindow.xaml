@@ -118,38 +118,69 @@
                             IsPaneToggleButtonVisible="False"
                             IsSettingsVisible="False"
                             IsBackEnabled="False"
-                            IsBackButtonVisible="Collapsed">
+                            IsBackButtonVisible="Collapsed"
+                            IsPaneOpen="False">
                 
 
                 <NavigationView.MenuItems>
 
-                    <NavigationViewItem Content="Dashboard"
-                                Tag="dashboard"
-                                Icon="Home"/>
+                <!-- Dashboard -->
+                <NavigationViewItem Content="Dashboard" Tag="dashboard">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xECA5;"/>
+                        <!-- Home -->
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
 
-                    <NavigationViewItem Content="Ventas"
-                                Tag="ventas"
-                                Icon="Shop"/>
-                    <NavigationViewItem Content="Inventario"
-                                Tag="inventario"
-                                Icon="Folder"/>
+                <!-- Ventas -->
+                <NavigationViewItem Content="Ventas" Tag="ventas">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEC5A;;"/>
+                        <!-- Shop -->
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
 
-                    <NavigationViewItem Content="Reportes"
-                                Tag="reportes"
-                                Icon="Contact"/>
-                    <NavigationViewItem Content="Administrar"
-                                Tag="administrar"
-                                Icon="Home"/>
+                <!-- Inventario -->
+                <NavigationViewItem Content="Inventario" Tag="inventario">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7B8;"/>
+                        <!-- Folder -->
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
 
-                    <NavigationViewItem Content="Perfil"
-                                Tag="perfil"
-                                Icon="Contact"/>
-                    <NavigationViewItem Content="Cerrar Session"
-                                Tag="cerrarSesion"
-                                Icon="ClosePane"/>
+                <!-- Reportes -->
+                <NavigationViewItem Content="Reportes" Tag="reportes">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE9D2;"/>
+                        <!-- Report -->
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
 
+                <!-- Administrar -->
+                <NavigationViewItem Content="Administrar" Tag="administrar">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;"/>
+                        <!-- Settings -->
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
 
-                </NavigationView.MenuItems>
+                <!-- Perfil -->
+                <NavigationViewItem Content="Perfil" Tag="perfil">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE77B;"/>
+                        <!-- User -->
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <!-- Cerrar Sesión -->
+                <NavigationViewItem Content="Cerrar Sesión" Tag="cerrarSesion">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xF3B1;"/>
+                        <!-- Logout -->
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+            </NavigationView.MenuItems>
 
                 <!-- AQUÍ VA EL FRAME -->
                 <NavigationView.Content>

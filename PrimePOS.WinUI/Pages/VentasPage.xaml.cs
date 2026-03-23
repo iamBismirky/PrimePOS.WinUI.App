@@ -1,9 +1,11 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using PrimePOS.BLL.DTOs.Caja;
 using PrimePOS.BLL.DTOs.Cliente;
 using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.BLL.DTOs.Venta;
+using PrimePOS.ENTITIES.Models;
 using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
 using System;
@@ -23,6 +25,10 @@ public sealed partial class VentasPage : Page
     private ClienteDto? _clienteSeleccionado;
     private ProductoDto? _productoSeleccionado;
 
+    public Caja? _cajaSeleccionada { get; private set; }
+    public Turno? _turnoSeleccionado { get; private set; }
+    public string? TextoTurnoPreview { get; set; }
+
     public VentasPage()
     {
         InitializeComponent();
@@ -38,15 +44,18 @@ public sealed partial class VentasPage : Page
     {
         base.OnNavigatedTo(e);
 
-
     }
+
     private async void Page_loaded(object sender, RoutedEventArgs e)
     {
+
+
         try
         {
 
             await ListarMetodosPagos();
             await CargarConsumidorFinal();
+            await ListarCajasAsync();
             CalcularTotales();
             txtBuscarProducto.Focus(FocusState.Programmatic);
         }
@@ -69,10 +78,30 @@ public sealed partial class VentasPage : Page
         txtBuscarProducto.Focus(FocusState.Programmatic);
 
     }
-    private void BtnBorrarProducto_Click(object sender, RoutedEventArgs e)
+    private async void BtnAbrirTurno_Click(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        TurnoOverlay.Visibility = Visibility.Visible;
+        if (OverlayAbrirCaja.Visibility == Visibility.Collapsed)
+        {
+            var (fecha, numeroTurno) = await Servicios.TurnoService.ObtenerSiguienteTurno();
+
+            txtTextoTurnoPreview.Text = $"Turno: {fecha:dd/MM/yyyy} - T{numeroTurno}";
+
+
+            OverlayAbrirCaja.Visibility = Visibility.Visible;
+
+        }
+        else
+        {
+            OverlayAbrirCaja?.Visibility = Visibility.Collapsed;
+
+        }
     }
+    private void BtnCerrarTurno_Click(object sender, RoutedEventArgs e)
+    {
+        OverlayAbrirCaja.Visibility = Visibility.Visible;
+    }
+
     private void BtnGenerarFactura_Click(object sender, RoutedEventArgs e)
     {
         throw new NotImplementedException();
@@ -207,6 +236,7 @@ public sealed partial class VentasPage : Page
         _productoSeleccionado = (ProductoDto)args.SelectedItem;
 
         sender.Text = _productoSeleccionado.Nombre;
+        sender.Text = "";
     }
     private async void txtBuscarCliente_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
     {
@@ -323,4 +353,92 @@ public sealed partial class VentasPage : Page
 
     }
 
+
+    private async void dlgAbrirTurno_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+    {
+        var caja = new TurnoDto
+        {
+            //CajaId = 1,
+            //UsuarioId = SesionUsuario.UsuarioId,
+            MontoInicial = Convert.ToDecimal(nbMontoInicial.Value),
+            //Turno = Convert.ToInt32(cmbTurno.SelectedValue),
+
+        };
+
+
+        await Servicios.TurnoService.AbrirTurnoAsync(caja);
+    }
+
+    private async Task ListarCajasAsync()
+    {
+        var lista = await Servicios.CajaService.ListarCajasAsync();
+
+        cmbCajas.ItemsSource = lista;
+
+        cmbCajas.DisplayMemberPath = "Nombre";
+        cmbCajas.SelectedValuePath = "CajaId";
+        cmbCajas.SelectedIndex = 0;
+    }
+    //private async Task ListarTurnosAsync(int cajaId)
+    //{
+    //    var lista = await Servicios.TurnoService.ObtenerTurnosPorCajaAsync(cajaId);
+
+    //    cmbTurnos.ItemsSource = lista;
+
+    //    cmbTurnos.DisplayMemberPath = "CodigoTurno";
+    //}
+    private void cmbCajas_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+
+
+        //    var turnos = await Servicios.TurnoService.ObtenerTurnosPorCajaAsync((int)cmbCajas.SelectedValue);
+
+        //    cmbTurnos.ItemsSource = turnos;
+
+        //    // Auto seleccionar turno abierto
+        //    var abierto = turnos.FirstOrDefault(t => t.EstaAbierto);
+
+        //    if (abierto != null)
+        //    {
+        //        cmbTurnos.SelectedItem = abierto;
+        //    }
+    }
+    private async void ConfirmarTurno_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var (fecha, numeroTurno) = await Servicios.TurnoService.ObtenerSiguienteTurno();
+
+            var dto = new TurnoDto
+            {
+                CajaId = (int)cmbCajas.SelectedValue,
+                NumeroTurno = numeroTurno,
+                UsuarioId = Sesion.UsuarioId,
+                MontoInicial = (decimal)nbMontoInicial.Value,
+
+
+            };
+            var turnoActual = await Servicios.TurnoService.AbrirTurnoAsync(dto);
+
+            Sesion.TurnoId = numeroTurno;
+            if (turnoActual != null)
+            {
+                txtCaja.Text = Sesion.CajaId.ToString();
+                txtUsuario.Text = Sesion.UsuarioNombre;
+                txtRol.Text = Sesion.RolNombre;
+                txtTurno.Text = Sesion.TurnoId.ToString();
+            }
+
+        }
+        catch (Exception ex)
+        {
+
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
+        }
+    }
+
+    private void CancelarOverlay_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
 }

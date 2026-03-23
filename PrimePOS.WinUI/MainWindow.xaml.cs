@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.WinUI.Infrastructure;
 using PrimePOS.WinUI.Pages;
+using System;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -22,8 +23,6 @@ namespace PrimePOS.WinUI
             RootGrid.RequestedTheme = App.TemaActual;
             this.ExtendsContentIntoTitleBar = true;
 
-
-            //navView.SelectionChanged += navView_SelectionChanged;
         }
         private void TitleBar_BackRequested(TitleBar sender, object args)
         {
@@ -37,13 +36,13 @@ namespace PrimePOS.WinUI
             if (App.TemaActual == ElementTheme.Light)
             {
                 RootGrid.RequestedTheme = ElementTheme.Dark;
-                iconTema.Glyph = "\uE708"; // luna
+                iconTema.Glyph = "\uE706"; // luna
                 App.TemaActual = ElementTheme.Dark;
             }
             else
             {
                 RootGrid.RequestedTheme = ElementTheme.Light;
-                iconTema.Glyph = "\uE706"; // sol
+                iconTema.Glyph = "\uE708"; // sol
                 App.TemaActual = ElementTheme.Light;
             }
         }
@@ -58,12 +57,12 @@ namespace PrimePOS.WinUI
         {
             navView.IsPaneOpen = !navView.IsPaneOpen;
         }
-        private void navView_SelectionChanged(NavigationView sender,
+        private async void navView_SelectionChanged(NavigationView sender,
                                        NavigationViewSelectionChangedEventArgs args)
         {
 
             if (args.SelectedItemContainer is NavigationViewItem item
-        && contentFrame != null)
+                && contentFrame != null)
             {
                 switch (item.Tag?.ToString())
                 {
@@ -85,6 +84,21 @@ namespace PrimePOS.WinUI
                         break;
                     case "perfil":
                         contentFrame?.Navigate(typeof(PerfilPage));
+                        break;
+                    case "cerrarSesion":
+                        var dialog = new CerrarSesionDialog
+                        {
+                            XamlRoot = this.Content.XamlRoot,
+                            RequestedTheme = App.TemaActual
+                        };
+                        var result = await dialog.ShowAsync();
+
+                        if (result == ContentDialogResult.Primary)
+                        {
+                            Sesion.Cerrar();
+                            App.IrALogin();
+                        }
+                        sender.SelectedItem = null;
                         break;
 
 

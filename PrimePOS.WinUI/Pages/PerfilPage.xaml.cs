@@ -1,17 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using PrimePOS.BLL.DTOs.Usuario;
+using PrimePOS.WinUI.Helpers;
+using PrimePOS.WinUI.Infrastructure;
+using System;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,5 +18,39 @@ public sealed partial class PerfilPage : Page
     public PerfilPage()
     {
         InitializeComponent();
+        CargarDatos();
+    }
+    private async void BtnActualizarPassword_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var dto = new CambiarContraseñaDto
+            {
+                UsuarioId = Sesion.UsuarioId,
+                ContraseñaActual = pwdActual.Password.Trim(),
+                ContraseñaNueva = pwdNueva.Password.Trim(),
+                Confirmar = pwdConfirmar.Password.Trim(),
+
+
+            };
+            await Servicios.UsuarioService.CambiarContraseñaAsync(dto);
+            LimpiarCampos();
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Contraseña actualizada correctamente");
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+        }
+    }
+    private void CargarDatos()
+    {
+        txtUsuario.Text = Sesion.UsuarioNombre;
+        txtRol.Text = Sesion.RolNombre;
+    }
+    private void LimpiarCampos()
+    {
+        pwdActual.Password = "";
+        pwdNueva.Password = "";
+        pwdConfirmar.Password = "";
     }
 }

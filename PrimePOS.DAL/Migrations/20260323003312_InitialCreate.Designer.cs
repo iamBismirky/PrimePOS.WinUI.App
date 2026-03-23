@@ -12,7 +12,7 @@ using PrimePOS.DAL.Context;
 namespace PrimePOS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260319055042_InitialCreate")]
+    [Migration("20260323003312_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,47 +24,6 @@ namespace PrimePOS.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("PrimePOS.ENTITIES.Models.AperturaCaja", b =>
-                {
-                    b.Property<int>("AperturaCajaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AperturaCajaId"));
-
-                    b.Property<int>("CajaId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Estado")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("FechaApertura")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaCierre")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("MontoCierre")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("MontoInicial")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Turno")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AperturaCajaId");
-
-                    b.HasIndex("CajaId");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("AperturaCajas");
-                });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Caja", b =>
                 {
@@ -90,7 +49,7 @@ namespace PrimePOS.DAL.Migrations
                         {
                             CajaId = 1,
                             Estado = true,
-                            Nombre = "Caja Principal"
+                            Nombre = "Principal"
                         });
                 });
 
@@ -160,7 +119,7 @@ namespace PrimePOS.DAL.Migrations
                         new
                         {
                             ClienteId = 1,
-                            Codigo = "",
+                            Codigo = "CLIENT-0001",
                             Direccion = "",
                             Documento = "",
                             Email = "",
@@ -346,6 +305,55 @@ namespace PrimePOS.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.Turno", b =>
+                {
+                    b.Property<int>("TurnoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TurnoId"));
+
+                    b.Property<int>("CajaId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("EstaAbierto")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaApertura")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaCierre")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaOperacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("MontoCierre")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MontoInicial")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("NumeroTurno")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsuarioId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("TurnoId");
+
+                    b.HasIndex("CajaId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("UsuarioId1");
+
+                    b.ToTable("Turnos");
+                });
+
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Usuario", b =>
                 {
                     b.Property<int>("UsuarioId")
@@ -403,9 +411,6 @@ namespace PrimePOS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VentaId"));
 
-                    b.Property<int>("AperturaCajaId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
@@ -437,12 +442,13 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("TurnoId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("VentaId");
-
-                    b.HasIndex("AperturaCajaId");
 
                     b.HasIndex("ClienteId");
 
@@ -450,28 +456,11 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasIndex("MetodoPagoId");
 
+                    b.HasIndex("TurnoId");
+
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Ventas");
-                });
-
-            modelBuilder.Entity("PrimePOS.ENTITIES.Models.AperturaCaja", b =>
-                {
-                    b.HasOne("PrimePOS.ENTITIES.Models.Caja", "Caja")
-                        .WithMany()
-                        .HasForeignKey("CajaId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("PrimePOS.ENTITIES.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Caja");
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.DetalleVenta", b =>
@@ -508,6 +497,29 @@ namespace PrimePOS.DAL.Migrations
                     b.Navigation("Categoria");
                 });
 
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.Turno", b =>
+                {
+                    b.HasOne("PrimePOS.ENTITIES.Models.Caja", "Caja")
+                        .WithMany()
+                        .HasForeignKey("CajaId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PrimePOS.ENTITIES.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PrimePOS.ENTITIES.Models.Usuario", null)
+                        .WithMany("Turnos")
+                        .HasForeignKey("UsuarioId1");
+
+                    b.Navigation("Caja");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Usuario", b =>
                 {
                     b.HasOne("PrimePOS.ENTITIES.Models.Rol", "Rol")
@@ -525,12 +537,6 @@ namespace PrimePOS.DAL.Migrations
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Venta", b =>
                 {
-                    b.HasOne("PrimePOS.ENTITIES.Models.AperturaCaja", "AperturaCaja")
-                        .WithMany("Ventas")
-                        .HasForeignKey("AperturaCajaId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("PrimePOS.ENTITIES.Models.Cliente", "Cliente")
                         .WithMany()
                         .HasForeignKey("ClienteId")
@@ -547,24 +553,25 @@ namespace PrimePOS.DAL.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("PrimePOS.ENTITIES.Models.Turno", "Turno")
+                        .WithMany("Ventas")
+                        .HasForeignKey("TurnoId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("PrimePOS.ENTITIES.Models.Usuario", "Usuario")
                         .WithMany("Ventas")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("AperturaCaja");
-
                     b.Navigation("Cliente");
 
                     b.Navigation("MetodoPago");
 
-                    b.Navigation("Usuario");
-                });
+                    b.Navigation("Turno");
 
-            modelBuilder.Entity("PrimePOS.ENTITIES.Models.AperturaCaja", b =>
-                {
-                    b.Navigation("Ventas");
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Categoria", b =>
@@ -587,8 +594,15 @@ namespace PrimePOS.DAL.Migrations
                     b.Navigation("Usuarios");
                 });
 
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.Turno", b =>
+                {
+                    b.Navigation("Ventas");
+                });
+
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Usuario", b =>
                 {
+                    b.Navigation("Turnos");
+
                     b.Navigation("Ventas");
                 });
 

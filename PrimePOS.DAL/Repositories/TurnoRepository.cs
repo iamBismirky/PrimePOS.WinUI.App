@@ -48,4 +48,11 @@ public class TurnoRepository
             .OrderByDescending(t => t.FechaApertura)
             .ToListAsync();
     }
+    public async Task<Turno?> ObtenerUltimoTurnoDelDia(DateTime fecha)
+    {
+        return await _context.Turnos
+            .Where(x => x.FechaOperacion == fecha)
+            .OrderByDescending(x => x.NumeroTurno)
+            .FirstOrDefaultAsync();
+    }
 }
