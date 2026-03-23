@@ -1,8 +1,10 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using PrimePOS.BLL.DTOs.Usuario;
+using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Infrastructure;
 using System;
 using WinRT.Interop;
@@ -15,10 +17,14 @@ namespace PrimePOS.WinUI
 
     public sealed partial class LoginWindow : Window
     {
+        private readonly UsuarioService _usuarioService;
 
         public LoginWindow()
         {
             InitializeComponent();
+
+            _usuarioService = App.Services.GetRequiredService<UsuarioService>();
+
             txtUsername.Focus(FocusState.Programmatic);
             this.ExtendsContentIntoTitleBar = true;
             this.SystemBackdrop = new MicaBackdrop();
@@ -59,7 +65,7 @@ namespace PrimePOS.WinUI
 
                 };
 
-                var usuarioSesion = await Servicios.UsuarioService.AutenticarUsuarioAsync(loginDto);
+                var usuarioSesion = await _usuarioService.AutenticarUsuarioAsync(loginDto);
 
                 Sesion.UsuarioId = usuarioSesion.UsuarioId;
                 Sesion.UsuarioNombre = usuarioSesion.UsuarioNombre;

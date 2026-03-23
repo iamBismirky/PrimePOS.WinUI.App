@@ -1,9 +1,10 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using PrimePOS.BLL.DTOs.Usuario;
+using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Infrastructure;
 using System;
 using System.Threading.Tasks;
 
@@ -13,10 +14,15 @@ namespace PrimePOS.WinUI.Pages;
 
 public sealed partial class UsuarioPage : Page
 {
+    private readonly UsuarioService _usuarioService;
+    private readonly RolService _rolService;
     private int usuarioIdSeleccionado = 0;
     public UsuarioPage()
     {
         InitializeComponent();
+
+        _usuarioService = App.Services.GetRequiredService<UsuarioService>();
+        _rolService = App.Services.GetRequiredService<RolService>();
 
     }
     public void btnCancelar_Click(object sender, RoutedEventArgs e)
@@ -62,7 +68,7 @@ public sealed partial class UsuarioPage : Page
 
 
             };
-            await Servicios.UsuarioService.CrearUsuarioAsync(usuario);
+            await _usuarioService.CrearUsuarioAsync(usuario);
 
             await ListarUsuarios();
             LimpiarCampos();
@@ -92,7 +98,7 @@ public sealed partial class UsuarioPage : Page
                 Estado = tsEstado.IsOn,
 
             };
-            await Servicios.UsuarioService.ActualizarUsuarioAsync(usuario);
+            await _usuarioService.ActualizarUsuarioAsync(usuario);
 
             await ListarUsuarios();
             LimpiarCampos();
@@ -114,7 +120,7 @@ public sealed partial class UsuarioPage : Page
 
 
             };
-            await Servicios.UsuarioService.EliminarUsuarioAsync(usuario);
+            await _usuarioService.EliminarUsuarioAsync(usuario);
 
             await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Usuario eliminado correctamente");
 
@@ -151,7 +157,7 @@ public sealed partial class UsuarioPage : Page
     {
         try
         {
-            var roles = await Servicios.RolService.ListarRolesAsync();
+            var roles = await _rolService.ListarRolesAsync();
             if (roles != null)
             {
 
@@ -171,7 +177,7 @@ public sealed partial class UsuarioPage : Page
     {
         try
         {
-            var lista = await Servicios.UsuarioService.ListarUsuariosAsync();
+            var lista = await _usuarioService.ListarUsuariosAsync();
             dgUsuarios.ItemsSource = lista;
         }
         catch (Exception ex)

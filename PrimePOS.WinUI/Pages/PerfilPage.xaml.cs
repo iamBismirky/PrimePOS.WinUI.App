@@ -1,24 +1,26 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.BLL.DTOs.Usuario;
+using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
 using System;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+
 
 namespace PrimePOS.WinUI.Pages;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
+
 public sealed partial class PerfilPage : Page
 {
+    private readonly UsuarioService _usuarioService;
     public PerfilPage()
     {
         InitializeComponent();
         CargarDatos();
+
+        _usuarioService = App.Services.GetRequiredService<UsuarioService>();
     }
     private async void BtnActualizarPassword_Click(object sender, RoutedEventArgs e)
     {
@@ -33,7 +35,7 @@ public sealed partial class PerfilPage : Page
 
 
             };
-            await Servicios.UsuarioService.CambiarContraseñaAsync(dto);
+            await _usuarioService.CambiarContraseñaAsync(dto);
             LimpiarCampos();
             await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Contraseña actualizada correctamente");
         }

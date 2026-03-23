@@ -1,25 +1,26 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.BLL.DTOs.Caja;
+using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Infrastructure;
 using System;
 using System.Threading.Tasks;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+
 
 namespace PrimePOS.WinUI.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+
     public sealed partial class GestionCajasPage : Page
     {
+        private readonly CajaService _cajaService;
         private int _cajaIdSeleccionado = 0;
         public GestionCajasPage()
         {
             InitializeComponent();
+
+            _cajaService = App.Services.GetRequiredService<CajaService>();
         }
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -41,7 +42,7 @@ namespace PrimePOS.WinUI.Pages
 
                 };
 
-                await Servicios.CajaService.EliminarCajaAsync(dto);
+                await _cajaService.EliminarCajaAsync(dto);
                 await ListarCajasAsync();
                 LimpiarCampos();
 
@@ -67,7 +68,7 @@ namespace PrimePOS.WinUI.Pages
 
                 };
 
-                await Servicios.CajaService.ActualizarCajaAsync(dto);
+                await _cajaService.ActualizarCajaAsync(dto);
                 await ListarCajasAsync();
                 LimpiarCampos();
 
@@ -91,7 +92,7 @@ namespace PrimePOS.WinUI.Pages
                     Estado = tsEstado.IsOn
                 };
 
-                await Servicios.CajaService.CrearCajaAsync(dto);
+                await _cajaService.CrearCajaAsync(dto);
                 await ListarCajasAsync();
                 LimpiarCampos();
             }
@@ -117,7 +118,7 @@ namespace PrimePOS.WinUI.Pages
 
         private async Task ListarCajasAsync()
         {
-            var lista = await Servicios.CajaService.ListarCajasAsync();
+            var lista = await _cajaService.ListarCajasAsync();
 
             dgCajas.ItemsSource = lista;
         }

@@ -1,25 +1,30 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.BLL.DTOs.Categoria;
+using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Infrastructure;
 using System;
+using System.Threading.Tasks;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace PrimePOS.WinUI.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+
     public sealed partial class CategoriaPage : Page
     {
+        private readonly CategoriaService _categoriaService;
         private int _categoriaIdSeleccionado = 0;
         public CategoriaPage()
         {
             InitializeComponent();
-            ListarCategorias();
+
+            _categoriaService = App.Services.GetRequiredService<CategoriaService>();
+
+        }
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            await ListarCategoriasAsync();
         }
 
         private void dgCategorias_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -41,8 +46,8 @@ namespace PrimePOS.WinUI.Pages
                     Estado = tgEstado.IsOn
                 };
 
-                await Servicios.CategoriaService.CrearCategoriaAsync(dto);
-                ListarCategorias();
+                await _categoriaService.CrearCategoriaAsync(dto);
+                await ListarCategoriasAsync();
                 LimpiarCampos();
             }
             catch (Exception ex)
@@ -67,8 +72,8 @@ namespace PrimePOS.WinUI.Pages
 
                 };
 
-                await Servicios.CategoriaService.ActualizarCategoriaAsync(dto);
-                ListarCategorias();
+                await _categoriaService.ActualizarCategoriaAsync(dto);
+                await ListarCategoriasAsync();
                 LimpiarCampos();
 
 
@@ -91,8 +96,8 @@ namespace PrimePOS.WinUI.Pages
 
                 };
 
-                await Servicios.CategoriaService.EliminarCategoriaAsync(dto);
-                ListarCategorias();
+                await _categoriaService.EliminarCategoriaAsync(dto);
+                await ListarCategoriasAsync();
                 LimpiarCampos();
 
 
@@ -108,11 +113,11 @@ namespace PrimePOS.WinUI.Pages
             LimpiarCampos();
         }
 
-        private async void ListarCategorias()
+        private async Task ListarCategoriasAsync()
         {
             try
             {
-                var categorias = await Servicios.CategoriaService.ListarCategoriasAsync();
+                var categorias = await _categoriaService.ListarCategoriasAsync();
                 dgCategorias.ItemsSource = categorias;
             }
             catch (Exception ex)

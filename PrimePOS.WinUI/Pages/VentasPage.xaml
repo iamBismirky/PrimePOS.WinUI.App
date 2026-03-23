@@ -18,10 +18,10 @@
     <Border  x:Name="panelVentas" Visibility="Visible">
     <Grid Padding="20" RowSpacing="15">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
                 <!--Header-->
@@ -39,8 +39,8 @@
         <!-- Buscador de producto -->
         <Grid Grid.Row="1" ColumnSpacing="20" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
@@ -306,48 +306,14 @@
                     CornerRadius="10"
                     Padding="15"
                     >
-                    <StackPanel Orientation="Vertical" Spacing="10" HorizontalAlignment="Right">
-                            <Button Content="Abrir Turno" Click="BtnAbrirTurno_Click"/>
-                            <Button Content="Cerrar Turno" Click="BtnCerrarTurno_Click"/>
-                            <Button Content="Generar Factura" Click="BtnGenerarFactura_Click" Background="#FF2D89EF" Foreground="White"/>
+                            <StackPanel Orientation="Vertical" Spacing="10" HorizontalAlignment="Right">
+                                <Button Content="Generar Factura" Click="BtnGenerarFactura_Click" Background="#FF2D89EF" Foreground="White"/>
                         <Button Content="Limpiar Pantalla" Click="BtnLimpiar_Click"/>
                     </StackPanel>
                 </Border>
             </Grid>
         </Border>
-            <Grid x:Name="OverlayAbrirCaja"
-                  Background="#80000000"
-                  Visibility="Collapsed"
-                  Grid.Row="2">
-
-                <Border Width="500"
-                Padding="20"
-                Background="White"
-                CornerRadius="10"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-
-                    <StackPanel Spacing="12">
-
-                        <ComboBox x:Name="cmbCajas"
-                                  Header="Caja"
-                                  DisplayMemberPath="Nombre"
-                                  SelectionChanged="cmbCajas_SelectionChanged"/>
-
-                        <NumberBox
-                                  x:Name="nbMontoInicial"
-                                  Header="Monto inicial"
-                                  PlaceholderText="0.00"/>
-
-                        <TextBlock x:Name="txtTextoTurnoPreview"/>
-
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button Content="Cancelar" Click="CancelarOverlay_Click"/>
-                            <Button Content="Confirmar" Click="ConfirmarTurno_Click"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-            </Grid>
+            
 
         </Grid>
         

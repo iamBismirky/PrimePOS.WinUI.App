@@ -1,47 +1,117 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PrimePOS.BLL.DTOs.Caja;
+using PrimePOS.BLL.Services;
+using PrimePOS.WinUI.Helpers;
+using PrimePOS.WinUI.Infrastructure;
 using System;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+
     public sealed partial class TurnoOverlay : UserControl
     {
+        private readonly TurnoService _turnoService;
+        private readonly CajaService _cajaService;
+        public string? TextoTurnoPreview { get; set; }
+
         public TurnoOverlay()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+
+            _turnoService = App.Services.GetRequiredService<TurnoService>();
+            _cajaService = App.Services.GetRequiredService<CajaService>();
         }
-        private void BtnAceptar_Click(object sender, RoutedEventArgs e)
+        private async void Page_loaded(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await ListarCajasAsync();
+                await ListarTurnosAsync();
+            }
+            catch (Exception ex)
+            {
+
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
+
+            }
         }
+
 
         private void BtnCancelar_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            this.Visibility = Visibility.Collapsed;
         }
-        private void BtnAbrir_Click(object sender, RoutedEventArgs e)
+        private async void BtnAbrir_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
-        }
-        private void ConfirmarTurno_Click(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                var (fecha, numeroTurno) = await _turnoService.ObtenerSiguienteTurno();
+
+                var dto = new TurnoDto
+                {
+                    CajaId = (int)cmbCajas.SelectedValue,
+                    NumeroTurno = numeroTurno,
+                    UsuarioId = Sesion.UsuarioId,
+                    MontoInicial = (decimal)nbMontoInicial.Value,
+
+
+                };
+                var turnoActual = await _turnoService.AbrirTurnoAsync(dto);
+
+                Sesion.UsuarioId = turnoActual.UsuarioId;
+                Sesion.TurnoId = turnoActual.TurnoId;
+                Sesion.CajaId = turnoActual.CajaId;
+
+                if (turnoActual != null)
+                {
+                    await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Turno abierto correctamente");
+                    this.Visibility = Visibility.Collapsed;
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
+            }
         }
 
-        private void CancelarOverlay_Click(object sender, RoutedEventArgs e)
+        private async Task ListarCajasAsync()
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var lista = await _cajaService.ListarCajasAsync();
 
-        private void cmbCajas_SelectionChanged(object sender, SelectionChangedEventArgs e)
+                cmbCajas.ItemsSource = lista;
+
+                cmbCajas.DisplayMemberPath = "Nombre";
+                cmbCajas.SelectedValuePath = "CajaId";
+                cmbCajas.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
+
+            }
+        }
+        private async Task ListarTurnosAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var (fecha, numeroTurno) = await _turnoService.ObtenerSiguienteTurno();
+                var textoTurno = $"Turno: {fecha:dd/MM/yyyy} - T{numeroTurno}";
+                var TextoTurnoPreview = new List<string> { textoTurno };
+                cmbTurnos.ItemsSource = TextoTurnoPreview;
+                cmbTurnos.SelectedValuePath = "numeroTurno";
+            }
+            catch (Exception ex)
+            {
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
+            }
         }
     }
 }

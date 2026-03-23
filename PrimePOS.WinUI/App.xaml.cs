@@ -1,5 +1,7 @@
-﻿using Microsoft.UI.Xaml;
-using PrimePOS.WinUI.Infrastructure;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
+using PrimePOS.WinUI.Infrastructure.PrimePOS.WinUI.Infrastructure;
+using System;
 
 
 namespace PrimePOS.WinUI
@@ -9,12 +11,21 @@ namespace PrimePOS.WinUI
     {
         private static Window? _window;
         public static ElementTheme TemaActual = ElementTheme.Dark;
+        public static IServiceProvider Services { get; private set; } = null!;
 
         public App()
         {
             InitializeComponent();
-            Servicios.Inicializar();
             RequestedTheme = ApplicationTheme.Dark;
+
+            // Configurar DI
+            var services = new ServiceCollection();
+
+            string connectionString = @"Server=(localdb)\MSSQLLocalDB;Database=PrimePOS_DB;Trusted_Connection=True;TrustServerCertificate=True;";
+
+            services.AddPrimePOSServices(connectionString);
+
+            Services = services.BuildServiceProvider();
         }
 
 

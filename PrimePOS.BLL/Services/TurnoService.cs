@@ -1,5 +1,4 @@
 ﻿using PrimePOS.BLL.DTOs.Caja;
-using PrimePOS.DAL.Context;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
 
@@ -9,13 +8,11 @@ public class TurnoService
 {
     private readonly TurnoRepository _turnoRepository;
     private readonly CajaRepository _cajaRepository;
-    private readonly AppDbContext _context;
 
-    public TurnoService(TurnoRepository turnoRepository, CajaRepository cajaRepository, AppDbContext context)
+    public TurnoService(TurnoRepository turnoRepository, CajaRepository cajaRepository)
     {
         _turnoRepository = turnoRepository;
         _cajaRepository = cajaRepository;
-        _context = context;
     }
 
     public async Task<Turno> AbrirTurnoAsync(TurnoDto dto)

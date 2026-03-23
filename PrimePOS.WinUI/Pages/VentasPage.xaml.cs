@@ -1,10 +1,11 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using PrimePOS.BLL.DTOs.Caja;
 using PrimePOS.BLL.DTOs.Cliente;
 using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.BLL.DTOs.Venta;
+using PrimePOS.BLL.Services;
 using PrimePOS.ENTITIES.Models;
 using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
@@ -19,6 +20,12 @@ namespace PrimePOS.WinUI.Pages;
 
 public sealed partial class VentasPage : Page
 {
+    private readonly VentaService _ventaService;
+    private readonly TurnoService _turnoService;
+    private readonly CajaService _cajaService;
+    private readonly ProductoService _productoService;
+    private readonly ClienteService _clienteService;
+    private readonly MetodoPagoService _metodoPagoService;
 
     private DispatcherTimer _timerProducto = new DispatcherTimer();
     private DispatcherTimer _timerCliente = new DispatcherTimer();
@@ -31,12 +38,17 @@ public sealed partial class VentasPage : Page
 
     public VentasPage()
     {
-        InitializeComponent();
+        this.InitializeComponent();
         InicializarBuscador();
         txtFecha.Text = DateTime.Now.ToString("dd/MM/yyy");
         NavigationCacheMode = NavigationCacheMode.Required;
 
-
+        _ventaService = App.Services.GetRequiredService<VentaService>();
+        _turnoService = App.Services.GetRequiredService<TurnoService>();
+        _cajaService = App.Services.GetRequiredService<CajaService>();
+        _productoService = App.Services.GetRequiredService<ProductoService>();
+        _clienteService = App.Services.GetRequiredService<ClienteService>();
+        _metodoPagoService = App.Services.GetRequiredService<MetodoPagoService>();
 
 
     }
@@ -44,18 +56,20 @@ public sealed partial class VentasPage : Page
     {
         base.OnNavigatedTo(e);
 
+        if (Sesion.TurnoId == 0)
+        {
+            TurnoOverlay.Visibility = Visibility.Visible;
+        }
     }
 
     private async void Page_loaded(object sender, RoutedEventArgs e)
     {
 
-
         try
         {
 
-            await ListarMetodosPagos();
+            await ListarMetodosPagosAsync();
             await CargarConsumidorFinal();
-            await ListarCajasAsync();
             CalcularTotales();
             txtBuscarProducto.Focus(FocusState.Programmatic);
         }
@@ -64,6 +78,9 @@ public sealed partial class VentasPage : Page
 
             await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
         }
+
+
+
     }
     private void BtnEliminarProducto_Click(object sender, RoutedEventArgs e)
     {
@@ -73,35 +90,11 @@ public sealed partial class VentasPage : Page
         if (item == null)
             return;
 
-        Servicios.VentaService.EliminarProducto(item.ProductoId);
+        _ventaService.EliminarProducto(item.ProductoId);
         CalcularTotales();
         txtBuscarProducto.Focus(FocusState.Programmatic);
 
     }
-    private async void BtnAbrirTurno_Click(object sender, RoutedEventArgs e)
-    {
-        TurnoOverlay.Visibility = Visibility.Visible;
-        if (OverlayAbrirCaja.Visibility == Visibility.Collapsed)
-        {
-            var (fecha, numeroTurno) = await Servicios.TurnoService.ObtenerSiguienteTurno();
-
-            txtTextoTurnoPreview.Text = $"Turno: {fecha:dd/MM/yyyy} - T{numeroTurno}";
-
-
-            OverlayAbrirCaja.Visibility = Visibility.Visible;
-
-        }
-        else
-        {
-            OverlayAbrirCaja?.Visibility = Visibility.Collapsed;
-
-        }
-    }
-    private void BtnCerrarTurno_Click(object sender, RoutedEventArgs e)
-    {
-        OverlayAbrirCaja.Visibility = Visibility.Visible;
-    }
-
     private void BtnGenerarFactura_Click(object sender, RoutedEventArgs e)
     {
         throw new NotImplementedException();
@@ -168,15 +161,15 @@ public sealed partial class VentasPage : Page
                 if (string.IsNullOrEmpty(texto))
                     return;
 
-                producto = await Servicios.ProductoService
+                producto = await _productoService
                     .BuscarProductoCodigoONombreAsync(texto);
             }
 
             if (producto != null)
             {
-                await Servicios.VentaService.AgregarProductoCarrito(producto.ProductoId);
+                await _ventaService.AgregarProductoCarrito(producto.ProductoId);
 
-                dgCarrito.ItemsSource = Servicios.VentaService.Carrito;
+                dgCarrito.ItemsSource = _ventaService.Carrito;
 
                 CalcularTotales();
 
@@ -211,7 +204,7 @@ public sealed partial class VentasPage : Page
                 if (string.IsNullOrEmpty(texto))
                     return;
 
-                cliente = await Servicios.ClienteService
+                cliente = await _clienteService
                     .BuscarClienteCodigoONombreAsync(texto);
             }
             if (cliente != null)
@@ -248,20 +241,29 @@ public sealed partial class VentasPage : Page
     }
     private void CalcularTotales()
     {
-        txtSubtotal.Text = Servicios.VentaService.Subtotal.ToString("N2");
-        txtDescuento.Text = Servicios.VentaService.DescuentoMonto.ToString("N2");
-        txtImpuesto.Text = Servicios.VentaService.Impuesto.ToString("N2");
-        txtTotal.Text = Servicios.VentaService.Total.ToString("N2");
+        txtSubtotal.Text = _ventaService.Subtotal.ToString("N2");
+        txtDescuento.Text = _ventaService.DescuentoMonto.ToString("N2");
+        txtImpuesto.Text = _ventaService.Impuesto.ToString("N2");
+        txtTotal.Text = _ventaService.Total.ToString("N2");
     }
-    private async Task ListarMetodosPagos()
+    private async Task ListarMetodosPagosAsync()
     {
-        var lista = await Servicios.MetodoPagoService.ListarMetodosPagosAsync();
+        try
+        {
+            var lista = await _metodoPagoService.ListarMetodosPagosAsync();
 
-        cmbMetodoPago.ItemsSource = lista;
+            cmbMetodoPago.ItemsSource = lista;
 
-        cmbMetodoPago.DisplayMemberPath = "Nombre";
-        cmbMetodoPago.SelectedValuePath = "MetodoPagoId";
-        cmbMetodoPago.SelectedIndex = 0;
+            cmbMetodoPago.DisplayMemberPath = "Nombre";
+            cmbMetodoPago.SelectedValuePath = "MetodoPagoId";
+            cmbMetodoPago.SelectedIndex = 0;
+        }
+        catch (Exception ex)
+        {
+
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
+
+        }
 
 
     }
@@ -284,7 +286,7 @@ public sealed partial class VentasPage : Page
         try
         {
             _timerProducto.Stop();
-            var productos = await Servicios.ProductoService.BuscarProductoCodigoONombreListAsync(txtBuscarProducto.Text);
+            var productos = await _productoService.BuscarProductoCodigoONombreListAsync(txtBuscarProducto.Text);
             txtBuscarProducto.ItemsSource = productos;
         }
         catch (Exception ex)
@@ -298,7 +300,7 @@ public sealed partial class VentasPage : Page
         try
         {
             _timerCliente.Stop();
-            var cliente = await Servicios.ClienteService
+            var cliente = await _clienteService
             .BuscarClienteCodigoONombreListAsync(txtBuscarCliente.Text);
 
             txtBuscarCliente.ItemsSource = cliente;
@@ -315,7 +317,7 @@ public sealed partial class VentasPage : Page
     {
         try
         {
-            var cliente = await Servicios.ClienteService.ObtenerPorId(1);
+            var cliente = await _clienteService.ObtenerPorId(1);
             if (cliente != null)
             {
                 _clienteSeleccionado = cliente;
@@ -334,7 +336,7 @@ public sealed partial class VentasPage : Page
     {
         txtBuscarProducto.Text = "";
         dgCarrito.ItemsSource = null;
-        Servicios.VentaService.VaciarCarrito();
+        _ventaService.VaciarCarrito();
         CalcularTotales();
         txtBuscarCliente.Text = "";
         txtBuscarProducto.Focus(FocusState.Programmatic);
@@ -346,99 +348,16 @@ public sealed partial class VentasPage : Page
     {
 
         decimal porcentaje = Convert.ToDecimal(cmbDescuento.SelectedValue);
-
-        Servicios.VentaService.AplicarDescuento(porcentaje);
-        CalcularTotales();
-
-
-    }
-
-
-    private async void dlgAbrirTurno_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-    {
-        var caja = new TurnoDto
+        if (porcentaje != 0)
         {
-            //CajaId = 1,
-            //UsuarioId = SesionUsuario.UsuarioId,
-            MontoInicial = Convert.ToDecimal(nbMontoInicial.Value),
-            //Turno = Convert.ToInt32(cmbTurno.SelectedValue),
-
-        };
-
-
-        await Servicios.TurnoService.AbrirTurnoAsync(caja);
-    }
-
-    private async Task ListarCajasAsync()
-    {
-        var lista = await Servicios.CajaService.ListarCajasAsync();
-
-        cmbCajas.ItemsSource = lista;
-
-        cmbCajas.DisplayMemberPath = "Nombre";
-        cmbCajas.SelectedValuePath = "CajaId";
-        cmbCajas.SelectedIndex = 0;
-    }
-    //private async Task ListarTurnosAsync(int cajaId)
-    //{
-    //    var lista = await Servicios.TurnoService.ObtenerTurnosPorCajaAsync(cajaId);
-
-    //    cmbTurnos.ItemsSource = lista;
-
-    //    cmbTurnos.DisplayMemberPath = "CodigoTurno";
-    //}
-    private void cmbCajas_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-
-
-        //    var turnos = await Servicios.TurnoService.ObtenerTurnosPorCajaAsync((int)cmbCajas.SelectedValue);
-
-        //    cmbTurnos.ItemsSource = turnos;
-
-        //    // Auto seleccionar turno abierto
-        //    var abierto = turnos.FirstOrDefault(t => t.EstaAbierto);
-
-        //    if (abierto != null)
-        //    {
-        //        cmbTurnos.SelectedItem = abierto;
-        //    }
-    }
-    private async void ConfirmarTurno_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var (fecha, numeroTurno) = await Servicios.TurnoService.ObtenerSiguienteTurno();
-
-            var dto = new TurnoDto
-            {
-                CajaId = (int)cmbCajas.SelectedValue,
-                NumeroTurno = numeroTurno,
-                UsuarioId = Sesion.UsuarioId,
-                MontoInicial = (decimal)nbMontoInicial.Value,
-
-
-            };
-            var turnoActual = await Servicios.TurnoService.AbrirTurnoAsync(dto);
-
-            Sesion.TurnoId = numeroTurno;
-            if (turnoActual != null)
-            {
-                txtCaja.Text = Sesion.CajaId.ToString();
-                txtUsuario.Text = Sesion.UsuarioNombre;
-                txtRol.Text = Sesion.RolNombre;
-                txtTurno.Text = Sesion.TurnoId.ToString();
-            }
+            _ventaService.AplicarDescuento(porcentaje);
+            CalcularTotales();
 
         }
-        catch (Exception ex)
-        {
 
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
-        }
+
     }
 
-    private void CancelarOverlay_Click(object sender, RoutedEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
+
+
 }

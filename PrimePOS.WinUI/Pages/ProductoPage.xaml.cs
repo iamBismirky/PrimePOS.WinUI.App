@@ -1,9 +1,10 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using PrimePOS.BLL.DTOs.Producto;
+using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Infrastructure;
 using System;
 using System.Threading.Tasks;
 
@@ -14,11 +15,15 @@ namespace PrimePOS.WinUI.Pages;
 
 public sealed partial class ProductoPage : Page
 {
+    private readonly ProductoService _productoService;
+    private readonly CategoriaService _categoriaService;
     private int _productoIdSeleccionado = 0;
     public ProductoPage()
     {
         InitializeComponent();
-        
+
+        _productoService = App.Services.GetRequiredService<ProductoService>();
+        _categoriaService = App.Services.GetRequiredService<CategoriaService>();
 
         //Foco en el textBox Nombre
         txtNombre.Focus(FocusState.Programmatic);
@@ -62,7 +67,7 @@ public sealed partial class ProductoPage : Page
                 Estado = tsEstado.IsOn
 
             };
-            await Servicios.ProductoService.CrearProductoAsync(dto);
+            await _productoService.CrearProductoAsync(dto);
             await ListarProductosAsync();
             LimpiarCampos();
         }
@@ -90,7 +95,7 @@ public sealed partial class ProductoPage : Page
                 Estado = tsEstado.IsOn
 
             };
-            await Servicios.ProductoService.ActualizarProductoAsync(dto);
+            await _productoService.ActualizarProductoAsync(dto);
             await ListarProductosAsync();
             LimpiarCampos();
         }
@@ -111,7 +116,7 @@ public sealed partial class ProductoPage : Page
                 ProductoId = _productoIdSeleccionado
 
             };
-            await Servicios.ProductoService.EliminarProductoAsync(dto);
+            await _productoService.EliminarProductoAsync(dto);
             await ListarProductosAsync();
             LimpiarCampos();
         }
@@ -149,7 +154,7 @@ public sealed partial class ProductoPage : Page
     {
         try
         {
-            var lista = await Servicios.ProductoService.ListarProductosAsync();
+            var lista = await _productoService.ListarProductosAsync();
             dgProductos.ItemsSource = lista;
         }
         catch (Exception ex)
@@ -162,7 +167,7 @@ public sealed partial class ProductoPage : Page
     {
         try
         {
-            var lista = await Servicios.CategoriaService.ListarCategoriasAsync();
+            var lista = await _categoriaService.ListarCategoriasAsync();
             cmbCategoria.ItemsSource = lista;
 
             cmbCategoria.DisplayMemberPath = "Nombre";

@@ -3,7 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     HorizontalAlignment="Stretch"
-    VerticalAlignment="Stretch">
+    VerticalAlignment="Stretch"
+    Loaded="Page_loaded">
 
     <!-- Canvas como contenedor principal -->
     <Canvas Background="#80000000">
@@ -16,7 +17,7 @@
         <Border x:Name="DialogBorder"
                 Width="350"
                 Height="400"
-                Background="{ThemeResource SystemAltHighColor}"
+                Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
                 CornerRadius="20"
                 Padding="20"
                 Canvas.Left="350" Canvas.Top="100"
@@ -34,16 +35,20 @@
                 <ComboBox x:Name="cmbCajas"
                           PlaceholderText="Selecciona Caja"
                           DisplayMemberPath="Nombre"
-                          SelectedValuePath="Id"/>
+                          SelectedValuePath="Id"
+                          Header="Caja"/>
 
                 <NumberBox x:Name="nbMontoInicial"
                            PlaceholderText="Monto inicial"
-                           Value="0"/>
+                           Value="0"
+                           Header="Monto Inicial"/>
 
                 <ComboBox x:Name="cmbTurnos"
                           PlaceholderText="Selecciona Turno"
-                          DisplayMemberPath="CodigoTurno"
-                          SelectedValuePath="Id"/>
+                          Header="Turno"/>
+                
+                <TextBlock x:Name="txtTextoTurnoPreview"/>
+
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
                     <Button Content="Cancelar" Width="100" Click="BtnCancelar_Click"/>

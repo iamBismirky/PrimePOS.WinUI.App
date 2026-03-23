@@ -1,28 +1,29 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.BLL.DTOs.Rol;
+using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+
 
 namespace PrimePOS.WinUI.Pages;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
+
 public sealed partial class RolPage : Page
 {
+    private readonly RolService _rolService;
     private int _rolIdSeleccionado = 0;
 
     public RolPage()
     {
         InitializeComponent();
         this.Loaded += Page_Loaded;
+
+        _rolService = App.Services.GetRequiredService<RolService>();
 
     }
     private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -41,7 +42,7 @@ public sealed partial class RolPage : Page
 
             };
 
-            await Servicios.RolService.CrearRolAsync(dto);
+            await _rolService.CrearRolAsync(dto);
             await CargarRoles();
             LimpiarCampos();
 
@@ -68,7 +69,7 @@ public sealed partial class RolPage : Page
 
             };
 
-            await Servicios.RolService.ActualizarRolAsync(dto);
+            await _rolService.ActualizarRolAsync(dto);
             await CargarRoles();
             LimpiarCampos();
 
@@ -93,7 +94,7 @@ public sealed partial class RolPage : Page
 
             };
 
-            await Servicios.RolService.EliminarRolAsync(dto);
+            await _rolService.EliminarRolAsync(dto);
             await CargarRoles();
             LimpiarCampos();
 
@@ -140,7 +141,7 @@ public sealed partial class RolPage : Page
     {
         try
         {
-            List<ListaRolesDto> listaRoles = await Servicios.RolService.ListarRolesAsync();
+            List<ListaRolesDto> listaRoles = await _rolService.ListarRolesAsync();
             dgRoles.ItemsSource = null;
             dgRoles.ItemsSource = listaRoles;
         }

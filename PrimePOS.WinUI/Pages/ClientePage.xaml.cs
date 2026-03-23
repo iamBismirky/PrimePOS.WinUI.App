@@ -1,26 +1,27 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using PrimePOS.BLL.DTOs.Cliente;
+using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Infrastructure;
 using System;
 using System.Threading.Tasks;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+
 
 namespace PrimePOS.WinUI.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+
     public sealed partial class ClientePage : Page
     {
+        private readonly ClienteService _clienteService;
         private int _clienteIdSeleccionado = 0;
         public ClientePage()
         {
             InitializeComponent();
+
+            _clienteService = App.Services.GetRequiredService<ClienteService>();
 
         }
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -43,7 +44,7 @@ namespace PrimePOS.WinUI.Pages
                     Estado = tsEstado.IsOn
 
                 };
-                await Servicios.ClienteService.CrearClienteAsync(dto);
+                await _clienteService.CrearClienteAsync(dto);
                 await ListarClientesAsync();
                 LimpiarCampos();
             }
@@ -69,7 +70,7 @@ namespace PrimePOS.WinUI.Pages
                     Estado = tsEstado.IsOn
 
                 };
-                await Servicios.ClienteService.ActualizarClienteAsync(dto);
+                await _clienteService.ActualizarClienteAsync(dto);
                 await ListarClientesAsync();
                 LimpiarCampos();
             }
@@ -90,7 +91,7 @@ namespace PrimePOS.WinUI.Pages
                     ClienteId = _clienteIdSeleccionado
 
                 };
-                await Servicios.ClienteService.EliminarClienteAsync(dto);
+                await _clienteService.EliminarClienteAsync(dto);
                 await ListarClientesAsync();
                 LimpiarCampos();
             }
@@ -126,7 +127,7 @@ namespace PrimePOS.WinUI.Pages
         {
             try
             {
-                var lista = await Servicios.ClienteService.ListarClientes();
+                var lista = await _clienteService.ListarClientes();
                 dgClientes.ItemsSource = lista;
             }
             catch (Exception ex)
