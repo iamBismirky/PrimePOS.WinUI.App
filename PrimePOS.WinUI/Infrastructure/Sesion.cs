@@ -1,4 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.Caja;
+﻿using PrimePOS.BLL.DTOs.Turno;
 
 namespace PrimePOS.WinUI.Infrastructure
 {

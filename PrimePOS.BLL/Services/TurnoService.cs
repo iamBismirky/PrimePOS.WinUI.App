@@ -1,5 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.Caja;
-using PrimePOS.BLL.DTOs.Turno;
+﻿using PrimePOS.BLL.DTOs.Turno;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.DAL.UnitOfWork;
 using PrimePOS.ENTITIES.Models;

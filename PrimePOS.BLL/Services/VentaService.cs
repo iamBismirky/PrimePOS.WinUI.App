@@ -1,78 +1,77 @@
-﻿using PrimePOS.BLL.DTOs.Venta;
-using PrimePOS.DAL.Repositories;
-using System.Collections.ObjectModel;
+﻿using PrimePOS.DAL.Repositories;
+using PrimePOS.DAL.UnitOfWork;
+
+namespace PrimePOS.BLL.Services;
 
 public class VentaService
 {
     private readonly VentaRepository _ventaRepository;
     private readonly ProductoRepository _productoRepository;
-
-    public VentaService(VentaRepository ventaRepository, ProductoRepository productoRepository)
+    private readonly UnitOfWork _unitOfWork;
+    public VentaService(VentaRepository ventaRepository, ProductoRepository productoRepository, UnitOfWork unitOfWork)
     {
         _ventaRepository = ventaRepository;
         _productoRepository = productoRepository;
+        _unitOfWork = unitOfWork;
     }
 
-    public ObservableCollection<CarritoItem> Carrito { get; set; } = new();
 
-    public decimal Subtotal => Carrito.Sum(x => x.Total);
+    //    public async Task<int> CrearVentaAsync(CrearVentaDto dto)
+    //    {
+    //        if (dto.TurnoId == 0)
+    //            throw new Exception("Turno inválido.");
 
-    public decimal Impuesto => Subtotal * 0.18m;
-    public decimal DescuentoPorcentaje { get; set; }
-    public decimal DescuentoMonto => Subtotal * (DescuentoPorcentaje / 100);
-    public decimal SubtotalConDescuento => Subtotal - DescuentoMonto;
-    public decimal Total => Subtotal + Impuesto - DescuentoMonto;
+    //        if (!dto.Items.Any())
+    //            throw new Exception("La venta no tiene productos.");
 
-    public async Task AgregarProductoCarrito(int productoId)
-    {
-        var existente = Carrito.FirstOrDefault(p => p.ProductoId == productoId);
+    //        await _unitOfWork.BeginTransactionAsync();
 
-        if (existente != null)
-        {
-            existente.Cantidad++;
+    //        try
+    //        {
+    //            var ahora = DateTime.Now;
 
-        }
-        else
-        {
-            var producto = await _productoRepository.ObtenerPorIdAsync(productoId);
-            if (producto == null)
-                return;
+    //            var venta = new Venta
+    //            {
+    //                TurnoId = dto.TurnoId,
+    //                UsuarioId = dto.UsuarioId,
+    //                ClienteId = dto.ClienteId,
+    //                MetodoPagoId = dto.MetodoPagoId,
+    //                FechaRegistro = ahora,
+    //                Detalles = new List<DetalleVenta>()
+    //            };
 
-            Carrito.Add(new CarritoItem
-            {
-                ProductoId = producto.ProductoId,
-                Codigo = producto.Codigo,
-                Nombre = producto.Nombre,
-                Precio = producto.PrecioVenta,
-                Cantidad = 1
-            });
-        }
-    }
-    public void EliminarProducto(int productoId)
-    {
-        var item = Carrito.FirstOrDefault(x => x.ProductoId == productoId);
+    //            decimal subtotal = 0;
 
-        if (item != null)
-        {
-            Carrito.Remove(item);
-        }
-    }
-    public void VaciarCarrito()
-    {
-        Carrito.Clear();
-    }
-    public void AplicarDescuento(decimal porcentaje)
-    {
-        DescuentoPorcentaje = porcentaje;
-    }
-    public void CalcularTotales()
-    {
-        decimal subtotal = Carrito.Sum(x => x.Total);
+    //            foreach (var item in dto.Items)
+    //            {
+    //                var totalItem = item.Cantidad * item.Precio;
+    //                subtotal += totalItem;
 
-        decimal descuento = subtotal * (DescuentoPorcentaje / 100);
+    //                venta.Detalles.Add(new DetalleVenta
+    //                {
+    //                    ProductoId = item.ProductoId,
+    //                    Cantidad = item.Cantidad,
+    //                    PrecioUnitario = item.Precio,
+    //                    Total = totalItem
+    //                });
+    //            }
 
-        decimal total = subtotal - descuento;
+    //            venta.Subtotal = subtotal;
+    //            venta.Impuesto = subtotal * 0.18m;
+    //            venta.Total = venta.Subtotal + venta.Impuesto;
 
-    }
+    //            _ventaRepository.Crear(venta);
+    //            await _ventaRepository.GuardarCambiosAsync();
+
+    //            await _unitOfWork.CommitAsync();
+
+    //            return venta.VentaId;
+    //        }
+    //        catch
+    //        {
+    //            await _unitOfWork.RollbackAsync();
+    //            throw;
+    //        }
+    //    }
 
 }

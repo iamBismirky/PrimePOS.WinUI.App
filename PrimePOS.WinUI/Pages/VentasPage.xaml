@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PrimePOS.WinUI.Pages"
+    xmlns:local1="using:PrimePOS.WinUI.ViewModels"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:helpers="using:PrimePOS.WinUI.Helpers" 
@@ -212,9 +213,10 @@
                                RowHeight="40"
                                ColumnHeaderHeight="40"
                                FontSize="14"
-                               IsReadOnly="True">
+                               IsReadOnly="True"
+                               ItemsSource="{x:Bind _ventaViewModel.Carrito, Mode=OneWay}">
 
-                <controls:DataGrid.Columns>
+                        <controls:DataGrid.Columns>
                     <controls:DataGridTextColumn Header="Codigo" Binding="{Binding Codigo}" Width="*"/>
                     <controls:DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
                     <controls:DataGridTextColumn Header="Precio" Binding="{Binding Precio, Converter={StaticResource NumeroConverterHelper}}" Width="*"/>
@@ -257,22 +259,22 @@
 
                         <TextBlock>
                                   <Run Text="SubTotal: " FontSize="20" FontWeight="SemiBold" />
-                                  <Run FontSize="20" FontWeight="SemiBold"  x:Name="txtSubtotal"/>
+                                  <Run Text="{x:Bind _ventaViewModel.SubtotalConDescuento, Mode=OneWay}" FontSize="20" FontWeight="SemiBold"  x:Name="txtSubtotal"/>
                         </TextBlock>
 
                         <TextBlock>
                                   <Run Text="Impuesto: " FontSize="20" FontWeight="SemiBold" />
-                                  <Run FontSize="20" FontWeight="SemiBold"  x:Name="txtImpuesto"/>
+                                  <Run Text="{x:Bind _ventaViewModel.Impuesto, Mode=OneWay}" FontSize="20" FontWeight="SemiBold"  x:Name="txtImpuesto"/>
                         </TextBlock>
 
                         <TextBlock>
                                   <Run Text="Descuento: " FontSize="20" FontWeight="SemiBold" />
-                                  <Run FontSize="20" FontWeight="SemiBold"  x:Name="txtDescuento"/>
+                                  <Run Text="{x:Bind _ventaViewModel.DescuentoMonto, Mode=OneWay}" FontSize="20" FontWeight="SemiBold"  x:Name="txtDescuento"/>
                         </TextBlock>
 
                         <TextBlock>
                                   <Run Text="Total: " FontSize="24" FontWeight="Bold" />
-                                  <Run FontSize="24" FontWeight="SemiBold"  x:Name="txtTotal"/>
+                                  <Run Text="{x:Bind _ventaViewModel.Total, Mode=OneWay}" FontSize="24" FontWeight="SemiBold"  x:Name="txtTotal"/>
                         </TextBlock>
 
                     </StackPanel>

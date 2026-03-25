@@ -1,4 +1,4 @@
-﻿namespace PrimePOS.BLL.DTOs.Caja
+﻿namespace PrimePOS.BLL.DTOs.Turno
 {
     public class TurnoDto
     {

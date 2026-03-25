@@ -4,6 +4,7 @@ using global::PrimePOS.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.DAL.UnitOfWork;
+using PrimePOS.WinUI.ViewModels;
 namespace PrimePOS.WinUI.Infrastructure
 {
 
@@ -43,7 +44,15 @@ namespace PrimePOS.WinUI.Infrastructure
 
                 //UnitOfWork
                 services.AddTransient<UnitOfWork>();
+
+                //ViewModel
+                services.AddTransient<VentaViewModel>();
+
+
+
+
                 return services;
+
             }
         }
     }

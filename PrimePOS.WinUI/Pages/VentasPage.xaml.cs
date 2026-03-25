@@ -4,11 +4,11 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using PrimePOS.BLL.DTOs.Cliente;
 using PrimePOS.BLL.DTOs.Producto;
-using PrimePOS.BLL.DTOs.Venta;
 using PrimePOS.BLL.Services;
 using PrimePOS.ENTITIES.Models;
 using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
+using PrimePOS.WinUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,6 +36,7 @@ public sealed partial class VentasPage : Page
     public Turno? _turnoSeleccionado { get; private set; }
     public string? TextoTurnoPreview { get; set; }
 
+    public VentaViewModel _ventaViewModel { get; set; }
     public VentasPage()
     {
         this.InitializeComponent();
@@ -49,6 +50,7 @@ public sealed partial class VentasPage : Page
         _clienteService = App.Services.GetRequiredService<ClienteService>();
         _metodoPagoService = App.Services.GetRequiredService<MetodoPagoService>();
 
+        _ventaViewModel = App.Services.GetRequiredService<VentaViewModel>();
 
     }
     protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -81,7 +83,7 @@ public sealed partial class VentasPage : Page
         {
 
             await CargarConsumidorFinal();
-            CalcularTotales();
+
             txtBuscarProducto.Focus(FocusState.Programmatic);
         }
         catch (Exception ex)
@@ -96,19 +98,19 @@ public sealed partial class VentasPage : Page
     private void BtnEliminarProducto_Click(object sender, RoutedEventArgs e)
     {
         var button = sender as Button;
-        var item = button?.DataContext as CarritoItem;
+        var item = button?.DataContext as CarritoItemViewModel;
 
         if (item == null)
             return;
 
-        _ventaService.EliminarProducto(item.ProductoId);
-        CalcularTotales();
+        _ventaViewModel.EliminarProducto(item.ProductoId);
+
         txtBuscarProducto.Focus(FocusState.Programmatic);
 
     }
     private void BtnGenerarFactura_Click(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+
     }
     private async void BtnLimpiar_Click(object sender, RoutedEventArgs e)
     {
@@ -178,11 +180,9 @@ public sealed partial class VentasPage : Page
 
             if (producto != null)
             {
-                await _ventaService.AgregarProductoCarrito(producto.ProductoId);
+                await _ventaViewModel.AgregarProducto(producto.ProductoId);
 
-                dgCarrito.ItemsSource = _ventaService.Carrito;
 
-                CalcularTotales();
 
                 sender.Text = "";
                 _productoSeleccionado = null;
@@ -234,13 +234,12 @@ public sealed partial class VentasPage : Page
         }
 
     }
-    private void txtBuscarProducto_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+    private async void txtBuscarProducto_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
     {
 
         _productoSeleccionado = (ProductoDto)args.SelectedItem;
 
         sender.Text = _productoSeleccionado.Nombre;
-        sender.Text = "";
     }
     private async void txtBuscarCliente_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
     {
@@ -250,13 +249,7 @@ public sealed partial class VentasPage : Page
         sender.Text = clienteSeleccionado.Nombre;
         sender.Text = "";
     }
-    private void CalcularTotales()
-    {
-        txtSubtotal.Text = _ventaService.Subtotal.ToString("N2");
-        txtDescuento.Text = _ventaService.DescuentoMonto.ToString("N2");
-        txtImpuesto.Text = _ventaService.Impuesto.ToString("N2");
-        txtTotal.Text = _ventaService.Total.ToString("N2");
-    }
+
     private async Task ListarMetodosPagosAsync()
     {
         try
@@ -346,26 +339,20 @@ public sealed partial class VentasPage : Page
     }
     private async void LimpiarCampos()
     {
-        txtBuscarProducto.Text = "";
-        dgCarrito.ItemsSource = null;
-        _ventaService.VaciarCarrito();
-        CalcularTotales();
-        txtBuscarCliente.Text = "";
-        txtBuscarProducto.Focus(FocusState.Programmatic);
-        await CargarConsumidorFinal();
+
 
 
     }
     private void cmbDescuento_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
 
-        decimal porcentaje = Convert.ToDecimal(cmbDescuento.SelectedValue);
-        if (porcentaje != 0)
+        if (cmbDescuento.SelectedItem is ComboBoxItem item)
         {
-            _ventaService.AplicarDescuento(porcentaje);
-            CalcularTotales();
+            var porcentaje = Convert.ToDecimal(item.Tag);
 
+            _ventaViewModel.AplicarDescuento(porcentaje);
         }
+
 
 
     }
