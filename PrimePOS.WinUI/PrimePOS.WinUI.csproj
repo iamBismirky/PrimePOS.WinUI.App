@@ -46,6 +46,7 @@
     <None Remove="Pages\ProductoPage.xaml" />
     <None Remove="Pages\ReportesPage.xaml" />
     <None Remove="Pages\RolPage.xaml" />
+    <None Remove="Pages\TurnoCerrarOverlay.xaml" />
     <None Remove="Pages\TurnoOverlay.xaml" />
     <None Remove="Pages\UsuarioPage.xaml" />
     <None Remove="Pages\VentasPage.xaml" />
@@ -87,6 +88,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PrimePOS.BLL\PrimePOS.BLL.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\TurnoCerrarOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\TurnoOverlay.xaml">

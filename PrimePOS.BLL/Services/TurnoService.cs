@@ -1,5 +1,7 @@
 ﻿using PrimePOS.BLL.DTOs.Caja;
+using PrimePOS.BLL.DTOs.Turno;
 using PrimePOS.DAL.Repositories;
+using PrimePOS.DAL.UnitOfWork;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services;
@@ -8,50 +10,70 @@ public class TurnoService
 {
     private readonly TurnoRepository _turnoRepository;
     private readonly CajaRepository _cajaRepository;
+    private readonly UnitOfWork _unitOfWork;
 
-    public TurnoService(TurnoRepository turnoRepository, CajaRepository cajaRepository)
+    public TurnoService(TurnoRepository turnoRepository, CajaRepository cajaRepository, UnitOfWork unitOfWork)
     {
         _turnoRepository = turnoRepository;
         _cajaRepository = cajaRepository;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task<Turno> AbrirTurnoAsync(TurnoDto dto)
+    public async Task<TurnoDto> CrearTurnoDtoAsync(CrearTurnoDto dto)
     {
-
-        var ahora = DateTime.Now;
-
-        // Validar que no haya turno abierto
-        var turnoAbierto = await _turnoRepository.ObtenerTurnoAbiertoAsync(dto.CajaId);
-
-        if (turnoAbierto)
-            throw new Exception("Ya hay un turno abierto en esta caja.");
-
-        // Validar que la caja exista
-        var existeCaja = await _cajaRepository.ExisteCajaAsync(dto.CajaId);
-
-        if (existeCaja)
-            throw new Exception("La caja no existe.");
-
-        //var codigo = await GenerarCodigoTurno(dto.CajaId, ahora);
-
-        // Crear apertura
-        var turno = new Turno
+        await _unitOfWork.BeginTransactionAsync();
+        try
         {
-            CajaId = dto.CajaId,
-            NumeroTurno = dto.NumeroTurno,
-            UsuarioId = dto.UsuarioId,
-            FechaApertura = DateTime.Now,
-            FechaOperacion = ahora,
-            MontoInicial = dto.MontoInicial,
-            EstaAbierto = true,
-        };
+            var ahora = DateTime.Now;
 
-        await _turnoRepository.AgregarAsync(turno);
-        await _turnoRepository.GuardarCambiosAsync();
-        return turno;
+            //  Validar que no haya turno abierto en la caja
+            var existe = await _turnoRepository.ExisteTurnoAbierto(dto.CajaId);
 
+            if (existe)
+                throw new Exception("Ya hay un turno abierto en esta caja.");
 
+            // Validar que la caja exista
+            var existeCaja = await _cajaRepository.ExisteCajaAsync(dto.CajaId);
 
+            if (existeCaja)
+                throw new Exception("La caja no existe.");
+
+            int numeroTurno = await ObtenerSiguienteTurno();
+            // 🧱 Crear entidad
+            var turno = new Turno
+            {
+                CajaId = dto.CajaId,
+                UsuarioId = dto.UsuarioId,
+                FechaApertura = ahora,
+                FechaOperacion = ahora,
+                NumeroTurno = numeroTurno,
+                MontoInicial = dto.MontoInicial,
+                EstaAbierto = true
+            };
+
+            // 💾 Guardar
+            await _turnoRepository.AgregarAsync(turno);
+            await _turnoRepository.GuardarCambiosAsync();
+
+            await _unitOfWork.CommitAsync();
+
+            // 🔄 Convertir a DTO
+            return new TurnoDto
+            {
+                TurnoId = turno.TurnoId,
+                CajaId = turno.CajaId,
+                NumeroTurno = turno.NumeroTurno,
+                UsuarioId = turno.UsuarioId,
+                FechaApertura = turno.FechaApertura,
+                MontoInicial = turno.MontoInicial,
+                EstaAbierto = turno.EstaAbierto
+            };
+        }
+        catch (Exception)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw;
+        }
     }
 
     //public async Task<int> GenerarCodigoTurno(int cajaId, DateTime fechaBase)
@@ -83,14 +105,58 @@ public class TurnoService
         return await _turnoRepository.ObtenerPorCajaAsync(cajaId);
     }
 
-    public async Task<(DateTime fecha, int numeroTurno)> ObtenerSiguienteTurno()
+    //public async Task<(DateTime fecha, int numeroTurno)> ObtenerSiguienteTurno()
+    //{
+    //    var hoy = DateTime.Today;
+
+    //    var ultimoTurno = await _turnoRepository.ObtenerUltimoTurnoDelDia(hoy);
+
+    //    int siguiente = (ultimoTurno?.NumeroTurno ?? 0) + 1;
+
+    //    return (hoy, siguiente);
+    //}
+    public async Task<int> ObtenerSiguienteTurno()
     {
-        var hoy = DateTime.Today;
+        var hoy = DateTime.Now;
 
-        var ultimoTurno = await _turnoRepository.ObtenerUltimoTurnoDelDia(hoy);
+        var ultimoTurno = await _turnoRepository
+            .ObtenerUltimoTurnoDelDia(hoy);
 
-        int siguiente = (ultimoTurno?.NumeroTurno ?? 0) + 1;
+        return (ultimoTurno?.NumeroTurno ?? 0) + 1;
+    }
+    public async Task<TurnoDto?> ObtenerTurnoAbiertoAsync(int usuarioId)
+    {
+        var turno = await _turnoRepository.ObtenerTurnoAbiertoPorUsuarioAsync(usuarioId);
+        if (turno == null) return null;
 
-        return (hoy, siguiente);
+        return new TurnoDto
+        {
+            TurnoId = turno.TurnoId,
+            CajaId = turno.CajaId,
+            UsuarioId = turno.UsuarioId,
+            FechaApertura = turno.FechaApertura,
+            NumeroTurno = turno.NumeroTurno,
+            MontoInicial = turno.MontoInicial,
+            FechaCierre = turno.FechaCierre,
+            EstaAbierto = turno.EstaAbierto
+
+        };
+    }
+    public async Task<TurnoDto?> ObtenerTurnoAbiertoPorCajaAsync(int cajaId)
+    {
+        var turno = await _turnoRepository.ObtenerTurnoAbiertoPorCajaAsync(cajaId);
+
+        if (turno == null) return null;
+
+        return new TurnoDto
+        {
+            TurnoId = turno.TurnoId,
+            CajaId = turno.CajaId,
+            UsuarioId = turno.UsuarioId,
+            NumeroTurno = turno.NumeroTurno,
+            FechaApertura = turno.FechaApertura,
+            EstaAbierto = turno.EstaAbierto,
+            MontoInicial = turno.MontoInicial
+        };
     }
 }

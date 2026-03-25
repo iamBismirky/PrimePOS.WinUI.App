@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PrimePOS.BLL.DTOs.Caja;
+using PrimePOS.BLL.DTOs.Turno;
 using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
@@ -20,7 +20,11 @@ namespace PrimePOS.WinUI.Pages
 
         public TurnoOverlay()
         {
-            this.InitializeComponent();
+            if (Sesion.TurnoActual != null)
+            {
+                this.InitializeComponent();
+            }
+
 
             _turnoService = App.Services.GetRequiredService<TurnoService>();
             _cajaService = App.Services.GetRequiredService<CajaService>();
@@ -49,9 +53,9 @@ namespace PrimePOS.WinUI.Pages
         {
             try
             {
-                var (fecha, numeroTurno) = await _turnoService.ObtenerSiguienteTurno();
+                int numeroTurno = await _turnoService.ObtenerSiguienteTurno();
 
-                var dto = new TurnoDto
+                var dto = new CrearTurnoDto
                 {
                     CajaId = (int)cmbCajas.SelectedValue,
                     NumeroTurno = numeroTurno,
@@ -60,15 +64,16 @@ namespace PrimePOS.WinUI.Pages
 
 
                 };
-                var turnoActual = await _turnoService.AbrirTurnoAsync(dto);
+                var turnoActual = await _turnoService.CrearTurnoDtoAsync(dto);
 
                 Sesion.UsuarioId = turnoActual.UsuarioId;
                 Sesion.TurnoId = turnoActual.TurnoId;
                 Sesion.CajaId = turnoActual.CajaId;
-
+                Sesion.TurnoActual = turnoActual;
                 if (turnoActual != null)
                 {
                     await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Turno abierto correctamente");
+
                     this.Visibility = Visibility.Collapsed;
                 }
 
@@ -102,8 +107,8 @@ namespace PrimePOS.WinUI.Pages
         {
             try
             {
-                var (fecha, numeroTurno) = await _turnoService.ObtenerSiguienteTurno();
-                var textoTurno = $"Turno: {fecha:dd/MM/yyyy} - T{numeroTurno}";
+                int numeroTurno = await _turnoService.ObtenerSiguienteTurno();
+                var textoTurno = $"Turno: {DateTime.Today:dd/MM/yyyy} - T{numeroTurno}";
                 var TextoTurnoPreview = new List<string> { textoTurno };
                 cmbTurnos.ItemsSource = TextoTurnoPreview;
                 cmbTurnos.SelectedValuePath = "numeroTurno";

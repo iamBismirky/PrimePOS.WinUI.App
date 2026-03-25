@@ -1,4 +1,6 @@
-﻿namespace PrimePOS.WinUI.Infrastructure
+﻿using PrimePOS.BLL.DTOs.Caja;
+
+namespace PrimePOS.WinUI.Infrastructure
 {
     public static class Sesion
     {
@@ -11,8 +13,11 @@
 
 
         //Caja
-        public static int CajaId { get; set; } = 0;
-        public static int TurnoId { get; set; } = 0;
+        public static int CajaId { get; set; } = 1;
+        public static int? TurnoId { get; set; } = 0;
+        public static TurnoDto? TurnoActual { get; set; }
+        public static bool TieneTurno => TurnoActual != null;
+
 
         public static void Iniciar(int usuarioId, string nombreUsuario, int rolId, string rolNombre)
         {

@@ -40,7 +40,6 @@ public sealed partial class VentasPage : Page
     {
         this.InitializeComponent();
         InicializarBuscador();
-        txtFecha.Text = DateTime.Now.ToString("dd/MM/yyy");
         NavigationCacheMode = NavigationCacheMode.Required;
 
         _ventaService = App.Services.GetRequiredService<VentaService>();
@@ -56,10 +55,23 @@ public sealed partial class VentasPage : Page
     {
         base.OnNavigatedTo(e);
 
-        if (Sesion.TurnoId == 0)
+        await ListarMetodosPagosAsync();
+
+        Sesion.TurnoActual = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
+
+        if (Sesion.TurnoActual != null)
+        {
+            txtCaja.Text = Sesion.TurnoActual.CajaId.ToString();
+            txtUsuario.Text = Sesion.UsuarioNombre.ToString();
+            txtRol.Text = Sesion.RolNombre.ToString();
+            txtTurno.Text = Sesion.TurnoActual.TurnoId.ToString();
+            txtFecha.Text = Sesion.TurnoActual.FechaApertura.ToString();
+        }
+        else
         {
             TurnoOverlay.Visibility = Visibility.Visible;
         }
+
     }
 
     private async void Page_loaded(object sender, RoutedEventArgs e)
@@ -68,7 +80,6 @@ public sealed partial class VentasPage : Page
         try
         {
 
-            await ListarMetodosPagosAsync();
             await CargarConsumidorFinal();
             CalcularTotales();
             txtBuscarProducto.Focus(FocusState.Programmatic);
@@ -252,6 +263,7 @@ public sealed partial class VentasPage : Page
         {
             var lista = await _metodoPagoService.ListarMetodosPagosAsync();
 
+            cmbMetodoPago.ItemsSource = null;
             cmbMetodoPago.ItemsSource = lista;
 
             cmbMetodoPago.DisplayMemberPath = "Nombre";
@@ -357,7 +369,19 @@ public sealed partial class VentasPage : Page
 
 
     }
+    private async void BtnAbrirTurno_Click(object sender, RoutedEventArgs e)
+    {
+        if (Sesion.TurnoActual == null)
+        {
+            TurnoOverlay.Visibility = Visibility.Visible;
 
+        }
+        await DialogHelper.MostrarMensaje(this.XamlRoot, "Adventencia", "Existe un turno abierto");
+    }
+    private async void BtnCerrarTurno_Click(object sender, RoutedEventArgs e)
+    {
+        TurnoCerrarOverlay.Visibility = Visibility.Visible;
+    }
 
 
 }

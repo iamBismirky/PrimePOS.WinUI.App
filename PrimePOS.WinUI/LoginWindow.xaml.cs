@@ -67,6 +67,7 @@ namespace PrimePOS.WinUI
 
                 var usuarioSesion = await _usuarioService.AutenticarUsuarioAsync(loginDto);
 
+
                 Sesion.UsuarioId = usuarioSesion.UsuarioId;
                 Sesion.UsuarioNombre = usuarioSesion.UsuarioNombre;
                 Sesion.RolId = usuarioSesion.RolId;

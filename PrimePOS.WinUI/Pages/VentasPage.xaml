@@ -169,7 +169,7 @@
                         CornerRadius="10"
                         Padding="15"
                         Grid.Column="3"
-                        Width="200">
+                        Width="300">
 
                     <controls:WrapPanel Orientation="Vertical" >
 
@@ -191,7 +191,7 @@
                             <Run x:Name="txtTurno"/>
                         </TextBlock>
                         <TextBlock>
-                            <Run Text="Fecha" FontFamily="Segoe UI" FontWeight="Bold"/>
+                            <Run Text="Fecha Apertura" FontFamily="Segoe UI" FontWeight="Bold"/>
                             <Run x:Name="txtFecha"/>
                         </TextBlock>
 
@@ -308,8 +308,10 @@
                     >
                             <StackPanel Orientation="Vertical" Spacing="10" HorizontalAlignment="Right">
                                 <Button Content="Generar Factura" Click="BtnGenerarFactura_Click" Background="#FF2D89EF" Foreground="White"/>
-                        <Button Content="Limpiar Pantalla" Click="BtnLimpiar_Click"/>
-                    </StackPanel>
+                                <Button Content="Limpiar Pantalla" Click="BtnLimpiar_Click"/>
+                                <Button Content="Abrir Turno" Click="BtnAbrirTurno_Click"/>
+                                <Button Content="Cerrar Turno" Click="BtnCerrarTurno_Click"/>
+                            </StackPanel>
                 </Border>
             </Grid>
         </Border>
@@ -318,8 +320,8 @@
         </Grid>
         
     </Border>
-        <local:TurnoOverlay x:Name="TurnoOverlay" Visibility="Visible"/>
-
+        <local:TurnoOverlay x:Name="TurnoOverlay" Visibility="Collapsed"/>
+        <local:TurnoCerrarOverlay x:Name="TurnoCerrarOverlay" Visibility="Collapsed"/>
     </Grid>
 
 </Page>

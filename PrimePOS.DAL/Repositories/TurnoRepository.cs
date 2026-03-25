@@ -21,7 +21,7 @@ public class TurnoRepository
     {
         await _context.SaveChangesAsync();
     }
-    public async Task<bool> ObtenerTurnoAbiertoAsync(int cajaId)
+    public async Task<bool> ExisteTurnoAbierto(int cajaId)
     {
         return await _context.Turnos.AnyAsync(t => t.CajaId == cajaId && t.EstaAbierto);
     }
@@ -53,6 +53,20 @@ public class TurnoRepository
         return await _context.Turnos
             .Where(x => x.FechaOperacion == fecha)
             .OrderByDescending(x => x.NumeroTurno)
+            .FirstOrDefaultAsync();
+    }
+    public async Task<Turno?> ObtenerTurnoAbiertoPorUsuarioAsync(int usuarioId)
+    {
+        return await _context.Turnos.Where(t => t.UsuarioId == usuarioId && t.FechaCierre == null)
+            .OrderByDescending(t => t.FechaApertura)
+            .FirstOrDefaultAsync();
+
+    }
+    public async Task<Turno?> ObtenerTurnoAbiertoPorCajaAsync(int cajaId)
+    {
+        return await _context.Turnos
+            .Where(t => t.CajaId == cajaId && t.FechaCierre == null)
+            .OrderByDescending(t => t.FechaApertura)
             .FirstOrDefaultAsync();
     }
 }

@@ -3,6 +3,7 @@ using global::PrimePOS.DAL.Context;
 using global::PrimePOS.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PrimePOS.DAL.UnitOfWork;
 namespace PrimePOS.WinUI.Infrastructure
 {
 
@@ -14,11 +15,11 @@ namespace PrimePOS.WinUI.Infrastructure
             // Método de extensión para agregar todos los servicios y repositorios
             public static IServiceCollection AddPrimePOSServices(this IServiceCollection services, string connectionString)
             {
-                // 1️⃣ DbContext
+                //  DbContext
                 services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(connectionString));
 
-                // 2️⃣ Repositories
+                //  Repositories
                 services.AddTransient<UsuarioRepository>();
                 services.AddTransient<RolRepository>();
                 services.AddTransient<CategoriaRepository>();
@@ -29,7 +30,7 @@ namespace PrimePOS.WinUI.Infrastructure
                 services.AddTransient<CajaRepository>();
                 services.AddTransient<TurnoRepository>();
 
-                // 3️⃣ Services
+                //  Services
                 services.AddTransient<UsuarioService>();
                 services.AddTransient<RolService>();
                 services.AddTransient<CategoriaService>();
@@ -40,6 +41,8 @@ namespace PrimePOS.WinUI.Infrastructure
                 services.AddTransient<CajaService>();
                 services.AddTransient<TurnoService>();
 
+                //UnitOfWork
+                services.AddTransient<UnitOfWork>();
                 return services;
             }
         }
