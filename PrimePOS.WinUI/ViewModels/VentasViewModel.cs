@@ -1,4 +1,9 @@
-﻿using PrimePOS.BLL.Services;
+﻿using PrimePOS.BLL.DTOs.DetalleVenta;
+using PrimePOS.BLL.DTOs.Producto;
+using PrimePOS.BLL.DTOs.Venta;
+using PrimePOS.BLL.Services;
+using PrimePOS.WinUI.Infrastructure;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -32,31 +37,28 @@ public class VentaViewModel : INotifyPropertyChanged
 
     public decimal Total => Subtotal + Impuesto - DescuentoMonto;
 
-    public async Task AgregarProducto(int productoId)
+    public async Task AgregarProducto(ProductoDto dto)
     {
-        var producto = await _productoService.ObtenerProductoPorIdAsync(productoId);
-        if (producto == null) return;
 
-        var existente = Carrito.FirstOrDefault(p => p.ProductoId == producto.ProductoId);
 
+        var existente = Carrito.FirstOrDefault(p => p.ProductoId == dto.ProductoId);
         if (existente != null)
         {
             existente.Cantidad++;
             NotificarTotales();
-            return;
+
         }
-
-
-        Carrito.Add(new CarritoItemViewModel
+        else
         {
-            Codigo = producto.Codigo,
-            ProductoId = producto.ProductoId,
-            Nombre = producto.Nombre,
-            Precio = producto.PrecioVenta,
-            Cantidad = 1
-        });
-
-
+            Carrito.Add(new CarritoItemViewModel
+            {
+                Codigo = dto.Codigo,
+                ProductoId = dto.ProductoId,
+                Nombre = dto.Nombre,
+                Precio = dto.PrecioVenta,
+                Cantidad = 1
+            });
+        }
         NotificarTotales();
     }
     public void EliminarProducto(int productoId)
@@ -94,5 +96,61 @@ public class VentaViewModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
+    public async Task FacturarAsync(int clienteId, int MetodoPagoId)
+    {
+        try
+        {
+            if (!Carrito.Any())
+                throw new Exception("El carrito está vacío.");
 
+
+            if (Sesion.TurnoActual == null)
+                throw new Exception("No hay turno abierto.");
+
+            var dto = new CrearVentaDto
+            {
+                ClienteId = clienteId,
+                UsuarioId = Sesion.UsuarioId,
+                MetodoPagoId = MetodoPagoId,
+                TurnoId = Sesion.TurnoActual!.TurnoId,
+
+                Subtotal = Subtotal,
+                Impuesto = Impuesto,
+                Descuento = DescuentoMonto,
+                Total = Total,
+
+
+
+                Items = Carrito.Select(x => new DetalleVentaDto
+                {
+                    Codigo = x.Codigo,
+                    ProductoId = x.ProductoId,
+                    Cantidad = x.Cantidad,
+                    PrecioUnitario = x.Precio,
+                    Total = x.Total,
+
+                }).ToList(),
+            };
+            // 🔥 LLAMADA AL SERVICE
+            var ventaId = await _ventaService.CrearVentaAsync(dto);
+
+            // 🧹 LIMPIAR CARRITO
+            VaciarCarrito();
+
+            // 🔄 RESETEAR DESCUENTO
+            DescuentoPorcentaje = 0;
+
+
+
+            System.Diagnostics.Debug.WriteLine($"Venta creada: {ventaId}");
+
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error al facturar: {ex.Message}");
+            throw;
+        }
+
+
+    }
 }

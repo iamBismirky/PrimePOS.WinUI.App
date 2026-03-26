@@ -9,8 +9,8 @@ public class CarritoItemViewModel : INotifyPropertyChanged
     public string Nombre { get; set; } = string.Empty;
     public string Codigo { get; set; } = string.Empty;
 
-    private decimal _cantidad;
-    public decimal Cantidad
+    private int _cantidad;
+    public int Cantidad
     {
         get => _cantidad;
         set

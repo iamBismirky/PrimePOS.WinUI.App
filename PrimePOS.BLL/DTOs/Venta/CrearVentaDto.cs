@@ -1,4 +1,6 @@
-﻿namespace PrimePOS.BLL.DTOs.Venta
+﻿using PrimePOS.BLL.DTOs.DetalleVenta;
+
+namespace PrimePOS.BLL.DTOs.Venta
 {
     public class CrearVentaDto
     {
@@ -14,7 +16,12 @@
 
 
         public string NumeroComprobante { get; set; } = string.Empty;
-
+        public decimal Subtotal { get; set; }
+        public decimal Impuesto { get; set; }
+        public decimal Descuento { get; set; }
+        public decimal Total { get; set; }
         public bool Estado { get; set; }
+        public List<DetalleVentaDto> Items { get; set; } = new();
+
     }
 }

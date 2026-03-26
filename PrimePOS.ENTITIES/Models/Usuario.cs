@@ -19,7 +19,7 @@ public class Usuario
     public int RolId { get; set; } //Clave foránea para la relación con la clase Rol
     public Rol? Rol { get; set; } //Propiedad de navegación para acceder al rol asociado al usuario
 
-    public ICollection<Venta>? Ventas { get; set; } = new List<Venta>();
+    public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
     public ICollection<Turno> Turnos { get; set; } = new List<Turno>();
 
 }

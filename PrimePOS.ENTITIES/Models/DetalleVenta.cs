@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrimePOS.ENTITIES.Models;
 
-[Table("DetalleVentas")]
+[Table("DetallesVenta")]
 public class DetalleVenta
 {
     [Key]
@@ -15,7 +15,7 @@ public class DetalleVenta
     public int ProductoId { get; set; }
     public Producto? Producto { get; set; }
 
-
+    public string Codigo { get; set; } = string.Empty;
     public int Cantidad { get; set; }
     public decimal PrecioUnitario { get; set; }
     public decimal Impuesto { get; set; }

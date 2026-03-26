@@ -20,9 +20,9 @@ public class Cliente
 
     public string Direccion { get; set; } = string.Empty;
 
-    public bool Estado { get; set; } 
+    public bool Estado { get; set; }
 
-    public DateTime FechaRegistro { get; set; } 
-    public ICollection<Venta>? Ventas { get; set; } = new List<Venta>();
+    public DateTime FechaRegistro { get; set; }
+    public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
 }
 

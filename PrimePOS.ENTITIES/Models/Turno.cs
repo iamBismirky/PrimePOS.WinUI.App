@@ -22,5 +22,5 @@ public class Turno
     public DateTime? FechaCierre { get; set; }
     public bool EstaAbierto { get; set; }
 
-    public ICollection<Venta>? Ventas { get; set; }
+    public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
 }

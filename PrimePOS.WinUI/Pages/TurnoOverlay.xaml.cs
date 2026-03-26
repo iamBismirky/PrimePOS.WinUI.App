@@ -20,10 +20,10 @@ namespace PrimePOS.WinUI.Pages
 
         public TurnoOverlay()
         {
-            if (Sesion.TurnoActual != null)
-            {
-                this.InitializeComponent();
-            }
+
+
+            this.InitializeComponent();
+
 
 
             _turnoService = App.Services.GetRequiredService<TurnoService>();

@@ -29,8 +29,8 @@ public sealed partial class VentasPage : Page
 
     private DispatcherTimer _timerProducto = new DispatcherTimer();
     private DispatcherTimer _timerCliente = new DispatcherTimer();
-    private ClienteDto? _clienteSeleccionado;
-    private ProductoDto? _productoSeleccionado;
+    private ClienteDto? _clienteDto;
+    private ProductoDto? _productoDto;
 
     public Caja? _cajaSeleccionada { get; private set; }
     public Turno? _turnoSeleccionado { get; private set; }
@@ -51,6 +51,7 @@ public sealed partial class VentasPage : Page
         _metodoPagoService = App.Services.GetRequiredService<MetodoPagoService>();
 
         _ventaViewModel = App.Services.GetRequiredService<VentaViewModel>();
+        this.DataContext = _ventaViewModel;
 
     }
     protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -108,8 +109,20 @@ public sealed partial class VentasPage : Page
         txtBuscarProducto.Focus(FocusState.Programmatic);
 
     }
-    private void BtnGenerarFactura_Click(object sender, RoutedEventArgs e)
+    private async void BtnGenerarFactura_Click(object sender, RoutedEventArgs e)
     {
+        try
+        {
+            await _ventaViewModel.FacturarAsync(_clienteDto!.ClienteId, (int)cmbMetodoPago.SelectedValue);
+
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Éxito", "Venta realizada correctamente");
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+
 
     }
     private async void BtnLimpiar_Click(object sender, RoutedEventArgs e)
@@ -177,17 +190,21 @@ public sealed partial class VentasPage : Page
                 producto = await _productoService
                     .BuscarProductoCodigoONombreAsync(texto);
             }
-
-            if (producto != null)
+            if (producto == null || producto.ProductoId <= 0)
             {
-                await _ventaViewModel.AgregarProducto(producto.ProductoId);
-
-
-
-                sender.Text = "";
-                _productoSeleccionado = null;
-                sender.Focus(FocusState.Programmatic);
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", "Producto no encontrado");
+                return;
             }
+
+
+            await _ventaViewModel.AgregarProducto(producto);
+
+
+
+            sender.Text = "";
+            _productoDto = null;
+            sender.Focus(FocusState.Programmatic);
+
         }
         catch (Exception ex)
         {
@@ -237,9 +254,9 @@ public sealed partial class VentasPage : Page
     private async void txtBuscarProducto_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
     {
 
-        _productoSeleccionado = (ProductoDto)args.SelectedItem;
+        _productoDto = (ProductoDto)args.SelectedItem;
 
-        sender.Text = _productoSeleccionado.Nombre;
+        sender.Text = _productoDto.Nombre;
     }
     private async void txtBuscarCliente_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
     {
@@ -325,7 +342,7 @@ public sealed partial class VentasPage : Page
             var cliente = await _clienteService.ObtenerPorId(1);
             if (cliente != null)
             {
-                _clienteSeleccionado = cliente;
+                _clienteDto = cliente;
                 txtCodigoCliente.Text = cliente.Codigo;
                 txtNombreCliente.Text = cliente.Nombre;
                 txtDocumentoCliente.Text = cliente.Documento;
@@ -350,7 +367,16 @@ public sealed partial class VentasPage : Page
         {
             var porcentaje = Convert.ToDecimal(item.Tag);
 
-            _ventaViewModel.AplicarDescuento(porcentaje);
+            if (_ventaViewModel != null)
+            {
+                _ventaViewModel.AplicarDescuento(porcentaje);
+
+            }
+
+
+
+
+
         }
 
 
@@ -358,12 +384,11 @@ public sealed partial class VentasPage : Page
     }
     private async void BtnAbrirTurno_Click(object sender, RoutedEventArgs e)
     {
-        if (Sesion.TurnoActual == null)
-        {
-            TurnoOverlay.Visibility = Visibility.Visible;
 
-        }
-        await DialogHelper.MostrarMensaje(this.XamlRoot, "Adventencia", "Existe un turno abierto");
+        TurnoOverlay.Visibility = Visibility.Visible;
+
+
+        //await DialogHelper.MostrarMensaje(this.XamlRoot, "Adventencia", "Existe un turno abierto");
     }
     private async void BtnCerrarTurno_Click(object sender, RoutedEventArgs e)
     {

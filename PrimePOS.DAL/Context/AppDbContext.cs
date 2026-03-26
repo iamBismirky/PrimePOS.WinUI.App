@@ -18,10 +18,78 @@ namespace PrimePOS.DAL.Context
         public DbSet<Turno> Turnos { get; set; }
         public DbSet<MetodoPago> MetodoPagos { get; set; }
         public DbSet<Venta> Ventas { get; set; }
-        public DbSet<DetalleVenta> DetalleVentas { get; set; }
+        public DbSet<DetalleVenta> DetallesVenta { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+
+
+            // Usuario → Rol
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.Rol)
+                .WithMany(r => r.Usuarios)
+                .HasForeignKey(u => u.RolId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Turno → Usuario
+            modelBuilder.Entity<Turno>()
+                .HasOne(t => t.Usuario)
+                .WithMany(u => u.Turnos)
+                .HasForeignKey(t => t.UsuarioId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Turno → Caja
+            modelBuilder.Entity<Turno>()
+                .HasOne(t => t.Caja)
+                .WithMany()
+                .HasForeignKey(t => t.CajaId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Venta → Usuario
+            modelBuilder.Entity<Venta>()
+                .HasOne(v => v.Usuario)
+                .WithMany(u => u.Ventas)
+                .HasForeignKey(v => v.UsuarioId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Venta → Cliente
+            modelBuilder.Entity<Venta>()
+                .HasOne(v => v.Cliente)
+                .WithMany(c => c.Ventas)
+                .HasForeignKey(v => v.ClienteId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Venta → MetodoPago
+            modelBuilder.Entity<Venta>()
+                .HasOne(v => v.MetodoPago)
+                .WithMany()
+                .HasForeignKey(v => v.MetodoPagoId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Venta → Turno
+            modelBuilder.Entity<Venta>()
+                .HasOne(v => v.Turno)
+                .WithMany(t => t.Ventas)
+                .HasForeignKey(v => v.TurnoId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Detalle → Venta
+            modelBuilder.Entity<DetalleVenta>()
+                .HasOne(d => d.Venta)
+                .WithMany(v => v.Detalles)
+                .HasForeignKey(d => d.VentaId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Detalle → Producto
+            modelBuilder.Entity<DetalleVenta>()
+                .HasOne(d => d.Producto)
+                .WithMany(p => p.Detalles)
+                .HasForeignKey(d => d.ProductoId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
+
 
             modelBuilder.Entity<Rol>().HasData
              (
@@ -45,89 +113,6 @@ namespace PrimePOS.DAL.Context
                 new Cliente { ClienteId = 1, Codigo = "CLIENT-0001", Nombre = "Consumidor Final", Estado = true }
 
              );
-
-
-            // =========================
-            // 🔹 USUARIO → VENTA
-            // =========================
-            modelBuilder.Entity<Venta>()
-                .HasOne(v => v.Usuario)
-                .WithMany(u => u.Ventas)
-                .HasForeignKey(v => v.UsuarioId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // =========================
-            // 🔹 USUARIO → APERTURA CAJA
-            // =========================
-            modelBuilder.Entity<Turno>()
-                .HasOne(a => a.Usuario)
-                .WithMany() // 👈 sin colección
-                .HasForeignKey(a => a.UsuarioId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // =========================
-            // 🔹 CAJA → APERTURA CAJA
-            // =========================
-            modelBuilder.Entity<Turno>()
-                .HasOne(a => a.Caja)
-                .WithMany()
-                .HasForeignKey(a => a.CajaId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // =========================
-            // 🔹 APERTURA CAJA → VENTA
-            // =========================
-            modelBuilder.Entity<Venta>()
-                .HasOne(v => v.Turno)
-                .WithMany(a => a.Ventas)
-                .HasForeignKey(v => v.TurnoId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // =========================
-            // 🔹 CLIENTE → VENTA
-            // =========================
-            modelBuilder.Entity<Venta>()
-                .HasOne(v => v.Cliente)
-                .WithMany()
-                .HasForeignKey(v => v.ClienteId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // =========================
-            // 🔹 METODO PAGO → VENTA
-            // =========================
-            modelBuilder.Entity<Venta>()
-                .HasOne(v => v.MetodoPago)
-                .WithMany()
-                .HasForeignKey(v => v.MetodoPagoId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // =========================
-            // 🔹 VENTA → DETALLE VENTA
-            // =========================
-            modelBuilder.Entity<DetalleVenta>()
-                .HasOne(d => d.Venta)
-                .WithMany(v => v.Detalles)
-                .HasForeignKey(d => d.VentaId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // =========================
-            // 🔹 PRODUCTO → DETALLE VENTA
-            // =========================
-            modelBuilder.Entity<DetalleVenta>()
-                .HasOne(d => d.Producto)
-                .WithMany()
-                .HasForeignKey(d => d.ProductoId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // =========================
-            // 🔹 USUARIO → ROL
-            // =========================
-            modelBuilder.Entity<Usuario>()
-                .HasOne(u => u.Rol)
-                .WithMany()
-                .HasForeignKey(u => u.RolId)
-                .OnDelete(DeleteBehavior.NoAction);
-
 
         }
 
