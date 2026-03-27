@@ -34,6 +34,12 @@ public class VentaRepository
     {
         return _context.Ventas.Include(v => v.Detalles).ToList();
     }
+    public async Task<decimal> ObtenerTotalPorMetodoPagoAsync(int turnoId, int metodoPagoId)
+    {
+        return await _context.Ventas
+            .Where(v => v.TurnoId == turnoId && v.MetodoPagoId == metodoPagoId)
+            .SumAsync(v => v.Total);
+    }
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();

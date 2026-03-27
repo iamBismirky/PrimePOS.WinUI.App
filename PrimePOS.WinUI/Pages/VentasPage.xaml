@@ -14,9 +14,9 @@
     <Page.Resources>
         <helpers:NumeroConverterHelper x:Key="NumeroConverterHelper"/>
     </Page.Resources>
-    <Grid>
-        
-    <Border  x:Name="panelVentas" Visibility="Visible">
+    <Grid x:Name="RootGrid">
+
+        <Border  x:Name="panelVentas" Visibility="Visible">
     <Grid Padding="20" RowSpacing="15">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -160,7 +160,7 @@
                 <controls:WrapPanel Orientation="Vertical" VerticalSpacing="15" >
 
                     <TextBlock Text="Metodo de Pago" FontWeight="Bold"  FontFamily="Segoe UI"/>
-                    <ComboBox x:Name="cmbMetodoPago" SelectedIndex="0"/>
+                    <ComboBox x:Name="cmbMetodoPago"/>
 
                 </controls:WrapPanel>
             </Border>
@@ -324,8 +324,9 @@
         </Grid>
         
     </Border>
-        <local:TurnoOverlay x:Name="TurnoOverlay" Visibility="Collapsed"/>
-        <local:TurnoCerrarOverlay x:Name="TurnoCerrarOverlay" Visibility="Collapsed"/>
+        <Grid x:Name="OverlayContainer"
+          Background="#80000000"
+          Visibility="Collapsed"/>
     </Grid>
 
 </Page>

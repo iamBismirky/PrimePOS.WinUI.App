@@ -37,60 +37,66 @@ public sealed partial class VentasPage : Page
     public string? TextoTurnoPreview { get; set; }
 
     public VentaViewModel _ventaViewModel { get; set; }
+    private IServiceScope _scope;
     public VentasPage()
     {
-        this.InitializeComponent();
+        InitializeComponent();
         InicializarBuscador();
-        NavigationCacheMode = NavigationCacheMode.Required;
+        //NavigationCacheMode = NavigationCacheMode.Required;
 
-        _ventaService = App.Services.GetRequiredService<VentaService>();
-        _turnoService = App.Services.GetRequiredService<TurnoService>();
-        _cajaService = App.Services.GetRequiredService<CajaService>();
-        _productoService = App.Services.GetRequiredService<ProductoService>();
-        _clienteService = App.Services.GetRequiredService<ClienteService>();
-        _metodoPagoService = App.Services.GetRequiredService<MetodoPagoService>();
+        _scope = App.Services.CreateScope(); // 🔥 CLAVE
 
-        _ventaViewModel = App.Services.GetRequiredService<VentaViewModel>();
+        _ventaService = _scope.ServiceProvider.GetRequiredService<VentaService>();
+        _turnoService = _scope.ServiceProvider.GetRequiredService<TurnoService>();
+        _cajaService = _scope.ServiceProvider.GetRequiredService<CajaService>();
+        _productoService = _scope.ServiceProvider.GetRequiredService<ProductoService>();
+        _clienteService = _scope.ServiceProvider.GetRequiredService<ClienteService>();
+        _metodoPagoService = _scope.ServiceProvider.GetRequiredService<MetodoPagoService>();
+
+        _ventaViewModel = _scope.ServiceProvider.GetRequiredService<VentaViewModel>();
         this.DataContext = _ventaViewModel;
+
 
     }
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
 
-        await ListarMetodosPagosAsync();
 
-        Sesion.TurnoActual = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
-
-        if (Sesion.TurnoActual != null)
-        {
-            txtCaja.Text = Sesion.TurnoActual.CajaId.ToString();
-            txtUsuario.Text = Sesion.UsuarioNombre.ToString();
-            txtRol.Text = Sesion.RolNombre.ToString();
-            txtTurno.Text = Sesion.TurnoActual.TurnoId.ToString();
-            txtFecha.Text = Sesion.TurnoActual.FechaApertura.ToString();
-        }
-        else
-        {
-            TurnoOverlay.Visibility = Visibility.Visible;
-        }
 
     }
 
     private async void Page_loaded(object sender, RoutedEventArgs e)
     {
 
+
         try
         {
 
+            Sesion.TurnoActual = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
+
+            if (Sesion.TurnoActual != null)
+            {
+                txtCaja.Text = Sesion.TurnoActual.CajaId.ToString();
+                txtUsuario.Text = Sesion.UsuarioNombre.ToString();
+                txtRol.Text = Sesion.RolNombre.ToString();
+                txtTurno.Text = Sesion.TurnoActual.TurnoId.ToString();
+                txtFecha.Text = Sesion.TurnoActual.FechaApertura.ToString();
+            }
+            else
+            {
+                //TurnoOverlay.Visibility = Visibility.Visible;
+            }
+
             await CargarConsumidorFinal();
+            await ListarMetodosPagosAsync();
 
             txtBuscarProducto.Focus(FocusState.Programmatic);
         }
         catch (Exception ex)
         {
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+            System.Diagnostics.Debug.WriteLine(ex);
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
         }
 
 
@@ -273,9 +279,8 @@ public sealed partial class VentasPage : Page
         {
             var lista = await _metodoPagoService.ListarMetodosPagosAsync();
 
-            cmbMetodoPago.ItemsSource = null;
-            cmbMetodoPago.ItemsSource = lista;
 
+            cmbMetodoPago.ItemsSource = lista;
             cmbMetodoPago.DisplayMemberPath = "Nombre";
             cmbMetodoPago.SelectedValuePath = "MetodoPagoId";
             cmbMetodoPago.SelectedIndex = 0;
@@ -385,14 +390,49 @@ public sealed partial class VentasPage : Page
     private async void BtnAbrirTurno_Click(object sender, RoutedEventArgs e)
     {
 
-        TurnoOverlay.Visibility = Visibility.Visible;
+        //TurnoOverlay.Visibility = Visibility.Visible;
 
 
         //await DialogHelper.MostrarMensaje(this.XamlRoot, "Adventencia", "Existe un turno abierto");
     }
     private async void BtnCerrarTurno_Click(object sender, RoutedEventArgs e)
     {
-        TurnoCerrarOverlay.Visibility = Visibility.Visible;
+
+        if (Sesion.TurnoActual == null)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", "No hay turno activo");
+            return;
+        }
+
+        var overlay = new TurnoCerrarOverlay
+        {
+            TurnoId = Sesion.TurnoActual.TurnoId
+        };
+
+        // Evento para cerrar
+        overlay.OnCloseRequested += () =>
+        {
+            RootGrid.Children.Remove(overlay);
+        };
+
+        // 🔥 Inicializar antes de mostrar
+        await overlay.CargarDatosAsync();
+
+        // 🔥 Mostrar encima
+        RootGrid.Children.Add(overlay);
+
+    }
+    private void MostrarOverlay(UserControl overlay)
+    {
+        OverlayContainer.Children.Clear();
+        OverlayContainer.Children.Add(overlay);
+        OverlayContainer.Visibility = Visibility.Visible;
+
+    }
+    private void CerrarOverlay()
+    {
+        OverlayContainer.Children.Clear();
+        OverlayContainer.Visibility = Visibility.Collapsed;
     }
 
 

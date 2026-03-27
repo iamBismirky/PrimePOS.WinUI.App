@@ -9,12 +9,23 @@ public class TurnoService
 {
     private readonly TurnoRepository _turnoRepository;
     private readonly CajaRepository _cajaRepository;
+    private readonly CierreTurnoRepository _cierreTurnoRepository;
+    private readonly VentaRepository _ventaRepository;
+    private readonly MetodoPagoRepository _metodoPagoRepository;
     private readonly UnitOfWork _unitOfWork;
 
-    public TurnoService(TurnoRepository turnoRepository, CajaRepository cajaRepository, UnitOfWork unitOfWork)
+    public TurnoService(TurnoRepository turnoRepository,
+        CajaRepository cajaRepository,
+        CierreTurnoRepository cierreTurnoRepository,
+        VentaRepository ventaRepository,
+        MetodoPagoRepository metodoPagoRepository,
+        UnitOfWork unitOfWork)
     {
         _turnoRepository = turnoRepository;
         _cajaRepository = cajaRepository;
+        _cierreTurnoRepository = cierreTurnoRepository;
+        _ventaRepository = ventaRepository;
+        _metodoPagoRepository = metodoPagoRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -75,30 +86,65 @@ public class TurnoService
         }
     }
 
-    //public async Task<int> GenerarCodigoTurno(int cajaId, DateTime fechaBase)
-    //{
-    //    //var hoy = fechaBase.Date;
+    public async Task CerrarTurnoAsync(CierreTurnoDto cierre)
+    {
+        var turno = await _turnoRepository.ObtenerPorIdAsync(cierre.TurnoId);
 
-    //    //// 🔍 Obtener último turno del día desde repositorio
-    //    //var ultimo = await _turnoRepository.ObtenerUltimoTurnoDelDiaAsync(cajaId, hoy);
+        if (turno!.EstaAbierto)
+            throw new Exception("El turno ya está cerrado");
 
-    //    //int correlativo = 1;
+        cierre.Diferencia = cierre.EfectivoContado -
+            (cierre.MontoInicial + cierre.TotalEfectivo);
 
-    //    //if (ultimo != null && !string.IsNullOrEmpty(ultimo.NumeroTurno))
-    //    //{
-    //    //    var partes = ultimo.NumeroTurno.Split('-');
+        // (Opcional pero recomendado)
+        var cierreEntity = new CierreTurno
+        {
+            TurnoId = cierre.TurnoId,
+            MontoInicial = cierre.MontoInicial,
+            TotalEfectivo = cierre.TotalEfectivo,
+            TotalTarjeta = cierre.TotalTarjeta,
+            TotalTransferencia = cierre.TotalTransferencia,
+            EfectivoContado = cierre.EfectivoContado,
+            Diferencia = cierre.Diferencia,
+            FechaCierre = DateTime.Now
+        };
 
-    //    //    if (partes.Length == 2 && int.TryParse(partes[1], out int numero))
-    //    //    {
-    //    //        correlativo = numero + 1;
-    //    //    }
-    //    //}
+        await _cierreTurnoRepository.AgregarAsync(cierreEntity);
 
-    //    //string fecha = hoy.ToString("yyyyMMdd");
-    //    //string numeroFormateado = correlativo.ToString("D3");
+        turno.EstaAbierto = false;
+        turno.FechaCierre = DateTime.Now;
 
-    //    //return $"{fecha}-{numeroFormateado}";
-    //}
+        _turnoRepository.Actualizar(turno);
+        await _turnoRepository.GuardarCambiosAsync();
+    }
+    public async Task<CierreTurnoDto> ObtenerResumenTurno(int turnoId)
+    {
+        var turno = await _turnoRepository.ObtenerPorIdAsync(turnoId);
+
+        var efectivo = await _metodoPagoRepository.ObtenerPorIdAsync(1);
+        var tarjeta = await _metodoPagoRepository.ObtenerPorIdAsync(2);
+        var trasnferencia = await _metodoPagoRepository.ObtenerPorIdAsync(3);
+
+        var totalEfectivo = await _ventaRepository
+            .ObtenerTotalPorMetodoPagoAsync(turnoId, efectivo!.MetodoPagoId);
+
+        var totalTarjeta = await _ventaRepository
+            .ObtenerTotalPorMetodoPagoAsync(turnoId, tarjeta!.MetodoPagoId);
+
+        var totalTransferencia = await _ventaRepository
+            .ObtenerTotalPorMetodoPagoAsync(turnoId, trasnferencia!.MetodoPagoId);
+
+        return new CierreTurnoDto
+        {
+            TurnoId = turnoId,
+            MontoInicial = turno!.MontoInicial,
+            TotalEfectivo = totalEfectivo,
+            TotalTarjeta = totalTarjeta,
+            TotalTransferencia = totalTransferencia,
+            TotalGeneral = totalEfectivo + totalTarjeta + totalTransferencia
+        };
+    }
+
     public async Task<List<Turno>> ObtenerTurnosPorCajaAsync(int cajaId)
     {
         return await _turnoRepository.ObtenerPorCajaAsync(cajaId);

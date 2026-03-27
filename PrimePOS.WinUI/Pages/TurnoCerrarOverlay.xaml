@@ -38,14 +38,22 @@
 
                 <!-- Ventas -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <TextBlock Text="Total Ventas:" Width="200"/>
-                    <TextBlock x:Name="txtTotalVentas" FontWeight="Bold"/>
+                    <TextBlock Text="Total General:" Width="200"/>
+                    <TextBlock x:Name="txtTotalGeneral" FontWeight="Bold"/>
                 </StackPanel>
 
                 <!-- Gastos -->
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Total Gastos:" Width="200"/>
-                    <TextBlock x:Name="txtTotalGastos" FontWeight="Bold"/>
+                    <TextBlock Text="Total Efectivo:" Width="200"/>
+                    <TextBlock x:Name="txtTotalEfectivo" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Total Tarjeta:" Width="200"/>
+                    <TextBlock x:Name="txtTotalTarjeta" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Total Transferencia:" Width="200"/>
+                    <TextBlock x:Name="txtTotalTransferencia" FontWeight="Bold"/>
                 </StackPanel>
 
                 <!-- Efectivo esperado -->
@@ -57,9 +65,8 @@
                 <!-- Input efectivo contado -->
                 <StackPanel>
                     <TextBlock Text="Efectivo Contado"/>
-                    <TextBox x:Name="TxtEfectivoContado"
-                         PlaceholderText="Ingrese monto"
-                         InputScope="Number"/>
+                    <NumberBox x:Name="nbEfectivoContado"
+                         PlaceholderText="Ingrese monto"/>
                 </StackPanel>
 
                 <!-- Diferencia -->

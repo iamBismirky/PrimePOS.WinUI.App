@@ -46,8 +46,6 @@
     <None Remove="Pages\ProductoPage.xaml" />
     <None Remove="Pages\ReportesPage.xaml" />
     <None Remove="Pages\RolPage.xaml" />
-    <None Remove="Pages\TurnoCerrarOverlay.xaml" />
-    <None Remove="Pages\TurnoOverlay.xaml" />
     <None Remove="Pages\UsuarioPage.xaml" />
     <None Remove="Pages\VentasPage.xaml" />
   </ItemGroup>
@@ -168,6 +166,10 @@
     <Page Update="Pages\DashboardPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dialog\" />
+    <Folder Include="Overlays\" />
   </ItemGroup>
 
   <!--

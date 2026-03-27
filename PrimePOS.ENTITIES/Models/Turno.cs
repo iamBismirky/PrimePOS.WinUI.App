@@ -23,4 +23,5 @@ public class Turno
     public bool EstaAbierto { get; set; }
 
     public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
+    public ICollection<CierreTurno> CierresTurno { get; set; } = new List<CierreTurno>();
 }

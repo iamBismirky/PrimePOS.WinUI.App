@@ -18,35 +18,36 @@ namespace PrimePOS.WinUI.Infrastructure
             {
                 //  DbContext
                 services.AddDbContext<AppDbContext>(options =>
-                    options.UseSqlServer(connectionString));
+                    options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
 
                 //  Repositories
-                services.AddTransient<UsuarioRepository>();
-                services.AddTransient<RolRepository>();
-                services.AddTransient<CategoriaRepository>();
-                services.AddTransient<ClienteRepository>();
-                services.AddTransient<ProductoRepository>();
-                services.AddTransient<VentaRepository>();
-                services.AddTransient<MetodoPagoRepository>();
-                services.AddTransient<CajaRepository>();
-                services.AddTransient<TurnoRepository>();
+                services.AddScoped<UsuarioRepository>();
+                services.AddScoped<RolRepository>();
+                services.AddScoped<CategoriaRepository>();
+                services.AddScoped<ClienteRepository>();
+                services.AddScoped<ProductoRepository>();
+                services.AddScoped<VentaRepository>();
+                services.AddScoped<MetodoPagoRepository>();
+                services.AddScoped<CajaRepository>();
+                services.AddScoped<TurnoRepository>();
+                services.AddScoped<CierreTurnoRepository>();
 
                 //  Services
-                services.AddTransient<UsuarioService>();
-                services.AddTransient<RolService>();
-                services.AddTransient<CategoriaService>();
-                services.AddTransient<ClienteService>();
-                services.AddTransient<ProductoService>();
-                services.AddTransient<VentaService>();
-                services.AddTransient<MetodoPagoService>();
-                services.AddTransient<CajaService>();
-                services.AddTransient<TurnoService>();
+                services.AddScoped<UsuarioService>();
+                services.AddScoped<RolService>();
+                services.AddScoped<CategoriaService>();
+                services.AddScoped<ClienteService>();
+                services.AddScoped<ProductoService>();
+                services.AddScoped<VentaService>();
+                services.AddScoped<MetodoPagoService>();
+                services.AddScoped<CajaService>();
+                services.AddScoped<TurnoService>();
 
                 //UnitOfWork
-                services.AddTransient<UnitOfWork>();
+                services.AddScoped<UnitOfWork>();
 
                 //ViewModel
-                services.AddTransient<VentaViewModel>();
+                services.AddScoped<VentaViewModel>();
 
 
 

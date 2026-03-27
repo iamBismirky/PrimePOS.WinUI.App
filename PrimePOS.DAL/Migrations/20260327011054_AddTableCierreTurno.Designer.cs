@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrimePOS.DAL.Context;
 
@@ -11,9 +12,11 @@ using PrimePOS.DAL.Context;
 namespace PrimePOS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260327011054_AddTableCierreTurno")]
+    partial class AddTableCierreTurno
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,9 +86,6 @@ namespace PrimePOS.DAL.Migrations
 
                     b.Property<decimal>("EfectivoContado")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("FechaCierre")
-                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("MontoInicial")
                         .HasColumnType("decimal(18,2)");

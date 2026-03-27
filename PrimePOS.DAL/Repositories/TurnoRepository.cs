@@ -17,6 +17,10 @@ public class TurnoRepository
     {
         await _context.Turnos.AddAsync(turno);
     }
+    public void Actualizar(Turno turno)
+    {
+        _context.Turnos.Update(turno);
+    }
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();
@@ -25,7 +29,11 @@ public class TurnoRepository
     {
         return await _context.Turnos.AnyAsync(t => t.CajaId == cajaId && t.EstaAbierto);
     }
-
+    public async Task<Turno?> ObtenerPorIdAsync(int id)
+    {
+        return await _context.Turnos
+            .FirstOrDefaultAsync(p => p.TurnoId == id);
+    }
     public async Task<List<Turno>> GetTurnosPorFecha(int cajaId, DateTime fecha)
     {
         return await _context.Turnos

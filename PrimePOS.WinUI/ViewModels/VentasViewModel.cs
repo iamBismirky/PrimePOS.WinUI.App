@@ -26,7 +26,7 @@ public class VentaViewModel : INotifyPropertyChanged
 
     public ObservableCollection<CarritoItemViewModel> Carrito { get; set; } = new();
 
-    private decimal _descuentoPorcentaje;
+
 
     public decimal Subtotal => Carrito.Sum(x => x.Total);
 

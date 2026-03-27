@@ -16,25 +16,22 @@ namespace PrimePOS.WinUI.Pages
     {
         private readonly TurnoService _turnoService;
         private readonly CajaService _cajaService;
-        public string? TextoTurnoPreview { get; set; }
+
+
 
         public TurnoOverlay()
         {
 
-
             this.InitializeComponent();
-
-
-
             _turnoService = App.Services.GetRequiredService<TurnoService>();
             _cajaService = App.Services.GetRequiredService<CajaService>();
+
         }
         private async void Page_loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                await ListarCajasAsync();
-                await ListarTurnosAsync();
+                await CargarDatosAsync();
             }
             catch (Exception ex)
             {
@@ -85,17 +82,22 @@ namespace PrimePOS.WinUI.Pages
             }
         }
 
-        private async Task ListarCajasAsync()
+        public async Task CargarDatosAsync()
         {
             try
             {
+                //Cajas
                 var lista = await _cajaService.ListarCajasAsync();
-
                 cmbCajas.ItemsSource = lista;
-
                 cmbCajas.DisplayMemberPath = "Nombre";
                 cmbCajas.SelectedValuePath = "CajaId";
                 cmbCajas.SelectedIndex = 0;
+
+
+                //Turnos
+                int numeroTurno = await _turnoService.ObtenerSiguienteTurno();
+                cmbTurnos.ItemsSource = new List<string> { $"Turno: {DateTime.Today:dd/MM/yyyy} - T{numeroTurno}" };
+                cmbTurnos.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -103,20 +105,6 @@ namespace PrimePOS.WinUI.Pages
 
             }
         }
-        private async Task ListarTurnosAsync()
-        {
-            try
-            {
-                int numeroTurno = await _turnoService.ObtenerSiguienteTurno();
-                var textoTurno = $"Turno: {DateTime.Today:dd/MM/yyyy} - T{numeroTurno}";
-                var TextoTurnoPreview = new List<string> { textoTurno };
-                cmbTurnos.ItemsSource = TextoTurnoPreview;
-                cmbTurnos.SelectedValuePath = "numeroTurno";
-            }
-            catch (Exception ex)
-            {
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
-            }
-        }
+
     }
 }

@@ -2,6 +2,7 @@
     x:Class="PrimePOS.WinUI.Pages.TurnoOverlay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PrimePOS.WinUI.Pages"
     HorizontalAlignment="Stretch"
     VerticalAlignment="Stretch"
     Loaded="Page_loaded">

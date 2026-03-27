@@ -16,6 +16,7 @@ namespace PrimePOS.DAL.Context
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Caja> Cajas { get; set; }
         public DbSet<Turno> Turnos { get; set; }
+        public DbSet<CierreTurno> CierresTurno { get; set; }
         public DbSet<MetodoPago> MetodoPagos { get; set; }
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<DetalleVenta> DetallesVenta { get; set; }
@@ -88,7 +89,11 @@ namespace PrimePOS.DAL.Context
                 .HasForeignKey(d => d.ProductoId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-
+            modelBuilder.Entity<CierreTurno>()
+                .HasOne(c => c.Turno)
+                .WithMany(p => p.CierresTurno)
+                .HasForeignKey(d => d.TurnoId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             modelBuilder.Entity<Rol>().HasData
