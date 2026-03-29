@@ -26,6 +26,7 @@ public class VentaService
         if (!dto.Items.Any())
             throw new Exception("La venta no tiene productos.");
 
+
         await _unitOfWork.BeginTransactionAsync();
 
         try
@@ -39,7 +40,7 @@ public class VentaService
                 ClienteId = dto.ClienteId,
                 MetodoPagoId = dto.MetodoPagoId,
                 FechaRegistro = ahora,
-                Detalles = new List<DetalleVenta>(),
+                Detalles = new List<VentaDetalle>(),
 
                 Subtotal = dto.Subtotal,
                 Impuesto = dto.Impuesto,
@@ -53,9 +54,21 @@ public class VentaService
 
             foreach (var item in dto.Items)
             {
+                var producto = await _productoRepository.ObtenerPorIdAsync(item.ProductoId);
+
+                if (producto == null)
+                    throw new Exception($"Producto no existe {producto!.Nombre}");
+                if (producto!.Existencia < item.Cantidad)
+                    throw new Exception($"Stock insuficiente {producto.Nombre}");
+
+                producto.Existencia -= item.Cantidad;
+                _productoRepository.Actualizar(producto);
+
+
+
                 var totalItem = item.Cantidad * item.PrecioUnitario;
                 subtotal += totalItem;
-                venta.Detalles.Add(new DetalleVenta
+                venta.Detalles.Add(new VentaDetalle
                 {
                     Codigo = item.Codigo,
                     ProductoId = item.ProductoId,
@@ -64,17 +77,10 @@ public class VentaService
                     Total = totalItem
                 });
             }
-            foreach (var item in dto.Items)
-            {
-                if (item.ProductoId <= 0)
-                    throw new Exception("ProductoId inválido");
-
-                if (item.PrecioUnitario <= 0)
-                    throw new Exception("Precio inválido");
 
 
 
-            }
+
             venta.Subtotal = subtotal;
             venta.Impuesto = subtotal * 0.18m;
             venta.Total = venta.Subtotal + venta.Impuesto;

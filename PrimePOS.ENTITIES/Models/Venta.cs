@@ -28,6 +28,6 @@ public class Venta
     public decimal Descuento { get; set; }
     public decimal Total { get; set; }
     public bool Estado { get; set; }
-    public ICollection<DetalleVenta> Detalles { get; set; } = new List<DetalleVenta>();
+    public ICollection<VentaDetalle> Detalles { get; set; } = new List<VentaDetalle>();
 
 }

@@ -19,7 +19,9 @@ namespace PrimePOS.DAL.Context
         public DbSet<CierreTurno> CierresTurno { get; set; }
         public DbSet<MetodoPago> MetodoPagos { get; set; }
         public DbSet<Venta> Ventas { get; set; }
-        public DbSet<DetalleVenta> DetallesVenta { get; set; }
+        public DbSet<VentaDetalle> VentasDetalle { get; set; }
+        public DbSet<Factura> Facturas { get; set; }
+        public DbSet<FacturaDetalle> FacturasDetalle { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -76,14 +78,14 @@ namespace PrimePOS.DAL.Context
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Detalle → Venta
-            modelBuilder.Entity<DetalleVenta>()
+            modelBuilder.Entity<VentaDetalle>()
                 .HasOne(d => d.Venta)
                 .WithMany(v => v.Detalles)
                 .HasForeignKey(d => d.VentaId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Detalle → Producto
-            modelBuilder.Entity<DetalleVenta>()
+            modelBuilder.Entity<VentaDetalle>()
                 .HasOne(d => d.Producto)
                 .WithMany(p => p.Detalles)
                 .HasForeignKey(d => d.ProductoId)

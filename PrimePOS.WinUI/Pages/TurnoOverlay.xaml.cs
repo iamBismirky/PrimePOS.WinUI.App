@@ -18,6 +18,8 @@ namespace PrimePOS.WinUI.Pages
         private readonly CajaService _cajaService;
 
 
+        public int TurnoId { get; set; }
+        public event Action? OnCloseRequested;
 
         public TurnoOverlay()
         {
@@ -44,7 +46,8 @@ namespace PrimePOS.WinUI.Pages
 
         private void BtnCancelar_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Collapsed;
+            OnCloseRequested?.Invoke();
+
         }
         private async void BtnAbrir_Click(object sender, RoutedEventArgs e)
         {

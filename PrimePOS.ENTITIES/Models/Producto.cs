@@ -24,8 +24,8 @@ public class Producto
     public int ExistenciaMinimo { get; set; }
     public bool Estado { get; set; }
 
-    public DateTime FechaRegistro { get; set; } 
-    public ICollection<DetalleVenta> Detalles { get; set; } = new List<DetalleVenta>();
+    public DateTime FechaRegistro { get; set; }
+    public ICollection<VentaDetalle> Detalles { get; set; } = new List<VentaDetalle>();
 
 
 }

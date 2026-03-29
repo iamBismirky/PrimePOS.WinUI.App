@@ -1,6 +1,6 @@
-﻿using PrimePOS.BLL.DTOs.DetalleVenta;
-using PrimePOS.BLL.DTOs.Producto;
+﻿using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.BLL.DTOs.Venta;
+using PrimePOS.BLL.DTOs.VentaDetalle;
 using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Infrastructure;
 using System;
@@ -121,7 +121,7 @@ public class VentaViewModel : INotifyPropertyChanged
 
 
 
-                Items = Carrito.Select(x => new DetalleVentaDto
+                Items = Carrito.Select(x => new VentaDetalleDto
                 {
                     Codigo = x.Codigo,
                     ProductoId = x.ProductoId,

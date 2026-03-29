@@ -1,6 +1,6 @@
-﻿namespace PrimePOS.BLL.DTOs.DetalleVenta
+﻿namespace PrimePOS.BLL.DTOs.VentaDetalle
 {
-    public class DetalleVentaDto
+    public class VentaDetalleDto
     {
         public int DetalleVentaId { get; set; }
 

@@ -44,7 +44,7 @@ public sealed partial class VentasPage : Page
         InicializarBuscador();
         //NavigationCacheMode = NavigationCacheMode.Required;
 
-        _scope = App.Services.CreateScope(); // 🔥 CLAVE
+        _scope = App.Services.CreateScope();
 
         _ventaService = _scope.ServiceProvider.GetRequiredService<VentaService>();
         _turnoService = _scope.ServiceProvider.GetRequiredService<TurnoService>();
@@ -53,7 +53,7 @@ public sealed partial class VentasPage : Page
         _clienteService = _scope.ServiceProvider.GetRequiredService<ClienteService>();
         _metodoPagoService = _scope.ServiceProvider.GetRequiredService<MetodoPagoService>();
 
-        _ventaViewModel = _scope.ServiceProvider.GetRequiredService<VentaViewModel>();
+        _ventaViewModel = App.Services.GetRequiredService<VentaViewModel>();
         this.DataContext = _ventaViewModel;
 
 
@@ -390,10 +390,26 @@ public sealed partial class VentasPage : Page
     private async void BtnAbrirTurno_Click(object sender, RoutedEventArgs e)
     {
 
-        //TurnoOverlay.Visibility = Visibility.Visible;
+        if (Sesion.TurnoActual == null)
+        {
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", "Hay un turno activo");
+            return;
+        }
+
+        var overlay = new TurnoOverlay
+        {
+
+        };
+
+        // Evento para cerrar
+        overlay.OnCloseRequested += () =>
+        {
+            RootGrid.Children.Remove(overlay);
+        };
 
 
-        //await DialogHelper.MostrarMensaje(this.XamlRoot, "Adventencia", "Existe un turno abierto");
+
+        RootGrid.Children.Add(overlay);
     }
     private async void BtnCerrarTurno_Click(object sender, RoutedEventArgs e)
     {
@@ -415,10 +431,10 @@ public sealed partial class VentasPage : Page
             RootGrid.Children.Remove(overlay);
         };
 
-        // 🔥 Inicializar antes de mostrar
+
         await overlay.CargarDatosAsync();
 
-        // 🔥 Mostrar encima
+
         RootGrid.Children.Add(overlay);
 
     }

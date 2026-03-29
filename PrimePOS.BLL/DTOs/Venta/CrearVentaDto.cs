@@ -1,4 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.DetalleVenta;
+﻿using PrimePOS.BLL.DTOs.VentaDetalle;
 
 namespace PrimePOS.BLL.DTOs.Venta
 {
@@ -21,7 +21,7 @@ namespace PrimePOS.BLL.DTOs.Venta
         public decimal Descuento { get; set; }
         public decimal Total { get; set; }
         public bool Estado { get; set; }
-        public List<DetalleVentaDto> Items { get; set; } = new();
+        public List<VentaDetalleDto> Items { get; set; } = new();
 
     }
 }

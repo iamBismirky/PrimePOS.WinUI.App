@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrimePOS.DAL.Context;
 
@@ -11,9 +12,11 @@ using PrimePOS.DAL.Context;
 namespace PrimePOS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260329023552_ForeingKeyFactura")]
+    partial class ForeingKeyFactura
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,6 +170,48 @@ namespace PrimePOS.DAL.Migrations
                             Nombre = "Consumidor Final",
                             Telefono = ""
                         });
+                });
+
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.DetalleVenta", b =>
+                {
+                    b.Property<int>("DetalleVentaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetalleVentaId"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Impuesto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("VentaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DetalleVentaId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.HasIndex("VentaId");
+
+                    b.ToTable("DetallesVenta");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Factura", b =>
@@ -516,48 +561,6 @@ namespace PrimePOS.DAL.Migrations
                     b.ToTable("Ventas");
                 });
 
-            modelBuilder.Entity("PrimePOS.ENTITIES.Models.VentaDetalle", b =>
-                {
-                    b.Property<int>("VentaDetalleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VentaDetalleId"));
-
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Codigo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Impuesto")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("PrecioUnitario")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("VentaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("VentaDetalleId");
-
-                    b.HasIndex("ProductoId");
-
-                    b.HasIndex("VentaId");
-
-                    b.ToTable("VentasDetalle");
-                });
-
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.CierreTurno", b =>
                 {
                     b.HasOne("PrimePOS.ENTITIES.Models.Turno", "Turno")
@@ -567,6 +570,25 @@ namespace PrimePOS.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Turno");
+                });
+
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.DetalleVenta", b =>
+                {
+                    b.HasOne("PrimePOS.ENTITIES.Models.Producto", "Producto")
+                        .WithMany("Detalles")
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PrimePOS.ENTITIES.Models.Venta", "Venta")
+                        .WithMany("Detalles")
+                        .HasForeignKey("VentaId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+
+                    b.Navigation("Venta");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Factura", b =>
@@ -583,7 +605,7 @@ namespace PrimePOS.DAL.Migrations
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.FacturaDetalle", b =>
                 {
                     b.HasOne("PrimePOS.ENTITIES.Models.Factura", "Factura")
-                        .WithMany("FacturasDetalle")
+                        .WithMany("FacturaDetalles")
                         .HasForeignKey("FacturaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -667,25 +689,6 @@ namespace PrimePOS.DAL.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("PrimePOS.ENTITIES.Models.VentaDetalle", b =>
-                {
-                    b.HasOne("PrimePOS.ENTITIES.Models.Producto", "Producto")
-                        .WithMany("Detalles")
-                        .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("PrimePOS.ENTITIES.Models.Venta", "Venta")
-                        .WithMany("Detalles")
-                        .HasForeignKey("VentaId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Producto");
-
-                    b.Navigation("Venta");
-                });
-
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Categoria", b =>
                 {
                     b.Navigation("Productos");
@@ -698,7 +701,7 @@ namespace PrimePOS.DAL.Migrations
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Factura", b =>
                 {
-                    b.Navigation("FacturasDetalle");
+                    b.Navigation("FacturaDetalles");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Producto", b =>

@@ -10,7 +10,7 @@ namespace PrimePOS.BLL.Services;
 public class DetalleVentaService
 {
     private const decimal ITBIS = 0.18m;
-    public decimal CalcularSubtotal(DetalleVenta detalle)
+    public decimal CalcularSubtotal(VentaDetalle detalle)
     {
         return detalle.Cantidad * detalle.PrecioUnitario;
     }

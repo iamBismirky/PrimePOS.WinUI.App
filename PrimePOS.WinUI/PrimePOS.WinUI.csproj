@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dialog\" />
+    <Folder Include="Reportes\" />
     <Folder Include="Overlays\" />
   </ItemGroup>
 

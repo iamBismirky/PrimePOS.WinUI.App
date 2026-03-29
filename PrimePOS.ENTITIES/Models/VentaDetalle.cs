@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrimePOS.ENTITIES.Models;
 
-[Table("DetallesVenta")]
-public class DetalleVenta
+[Table("VentasDetalle")]
+public class VentaDetalle
 {
     [Key]
-    public int DetalleVentaId { get; set; }
+    public int VentaDetalleId { get; set; }
 
     public int VentaId { get; set; }
     public Venta? Venta { get; set; }

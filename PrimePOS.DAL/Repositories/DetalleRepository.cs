@@ -15,7 +15,7 @@ public class DetalleRepository
     {
         _context = context;
     }
-    public void Agregar(DetalleVenta detalle)
+    public void Agregar(VentaDetalle detalle)
     {
         _context.Add(detalle);
         _context.SaveChanges();
