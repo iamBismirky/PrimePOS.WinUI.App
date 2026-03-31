@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PrimePOS.WinUI.Pages
+namespace PrimePOS.WinUI.Overlays
 {
 
     public sealed partial class TurnoOverlay : UserControl

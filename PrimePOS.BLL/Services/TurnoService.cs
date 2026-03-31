@@ -45,7 +45,7 @@ public class TurnoService
             // Validar que la caja exista
             var existeCaja = await _cajaRepository.ExisteCajaAsync(dto.CajaId);
 
-            if (existeCaja)
+            if (!existeCaja)
                 throw new Exception("La caja no existe.");
 
             int numeroTurno = await ObtenerSiguienteTurno();
@@ -90,7 +90,7 @@ public class TurnoService
     {
         var turno = await _turnoRepository.ObtenerPorIdAsync(cierre.TurnoId);
 
-        if (turno!.EstaAbierto)
+        if (!turno!.EstaAbierto)
             throw new Exception("El turno ya está cerrado");
 
         cierre.Diferencia = cierre.EfectivoContado -
@@ -162,7 +162,7 @@ public class TurnoService
     //}
     public async Task<int> ObtenerSiguienteTurno()
     {
-        var hoy = DateTime.Now;
+        var hoy = DateTime.Today;
 
         var ultimoTurno = await _turnoRepository
             .ObtenerUltimoTurnoDelDia(hoy);

@@ -8,6 +8,7 @@ using PrimePOS.BLL.Services;
 using PrimePOS.ENTITIES.Models;
 using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
+using PrimePOS.WinUI.Overlays;
 using PrimePOS.WinUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -80,12 +81,36 @@ public sealed partial class VentasPage : Page
                 txtCaja.Text = Sesion.TurnoActual.CajaId.ToString();
                 txtUsuario.Text = Sesion.UsuarioNombre.ToString();
                 txtRol.Text = Sesion.RolNombre.ToString();
-                txtTurno.Text = Sesion.TurnoActual.TurnoId.ToString();
+                txtTurno.Text = Sesion.TurnoActual.NumeroTurno.ToString();
                 txtFecha.Text = Sesion.TurnoActual.FechaApertura.ToString();
             }
             else
             {
-                //TurnoOverlay.Visibility = Visibility.Visible;
+                var overlay = new TurnoOverlay
+                {
+
+                };
+
+                // Evento para cerrar
+                overlay.OnCloseRequested += () =>
+                {
+                    RootGrid.Children.Remove(overlay);
+                };
+
+
+
+                RootGrid.Children.Add(overlay);
+
+                Sesion.TurnoActual = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
+
+                if (Sesion.TurnoActual != null)
+                {
+                    txtCaja.Text = Sesion.TurnoActual.CajaId.ToString();
+                    txtUsuario.Text = Sesion.UsuarioNombre.ToString();
+                    txtRol.Text = Sesion.RolNombre.ToString();
+                    txtTurno.Text = Sesion.TurnoActual.TurnoId.ToString();
+                    txtFecha.Text = Sesion.TurnoActual.FechaApertura.ToString();
+                }
             }
 
             await CargarConsumidorFinal();
@@ -122,6 +147,8 @@ public sealed partial class VentasPage : Page
             await _ventaViewModel.FacturarAsync(_clienteDto!.ClienteId, (int)cmbMetodoPago.SelectedValue);
 
             await DialogHelper.MostrarMensaje(this.XamlRoot, "Éxito", "Venta realizada correctamente");
+
+
         }
         catch (Exception ex)
         {

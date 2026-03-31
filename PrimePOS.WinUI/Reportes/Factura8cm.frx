@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="03/29/2026 12:59:43" ReportInfo.Modified="03/29/2026 18:23:22" ReportInfo.CreatorVersion="2026.1.8.0">
+  <Dictionary/>
+  <ReportPage Name="Page1" PaperWidth="80" PaperHeight="0" LeftMargin="5" TopMargin="5" RightMargin="5" BottomMargin="5" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="264.6" Height="103.95">
+      <PictureObject Name="Picture1" Left="75.6" Width="66.15" Height="56.7" ImageFormat="Png" Image="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"/>
+      <TextObject Name="Text7" Left="56.7" Top="66.15" Width="132.3" Height="18.9" Text="PrimePOS" HorzAlign="Center" Font="Arial, 16pt, style=Bold"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="107.15" Width="264.6" Height="179.55">
+      <TextObject Name="Text1" Left="9.45" Top="18.9" Width="94.5" Height="18.9" Text="Factura" Font="Arial, 10pt"/>
+      <TextObject Name="Text2" Left="9.45" Top="47.25" Width="94.5" Height="18.9" Text="No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text3" Left="9.45" Top="75.6" Width="94.5" Height="18.9" Text="Fecha" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="122.85" Top="18.9" Width="94.5" Height="18.9" Text="[Factura.Numero]" Font="Arial, 10pt"/>
+      <TextObject Name="Text12" Left="122.85" Top="75.6" Width="94.5" Height="18.9" Text="[FacturaFecha]" Font="Arial, 10pt"/>
+      <TextObject Name="Text13" Left="122.85" Top="47.25" Width="94.5" Height="18.9" Text="[FacturaFecha]" Font="Arial, 10pt"/>
+      <TextObject Name="Text14" Left="9.45" Top="113.4" Width="94.5" Height="18.9" Text="Turno" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="9.45" Top="141.75" Width="94.5" Height="18.9" Text="Le atendio:" Font="Arial, 10pt"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="289.9" Width="264.6" Height="179.55">
+      <TableObject Name="Table1" Top="18.9" Width="269.34" Height="151.2">
+        <TableColumn Name="Codigo" Width="67.73"/>
+        <TableColumn Name="Nombre" Width="67.73"/>
+        <TableColumn Name="Cantidad" Width="67.73"/>
+        <TableColumn Name="Precio"/>
+        <TableRow Name="Row1" Height="30.24">
+          <TableCell Name="Cell1" Font="Arial, 10pt"/>
+          <TableCell Name="Cell26" Font="Arial, 10pt"/>
+          <TableCell Name="Cell2" Font="Arial, 10pt"/>
+          <TableCell Name="Cell31" Font="Arial, 10pt"/>
+        </TableRow>
+        <TableRow Name="Row2" Height="30.24">
+          <TableCell Name="Cell6" Font="Arial, 10pt"/>
+          <TableCell Name="Cell27" Font="Arial, 10pt"/>
+          <TableCell Name="Cell7" Font="Arial, 10pt"/>
+          <TableCell Name="Cell32" Font="Arial, 10pt"/>
+        </TableRow>
+        <TableRow Name="Row3" Height="30.24">
+          <TableCell Name="Cell11" Font="Arial, 10pt"/>
+          <TableCell Name="Cell28" Font="Arial, 10pt"/>
+          <TableCell Name="Cell12" Font="Arial, 10pt"/>
+          <TableCell Name="Cell33" Font="Arial, 10pt"/>
+        </TableRow>
+        <TableRow Name="Row4" Height="30.24">
+          <TableCell Name="Cell16" Font="Arial, 10pt"/>
+          <TableCell Name="Cell29" Font="Arial, 10pt"/>
+          <TableCell Name="Cell17" Font="Arial, 10pt"/>
+          <TableCell Name="Cell34" Font="Arial, 10pt"/>
+        </TableRow>
+        <TableRow Name="Row5" Height="30.24">
+          <TableCell Name="Cell21" Font="Arial, 10pt"/>
+          <TableCell Name="Cell30" Font="Arial, 10pt"/>
+          <TableCell Name="Cell22" Font="Arial, 10pt"/>
+          <TableCell Name="Cell35" Font="Arial, 10pt"/>
+        </TableRow>
+      </TableObject>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="472.65" Width="264.6" Height="236.25">
+      <TextObject Name="Text4" Left="75.6" Top="18.9" Width="94.5" Height="18.9" Text="Subtotal:" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="75.6" Top="75.6" Width="94.5" Height="18.9" Text="Total:" Font="Arial, 10pt"/>
+      <TextObject Name="Text6" Left="75.6" Top="47.25" Width="94.5" Height="18.9" Text="Impuesto:" Font="Arial, 10pt"/>
+      <TextObject Name="Text8" Left="75.6" Top="207.9" Width="94.5" Height="18.9" Text="[Fecha]" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text9" Left="-9.45" Top="151.2" Width="264.6" Height="18.9" Text="Gracias por su compra!" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text10" Left="75.6" Top="179.55" Width="94.5" Height="18.9" Text="PrimePOS " HorzAlign="Center" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="Text16" Left="179.55" Top="18.9" Width="75.6" Height="18.9" Text="[Factura.Subtotal]" Font="Arial, 10pt"/>
+      <TextObject Name="Text17" Left="179.55" Top="75.6" Width="75.6" Height="18.9" Text="[Factura.Total]" Font="Arial, 10pt"/>
+      <TextObject Name="Text18" Left="179.55" Top="47.25" Width="75.6" Height="18.9" Text="[Factura.Impuesto]" Font="Arial, 10pt"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>
