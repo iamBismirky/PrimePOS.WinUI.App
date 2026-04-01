@@ -75,9 +75,6 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Markdown" Version="7.1.2" />
-    <PackageReference Include="FastReport.Data.MsSql" Version="2026.1.8" />
-    <PackageReference Include="FastReport.OpenSource" Version="2026.1.8" />
-    <PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2026.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5">
@@ -85,7 +82,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260209005" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
+    <PackageReference Include="QuestPDF" Version="2026.2.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PrimePOS.BLL\PrimePOS.BLL.csproj" />
@@ -174,11 +172,6 @@
     <Folder Include="Dialog\" />
     <Folder Include="Reportes\" />
     <Folder Include="Overlays\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Reportes\Factura8cm.frx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <!--

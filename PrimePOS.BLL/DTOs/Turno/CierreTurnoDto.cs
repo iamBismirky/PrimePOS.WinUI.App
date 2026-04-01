@@ -3,7 +3,7 @@
     public class CierreTurnoDto
     {
         public int TurnoId { get; set; }
-
+        public int NumeroTurno { get; set; }
         public decimal MontoInicial { get; set; }
 
         public decimal TotalEfectivo { get; set; }

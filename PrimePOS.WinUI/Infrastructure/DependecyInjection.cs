@@ -48,7 +48,7 @@ namespace PrimePOS.WinUI.Infrastructure
 
                 //ViewModel
                 services.AddScoped<VentaViewModel>();
-
+                services.AddScoped<CerrarTurnoViewModel>();
 
 
 

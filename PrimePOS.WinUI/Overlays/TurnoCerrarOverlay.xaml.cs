@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
+using PrimePOS.WinUI.ViewModels;
 using System;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace PrimePOS.WinUI.Overlays
     public sealed partial class TurnoCerrarOverlay : UserControl
     {
         private readonly TurnoService _turnoService;
-
+        private readonly CerrarTurnoViewModel _viewModel;
         private decimal EfectivoEsperado { get; set; }
         private decimal Diferencia { get; set; }
         public int TurnoId { get; set; }
@@ -28,34 +29,53 @@ namespace PrimePOS.WinUI.Overlays
 
             this.InitializeComponent();
             _turnoService = App.Services.GetRequiredService<TurnoService>();
-
+            _viewModel = App.Services.GetRequiredService<CerrarTurnoViewModel>();
+            this.DataContext = _viewModel;
         }
         private async void BtnCerrarTurno_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var resumen = await _turnoService.ObtenerResumenTurno(TurnoId);
-
-                resumen.TotalGeneral = (decimal)nbEfectivoContado.Value;
-
-                await _turnoService.CerrarTurnoAsync(resumen);
+                await _viewModel.CerrarTurnoAsync();
 
                 await DialogHelper.MostrarMensaje(this.XamlRoot, "Éxito", "Turno cerrado correctamente");
 
                 Sesion.TurnoActual = null;
 
-                this.Visibility = Visibility.Collapsed;
-
+                OnCloseRequested?.Invoke();
             }
             catch (Exception ex)
             {
                 await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
             }
+            //try
+            //{
+            //    var resumen = await _turnoService.ObtenerResumenTurno(TurnoId);
+
+            //    resumen.TotalGeneral = (decimal)nbEfectivoContado.Value;
+
+            //    await _turnoService.CerrarTurnoAsync(resumen);
+
+            //    await DialogHelper.MostrarMensaje(this.XamlRoot, "Éxito", "Turno cerrado correctamente");
+
+            //    Sesion.TurnoActual = null;
+
+            //    this.Visibility = Visibility.Collapsed;
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+            //}
         }
         private void nbEfectivoContado_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
         {
-            var efectivoContado = (decimal)nbEfectivoContado.Value;
-            txtDiferencia.Text = (efectivoContado - Diferencia).ToString();
+            //if (DataContext is CerrarTurnoViewModel vm)
+            //{
+            //    vm.EfectivoContado = (decimal)sender.Value;
+            //}
+            //var efectivoContado = (decimal)nbEfectivoContado.Value;
+            //txtDiferencia.Text = (efectivoContado - Diferencia).ToString();
         }
         private void BtnCancelar_Click(object sender, RoutedEventArgs e)
         {
@@ -68,18 +88,21 @@ namespace PrimePOS.WinUI.Overlays
         }
         public async Task CargarDatosAsync()
         {
+            await _viewModel.InicializarAsync(TurnoId);
 
-            var resumen = await _turnoService.ObtenerResumenTurno(TurnoId);
-            txtTurno.Text = TurnoId.ToString();
 
-            txtTotalEfectivo.Text = resumen.TotalEfectivo.ToString("C");
-            txtTotalTarjeta.Text = resumen.TotalTarjeta.ToString("C");
-            txtTotalTransferencia.Text = resumen.TotalTransferencia.ToString("C");
-            txtTotalGeneral.Text = resumen.TotalGeneral.ToString("C");
-            txtEfectivoEsperado.Text = resumen.TotalEfectivo.ToString("C");
+            //var resumen = await _turnoService.ObtenerResumenTurno(TurnoId);
+            //txtTurno.Text = TurnoId.ToString();
 
-            Diferencia = resumen.Diferencia;
+            //txtTotalEfectivo.Text = resumen.TotalEfectivo.ToString("C");
+            //txtTotalTarjeta.Text = resumen.TotalTarjeta.ToString("C");
+            //txtTotalTransferencia.Text = resumen.TotalTransferencia.ToString("C");
+            //txtTotalGeneral.Text = resumen.TotalGeneral.ToString("C");
+            //txtEfectivoEsperado.Text = resumen.TotalEfectivo.ToString("C");
+
+            //Diferencia = resumen.Diferencia;
 
         }
+
     }
 }

@@ -33,46 +33,49 @@
                 <!-- Info del turno -->
                 <StackPanel>
                     <TextBlock Text="Turno:" FontWeight="SemiBold"/>
-                    <TextBlock x:Name="txtTurno" FontSize="16"/>
+                    <TextBlock Text="{Binding NumeroTurno}" FontSize="16"/>
                 </StackPanel>
-
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Monto Inicial::" Width="200"/>
+                    <TextBlock Text="{Binding MontoInicial}" FontWeight="Bold"/>
+                </StackPanel>
                 <!-- Gastos -->
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Total Efectivo:" Width="200"/>
-                    <TextBlock x:Name="txtTotalEfectivo" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding TotalEfectivo}" FontWeight="Bold"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Total Tarjeta:" Width="200"/>
-                    <TextBlock x:Name="txtTotalTarjeta" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding TotalTarjeta}" FontWeight="Bold"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Total Transferencia:" Width="200"/>
-                    <TextBlock x:Name="txtTotalTransferencia" FontWeight="Bold"/>
+                    <TextBlock Text ="{Binding TotalTransferencia}" FontWeight="Bold"/>
                 </StackPanel>
                 <!-- Ventas -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <TextBlock Text="Total General:" Width="200"/>
-                    <TextBlock x:Name="txtTotalGeneral" FontWeight="Bold"/>
+                    <TextBlock Text ="{Binding TotalGeneral}" FontWeight="Bold"/>
                 </StackPanel>
                 <!-- Efectivo esperado -->
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Efectivo Esperado:" Width="200"/>
-                    <TextBlock x:Name="txtEfectivoEsperado" FontWeight="Bold"/>
+                    <TextBlock Text ="{Binding EfectivoEsperado}" FontWeight="Bold"/>
                 </StackPanel>
 
                 <!-- Input efectivo contado -->
                 <StackPanel>
                     <TextBlock Text="Efectivo Contado"/>
-                    <NumberBox x:Name="nbEfectivoContado"
+                    <TextBox Text ="{Binding EfectivoContado, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                PlaceholderText="Ingrese monto"
-                               ValueChanged="nbEfectivoContado_ValueChanged"/>
+                               />
                 </StackPanel>
 
                 <!-- Diferencia -->
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Diferencia:" Width="200"/>
-                    <TextBlock x:Name ="txtDiferencia"
-                           Foreground="Red"
+                    <TextBlock Text ="{Binding Diferencia}"
+                           Foreground="{Binding DiferenciaColor}"
                            FontWeight="Bold"/>
                 </StackPanel>
 

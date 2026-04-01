@@ -204,4 +204,9 @@ public class TurnoService
             MontoInicial = turno.MontoInicial
         };
     }
+    public decimal CalcularDiferencia(CierreTurnoDto cierre)
+    {
+        return cierre.EfectivoContado -
+               (cierre.MontoInicial + cierre.TotalEfectivo);
+    }
 }

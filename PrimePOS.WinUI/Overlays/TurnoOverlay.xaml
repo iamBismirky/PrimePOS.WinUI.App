@@ -8,12 +8,9 @@
     Loaded="Page_loaded">
 
     <!-- Canvas como contenedor principal -->
-    <Canvas Background="#80000000">
+    <Grid Background="#80000000">
 
-        <!-- Fondo semitransparente que cubre toda la página -->
-        <Rectangle Canvas.Left="0" Canvas.Top="0"
-                   Fill="#80000000"/>
-
+        
         <!-- Border central flotante -->
         <Border x:Name="DialogBorder"
                 Width="350"
@@ -32,6 +29,7 @@
                            FontSize="20"
                            FontWeight="SemiBold"
                            HorizontalAlignment="Center"/>
+                <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
 
                 <ComboBox x:Name="cmbCajas"
                           PlaceholderText="Selecciona Caja"
@@ -58,5 +56,5 @@
 
             </StackPanel>
         </Border>
-    </Canvas>
+    </Grid>
 </UserControl>
