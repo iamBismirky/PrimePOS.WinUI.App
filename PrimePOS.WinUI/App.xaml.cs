@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PrimePOS.WinUI.Infrastructure.PrimePOS.WinUI.Infrastructure;
+using QuestPDF.Infrastructure;
 using System;
 
 
@@ -20,6 +21,8 @@ namespace PrimePOS.WinUI
 
             // Configurar DI
             var services = new ServiceCollection();
+
+            QuestPDF.Settings.License = LicenseType.Community;
 
             string connectionString = @"Server=(localdb)\MSSQLLocalDB;Database=PrimePOS_DB;Trusted_Connection=True;TrustServerCertificate=True;";
 

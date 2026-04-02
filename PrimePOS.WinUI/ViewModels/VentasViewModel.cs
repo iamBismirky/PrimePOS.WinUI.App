@@ -3,9 +3,13 @@ using PrimePOS.BLL.DTOs.Venta;
 using PrimePOS.BLL.DTOs.VentaDetalle;
 using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Infrastructure;
+using PrimePOS.WinUI.Reportes;
+using QuestPDF.Fluent;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -17,15 +21,19 @@ public class VentaViewModel : INotifyPropertyChanged
     private readonly VentaService _ventaService;
     private readonly ProductoService _productoService;
     private readonly SesionService _sesion;
+    private readonly FacturaService _facturaService;
+
     public SesionService AppSesion => _sesion;
 
     public VentaViewModel(VentaService ventaService,
             ProductoService productoService,
-                SesionService sesionService)
+                SesionService sesionService,
+                FacturaService facturaService)
     {
         _ventaService = ventaService;
         _productoService = productoService;
         _sesion = sesionService;
+        _facturaService = facturaService;
     }
 
     public ObservableCollection<CarritoItemViewModel> Carrito { get; set; } = new();
@@ -108,15 +116,15 @@ public class VentaViewModel : INotifyPropertyChanged
                 throw new Exception("El carrito está vacío.");
 
 
-            if (Sesion.TurnoActual == null)
+            if (AppSesion.TurnoActual == null)
                 throw new Exception("No hay turno abierto.");
 
-            var dto = new CrearVentaDto
+            var ventaDto = new CrearVentaDto
             {
                 ClienteId = clienteId,
                 UsuarioId = Sesion.UsuarioId,
                 MetodoPagoId = MetodoPagoId,
-                TurnoId = Sesion.TurnoActual!.TurnoId,
+                TurnoId = AppSesion.TurnoActual.TurnoId,
 
                 Subtotal = Subtotal,
                 Impuesto = Impuesto,
@@ -135,18 +143,36 @@ public class VentaViewModel : INotifyPropertyChanged
 
                 }).ToList(),
             };
-            // 🔥 LLAMADA AL SERVICE
-            var ventaId = await _ventaService.CrearVentaAsync(dto);
 
-            // 🧹 LIMPIAR CARRITO
+            var ventaId = await _ventaService.CrearVentaAsync(ventaDto);
+            var factura = await _facturaService.GenerarFacturaDesdeVenta(ventaId);
+
+            var facturaDto = _facturaService.MapearFactura(factura);
+
+            // Generar PDF
+            var document = new FacturaDocument(facturaDto);
+
+            string carpeta = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "PrimePOS", "Facturas");
+
+            Directory.CreateDirectory(carpeta);
+
+            string path = Path.Combine(carpeta, $"Factura_{facturaDto.Numero}.pdf");
+
+            document.GeneratePdf(path);
+
+            // 6️⃣ Abrir PDF
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true
+            });
+
             VaciarCarrito();
 
-            // 🔄 RESETEAR DESCUENTO
+
             DescuentoPorcentaje = 0;
-
-
-
-            System.Diagnostics.Debug.WriteLine($"Venta creada: {ventaId}");
 
         }
         catch (Exception ex)

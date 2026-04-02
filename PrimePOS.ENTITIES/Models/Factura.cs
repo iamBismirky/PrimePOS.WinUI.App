@@ -18,9 +18,9 @@ namespace PrimePOS.ENTITIES.Models
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
-
+        public string Estado { get; set; } = "Activa";
         public string MetodoPago { get; set; } = string.Empty;
-        public ICollection<FacturaDetalle> FacturasDetalle { get; set; } = new List<FacturaDetalle>();
+        public ICollection<FacturaDetalle> Detalles { get; set; } = new List<FacturaDetalle>();
 
     }
 }

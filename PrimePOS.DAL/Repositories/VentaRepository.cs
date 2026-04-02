@@ -24,7 +24,7 @@ public class VentaRepository
         venta.Estado = false;
         _context.Update(venta);
     }
-    public Venta? ObtenerPorId(int id)
+    public async Task<Venta?> ObtenerPorId(int id)
     {
         return _context.Ventas
             .Include(v => v.Detalles)

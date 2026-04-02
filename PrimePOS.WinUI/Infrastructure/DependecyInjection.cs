@@ -31,6 +31,7 @@ namespace PrimePOS.WinUI.Infrastructure
                 services.AddScoped<CajaRepository>();
                 services.AddScoped<TurnoRepository>();
                 services.AddScoped<CierreTurnoRepository>();
+                services.AddScoped<FacturaRepository>();
 
                 //  Services
                 services.AddScoped<UsuarioService>();
@@ -42,6 +43,7 @@ namespace PrimePOS.WinUI.Infrastructure
                 services.AddScoped<MetodoPagoService>();
                 services.AddScoped<CajaService>();
                 services.AddScoped<TurnoService>();
+                services.AddScoped<FacturaService>();
 
                 //UnitOfWork
                 services.AddScoped<UnitOfWork>();

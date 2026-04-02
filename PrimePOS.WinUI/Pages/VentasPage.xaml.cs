@@ -77,16 +77,6 @@ public sealed partial class VentasPage : Page
 
         try
         {
-            //var turno = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
-
-            //if (turno != null)
-            //{
-            //    _ventaViewModel.AppSesion.TurnoActual = turno;
-            //}
-            //else
-            //{
-            //    MostrarOverlayAbrirTurno();
-            //}
 
             await CargarConsumidorFinal();
             await ListarMetodosPagosAsync();

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="PrimePOS.WinUI.Reportes.FacturaView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PrimePOS.WinUI.Reportes"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Width="300" Padding="10" Spacing="4">
+
+            <!-- Empresa -->
+            <TextBlock Text="MI NEGOCIO"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   TextAlignment="Center"/>
+
+            <TextBlock Text="{Binding Numero}" TextAlignment="Center"/>
+            <TextBlock Text="{Binding Fecha}"
+                   TextAlignment="Center"/>
+
+            <TextBlock Text="--------------------------------"/>
+
+            <!-- Detalles -->
+            <ItemsControl ItemsSource="{Binding Detalles}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Nombre}" FontWeight="SemiBold"/>
+
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBlock Text="{Binding Cantidad}"/>
+                                <TextBlock Text="{Binding Precio}" Grid.Column="1"/>
+                                <TextBlock Text="{Binding Total}" Grid.Column="2"/>
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Text="--------------------------------"/>
+
+            <!-- Totales -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Subtotal"/>
+                <TextBlock Text="{Binding Subtotal}"
+                       HorizontalAlignment="Right"/>
+
+                <TextBlock Text="ITBIS" Grid.Row="1"/>
+                <TextBlock Text="{Binding Impuesto}"
+                       Grid.Row="1"
+                       HorizontalAlignment="Right"/>
+
+                <TextBlock Text="TOTAL"
+                       Grid.Row="2"
+                       FontWeight="Bold"/>
+
+                <TextBlock Text="{Binding Total}"
+                       Grid.Row="2"
+                       HorizontalAlignment="Right"
+                       FontWeight="Bold"/>
+            </Grid>
+            <TextBlock Text="--------------------------------"/>
+
+
+            <TextBlock Text="Gracias por su compra"
+                   TextAlignment="Center"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

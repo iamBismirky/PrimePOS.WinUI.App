@@ -48,6 +48,7 @@
     <None Remove="Pages\RolPage.xaml" />
     <None Remove="Pages\UsuarioPage.xaml" />
     <None Remove="Pages\VentasPage.xaml" />
+    <None Remove="Reportes\FacturaView.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -170,7 +171,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dialog\" />
-    <Folder Include="Reportes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Reportes\FacturaView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!--
