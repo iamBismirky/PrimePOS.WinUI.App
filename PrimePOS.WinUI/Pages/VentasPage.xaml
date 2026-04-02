@@ -177,23 +177,23 @@
                        
                         <TextBlock>
                             <Run Text="Usuario" FontFamily="Segoe UI" FontWeight="Bold"/>
-                            <Run x:Name="txtUsuario"/>
+                            <Run Text="{Binding AppSesion.TurnoActual.UsuarioNombre, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock>
                             <Run Text="Rol" FontFamily="Segoe UI" FontWeight="Bold"/>
-                            <Run x:Name="txtRol"/>
+                            <Run Text="{Binding AppSesion.TurnoActual.RolNombre, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock>
                             <Run Text="Caja" FontFamily="Segoe UI" FontWeight="Bold"/>
-                            <Run x:Name="txtCaja"/>
+                            <Run Text="{Binding AppSesion.TurnoActual.CajaNombre, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock>
                             <Run Text="Turno" FontFamily="Segoe UI" FontWeight="Bold"/>
-                            <Run x:Name="txtTurno"/>
+                            <Run Text="{Binding AppSesion.TurnoActual.NumeroTurno, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock>
                             <Run Text="Fecha Apertura" FontFamily="Segoe UI" FontWeight="Bold"/>
-                            <Run x:Name="txtFecha"/>
+                            <Run Text="{Binding AppSesion.TurnoActual.FechaApertura, Mode=OneWay}"/>
                         </TextBlock>
 
                     </controls:WrapPanel>
@@ -325,8 +325,14 @@
         
     </Border>
         <Grid x:Name="OverlayContainer"
-          Background="#80000000"
-          Visibility="Collapsed"/>
+              Background="#80000000"
+              Visibility="Collapsed"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"/>
+        
+        <ContentControl x:Name="OverlayContent"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
     </Grid>
 
 </Page>

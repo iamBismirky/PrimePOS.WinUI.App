@@ -4,7 +4,10 @@
     {
         public int TurnoId { get; set; }
         public int CajaId { get; set; }
+        public string CajaNombre { get; set; } = "";
         public int UsuarioId { get; set; }
+        public string UsuarioNombre { get; set; } = "";
+        public string RolNombre { get; set; } = "";
         public DateTime FechaApertura { get; set; }
         public DateTime FechaOperacion { get; set; }
         public int NumeroTurno { get; set; }

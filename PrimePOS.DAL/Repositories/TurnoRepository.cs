@@ -73,6 +73,9 @@ public class TurnoRepository
     public async Task<Turno?> ObtenerTurnoAbiertoPorCajaAsync(int cajaId)
     {
         return await _context.Turnos
+            .Include(t => t.Usuario)
+            .ThenInclude(u => u!.Rol)
+            .Include(t => t.Caja)
             .Where(t => t.CajaId == cajaId && t.FechaCierre == null)
             .OrderByDescending(t => t.FechaApertura)
             .FirstOrDefaultAsync();

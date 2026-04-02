@@ -5,6 +5,7 @@ using PrimePOS.BLL.DTOs.Turno;
 using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Infrastructure;
+using PrimePOS.WinUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,21 +13,24 @@ using System.Threading.Tasks;
 namespace PrimePOS.WinUI.Overlays
 {
 
-    public sealed partial class TurnoOverlay : UserControl
+    public sealed partial class AbrirTurnoOverlay : UserControl
     {
         private readonly TurnoService _turnoService;
         private readonly CajaService _cajaService;
+        public VentaViewModel _ventaViewModel { get; }
 
 
         public int TurnoId { get; set; }
-        public event Action? OnCloseRequested;
+        public event Action? OnCerrar;
 
-        public TurnoOverlay()
+        public AbrirTurnoOverlay()
         {
 
             this.InitializeComponent();
             _turnoService = App.Services.GetRequiredService<TurnoService>();
             _cajaService = App.Services.GetRequiredService<CajaService>();
+            _ventaViewModel = App.Services.GetRequiredService<VentaViewModel>();
+            DataContext = _ventaViewModel;
 
         }
         private async void Page_loaded(object sender, RoutedEventArgs e)
@@ -46,7 +50,11 @@ namespace PrimePOS.WinUI.Overlays
 
         private void BtnCancelar_Click(object sender, RoutedEventArgs e)
         {
-            OnCloseRequested?.Invoke();
+            if (_ventaViewModel.AppSesion.HayTurnoAbierto)
+            {
+                OnCerrar?.Invoke();
+
+            }
 
         }
         private async void BtnAbrir_Click(object sender, RoutedEventArgs e)
@@ -64,17 +72,16 @@ namespace PrimePOS.WinUI.Overlays
 
 
                 };
-                var turnoActual = await _turnoService.CrearTurnoDtoAsync(dto);
 
-                Sesion.UsuarioId = turnoActual.UsuarioId;
-                Sesion.TurnoId = turnoActual.TurnoId;
-                Sesion.CajaId = turnoActual.CajaId;
-                Sesion.TurnoActual = turnoActual;
+                var turnoActual = await _turnoService.CrearTurnoDtoAsync(dto);
+                _ventaViewModel.AppSesion.AbrirTurno(turnoActual);
+
                 if (turnoActual != null)
                 {
                     await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Turno abierto correctamente");
 
                     this.Visibility = Visibility.Collapsed;
+                    OnCerrar?.Invoke();
                 }
 
             }

@@ -12,13 +12,21 @@ namespace PrimePOS.WinUI.ViewModels;
 public class CerrarTurnoViewModel : INotifyPropertyChanged
 {
     private readonly TurnoService _turnoService;
-    public CerrarTurnoViewModel(TurnoService turnoService)
+    private VentaViewModel _ventaViewModel;
+    private readonly SesionService _sesionService;
+    public CerrarTurnoViewModel(TurnoService turnoService, VentaViewModel ventaViewModel, SesionService sesionService)
     {
         _turnoService = turnoService;
+        _ventaViewModel = ventaViewModel;
+        _sesionService = sesionService;
     }
 
     public CierreTurnoDto Model { get; set; } = new();
+    public string Usuario => _sesionService.TurnoActual?.UsuarioNombre ?? "Sin usuario";
 
+    public string Rol => _sesionService.TurnoActual?.RolNombre ?? "Sin rol";
+
+    public string Caja => _sesionService.TurnoActual?.CajaNombre ?? "Sin caja";
     public decimal Total => MontoInicial + TotalEfectivo + TotalTarjeta + TotalTransferencia;
     public decimal EfectivoEsperado => MontoInicial + TotalEfectivo;
 
@@ -105,7 +113,7 @@ public class CerrarTurnoViewModel : INotifyPropertyChanged
     // ✍️ Lo escribe el usuario
     public string EfectivoContado
     {
-        get => Model.EfectivoContado.ToString();
+        get => Model.EfectivoContado.ToString("N2");
         set
         {
             if (decimal.TryParse(value, out var resultado))
@@ -129,27 +137,51 @@ public class CerrarTurnoViewModel : INotifyPropertyChanged
     public bool HaySobrante => Diferencia > 0;
 
     // Cargar datos desde BLL
-    public async Task InicializarAsync(int turnoId)
+    public async Task InicializarAsync()
     {
-        var resumen = await _turnoService.ObtenerResumenTurno(turnoId);
+        Model = new CierreTurnoDto();
 
-        TurnoId = turnoId;
-        NumeroTurno = Sesion.TurnoActual!.NumeroTurno;
+        var turno = _ventaViewModel.AppSesion.TurnoActual;
+
+        if (turno == null)
+            return;
+
+        var resumen = await _turnoService.ObtenerResumenTurno(turno.TurnoId);
+
+        TurnoId = turno.TurnoId;
+        NumeroTurno = turno.NumeroTurno;
+
         MontoInicial = resumen.MontoInicial;
         TotalEfectivo = resumen.TotalEfectivo;
         TotalTarjeta = resumen.TotalTarjeta;
         TotalTransferencia = resumen.TotalTransferencia;
         TotalGeneral = Total;
 
+        OnPropertyChanged(nameof(Usuario));
+        OnPropertyChanged(nameof(Rol));
+        OnPropertyChanged(nameof(Caja));
+
+        EfectivoContado = "";
+
+        OnPropertyChanged(nameof(EfectivoContado));
+
     }
 
     // 🔒 Cerrar turno
     public async Task CerrarTurnoAsync()
     {
+        var turno = _ventaViewModel.AppSesion.TurnoActual;
 
+        if (turno == null)
+            return;
+
+        Model.TurnoId = turno.TurnoId;
         Model.Diferencia = Diferencia;
 
         await _turnoService.CerrarTurnoAsync(Model);
+
+        _sesionService.CerrarTurno();
+
     }
 
     public SolidColorBrush DiferenciaColor

@@ -197,7 +197,10 @@ public class TurnoService
         {
             TurnoId = turno.TurnoId,
             CajaId = turno.CajaId,
+            CajaNombre = turno.Caja?.Nombre ?? "",
             UsuarioId = turno.UsuarioId,
+            UsuarioNombre = turno.Usuario?.Nombre + " " + turno.Usuario?.Apellidos ?? "",
+            RolNombre = turno.Usuario?.Rol?.Nombre ?? "",
             NumeroTurno = turno.NumeroTurno,
             FechaApertura = turno.FechaApertura,
             EstaAbierto = turno.EstaAbierto,

@@ -12,6 +12,7 @@ using PrimePOS.WinUI.Overlays;
 using PrimePOS.WinUI.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 
@@ -62,6 +63,9 @@ public sealed partial class VentasPage : Page
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
+        _ventaViewModel.AppSesion.PropertyChanged += Sesion_PropertyChanged;
+
+        VerificarTurno();
 
 
 
@@ -73,45 +77,16 @@ public sealed partial class VentasPage : Page
 
         try
         {
+            //var turno = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
 
-            Sesion.TurnoActual = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
-
-            if (Sesion.TurnoActual != null)
-            {
-                txtCaja.Text = Sesion.TurnoActual.CajaId.ToString();
-                txtUsuario.Text = Sesion.UsuarioNombre.ToString();
-                txtRol.Text = Sesion.RolNombre.ToString();
-                txtTurno.Text = Sesion.TurnoActual.NumeroTurno.ToString();
-                txtFecha.Text = Sesion.TurnoActual.FechaApertura.ToString();
-            }
-            else
-            {
-                var overlay = new TurnoOverlay
-                {
-
-                };
-
-                // Evento para cerrar
-                overlay.OnCloseRequested += () =>
-                {
-                    RootGrid.Children.Remove(overlay);
-                };
-
-
-
-                RootGrid.Children.Add(overlay);
-
-                Sesion.TurnoActual = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
-
-                if (Sesion.TurnoActual != null)
-                {
-                    txtCaja.Text = Sesion.TurnoActual.CajaId.ToString();
-                    txtUsuario.Text = Sesion.UsuarioNombre.ToString();
-                    txtRol.Text = Sesion.RolNombre.ToString();
-                    txtTurno.Text = Sesion.TurnoActual.TurnoId.ToString();
-                    txtFecha.Text = Sesion.TurnoActual.FechaApertura.ToString();
-                }
-            }
+            //if (turno != null)
+            //{
+            //    _ventaViewModel.AppSesion.TurnoActual = turno;
+            //}
+            //else
+            //{
+            //    MostrarOverlayAbrirTurno();
+            //}
 
             await CargarConsumidorFinal();
             await ListarMetodosPagosAsync();
@@ -135,7 +110,7 @@ public sealed partial class VentasPage : Page
         if (item == null)
             return;
 
-        _ventaViewModel.EliminarProducto(item.ProductoId);
+        _ventaViewModel.EliminarProductoCarrito(item.ProductoId);
 
         txtBuscarProducto.Focus(FocusState.Programmatic);
 
@@ -230,7 +205,7 @@ public sealed partial class VentasPage : Page
             }
 
 
-            await _ventaViewModel.AgregarProducto(producto);
+            await _ventaViewModel.AgregarProductoCarrito(producto);
 
 
 
@@ -416,67 +391,80 @@ public sealed partial class VentasPage : Page
     }
     private async void BtnAbrirTurno_Click(object sender, RoutedEventArgs e)
     {
-
-        if (Sesion.TurnoActual == null)
+        if (_ventaViewModel.AppSesion.TurnoActual != null)
         {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", "Hay un turno activo");
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", "Hay un turno abierto");
             return;
         }
-
-        var overlay = new TurnoOverlay
-        {
-
-        };
-
-        // Evento para cerrar
-        overlay.OnCloseRequested += () =>
-        {
-            RootGrid.Children.Remove(overlay);
-        };
-
-
-
-        RootGrid.Children.Add(overlay);
+        MostrarOverlayAbrirTurno();
     }
     private async void BtnCerrarTurno_Click(object sender, RoutedEventArgs e)
     {
-
-        if (Sesion.TurnoActual == null)
+        if (_ventaViewModel.AppSesion.TurnoActual == null)
         {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", "No hay turno activo");
+            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", "No hay turno abierto");
             return;
         }
 
-        var overlay = new TurnoCerrarOverlay
+        MostrarOverlayCerrarTurno();
+
+    }
+    private void MostrarOverlayAbrirTurno()
+    {
+        var overlay = new AbrirTurnoOverlay();
+        overlay.OnCerrar += () =>
         {
-            TurnoId = Sesion.TurnoActual.TurnoId
+            CerrarOverlay();
         };
+        MostrarOverlay(overlay);
 
-        // Evento para cerrar
-        overlay.OnCloseRequested += () =>
+    }
+    private void MostrarOverlayCerrarTurno()
+    {
+        var overlay = new CerrarTurnoOverlay();
+        overlay.OnCerrar += () =>
         {
-            RootGrid.Children.Remove(overlay);
+            CerrarOverlay();
         };
-
-
-        await overlay.CargarDatosAsync();
-
-
-        RootGrid.Children.Add(overlay);
-
+        MostrarOverlay(overlay);
+    }
+    public void CerrarOverlay()
+    {
+        OverlayContent.Content = null;
+        OverlayContainer.Visibility = Visibility.Collapsed;
     }
     private void MostrarOverlay(UserControl overlay)
     {
-        OverlayContainer.Children.Clear();
-        OverlayContainer.Children.Add(overlay);
+        OverlayContent.Content = overlay;
         OverlayContainer.Visibility = Visibility.Visible;
-
     }
-    private void CerrarOverlay()
+    private async void VerificarTurno()
     {
-        OverlayContainer.Children.Clear();
-        OverlayContainer.Visibility = Visibility.Collapsed;
+        if (_ventaViewModel.AppSesion.HayTurnoAbierto)
+        {
+            MostrarOverlayAbrirTurno();
+
+        }
+        else
+        {
+            var turno = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
+
+            if (turno != null)
+            {
+                _ventaViewModel.AppSesion.TurnoActual = turno;
+            }
+        }
+
+
     }
-
-
+    private void Sesion_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(SesionService.TurnoActual))
+        {
+            if (!_ventaViewModel.AppSesion.HayTurnoAbierto)
+            {
+                MostrarOverlayAbrirTurno();
+            }
+        }
+    }
 }

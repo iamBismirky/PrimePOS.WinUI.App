@@ -16,12 +16,16 @@ public class VentaViewModel : INotifyPropertyChanged
 {
     private readonly VentaService _ventaService;
     private readonly ProductoService _productoService;
+    private readonly SesionService _sesion;
+    public SesionService AppSesion => _sesion;
 
-    public VentaViewModel(VentaService ventaService, ProductoService productoService)
+    public VentaViewModel(VentaService ventaService,
+            ProductoService productoService,
+                SesionService sesionService)
     {
         _ventaService = ventaService;
         _productoService = productoService;
-
+        _sesion = sesionService;
     }
 
     public ObservableCollection<CarritoItemViewModel> Carrito { get; set; } = new();
@@ -37,7 +41,7 @@ public class VentaViewModel : INotifyPropertyChanged
 
     public decimal Total => Subtotal + Impuesto - DescuentoMonto;
 
-    public async Task AgregarProducto(ProductoDto dto)
+    public async Task AgregarProductoCarrito(ProductoDto dto)
     {
 
 
@@ -61,7 +65,7 @@ public class VentaViewModel : INotifyPropertyChanged
         }
         NotificarTotales();
     }
-    public void EliminarProducto(int productoId)
+    public void EliminarProductoCarrito(int productoId)
     {
         var item = Carrito.FirstOrDefault(x => x.ProductoId == productoId);
 
@@ -150,6 +154,7 @@ public class VentaViewModel : INotifyPropertyChanged
             System.Diagnostics.Debug.WriteLine($"Error al facturar: {ex.Message}");
             throw;
         }
+
 
 
     }
