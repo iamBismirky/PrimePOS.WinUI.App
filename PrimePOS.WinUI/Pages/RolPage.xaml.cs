@@ -21,7 +21,6 @@ public sealed partial class RolPage : Page
     public RolPage()
     {
         InitializeComponent();
-        this.Loaded += Page_Loaded;
 
         _rolService = App.Services.GetRequiredService<RolService>();
 
@@ -30,7 +29,7 @@ public sealed partial class RolPage : Page
     {
         await CargarRoles();
     }
-    private async void BtnCrearRol_Click(object sender, RoutedEventArgs e)
+    private async void BtnCrear_Click(object sender, RoutedEventArgs e)
     {
 
         try
@@ -38,7 +37,7 @@ public sealed partial class RolPage : Page
             var dto = new CrearRolDto
             {
                 Nombre = txtNombre.Text,
-                Estado = tgEstado.IsOn
+                Estado = tsEstado.IsOn
 
             };
 
@@ -56,7 +55,7 @@ public sealed partial class RolPage : Page
         }
 
     }
-    private async void BtnActualizarRol_Click(object sender, RoutedEventArgs e)
+    private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
     {
         try
         {
@@ -65,7 +64,7 @@ public sealed partial class RolPage : Page
             {
                 RolId = _rolIdSeleccionado,
                 Nombre = txtNombre.Text,
-                Estado = (bool)tgEstado.IsOn
+                Estado = (bool)tsEstado.IsOn
 
             };
 
@@ -82,7 +81,7 @@ public sealed partial class RolPage : Page
 
         }
     }
-    private async void BtnEliminarRol_Click(object sender, RoutedEventArgs e)
+    private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
     {
         try
         {
@@ -122,7 +121,7 @@ public sealed partial class RolPage : Page
 
                 _rolIdSeleccionado = rol.RolId;
                 txtNombre.Text = rol.Nombre.ToString();
-                tgEstado.IsOn = rol.Estado;
+                tsEstado.IsOn = rol.Estado;
             }
         }
         catch (Exception ex)
@@ -135,7 +134,7 @@ public sealed partial class RolPage : Page
     {
         txtNombre.Text = "";
         _rolIdSeleccionado = 0;
-        tgEstado.IsOn = true;
+        tsEstado.IsOn = true;
     }
     private async Task CargarRoles()
     {

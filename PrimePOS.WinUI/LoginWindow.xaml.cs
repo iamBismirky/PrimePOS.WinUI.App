@@ -18,12 +18,13 @@ namespace PrimePOS.WinUI
     public sealed partial class LoginWindow : Window
     {
         private readonly UsuarioService _usuarioService;
-
+        private readonly SesionService _sesionService;
         public LoginWindow()
         {
             InitializeComponent();
 
             _usuarioService = App.Services.GetRequiredService<UsuarioService>();
+            _sesionService = App.Services.GetRequiredService<SesionService>();
 
             txtUsername.Focus(FocusState.Programmatic);
             this.ExtendsContentIntoTitleBar = true;
@@ -66,7 +67,7 @@ namespace PrimePOS.WinUI
                 };
 
                 var usuarioSesion = await _usuarioService.AutenticarUsuarioAsync(loginDto);
-
+                _sesionService.IniciarSesion(usuarioSesion);
 
                 Sesion.UsuarioId = usuarioSesion.UsuarioId;
                 Sesion.UsuarioNombre = usuarioSesion.UsuarioNombre;

@@ -40,6 +40,6 @@ public partial class AdministrarPage
     }
     private void BtnGestionCajas_Click(object sender, RoutedEventArgs e)
     {
-        Frame.Navigate(typeof(GestionCajasPage));
+        Frame.Navigate(typeof(CajaPage));
     }
 }

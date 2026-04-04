@@ -40,7 +40,6 @@
     <None Remove="Pages\CerrarSesionDialog.xaml" />
     <None Remove="Pages\ClientePage.xaml" />
     <None Remove="Pages\DashboardPage.xaml" />
-    <None Remove="Pages\GestionCajasPage.xaml" />
     <None Remove="Pages\InventarioPage.xaml" />
     <None Remove="Pages\PerfilPage.xaml" />
     <None Remove="Pages\ProductoPage.xaml" />
@@ -82,7 +81,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1721" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
     <PackageReference Include="QuestPDF" Version="2026.2.4" />
   </ItemGroup>
@@ -105,7 +104,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Pages\GestionCajasPage.xaml">
+    <Page Update="Pages\CajaPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

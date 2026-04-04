@@ -33,17 +33,17 @@ namespace PrimePOS.WinUI.Pages
             {
                 _categoriaIdSeleccionado = categoria.CategoriaId;
                 txtNombre.Text = categoria.Nombre;
-                tgEstado.IsOn = categoria.Estado;
+                tsEstado.IsOn = categoria.Estado;
             }
         }
-        private async void BtnCrearCategoria_Click(object sender, RoutedEventArgs e)
+        private async void BtnCrear_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 var dto = new CategoriaDto
                 {
                     Nombre = txtNombre.Text.Trim(),
-                    Estado = tgEstado.IsOn
+                    Estado = tsEstado.IsOn
                 };
 
                 await _categoriaService.CrearCategoriaAsync(dto);
@@ -59,7 +59,7 @@ namespace PrimePOS.WinUI.Pages
             }
 
         }
-        private async void BtnActualizarCategoria_Click(object sender, RoutedEventArgs e)
+        private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace PrimePOS.WinUI.Pages
                 {
                     CategoriaId = _categoriaIdSeleccionado,
                     Nombre = txtNombre.Text,
-                    Estado = (bool)tgEstado.IsOn
+                    Estado = (bool)tsEstado.IsOn
 
                 };
 
@@ -85,7 +85,7 @@ namespace PrimePOS.WinUI.Pages
 
             }
         }
-        private async void BtnEliminarCategoria_Click(object sender, RoutedEventArgs e)
+        private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
         {
             try
             {

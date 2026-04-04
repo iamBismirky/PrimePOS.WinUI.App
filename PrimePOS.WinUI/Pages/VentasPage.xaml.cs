@@ -430,7 +430,7 @@ public sealed partial class VentasPage : Page
     }
     private async void VerificarTurno()
     {
-        if (_ventaViewModel.AppSesion.HayTurnoAbierto)
+        if (!_ventaViewModel.AppSesion.HayTurnoAbierto)
         {
             MostrarOverlayAbrirTurno();
 

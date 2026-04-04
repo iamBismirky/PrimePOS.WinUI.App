@@ -28,18 +28,17 @@ public class RolService
     //Actualizar rol
     public async Task<bool> ActualizarRolAsync(ActualizarRolDto dto)
     {
-        //if (string.IsNullOrWhiteSpace(dto.Nombre))
-        //{
-        //    throw new Exception("El nombre del rol es obligario");
-        //}
+        if (string.IsNullOrWhiteSpace(dto.Nombre))
+            throw new Exception("El nombre del rol es obligario");
+
         var rol = await _rolRepository.ObtenerPorIdAsync(dto.RolId);
 
         if (rol == null)
             throw new Exception("Debe seleccionar un Rol");
 
-        if (dto.Nombre == rol.Nombre)
+        if (dto.Nombre == rol.Nombre && dto.Estado == rol.Estado)
         {
-            throw new Exception("Ya existe un rol con este nombree");
+            throw new Exception("Ya existe un rol con este nombre");
         }
 
         rol.Nombre = dto.Nombre;
@@ -49,7 +48,20 @@ public class RolService
         await _rolRepository.GuardarCambiosAsync();
         return true;
     }
-    //Elimninar rol
+    //Desactivar rol
+    public async Task<bool> DesactivarRolAsync(RolDto dto)
+    {
+        var rol = await _rolRepository.ObtenerPorIdAsync(dto.RolId);
+
+        if (rol == null)
+            throw new Exception("Debe seleccionar un Rol");
+
+        rol.Estado = dto.Estado;
+        _rolRepository.Actualizar(rol);
+        await _rolRepository.GuardarCambiosAsync();
+        return true;
+    }
+    //Eliminar rol
     public async Task<bool> EliminarRolAsync(EliminarRolDto dto)
     {
         var rol = await _rolRepository.ObtenerPorIdAsync(dto.RolId);

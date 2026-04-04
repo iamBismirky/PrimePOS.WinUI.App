@@ -12,13 +12,16 @@
     <Grid Padding="50">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="350"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
 
         </Grid.RowDefinitions>
@@ -26,25 +29,38 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="-30,-40,0,0">
             <TextBlock Text="Administrar" FontSize="28" FontWeight="Bold"/>
         </StackPanel>
+
+
+
         <!-- Card Usuario -->
         <Button Grid.Column="0"
-            Margin="10"
-            Click="BtnGestionUsuarios_Click">
+        Grid.Row="1"
+        Margin="10"
+        Width="300"
+        Click="BtnGestionUsuarios_Click">
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                CornerRadius="16"
-                Padding="20">
+            CornerRadius="5"
+            Padding="20"
+            Width="300"
+            HorizontalAlignment="Center">
 
                 <StackPanel HorizontalAlignment="Center"
-                        Spacing="10">
+                    Spacing="10"
+                    Orientation="Vertical"
+                    VerticalAlignment="Center"
+                    >
 
-                    <SymbolIcon Symbol="Contact" Width="40" Height="40"/>
+                    <FontIcon Glyph="&#xE77B;" 
+                      FontFamily="Segoe Fluent Icons"
+                      FontSize="40"
+                      />
 
+                    <TextBlock Text="Gestion de Usuarios"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center"/>
 
-                    <TextBlock Text="Gestion de usuarios"
-                           FontSize="16"
-                           FontWeight="SemiBold"
-                           HorizontalAlignment="Center"/>
 
                 </StackPanel>
 
@@ -54,23 +70,33 @@
 
         <!-- Card Rol -->
         <Button Grid.Column="1"
-            Margin="10"
-            Click="BtnGestionRoles_Click">
+        Grid.Row="1"
+        Margin="10"
+        Width="300"
+        Click="BtnGestionRoles_Click">
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                CornerRadius="16"
-                Padding="20">
+            CornerRadius="5"
+            Padding="20"
+            Width="300"
+            HorizontalAlignment="Center">
 
                 <StackPanel HorizontalAlignment="Center"
-                        Spacing="10">
+                    Spacing="10"
+                    Orientation="Vertical"
+                    VerticalAlignment="Center"
+                    >
 
-                    <SymbolIcon Symbol="Admin" Width="40" Height="40"
-                            />
+                    <FontIcon Glyph="&#xEBDA;" 
+                      FontFamily="Segoe Fluent Icons"
+                      FontSize="40"
+                      />
 
                     <TextBlock Text="Gestion de Roles"
-                           FontSize="16"
-                           FontWeight="SemiBold"
-                           HorizontalAlignment="Center"/>
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center"/>
+
 
                 </StackPanel>
 
@@ -79,100 +105,144 @@
 
 
         <!-- Card Producto -->
-        <Button Grid.Column="2"
-            Margin="10"
-            Click="BtnGestionProductos_Click">
+        <Button Grid.Column="0"
+                Grid.Row="2"
+                Margin="10"
+                Width="300"
+                Click="BtnGestionProductos_Click">
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                CornerRadius="16"
-                Padding="20">
+                    CornerRadius="5"
+                    Padding="20"
+                    Width="300"
+                    HorizontalAlignment="Center">
 
                 <StackPanel HorizontalAlignment="Center"
-                        Spacing="10">
+                            Spacing="10"
+                            Orientation="Vertical"
+                            VerticalAlignment="Center"
+                            >
 
-                    <SymbolIcon Symbol="Shop" Width="40" Height="40"/>
+                    <FontIcon Glyph="&#xEC09;" 
+                              FontFamily="Segoe Fluent Icons"
+                              FontSize="40"
+                              />
 
                     <TextBlock Text="Gestion de productos"
-                           FontSize="16"
-                           FontWeight="SemiBold"
-                           HorizontalAlignment="Center"/>
-
-
-                </StackPanel>
-
-            </Border>
-        </Button>
-
-        <!-- Card Categoria -->
-        <Button Grid.Column="0"
-                Grid.Row="1"
-                Margin="10"
-                Click="BtnGestionCategorias_Click">
-
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                CornerRadius="16"
-                Padding="20">
-
-                <StackPanel HorizontalAlignment="Center"
-                            Spacing="10">
-
-                    <SymbolIcon Symbol="Shop" Width="40" Height="40"/>
-
-                    <TextBlock Text="Gestion de categorias"
                                FontSize="16"
                                FontWeight="SemiBold"
                                HorizontalAlignment="Center"/>
 
+
                 </StackPanel>
 
             </Border>
         </Button>
+        
+        <!-- Card Categoria -->
         <Button Grid.Column="1"
-        Grid.Row="1"
+        Grid.Row="2"
         Margin="10"
+        Width="300"
+        Click="BtnGestionCategorias_Click">
+
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            CornerRadius="5"
+            Padding="20"
+            Width="300"
+            HorizontalAlignment="Center">
+
+                <StackPanel HorizontalAlignment="Center"
+                    Spacing="10"
+                    Orientation="Vertical"
+                    VerticalAlignment="Center"
+                    >
+
+                    <FontIcon Glyph="&#xE762;" 
+                      FontFamily="Segoe Fluent Icons"
+                      FontSize="40"
+                      />
+
+                    <TextBlock Text="Gestion de Categorias"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center"/>
+
+
+                </StackPanel>
+
+            </Border>
+        </Button>
+        
+        <!-- Card Cliente -->
+        <Button Grid.Column="0"
+        Grid.Row="3"
+        Margin="10"
+        Width="300"
         Click="BtnGestionClientes_Click">
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    CornerRadius="16"
-                    Padding="20">
+            CornerRadius="5"
+            Padding="20"
+            Width="300"
+            HorizontalAlignment="Center">
 
                 <StackPanel HorizontalAlignment="Center"
-                    Spacing="10">
+                    Spacing="10"
+                    Orientation="Vertical"
+                    VerticalAlignment="Center"
+                    >
 
-                    <SymbolIcon Symbol="Shop" Width="40" Height="40"/>
+                    <FontIcon Glyph="&#xE716;" 
+                      FontFamily="Segoe Fluent Icons"
+                      FontSize="40"
+                      />
 
                     <TextBlock Text="Gestion de Clientes"
                        FontSize="16"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"/>
 
+
                 </StackPanel>
 
             </Border>
         </Button>
-        <Button Grid.Column="2"
-                Grid.Row="1"
-                Margin="10"
-                Click="BtnGestionCajas_Click">
+        
+        <!-- Card Caja -->
+        <Button Grid.Column="1"
+        Grid.Row="3"
+        Margin="10"
+        Width="300"
+        Click="BtnGestionCajas_Click">
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    CornerRadius="16"
-                    Padding="20">
+            CornerRadius="5"
+            Padding="20"
+            Width="300"
+            HorizontalAlignment="Center">
 
                 <StackPanel HorizontalAlignment="Center"
-                            Spacing="10">
+                    Spacing="10"
+                    Orientation="Vertical"
+                    VerticalAlignment="Center"
+                    >
 
-                    <SymbolIcon Symbol="More" Width="40" Height="40"/>
+                    <FontIcon Glyph="&#xE7B8;" 
+                      FontFamily="Segoe Fluent Icons"
+                      FontSize="40"
+                      />
 
                     <TextBlock Text="Gestion de Cajas"
-                               FontSize="16"
-                               FontWeight="SemiBold"
-                               HorizontalAlignment="Center"/>
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center"/>
+
 
                 </StackPanel>
 
             </Border>
         </Button>
-
+       
     </Grid>
 </Page>

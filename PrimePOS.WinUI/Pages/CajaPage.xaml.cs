@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 namespace PrimePOS.WinUI.Pages
 {
 
-    public sealed partial class GestionCajasPage : Page
+    public sealed partial class CajaPage : Page
     {
         private readonly CajaService _cajaService;
         private int _cajaIdSeleccionado = 0;
-        public GestionCajasPage()
+        public CajaPage()
         {
             InitializeComponent();
 

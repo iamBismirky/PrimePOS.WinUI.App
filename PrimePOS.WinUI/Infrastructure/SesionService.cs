@@ -1,4 +1,5 @@
 ﻿using PrimePOS.BLL.DTOs.Turno;
+using PrimePOS.BLL.DTOs.Usuario;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -6,7 +7,31 @@ namespace PrimePOS.WinUI.Infrastructure
 {
     public class SesionService : INotifyPropertyChanged
     {
+        private AppSesionUsuarioDto? _usuarioActual;
         private TurnoDto? _turnoActual;
+
+        public AppSesionUsuarioDto? UsuarioActual
+        {
+            get => _usuarioActual;
+            set
+            {
+                if (_usuarioActual != value)
+                {
+                    _usuarioActual = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public void IniciarSesion(AppSesionUsuarioDto usuario)
+        {
+            UsuarioActual = usuario;
+        }
+
+        public void CerrarSesion()
+        {
+            UsuarioActual = null;
+            TurnoActual = null;
+        }
         public TurnoDto? TurnoActual
         {
             get => _turnoActual;

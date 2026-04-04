@@ -100,9 +100,8 @@ namespace PrimePOS.DAL.Context
 
             modelBuilder.Entity<Rol>().HasData
              (
-                new Rol { RolId = 1, Nombre = "Desarrollador" },
-                new Rol { RolId = 2, Nombre = "Administrador" },
-                new Rol { RolId = 3, Nombre = "Cajero" }
+                new Rol { RolId = 1, Nombre = "Desarrollador", Estado = true },
+                new Rol { RolId = 2, Nombre = "Administrador", Estado = true }
              );
             modelBuilder.Entity<MetodoPago>().HasData
              (
