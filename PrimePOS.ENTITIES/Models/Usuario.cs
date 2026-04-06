@@ -21,5 +21,7 @@ public class Usuario
 
     public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
     public ICollection<Turno> Turnos { get; set; } = new List<Turno>();
+    public ICollection<Factura> Facturas { get; set; } = new List<Factura>();
+
 
 }

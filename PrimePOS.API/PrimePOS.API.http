@@ -1,0 +1,6 @@
+@PrimePOS.API_HostAddress = http://localhost:5237
+
+GET {{PrimePOS.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -20,6 +20,8 @@ namespace PrimePOS.BLL.DTOs.Venta
         public decimal Impuesto { get; set; }
         public decimal Descuento { get; set; }
         public decimal Total { get; set; }
+        public decimal Efectivo { get; set; }
+        public decimal Cambio { get; set; }
         public bool Estado { get; set; }
         public List<VentaDetalleDto> Items { get; set; } = new();
 

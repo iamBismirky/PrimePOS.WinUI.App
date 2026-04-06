@@ -1,30 +1,31 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.DAL.Repositories;
 
-public class RolRepository
+public class RolRepository : IRolRepository
 {
     private readonly AppDbContext _context;
     public RolRepository(AppDbContext context)
     {
         _context = context;
     }
-    public void Crear(Rol rol)
+    public async Task Crear(Rol rol)
     {
         _context.Roles.Add(rol);
 
     }
-    public void Actualizar(Rol rol)
+    public async Task Actualizar(Rol rol)
     {
         _context.Roles.Update(rol);
-        
+
     }
-    public void Eliminar(Rol rol)
+    public async Task Eliminar(Rol rol)
     {
         _context.Roles.Remove(rol);
-        
+
     }
     public async Task<Rol?> ObtenerPorIdAsync(int rolId)
     {

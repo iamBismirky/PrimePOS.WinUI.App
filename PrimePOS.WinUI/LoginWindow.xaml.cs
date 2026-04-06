@@ -61,8 +61,8 @@ namespace PrimePOS.WinUI
             {
                 var loginDto = new AutenticarUsuarioDto
                 {
-                    Username = txtUsername.Text,
-                    Password = pwdPassword.Password
+                    Username = txtUsername.Text.Trim(),
+                    Password = pwdPassword.Password.Trim(),
 
                 };
 
@@ -93,7 +93,7 @@ namespace PrimePOS.WinUI
             }
 
         }
-        private async void BtnSalir_Click(object sender, RoutedEventArgs e) { }
+
         private void BtnTema_Click(object sender, RoutedEventArgs e)
         {
             if (App.TemaActual == ElementTheme.Light)

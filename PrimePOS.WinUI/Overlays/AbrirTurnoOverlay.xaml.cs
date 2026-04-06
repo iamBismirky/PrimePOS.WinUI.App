@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml.Controls;
 using PrimePOS.BLL.DTOs.Turno;
 using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Infrastructure;
 using PrimePOS.WinUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -67,7 +66,7 @@ namespace PrimePOS.WinUI.Overlays
                 {
                     CajaId = (int)cmbCajas.SelectedValue,
                     NumeroTurno = numeroTurno,
-                    UsuarioId = Sesion.UsuarioId,
+                    UsuarioId = _ventaViewModel.AppSesion.UsuarioActual!.UsuarioId,
                     MontoInicial = (decimal)nbMontoInicial.Value,
 
 

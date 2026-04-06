@@ -313,6 +313,7 @@
                             <StackPanel Orientation="Vertical" Spacing="10" HorizontalAlignment="Right">
                                 <Button Content="Generar Factura" Click="BtnGenerarFactura_Click" Background="#FF2D89EF" Foreground="White"/>
                                 <Button Content="Limpiar Pantalla" Click="BtnLimpiar_Click"/>
+                                <Button Content="Cobrar" Click="Cobrar_Click"/>
                                 <Button Content="Abrir Turno" Click="BtnAbrirTurno_Click"/>
                                 <Button Content="Cerrar Turno" Click="BtnCerrarTurno_Click"/>
                             </StackPanel>

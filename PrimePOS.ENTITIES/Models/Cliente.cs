@@ -24,5 +24,6 @@ public class Cliente
 
     public DateTime FechaRegistro { get; set; }
     public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
+    public ICollection<Factura> Facturas { get; set; } = new List<Factura>();
 }
 

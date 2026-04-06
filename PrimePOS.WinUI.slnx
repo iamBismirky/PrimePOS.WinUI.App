@@ -4,6 +4,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Project Path="PrimePOS.API/PrimePOS.API.csproj" Id="00ee55d4-d185-44f2-a6f0-82f21bff5dc8" />
   <Project Path="PrimePOS.BLL/PrimePOS.BLL.csproj" />
   <Project Path="PrimePOS.DAL/PrimePOS.DAL.csproj" />
   <Project Path="PrimePOS.ENTITIES/PrimePOS.ENTITIES.csproj" />

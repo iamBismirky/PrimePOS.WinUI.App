@@ -15,12 +15,14 @@ namespace PrimePOS.WinUI.Pages;
 public sealed partial class PerfilPage : Page
 {
     private readonly UsuarioService _usuarioService;
+    private readonly SesionService _sesionService;
     public PerfilPage()
     {
         InitializeComponent();
         CargarDatos();
 
         _usuarioService = App.Services.GetRequiredService<UsuarioService>();
+        _sesionService = App.Services.GetRequiredService<SesionService>();
     }
     private async void BtnActualizarPassword_Click(object sender, RoutedEventArgs e)
     {
@@ -28,7 +30,7 @@ public sealed partial class PerfilPage : Page
         {
             var dto = new CambiarContraseñaDto
             {
-                UsuarioId = Sesion.UsuarioId,
+                UsuarioId = _sesionService.UsuarioActual!.UsuarioId,
                 ContraseñaActual = pwdActual.Password.Trim(),
                 ContraseñaNueva = pwdNueva.Password.Trim(),
                 Confirmar = pwdConfirmar.Password.Trim(),

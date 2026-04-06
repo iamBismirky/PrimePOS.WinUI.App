@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrimePOS.DAL.Context;
 
@@ -11,9 +12,11 @@ using PrimePOS.DAL.Context;
 namespace PrimePOS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260406035038_Inicial")]
+    partial class Inicial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,9 +183,6 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<decimal>("Cambio")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Descuento")
                         .HasColumnType("decimal(18,2)");
 
@@ -213,17 +213,10 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
                     b.Property<int>("VentaId")
                         .HasColumnType("int");
 
                     b.HasKey("FacturaId");
-
-                    b.HasIndex("ClienteId");
-
-                    b.HasIndex("UsuarioId");
 
                     b.HasIndex("VentaId");
 
@@ -591,27 +584,11 @@ namespace PrimePOS.DAL.Migrations
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Factura", b =>
                 {
-                    b.HasOne("PrimePOS.ENTITIES.Models.Cliente", "Cliente")
-                        .WithMany("Facturas")
-                        .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PrimePOS.ENTITIES.Models.Usuario", "Usuario")
-                        .WithMany("Facturas")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("PrimePOS.ENTITIES.Models.Venta", "Venta")
                         .WithMany()
                         .HasForeignKey("VentaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Cliente");
-
-                    b.Navigation("Usuario");
 
                     b.Navigation("Venta");
                 });
@@ -729,8 +706,6 @@ namespace PrimePOS.DAL.Migrations
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Cliente", b =>
                 {
-                    b.Navigation("Facturas");
-
                     b.Navigation("Ventas");
                 });
 
@@ -758,8 +733,6 @@ namespace PrimePOS.DAL.Migrations
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Usuario", b =>
                 {
-                    b.Navigation("Facturas");
-
                     b.Navigation("Turnos");
 
                     b.Navigation("Ventas");

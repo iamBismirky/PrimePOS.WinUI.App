@@ -1,12 +1,14 @@
 ﻿using PrimePOS.BLL.DTOs.Rol;
+using PrimePOS.BLL.Interfaces;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services;
 
-public class RolService
+public class RolService : IRolService
 {
-    private readonly RolRepository _rolRepository;
+    private readonly IRolRepository _rolRepository;
     public RolService(RolRepository repository)
     {
         _rolRepository = repository;
@@ -22,7 +24,7 @@ public class RolService
             Estado = dto.Estado
         };
 
-        _rolRepository.Crear(rol);
+        await _rolRepository.Crear(rol);
         await _rolRepository.GuardarCambiosAsync();
     }
     //Actualizar rol
@@ -44,7 +46,7 @@ public class RolService
         rol.Nombre = dto.Nombre;
         rol.Estado = dto.Estado;
 
-        _rolRepository.Actualizar(rol);
+        await _rolRepository.Actualizar(rol);
         await _rolRepository.GuardarCambiosAsync();
         return true;
     }
@@ -57,7 +59,7 @@ public class RolService
             throw new Exception("Debe seleccionar un Rol");
 
         rol.Estado = dto.Estado;
-        _rolRepository.Actualizar(rol);
+        await _rolRepository.Actualizar(rol);
         await _rolRepository.GuardarCambiosAsync();
         return true;
     }
@@ -69,7 +71,7 @@ public class RolService
         if (rol == null)
             throw new Exception("Debe seleccionar un Rol");
 
-        _rolRepository.Eliminar(rol);
+        await _rolRepository.Eliminar(rol);
         await _rolRepository.GuardarCambiosAsync();
         return true;
     }

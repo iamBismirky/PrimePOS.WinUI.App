@@ -3,7 +3,7 @@ using PrimePOS.BLL.DTOs.Venta;
 using PrimePOS.BLL.DTOs.VentaDetalle;
 using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Infrastructure;
-using PrimePOS.WinUI.Reportes;
+using PrimePOS.WinUI.Reportes.PrimePOS.WinUI.Reportes;
 using QuestPDF.Fluent;
 using System;
 using System.Collections.ObjectModel;
@@ -49,7 +49,7 @@ public class VentaViewModel : INotifyPropertyChanged
 
     public decimal Total => Subtotal + Impuesto - DescuentoMonto;
 
-    public async Task AgregarProductoCarrito(ProductoDto dto)
+    public async Task AgregarProductoCarritoAsync(ProductoDto dto)
     {
 
 
@@ -108,7 +108,7 @@ public class VentaViewModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
-    public async Task FacturarAsync(int clienteId, int MetodoPagoId)
+    public async Task FacturarAsync(int clienteId, int metodoPagoId, decimal efectivo, decimal cambio)
     {
         try
         {
@@ -122,13 +122,15 @@ public class VentaViewModel : INotifyPropertyChanged
             var ventaDto = new CrearVentaDto
             {
                 ClienteId = clienteId,
-                UsuarioId = Sesion.UsuarioId,
-                MetodoPagoId = MetodoPagoId,
+                UsuarioId = AppSesion.TurnoActual.UsuarioId,
+                MetodoPagoId = metodoPagoId,
                 TurnoId = AppSesion.TurnoActual.TurnoId,
 
                 Subtotal = Subtotal,
                 Impuesto = Impuesto,
                 Descuento = DescuentoMonto,
+                Efectivo = efectivo,
+                Cambio = cambio,
                 Total = Total,
 
 
@@ -150,7 +152,7 @@ public class VentaViewModel : INotifyPropertyChanged
             var facturaDto = _facturaService.MapearFactura(factura);
 
             // Generar PDF
-            var document = new FacturaDocument(facturaDto);
+            var document = new Factura80mmDocument(facturaDto);
 
             string carpeta = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -184,4 +186,23 @@ public class VentaViewModel : INotifyPropertyChanged
 
 
     }
+    public Action<object>? MostrarOverlay;
+    public Action? CerrarOverlay;
+    public async Task AbrirCobrarAsync()
+    {
+
+        if (!Carrito.Any())
+            return;
+
+
+        if (AppSesion.TurnoActual == null)
+            return;
+
+        var vm = new CobrarViewModel(Total);
+
+        MostrarOverlay?.Invoke(vm);
+
+
+    }
+
 }

@@ -47,6 +47,8 @@ public class VentaService
                 Subtotal = dto.Subtotal,
                 Impuesto = dto.Impuesto,
                 Descuento = dto.Descuento,
+                Efectivo = dto.Efectivo,
+                Cambio = dto.Cambio,
                 Total = dto.Total,
 
                 Estado = true,

@@ -97,6 +97,24 @@ namespace PrimePOS.DAL.Context
                 .HasForeignKey(d => d.TurnoId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Factura>()
+            .HasOne(f => f.Cliente)
+            .WithMany(c => c.Facturas)
+            .HasForeignKey(f => f.ClienteId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            // Relación Factura -> Usuario
+            modelBuilder.Entity<Factura>()
+                .HasOne(f => f.Usuario)
+                .WithMany(u => u.Facturas)
+                .HasForeignKey(f => f.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<FacturaDetalle>()
+                .HasOne(d => d.Factura)
+                .WithMany(f => f.Detalles)
+                .HasForeignKey(d => d.FacturaId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Rol>().HasData
              (

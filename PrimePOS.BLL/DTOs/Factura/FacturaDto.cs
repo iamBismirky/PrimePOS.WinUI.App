@@ -9,10 +9,15 @@ namespace PrimePOS.BLL.DTOs.Factura
         public string Turno { get; set; } = string.Empty;
 
         public string ClienteNombre { get; set; } = string.Empty;
+        public string UsuarioNombre { get; set; } = string.Empty;
+
 
         public decimal Subtotal { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
+
+        public decimal Efectivo { get; set; }
+        public decimal Cambio { get; set; }
         public string MetodoPago { get; set; } = string.Empty;
 
 

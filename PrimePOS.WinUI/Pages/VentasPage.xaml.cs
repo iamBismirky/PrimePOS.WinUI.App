@@ -37,25 +37,29 @@ public sealed partial class VentasPage : Page
     public Caja? _cajaSeleccionada { get; private set; }
     public Turno? _turnoSeleccionado { get; private set; }
     public string? TextoTurnoPreview { get; set; }
-
     public VentaViewModel _ventaViewModel { get; set; }
     private IServiceScope _scope;
     public VentasPage()
     {
         InitializeComponent();
         InicializarBuscador();
-        //NavigationCacheMode = NavigationCacheMode.Required;
+
 
         _scope = App.Services.CreateScope();
+        var sp = _scope.ServiceProvider;
 
-        _ventaService = _scope.ServiceProvider.GetRequiredService<VentaService>();
-        _turnoService = _scope.ServiceProvider.GetRequiredService<TurnoService>();
-        _cajaService = _scope.ServiceProvider.GetRequiredService<CajaService>();
-        _productoService = _scope.ServiceProvider.GetRequiredService<ProductoService>();
-        _clienteService = _scope.ServiceProvider.GetRequiredService<ClienteService>();
-        _metodoPagoService = _scope.ServiceProvider.GetRequiredService<MetodoPagoService>();
+        _ventaService = sp.GetRequiredService<VentaService>();
+        _turnoService = sp.GetRequiredService<TurnoService>();
+        _cajaService = sp.GetRequiredService<CajaService>();
+        _productoService = sp.GetRequiredService<ProductoService>();
+        _clienteService = sp.GetRequiredService<ClienteService>();
+        _metodoPagoService = sp.GetRequiredService<MetodoPagoService>();
 
-        _ventaViewModel = App.Services.GetRequiredService<VentaViewModel>();
+        _ventaViewModel = sp.GetRequiredService<VentaViewModel>();
+
+        _ventaViewModel.MostrarOverlay = MostrarOverlay;
+        _ventaViewModel.CerrarOverlay = CerrarOverlay;
+
         this.DataContext = _ventaViewModel;
 
 
@@ -63,6 +67,8 @@ public sealed partial class VentasPage : Page
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
+        //_scope.Dispose();
+
         _ventaViewModel.AppSesion.PropertyChanged += Sesion_PropertyChanged;
 
         VerificarTurno();
@@ -78,7 +84,7 @@ public sealed partial class VentasPage : Page
         try
         {
 
-            await CargarConsumidorFinal();
+            await CargarConsumidorFinalAsync();
             await ListarMetodosPagosAsync();
 
             txtBuscarProducto.Focus(FocusState.Programmatic);
@@ -107,19 +113,7 @@ public sealed partial class VentasPage : Page
     }
     private async void BtnGenerarFactura_Click(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            await _ventaViewModel.FacturarAsync(_clienteDto!.ClienteId, (int)cmbMetodoPago.SelectedValue);
 
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Éxito", "Venta realizada correctamente");
-
-
-        }
-        catch (Exception ex)
-        {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.ToString());
-            System.Diagnostics.Debug.WriteLine(ex);
-        }
 
 
     }
@@ -195,7 +189,7 @@ public sealed partial class VentasPage : Page
             }
 
 
-            await _ventaViewModel.AgregarProductoCarrito(producto);
+            await _ventaViewModel.AgregarProductoCarritoAsync(producto);
 
 
 
@@ -332,7 +326,7 @@ public sealed partial class VentasPage : Page
             await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
         }
     }
-    private async Task CargarConsumidorFinal()
+    private async Task CargarConsumidorFinalAsync()
     {
         try
         {
@@ -418,6 +412,7 @@ public sealed partial class VentasPage : Page
         };
         MostrarOverlay(overlay);
     }
+
     public void CerrarOverlay()
     {
         OverlayContent.Content = null;
@@ -430,20 +425,19 @@ public sealed partial class VentasPage : Page
     }
     private async void VerificarTurno()
     {
+        var turno = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
+        if (turno != null)
+        {
+            _ventaViewModel.AppSesion.TurnoActual = turno;
+        }
+
         if (!_ventaViewModel.AppSesion.HayTurnoAbierto)
         {
             MostrarOverlayAbrirTurno();
 
         }
-        else
-        {
-            var turno = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
 
-            if (turno != null)
-            {
-                _ventaViewModel.AppSesion.TurnoActual = turno;
-            }
-        }
+
 
 
     }
@@ -457,4 +451,53 @@ public sealed partial class VentasPage : Page
             }
         }
     }
+
+    private async void Cobrar_Click(object sender, RoutedEventArgs e)
+    {
+        await _ventaViewModel.AbrirCobrarAsync();
+    }
+    private UIElement CrearVista(object vm)
+    {
+        switch (vm)
+        {
+            case CobrarViewModel cobrar:
+                try
+                {
+                    var overlay = new CobrarOverlay
+                    {
+                        DataContext = cobrar
+                    };
+                    cobrar.Confirmado += async (c) =>
+                    {
+                        await _ventaViewModel.FacturarAsync(_clienteDto!.ClienteId,
+                            (int)cmbMetodoPago.SelectedValue,
+                            cobrar.Efectivo,
+                            cobrar.Cambio);
+                    };
+                    overlay.OnCerrar += CerrarOverlay;
+
+                    return overlay;
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+                // otros overlays...
+        }
+
+        throw new Exception("No hay vista");
+    }
+    private void MostrarOverlay(object vm)
+    {
+        OverlayContainer.Children.Clear();
+
+        var view = CrearVista(vm);
+
+        OverlayContainer.Children.Add(view);
+        OverlayContainer.Visibility = Visibility.Visible;
+    }
+
+
 }

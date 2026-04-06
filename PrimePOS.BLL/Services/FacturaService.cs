@@ -27,11 +27,15 @@ namespace PrimePOS.BLL.Services
                 Numero = "",
                 Fecha = DateTime.Now,
                 VentaId = venta.VentaId,
+                ClienteId = venta.ClienteId,
+                UsuarioId = venta.UsuarioId,
                 Subtotal = venta.Subtotal,
                 Descuento = venta.Descuento,
                 Impuesto = venta.Impuesto,
                 Total = venta.Total,
                 MetodoPago = venta.MetodoPago?.Nombre ?? "",
+                Efectivo = venta.Efectivo,
+                Cambio = venta.Cambio,
 
             };
 
@@ -77,6 +81,9 @@ namespace PrimePOS.BLL.Services
                 MetodoPago = factura.MetodoPago,
                 Turno = factura.Venta?.Turno?.NumeroTurno.ToString() ?? "",
                 ClienteNombre = factura.Venta?.Cliente?.Nombre ?? "",
+                UsuarioNombre = factura.Usuario?.Nombre ?? "",
+                Efectivo = factura.Efectivo,
+                Cambio = factura.Cambio,
 
                 Detalles = factura.Detalles.Select(d => new FacturaDetalleDto
                 {

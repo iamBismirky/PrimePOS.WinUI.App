@@ -27,6 +27,9 @@ public class Venta
     public decimal Impuesto { get; set; }
     public decimal Descuento { get; set; }
     public decimal Total { get; set; }
+    public decimal Efectivo { get; set; }
+    public decimal Cambio { get; set; }
+
     public bool Estado { get; set; }
     public ICollection<VentaDetalle> Detalles { get; set; } = new List<VentaDetalle>();
 
