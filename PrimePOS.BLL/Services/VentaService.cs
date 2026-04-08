@@ -1,6 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.Factura;
-using PrimePOS.BLL.DTOs.FacturaDetalle;
-using PrimePOS.BLL.DTOs.Venta;
+﻿using PrimePOS.BLL.DTOs.Venta;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.DAL.UnitOfWork;
 using PrimePOS.ENTITIES.Models;
@@ -91,6 +89,8 @@ public class VentaService
             venta.Subtotal = subtotal;
             venta.Impuesto = subtotal * 0.18m;
             venta.Total = venta.Subtotal + venta.Impuesto;
+            venta.Efectivo = venta.Efectivo;
+            venta.Cambio = venta.Efectivo - venta.Total;
 
             _ventaRepository.Crear(venta);
             await _ventaRepository.GuardarCambiosAsync();
@@ -105,33 +105,33 @@ public class VentaService
             throw;
         }
     }
-    public FacturaDto GenerarFacturaDTO(Venta venta)
+
+    public async Task<List<VentaDto>> ObtenerVentasPorTurnoAsync(int turnoId)
     {
-        return new FacturaDto
+        var ventas = await _ventaRepository.ObtenerPorTurnoAsync(turnoId);
+
+        return ventas.Select(v => new VentaDto
         {
-            Numero = $"F-{venta.VentaId:D6}",
-            Fecha = venta.FechaRegistro,
-            Turno = venta.TurnoId.ToString(),
+            VentaId = v.VentaId,
+            FechaRegistro = v.FechaRegistro,
+            ClienteNombre = v.ClienteNombre,
+            MetodoPagoId = v.MetodoPagoId,
+            Total = v.Total
+        }).ToList();
+    }
 
-            ClienteNombre = venta.Cliente?.Nombre ?? "Cliente General",
+    public async Task<List<VentaDto>> ObtenerVentasDelDiaAsync()
+    {
+        var ventas = await _ventaRepository.ObtenerPorFechaAsync(DateTime.Today);
 
-            Subtotal = venta.Subtotal,
-            Impuesto = venta.Impuesto,
-            Total = venta.Total,
-
-            MetodoPago = venta.MetodoPago?.Nombre ?? "Efectivo",
-            //MontoRecibido = 0, // luego puedes mejorarlo
-            //Cambio = 0,
-
-            Detalles = venta.Detalles.Select(d => new FacturaDetalleDto
-            {
-                Codigo = d.Codigo,
-                Nombre = d.Producto?.Nombre ?? "Producto",
-                Cantidad = d.Cantidad,
-                Precio = d.PrecioUnitario,
-                Total = d.Total
-            }).ToList()
-        };
+        return ventas.Select(v => new VentaDto
+        {
+            VentaId = v.VentaId,
+            FechaRegistro = v.FechaRegistro,
+            ClienteNombre = v.ClienteNombre,
+            MetodoPagoId = v.MetodoPagoId,
+            Total = v.Total
+        }).ToList();
     }
 
 }

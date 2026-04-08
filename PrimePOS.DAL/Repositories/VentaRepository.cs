@@ -44,4 +44,17 @@ public class VentaRepository
     {
         await _context.SaveChangesAsync();
     }
+    public async Task<List<Venta>> ObtenerPorTurnoAsync(int turnoId)
+    {
+        return await _context.Ventas
+            .Where(v => v.TurnoId == turnoId && v.Estado)
+            .ToListAsync();
+    }
+
+    public async Task<List<Venta>> ObtenerPorFechaAsync(DateTime fecha)
+    {
+        return await _context.Ventas
+            .Where(v => v.FechaRegistro.Date == fecha.Date && v.Estado)
+            .ToListAsync();
+    }
 }

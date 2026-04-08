@@ -49,9 +49,11 @@ namespace PrimePOS.WinUI.Infrastructure
                 services.AddScoped<UnitOfWork>();
 
                 //ViewModel
+                services.AddSingleton<AppSesionViewModel>();
+
                 services.AddScoped<VentaViewModel>();
                 services.AddScoped<CerrarTurnoViewModel>();
-                services.AddSingleton<AppSesionViewModel>();
+                services.AddScoped<ReporVentaViewModel>();
 
 
                 return services;
