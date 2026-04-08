@@ -8,13 +8,11 @@ namespace PrimePOS.BLL.DTOs.Venta
         public DateTime FechaRegistro { get; set; }
 
         public int UsuarioId { get; set; }
-
+        public string UsuarioNombre { get; set; } = "";
         public int ClienteId { get; set; }
+        public string ClienteNombre { get; set; } = "";
         public int MetodoPagoId { get; set; }
-
         public int TurnoId { get; set; }
-
-
         public string NumeroComprobante { get; set; } = string.Empty;
         public decimal Subtotal { get; set; }
         public decimal Impuesto { get; set; }

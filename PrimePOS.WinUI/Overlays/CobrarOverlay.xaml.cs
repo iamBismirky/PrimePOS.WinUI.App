@@ -31,7 +31,7 @@ namespace PrimePOS.WinUI.Overlays
                 }
                 catch (Exception ex)
                 {
-                    await DialogHelper.MostrarMensaje(this.XamlRoot, "Advertencia", ex.Message);
+                    await DialogHelper.MostrarMensaje(this.XamlRoot, "Advertencia", ex.ToString());
                 }
             }
         }

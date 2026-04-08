@@ -1,14 +1,17 @@
-﻿using PrimePOS.BLL.DTOs.Turno;
+﻿using PrimePOS.BLL.DTOs.Caja;
+using PrimePOS.BLL.DTOs.Turno;
 using PrimePOS.BLL.DTOs.Usuario;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace PrimePOS.WinUI.Infrastructure
+namespace PrimePOS.WinUI.ViewModels
 {
-    public class SesionService : INotifyPropertyChanged
+    public class AppSesionViewModel : INotifyPropertyChanged
     {
         private AppSesionUsuarioDto? _usuarioActual;
         private TurnoDto? _turnoActual;
+        private CajaDto? _cajaActual;
+        public int CajaId { get; set; } = 1;
 
         public AppSesionUsuarioDto? UsuarioActual
         {
@@ -21,6 +24,26 @@ namespace PrimePOS.WinUI.Infrastructure
                     OnPropertyChanged();
                 }
             }
+        }
+        public CajaDto? CajaActual
+        {
+            get => _cajaActual;
+            set
+            {
+                if (_cajaActual != value)
+                {
+                    _cajaActual = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public void AbrirCaja(CajaDto caja)
+        {
+            CajaActual = caja;
+        }
+        public void CerrarCaja()
+        {
+            CajaActual = null;
         }
         public void IniciarSesion(AppSesionUsuarioDto usuario)
         {

@@ -11,8 +11,9 @@
     <UseWinUI>true</UseWinUI>
     <WinUISDKReferences>true</WinUISDKReferences>
     <EnableMsixTooling>false</EnableMsixTooling>
-	  <WindowsPackageType>None</WindowsPackageType>
+	<WindowsPackageType>None</WindowsPackageType>
     <Nullable>enable</Nullable>
+	  <ApplicationIcon>Assets/PrimePOS.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />

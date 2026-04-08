@@ -12,9 +12,10 @@ public class Venta
 
     public int UsuarioId { get; set; }
     public Usuario? Usuario { get; set; }
-
+    public string UsuarioNombre { get; set; } = "";
     public int ClienteId { get; set; }
     public Cliente? Cliente { get; set; }
+    public string ClienteNombre { get; set; } = "";
 
     public int MetodoPagoId { get; set; }
     public MetodoPago? MetodoPago { get; set; }

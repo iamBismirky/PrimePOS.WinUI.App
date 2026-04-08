@@ -39,7 +39,9 @@ public class VentaService
             {
                 TurnoId = dto.TurnoId,
                 UsuarioId = dto.UsuarioId,
+                UsuarioNombre = dto.UsuarioNombre,
                 ClienteId = dto.ClienteId,
+                ClienteNombre = dto.ClienteNombre,
                 MetodoPagoId = dto.MetodoPagoId,
                 FechaRegistro = ahora,
                 Detalles = new List<VentaDetalle>(),
@@ -76,6 +78,7 @@ public class VentaService
                 {
                     Codigo = item.Codigo,
                     ProductoId = item.ProductoId,
+                    ProductoNombre = item.ProductoNombre,
                     Cantidad = item.Cantidad,
                     PrecioUnitario = item.PrecioUnitario,
                     Total = totalItem

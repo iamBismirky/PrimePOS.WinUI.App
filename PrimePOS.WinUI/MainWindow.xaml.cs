@@ -1,7 +1,9 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.WinUI.Infrastructure;
 using PrimePOS.WinUI.Pages;
+using PrimePOS.WinUI.ViewModels;
 using System;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -14,6 +16,7 @@ namespace PrimePOS.WinUI
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private readonly AppSesionViewModel _sesion;
         public string UsuarioNombre => Sesion.UsuarioNombre;
         public string RolNombre => Sesion.RolNombre;
         public MainWindow()
@@ -23,6 +26,10 @@ namespace PrimePOS.WinUI
             RootGrid.RequestedTheme = App.TemaActual;
             this.ExtendsContentIntoTitleBar = true;
 
+            _sesion = App.Services.GetRequiredService<AppSesionViewModel>();
+            RootGrid.DataContext = _sesion;
+
+
         }
         private void TitleBar_BackRequested(TitleBar sender, object args)
         {
@@ -30,6 +37,7 @@ namespace PrimePOS.WinUI
             {
                 contentFrame.GoBack();
             }
+
         }
         private void BtnTema_Click(object sender, RoutedEventArgs e)
         {
@@ -57,8 +65,7 @@ namespace PrimePOS.WinUI
         {
             navView.IsPaneOpen = !navView.IsPaneOpen;
         }
-        private async void navView_SelectionChanged(NavigationView sender,
-                                       NavigationViewSelectionChangedEventArgs args)
+        private async void navView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
 
             if (args.SelectedItemContainer is NavigationViewItem item
@@ -95,7 +102,7 @@ namespace PrimePOS.WinUI
 
                         if (result == ContentDialogResult.Primary)
                         {
-                            Sesion.Cerrar();
+                            _sesion.CerrarSesion();
                             App.IrALogin();
                         }
                         sender.SelectedItem = null;

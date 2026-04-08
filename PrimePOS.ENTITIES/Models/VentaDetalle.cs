@@ -14,6 +14,7 @@ public class VentaDetalle
 
     public int ProductoId { get; set; }
     public Producto? Producto { get; set; }
+    public string ProductoNombre { get; set; } = "";
 
     public string Codigo { get; set; } = string.Empty;
     public int Cantidad { get; set; }

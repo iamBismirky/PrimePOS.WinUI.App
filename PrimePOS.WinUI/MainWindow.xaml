@@ -93,11 +93,11 @@
                                         </Button>
                         <StackPanel>
                                <TextBlock
-                                        Text="{x:Bind UsuarioNombre}"
+                                        Text="{Binding UsuarioActual.UsuarioNombre}"
                                         VerticalAlignment="Center"/>
 
                                <TextBlock
-                                        Text="{x:Bind RolNombre}"
+                                        Text="{Binding UsuarioActual.RolNombre}"
                                         VerticalAlignment="Center"/>
 
 

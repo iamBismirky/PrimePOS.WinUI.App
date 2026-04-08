@@ -2,7 +2,6 @@
 using Microsoft.UI.Xaml.Media;
 using PrimePOS.BLL.DTOs.Turno;
 using PrimePOS.BLL.Services;
-using PrimePOS.WinUI.Infrastructure;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -13,8 +12,8 @@ public class CerrarTurnoViewModel : INotifyPropertyChanged
 {
     private readonly TurnoService _turnoService;
     private VentaViewModel _ventaViewModel;
-    private readonly SesionService _sesionService;
-    public CerrarTurnoViewModel(TurnoService turnoService, VentaViewModel ventaViewModel, SesionService sesionService)
+    private readonly AppSesionViewModel _sesionService;
+    public CerrarTurnoViewModel(TurnoService turnoService, VentaViewModel ventaViewModel, AppSesionViewModel sesionService)
     {
         _turnoService = turnoService;
         _ventaViewModel = ventaViewModel;

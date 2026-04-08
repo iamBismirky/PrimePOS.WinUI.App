@@ -7,7 +7,6 @@ using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.BLL.Services;
 using PrimePOS.ENTITIES.Models;
 using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Infrastructure;
 using PrimePOS.WinUI.Overlays;
 using PrimePOS.WinUI.ViewModels;
 using System;
@@ -28,6 +27,7 @@ public sealed partial class VentasPage : Page
     private readonly ProductoService _productoService;
     private readonly ClienteService _clienteService;
     private readonly MetodoPagoService _metodoPagoService;
+    private readonly AppSesionViewModel _appSesion;
 
     private DispatcherTimer _timerProducto = new DispatcherTimer();
     private DispatcherTimer _timerCliente = new DispatcherTimer();
@@ -56,6 +56,7 @@ public sealed partial class VentasPage : Page
         _metodoPagoService = sp.GetRequiredService<MetodoPagoService>();
 
         _ventaViewModel = sp.GetRequiredService<VentaViewModel>();
+        _appSesion = sp.GetRequiredService<AppSesionViewModel>();
 
         _ventaViewModel.MostrarOverlay = MostrarOverlay;
         _ventaViewModel.CerrarOverlay = CerrarOverlay;
@@ -425,7 +426,7 @@ public sealed partial class VentasPage : Page
     }
     private async void VerificarTurno()
     {
-        var turno = await _turnoService.ObtenerTurnoAbiertoPorCajaAsync(Sesion.CajaId);
+        var turno = await _turnoService.ObtenerTurnoAbiertoAsync(_appSesion.CajaId, _appSesion.UsuarioActual!.UsuarioId);
         if (turno != null)
         {
             _ventaViewModel.AppSesion.TurnoActual = turno;
@@ -443,7 +444,7 @@ public sealed partial class VentasPage : Page
     }
     private void Sesion_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(SesionService.TurnoActual))
+        if (e.PropertyName == nameof(AppSesionViewModel.TurnoActual))
         {
             if (!_ventaViewModel.AppSesion.HayTurnoAbierto)
             {
@@ -470,6 +471,7 @@ public sealed partial class VentasPage : Page
                     cobrar.Confirmado += async (c) =>
                     {
                         await _ventaViewModel.FacturarAsync(_clienteDto!.ClienteId,
+                            _clienteDto.Nombre,
                             (int)cmbMetodoPago.SelectedValue,
                             cobrar.Efectivo,
                             cobrar.Cambio);

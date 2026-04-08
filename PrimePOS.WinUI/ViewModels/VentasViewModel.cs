@@ -2,7 +2,6 @@
 using PrimePOS.BLL.DTOs.Venta;
 using PrimePOS.BLL.DTOs.VentaDetalle;
 using PrimePOS.BLL.Services;
-using PrimePOS.WinUI.Infrastructure;
 using PrimePOS.WinUI.Reportes.PrimePOS.WinUI.Reportes;
 using QuestPDF.Fluent;
 using System;
@@ -20,14 +19,14 @@ public class VentaViewModel : INotifyPropertyChanged
 {
     private readonly VentaService _ventaService;
     private readonly ProductoService _productoService;
-    private readonly SesionService _sesion;
+    private readonly AppSesionViewModel _sesion;
     private readonly FacturaService _facturaService;
 
-    public SesionService AppSesion => _sesion;
+    public AppSesionViewModel AppSesion => _sesion;
 
     public VentaViewModel(VentaService ventaService,
             ProductoService productoService,
-                SesionService sesionService,
+                AppSesionViewModel sesionService,
                 FacturaService facturaService)
     {
         _ventaService = ventaService;
@@ -108,7 +107,7 @@ public class VentaViewModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
-    public async Task FacturarAsync(int clienteId, int metodoPagoId, decimal efectivo, decimal cambio)
+    public async Task FacturarAsync(int clienteId, string clienteNombre, int metodoPagoId, decimal efectivo, decimal cambio)
     {
         try
         {
@@ -122,7 +121,9 @@ public class VentaViewModel : INotifyPropertyChanged
             var ventaDto = new CrearVentaDto
             {
                 ClienteId = clienteId,
+                ClienteNombre = clienteNombre,
                 UsuarioId = AppSesion.TurnoActual.UsuarioId,
+                UsuarioNombre = AppSesion.TurnoActual.UsuarioNombre,
                 MetodoPagoId = metodoPagoId,
                 TurnoId = AppSesion.TurnoActual.TurnoId,
 

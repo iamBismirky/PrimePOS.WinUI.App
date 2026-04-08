@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using PrimePOS.BLL.DTOs.Usuario;
 using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Infrastructure;
+using PrimePOS.WinUI.ViewModels;
 using System;
 using WinRT.Interop;
 
@@ -18,13 +19,13 @@ namespace PrimePOS.WinUI
     public sealed partial class LoginWindow : Window
     {
         private readonly UsuarioService _usuarioService;
-        private readonly SesionService _sesionService;
+        private readonly AppSesionViewModel _sesionService;
         public LoginWindow()
         {
             InitializeComponent();
 
             _usuarioService = App.Services.GetRequiredService<UsuarioService>();
-            _sesionService = App.Services.GetRequiredService<SesionService>();
+            _sesionService = App.Services.GetRequiredService<AppSesionViewModel>();
 
             txtUsername.Focus(FocusState.Programmatic);
             this.ExtendsContentIntoTitleBar = true;

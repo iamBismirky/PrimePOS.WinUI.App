@@ -16,7 +16,9 @@ namespace PrimePOS.WinUI.Overlays
     {
         private readonly TurnoService _turnoService;
         private readonly CajaService _cajaService;
+        private readonly AppSesionViewModel _appSesion;
         public VentaViewModel _ventaViewModel { get; }
+
 
 
         public int TurnoId { get; set; }
@@ -29,6 +31,7 @@ namespace PrimePOS.WinUI.Overlays
             _turnoService = App.Services.GetRequiredService<TurnoService>();
             _cajaService = App.Services.GetRequiredService<CajaService>();
             _ventaViewModel = App.Services.GetRequiredService<VentaViewModel>();
+            _appSesion = App.Services.GetRequiredService<AppSesionViewModel>();
             DataContext = _ventaViewModel;
 
         }

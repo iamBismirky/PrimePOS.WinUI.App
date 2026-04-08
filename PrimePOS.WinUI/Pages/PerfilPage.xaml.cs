@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using PrimePOS.BLL.DTOs.Usuario;
 using PrimePOS.BLL.Services;
 using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Infrastructure;
+using PrimePOS.WinUI.ViewModels;
 using System;
 
 
@@ -15,14 +15,17 @@ namespace PrimePOS.WinUI.Pages;
 public sealed partial class PerfilPage : Page
 {
     private readonly UsuarioService _usuarioService;
-    private readonly SesionService _sesionService;
+    private readonly AppSesionViewModel _sesion;
+
+
     public PerfilPage()
     {
         InitializeComponent();
         CargarDatos();
 
         _usuarioService = App.Services.GetRequiredService<UsuarioService>();
-        _sesionService = App.Services.GetRequiredService<SesionService>();
+        _sesion = App.Services.GetRequiredService<AppSesionViewModel>();
+        this.DataContext = _sesion;
     }
     private async void BtnActualizarPassword_Click(object sender, RoutedEventArgs e)
     {
@@ -30,7 +33,7 @@ public sealed partial class PerfilPage : Page
         {
             var dto = new CambiarContraseñaDto
             {
-                UsuarioId = _sesionService.UsuarioActual!.UsuarioId,
+                UsuarioId = _sesion.UsuarioActual!.UsuarioId,
                 ContraseñaActual = pwdActual.Password.Trim(),
                 ContraseñaNueva = pwdNueva.Password.Trim(),
                 Confirmar = pwdConfirmar.Password.Trim(),
@@ -48,8 +51,8 @@ public sealed partial class PerfilPage : Page
     }
     private void CargarDatos()
     {
-        txtUsuario.Text = Sesion.UsuarioNombre;
-        txtRol.Text = Sesion.RolNombre;
+        //txtUsuario.Text = Sesion.UsuarioNombre;
+        //txtRol.Text = Sesion.RolNombre;
     }
     private void LimpiarCampos()
     {

@@ -187,9 +187,9 @@ public class TurnoService
 
         };
     }
-    public async Task<TurnoDto?> ObtenerTurnoAbiertoPorCajaAsync(int cajaId)
+    public async Task<TurnoDto?> ObtenerTurnoAbiertoAsync(int cajaId, int usuarioId)
     {
-        var turno = await _turnoRepository.ObtenerTurnoAbiertoPorCajaAsync(cajaId);
+        var turno = await _turnoRepository.ObtenerTurnoAbiertoAsync(cajaId, usuarioId);
 
         if (turno == null) return null;
 

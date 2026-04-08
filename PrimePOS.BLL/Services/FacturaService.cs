@@ -28,7 +28,9 @@ namespace PrimePOS.BLL.Services
                 Fecha = DateTime.Now,
                 VentaId = venta.VentaId,
                 ClienteId = venta.ClienteId,
+                ClienteNombre = venta.ClienteNombre,
                 UsuarioId = venta.UsuarioId,
+                UsuarioNombre = venta.UsuarioNombre,
                 Subtotal = venta.Subtotal,
                 Descuento = venta.Descuento,
                 Impuesto = venta.Impuesto,
@@ -44,6 +46,7 @@ namespace PrimePOS.BLL.Services
                 factura.Detalles.Add(new FacturaDetalle
                 {
                     ProductoNombre = item.Producto?.Nombre ?? "",
+                    ProductoId = item.ProductoId,
                     Precio = item.PrecioUnitario,
                     Cantidad = item.Cantidad,
                     Total = item.Total
