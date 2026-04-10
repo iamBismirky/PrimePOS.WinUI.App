@@ -194,5 +194,9 @@ public sealed partial class ProductoPage : Page
 
 
     }
+    private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+    {
+        throw new NotImplementedException();
+    }
 }
 

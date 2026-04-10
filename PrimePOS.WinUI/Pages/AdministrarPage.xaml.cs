@@ -28,7 +28,7 @@ public partial class AdministrarPage
     }
     private void BtnGestionProductos_Click(object sender, RoutedEventArgs e)
     {
-        Frame.Navigate(typeof(ProductoPage));
+        Frame.Navigate(typeof(ProductoPageVM));
     }
     private void BtnGestionCategorias_Click(object sender, RoutedEventArgs e)
     {

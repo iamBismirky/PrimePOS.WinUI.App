@@ -81,6 +81,19 @@ public class ProductoService
         await _productoRepository.GuardarCambiosAsync();
 
     }
+    public async Task DesactivarProductoAsync(int productoId)
+    {
+        ProductoValidator.ValidarEliminar(productoId);
+
+        var producto = await _productoRepository.ObtenerPorIdAsync(productoId);
+        if (producto == null)
+            throw new Exception("Producto no encontrado.");
+
+        producto.Estado = false;
+        _productoRepository.Actualizar(producto);
+        await _productoRepository.GuardarCambiosAsync();
+
+    }
     public async Task<List<ProductoDto>> BuscarProductoCodigoONombreListAsync(string buscar)
     {
         var producto = await _productoRepository.BuscarPorCodigoONombreListAsync(buscar);

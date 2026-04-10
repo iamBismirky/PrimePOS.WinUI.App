@@ -64,7 +64,7 @@
                      Header="Descripcion"
                      Grid.Row="0"
                      Grid.Column="1"
-                             IsTabStop="True"/>
+                     IsTabStop="True"/>
                     
                     <!-- Codigo Barra -->
                     <TextBox x:Name="txtCodigoBarra"
@@ -77,7 +77,7 @@
                     <!-- Categoria -->
                     <ComboBox x:Name="cmbCategoria"
                      Header="Categoria"
-                              PlaceholderText="Seleccione una categoria"
+                     PlaceholderText="Seleccione una categoria"
                      Width="auto"
                      Grid.Row="1"
                      Grid.Column="1"/>

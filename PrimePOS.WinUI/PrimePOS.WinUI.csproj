@@ -45,6 +45,7 @@
     <None Remove="Pages\InventarioPage.xaml" />
     <None Remove="Pages\PerfilPage.xaml" />
     <None Remove="Pages\ProductoPage.xaml" />
+    <None Remove="Pages\ProductoPageVM.xaml" />
     <None Remove="Pages\ReportesPage.xaml" />
     <None Remove="Pages\RolPage.xaml" />
     <None Remove="Pages\UsuarioPage.xaml" />
@@ -174,6 +175,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dialog\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Overlays\ProductoOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\ProductoPageVM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Overlays\CobrarOverlay.xaml">
