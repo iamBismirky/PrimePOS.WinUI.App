@@ -7,7 +7,7 @@ namespace PrimePOS.DAL.Interfaces
         Task Actualizar(Rol rol);
         Task Crear(Rol rol);
         Task Eliminar(Rol rol);
-        Task<bool> ExisteRol(string nombre);
+        Task<Rol> ExisteRolAsync(string nombre);
         Task GuardarCambiosAsync();
         Task<List<Rol>> ListarRolesAsync();
         Task<Rol?> ObtenerPorIdAsync(int rolId);

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PrimePOS.BLL.DTOs.Rol;
+using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
-
+using PrimePOS.Contracts.DTOs.Rol;
 namespace PrimePOS.API.Controllers;
 
 [ApiController]
@@ -17,7 +17,7 @@ public class RolesController : ControllerBase
 
     // 🔹 GET: api/roles
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> ObtenerTodos()
     {
         var roles = await _service.ListarRolesAsync();
         return Ok(roles);
@@ -25,7 +25,7 @@ public class RolesController : ControllerBase
 
     // 🔹 GET: api/roles/5
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> ObtenerPorId(int id)
     {
         var rol = await _service.ObtenerRolPorIdAsync(id);
 
@@ -35,76 +35,63 @@ public class RolesController : ControllerBase
         return Ok(rol);
     }
 
-    // 🔹 POST: api/roles
+
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CrearRolDto dto)
+    public async Task<IActionResult> CrearRol([FromBody] CrearRolDto dto)
     {
         try
         {
             await _service.CrearRolAsync(dto);
 
-            return Created("", new
-            {
-                mensaje = "Rol creado correctamente"
-            });
+            return Ok();
         }
-        catch (Exception ex)
+        catch (BusinessException ex)
         {
-            return BadRequest(new { mensaje = ex.Message });
+
+            return BadRequest(new { message = ex.Message, code = ex.Code });
         }
     }
 
     // 🔹 PUT: api/roles/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, [FromBody] ActualizarRolDto dto)
-    {
-        try
-        {
-            dto.RolId = id; // 👈 importante
-
-            await _service.ActualizarRolAsync(dto);
-
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { mensaje = ex.Message });
-        }
-    }
-
-    // 🔹 PATCH: api/roles/5 (desactivar)
-    [HttpPatch("{id}")]
-    public async Task<IActionResult> Patch(int id, [FromBody] RolDto dto)
+    public async Task<IActionResult> ActualizarRol(int id, [FromBody] ActualizarRolDto dto)
     {
         try
         {
             dto.RolId = id;
 
-            await _service.DesactivarRolAsync(dto);
-
-            return NoContent();
+            await _service.ActualizarRolAsync(dto);
+            return Ok();
         }
-        catch (Exception ex)
+        catch (BusinessException ex)
         {
-            return BadRequest(new { mensaje = ex.Message });
+
+            return BadRequest(new
+            {
+                message = ex.Message,
+                code = ex.Code
+            });
+
         }
+    }
+
+    // 🔹 PATCH: api/roles/5/desactivar
+    [HttpPatch("{id}/desactivar")]
+    public async Task<IActionResult> DesactivarRol(int id)
+    {
+        await _service.DesactivarRolAsync(id);
+        return NoContent();
     }
 
     // 🔹 DELETE: api/roles/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> EliminarRol(int id)
     {
-        try
+        await _service.EliminarRolAsync(new EliminarRolDto
         {
-            var dto = new EliminarRolDto { RolId = id };
+            RolId = id
+        });
 
-            await _service.EliminarRolAsync(dto);
-
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { mensaje = ex.Message });
-        }
+        return NoContent();
     }
 }

@@ -1,4 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.Rol;
+﻿using PrimePOS.Contracts.DTOs.Rol;
 
 namespace PrimePOS.BLL.Interfaces
 {
@@ -6,8 +6,9 @@ namespace PrimePOS.BLL.Interfaces
     {
         Task<bool> ActualizarRolAsync(ActualizarRolDto dto);
         Task CrearRolAsync(CrearRolDto dto);
-        Task<bool> DesactivarRolAsync(RolDto dto);
+
         Task<bool> EliminarRolAsync(EliminarRolDto dto);
+        Task DesactivarRolAsync(int rolId);
         Task<List<ListaRolesDto>> ListarRolesAsync();
         Task<RolDto?> ObtenerRolPorIdAsync(int id);
     }

@@ -9,43 +9,184 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
     Loaded="Page_Loaded">
-
-    <Grid Padding="20" RowSpacing="20">
+    <Grid>
+    <Grid Padding="20" RowSpacing="20" x:Name="MainGrid">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-
-        <!-- CARD FORMULARIO -->
-        <Border Grid.Row="0"
-            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-            CornerRadius="12"
-            Padding="20">
-
-            <StackPanel Spacing="15">
-
+            <StackPanel Grid.Row="0">
                 <TextBlock Text="Gestión de Roles"
                            FontSize="24"
-                           FontWeight="SemiBold"/>
-
-                <Grid ColumnSpacing="15" RowSpacing="10">
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                           FontWeight="SemiBold">
+                </TextBlock>
+            </StackPanel>
+        
+            <!-- CARD FORMULARIO -->
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="1">
+                
 
 
+                <Border Grid.Column="0"
+                        Background="{ThemeResource CardBackgroundFillColorDefault}"
+                        CornerRadius="12"
+                        Padding="20"
+                        Width="400"
+                        Margin="20"
+                        Height="90">
+                    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                        
+                        <TextBox x:Name="txtBuscar"
+                                 PlaceholderText="Buscar rol..."
+                                 TextChanged="txtBuscar_TextChanged"
+                                 Width="300"
+                                 />
+                        <Button Click="Buscar_Click">
+                            
+                            <FontIcon Glyph="&#xE721;" 
+                                  FontFamily="Segoe Fluent Icons" 
+                                  FontSize="18"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"/>
+                        </Button>
+                    </StackPanel>
 
+                </Border>
+                <Border 
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        CornerRadius="12"
+                        Padding="10"
+                        Width="130"
+                        Height="50"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center">
+                    <Button Click="AbrirOverlay_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="10.6">
+                            <FontIcon Glyph="&#xE710;" 
+                                      FontFamily="Segoe Fluent Icons" 
+                                      FontSize="20"/>
+                            <TextBlock Text="Crear Rol"/>
+                        </StackPanel>
+                        
+
+                    </Button>
+                </Border>
+
+            </StackPanel>
+
+
+
+            <!-- 📋 GRID -->
+            <Grid Grid.Row="2">
+
+
+                <Border 
+                Padding="15"
+                CornerRadius="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+
+                    <StackPanel Spacing="10">
+
+                        <!-- HEADER -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <TextBlock Text="Roles"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"/>
+
+
+                        </StackPanel>
+
+                        <!-- DATA GRID -->
+                        <controls:DataGrid x:Name="dgRoles"
+                                   AutoGenerateColumns="False"
+                                   IsReadOnly="True">
+
+                            <controls:DataGrid.Columns>
+
+                                <controls:DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}"/>
+
+                                <!-- 🔥 ACCIONES -->
+                                <controls:DataGridTemplateColumn Header="Acciones">
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+
+                                            <StackPanel Orientation="Horizontal" Spacing="5">
+
+                                                <Button Click="Editar_Click"
+                                                        Background="{ThemeResource AccentAAFillColorDefaultBrush}"
+                                                Tag="{Binding}">
+
+                                                    <SymbolIcon Symbol="View"/>
+                                                </Button>
+                                                <Button 
+                                                Click="Eliminar_Click"
+                                                    Tag="{Binding}"
+                                                    Background="Red">
+                                                    <SymbolIcon Symbol="Delete"/>
+                                                </Button>
+
+                                            </StackPanel>
+
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                </controls:DataGridTemplateColumn>
+
+                            </controls:DataGrid.Columns>
+
+                        </controls:DataGrid>
+
+                    </StackPanel>
+
+                </Border>
+                <!-- OVERLAY LOADING -->
+                <Grid x:Name="OverlayLoading"
+                      Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+                      Visibility="Collapsed"
+                      Opacity="0.8">
+
+                    <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="10">
+
+                        <ProgressRing IsActive="True"
+                          Width="50"
+                          Height="50"/>
+
+                        <TextBlock Text="Cargando roles..." />
+
+                    </StackPanel>
+
+                </Grid>
+
+            </Grid>
+
+        </Grid>
+        
+        <Grid Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+              Opacity="0.8"
+              x:Name="OverlayRol"
+              Visibility="Collapsed"
+              >
+
+            <Border 
+           
+             Width="400"
+             Padding="20"
+             Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+             CornerRadius="12"
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center">
+
+                <StackPanel Spacing="10">
+
+                    <TextBlock Text="Rol"  
+                               x:Name ="txtTitulo"
+                               FontSize="18"
+                               FontWeight="SemiBold"/>
 
                     <!-- Nombre -->
                     <TextBox x:Name="txtNombre"
@@ -54,104 +195,46 @@
                              Grid.Column="0"/>
 
 
-                    <!-- Estado -->
-                    <ToggleSwitch x:Name="tsEstado"
-                                  Header="Estado"
-                                  IsOn="True"
-                                  OnContent="Activo"
-                                  OffContent="Inactivo"
-                                  Grid.Row="0"
-                                  Grid.Column="1"/>
 
-                </Grid>
+                    <!-- BOTONES -->
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="10"
+                                HorizontalAlignment="Right">
+
+                        <Button Click="CerrarOverlay_Click" >
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon  Glyph="&#xE711;" FontFamily="Segoe Fluent Icons"/>
+                                <TextBlock Text="Cancelar"/>
+                            </StackPanel>
+
+                        </Button>
+
+                        <Button x:Name="BtnGuardar"
+                                Click="GuardarOverlay_Click"
+                                Background="#FF2D89EF"
+                                Foreground="White">
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                                <FontIcon Glyph="&#xF78C;" FontFamily="Segoe Fluent Icons"/>
+                                <TextBlock x:Name="txtGuardar" Text="Guardar"/>
+                                <ProgressRing x:Name="prCrear"
+                                              Width="20"
+                                              Height="20"
+                                              IsActive="False"
+                                              Visibility="Collapsed"/>
+                            </StackPanel>
 
 
-                <!-- BOTONES -->
-                <StackPanel Orientation="Horizontal" Spacing="10">
+                            
+                        </Button>
 
-                    <Button Click="BtnCrear_Click">
 
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                            <SymbolIcon Symbol="Add"/>
-                            <TextBlock Text="Crear"/>
-                        </StackPanel>
-
-                    </Button>
-
-                    <Button Click="BtnActualizar_Click">
-
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                            <SymbolIcon Symbol="Edit"/>
-                            <TextBlock Text="Actualizar"/>
-                        </StackPanel>
-
-                    </Button>
-
-                    <Button Click="BtnEliminar_Click">
-
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                            <SymbolIcon Symbol="Delete"/>
-                            <TextBlock Text="Eliminar"/>
-                        </StackPanel>
-
-                    </Button>
-
-                    <Button Click="BtnLimpiar_Click">
-
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                            <SymbolIcon Symbol="Refresh"/>
-                            <TextBlock Text="Limpiar"/>
-                        </StackPanel>
-
-                    </Button>
+                    </StackPanel>
 
                 </StackPanel>
 
-            </StackPanel>
+            </Border>
 
-        </Border>
-
-
-
-        <!-- CARD DATAGRID -->
-        <Border Grid.Row="1"
-            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-            CornerRadius="12"
-            Padding="20">
-
-            <StackPanel Spacing="10">
-
-                <TextBlock Text="Lista de Roles"
-                       FontSize="18"
-                       FontWeight="SemiBold"/>
-
-                <controls:DataGrid x:Name="dgRoles"
-                               AutoGenerateColumns="False"
-                               SelectionChanged="dgRoles_SelectionChanged"
-                               SelectionMode="Extended"
-                               IsReadOnly="True"
-                               IsTabStop="false">
-
-                    <controls:DataGrid.Columns>
-
-                        <controls:DataGridTextColumn Header="Nombre"
-                                                 Binding="{Binding Nombre}"
-                                                 Width="auto"/>
-
-
-                        <controls:DataGridCheckBoxColumn Header="Estado"
-                                                 Binding="{Binding Estado}"
-                                                 Width="auto"/>
-
-
-                    </controls:DataGrid.Columns>
-
-                </controls:DataGrid>
-
-            </StackPanel>
-
-        </Border>
-
+        </Grid>
     </Grid>
 </Page>
 

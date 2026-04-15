@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using PrimePOS.WinUI.Config;
 using PrimePOS.WinUI.Infrastructure.PrimePOS.WinUI.Infrastructure;
 using QuestPDF.Infrastructure;
 using System;
@@ -13,6 +14,8 @@ namespace PrimePOS.WinUI
         private static Window? _window;
         public static ElementTheme TemaActual = ElementTheme.Dark;
         public static IServiceProvider Services { get; private set; } = null!;
+        public static IServiceProvider AppServices { get; private set; } = null!;
+
 
         public App()
         {
@@ -21,6 +24,12 @@ namespace PrimePOS.WinUI
 
             // Configurar DI
             var services = new ServiceCollection();
+            var serviceCollection = new ServiceCollection();
+
+            //  Aquí inyectas TODO
+            serviceCollection.AddApplicationServices();
+
+            AppServices = serviceCollection.BuildServiceProvider();
 
             QuestPDF.Settings.License = LicenseType.Community;
 

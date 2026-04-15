@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PrimePOS.BLL\PrimePOS.BLL.csproj" />
-    <ProjectReference Include="..\PrimePOS.DAL\PrimePOS.DAL.csproj" />
+    <ProjectReference Include="..\PrimePOS.Contracts\PrimePOS.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

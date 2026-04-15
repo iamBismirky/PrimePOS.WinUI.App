@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PrimePOS.Contracts\PrimePOS.Contracts.csproj" />
     <ProjectReference Include="..\PrimePOS.DAL\PrimePOS.DAL.csproj" />
     <ProjectReference Include="..\PrimePOS.ENTITIES\PrimePOS.ENTITIES.csproj" />
   </ItemGroup>

@@ -28,77 +28,77 @@
                            FontWeight="SemiBold"/>
                 <!-- Nombre -->
                 <TextBox x:Name="txtNombre"
- Header="Nombre"
- Grid.Row="0"
- Grid.Column="0"/>
+                         Header="Nombre"
+                         Grid.Row="0"
+                         Grid.Column="0"/>
 
                 <!-- Descripcion -->
                 <TextBox x:Name="txtDescripcion"
- Header="Descripcion"
- Grid.Row="0"
- Grid.Column="1"
- IsTabStop="True"/>
+                         Header="Descripcion"
+                         Grid.Row="0"
+                         Grid.Column="1"
+                         IsTabStop="True"/>
 
                 <!-- Codigo Barra -->
                 <TextBox x:Name="txtCodigoBarra"
- Header="Codigo Barra"
- Grid.Row="1"
- Grid.Column="0"/>
+                         Header="Codigo Barra"
+                         Grid.Row="1"
+                         Grid.Column="0"/>
 
 
 
                 <!-- Categoria -->
                 <ComboBox x:Name="cmbCategoria"
- Header="Categoria"
- PlaceholderText="Seleccione una categoria"
- Width="auto"
- DisplayMemberPath="Nombre"
- SelectedValuePath="CategoriaId"
- Grid.Row="1"
- Grid.Column="1"/>
+                          Header="Categoria"
+                          PlaceholderText="Seleccione una categoria"
+                          Width="auto"
+                          DisplayMemberPath="Nombre"
+                          SelectedValuePath="CategoriaId"
+                          Grid.Row="1"
+                          Grid.Column="1"/>
 
 
                 <!-- Precio de compra -->
                 <NumberBox x:Name="nbPrecioCompra"
-           Header="Precio Compra"
-           PlaceholderText="0.00"
-           Minimum="0"
-           SpinButtonPlacementMode="Compact"
-           SmallChange="1"
-           Value="0"
-           LargeChange="1000000"
-           Grid.Row="0"
-           Grid.Column="2"/>
+                           Header="Precio Compra"
+                           PlaceholderText="0.00"
+                           Minimum="0"
+                           SpinButtonPlacementMode="Compact"
+                           SmallChange="1"
+                           Value="0"
+                           LargeChange="1000000"
+                           Grid.Row="0"
+                           Grid.Column="2"/>
 
                 <!-- Precio de venta -->
                 <NumberBox x:Name="nbPrecioVenta"
-           Header="Precio Venta"
-           PlaceholderText="0.00"
-           Minimum="0"
-           SpinButtonPlacementMode="Compact"
-           SmallChange="1"
-           LargeChange="1000000"
-           Value="0"
-           Grid.Row="1"
-           Grid.Column="3"/>
+                           Header="Precio Venta"
+                           PlaceholderText="0.00"
+                           Minimum="0"
+                           SpinButtonPlacementMode="Compact"
+                           SmallChange="1"
+                           LargeChange="1000000"
+                           Value="0"
+                           Grid.Row="1"
+                           Grid.Column="3"/>
 
                 <!-- Existencia -->
                 <NumberBox x:Name="nbExistencia"
-           Header="Existencia"
-           PlaceholderText="0"
-           Minimum="0"
-           SpinButtonPlacementMode="Compact"
-           SmallChange="1"
-           LargeChange="1000000"
-           Value="0"
-           Grid.Row="3"
-           Grid.Column="2"/>
+                           Header="Existencia"
+                           PlaceholderText="0"
+                           Minimum="0"
+                           SpinButtonPlacementMode="Compact"
+                           SmallChange="1"
+                           LargeChange="1000000"
+                           Value="0"
+                           Grid.Row="3"
+                           Grid.Column="2"/>
 
 
                 <!-- BOTONES -->
                 <StackPanel Orientation="Horizontal"
-                    Spacing="10"
-                    HorizontalAlignment="Right">
+                            Spacing="10"
+                            HorizontalAlignment="Right">
 
                     <Button Content="Cancelar"
                             Click="BtnCerrar_Click" />
