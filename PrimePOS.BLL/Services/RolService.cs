@@ -60,17 +60,26 @@ public class RolService : IRolService
         if (rol == null)
             throw new BusinessException("Debe seleccionar un Rol", "REQUIRED");
 
-        if (dto.Nombre == rol.Nombre && dto.Estado == rol.Estado)
+        if (dto.Nombre == rol.Nombre)
         {
+            if (!dto.Estado)
+            {
+                dto.Estado = true;
+                await _rolRepository.Actualizar(rol);
+                await _rolRepository.GuardarCambiosAsync();
+            }
             throw new BusinessException("Ya existe un rol con este nombre", "DUPLICATE");
         }
+        else
+        {
+            rol.Nombre = dto.Nombre;
+            rol.Estado = true;
 
-        rol.Nombre = dto.Nombre;
-        rol.Estado = true;
+            await _rolRepository.Actualizar(rol);
+            await _rolRepository.GuardarCambiosAsync();
+            return true;
+        }
 
-        await _rolRepository.Actualizar(rol);
-        await _rolRepository.GuardarCambiosAsync();
-        return true;
     }
 
 

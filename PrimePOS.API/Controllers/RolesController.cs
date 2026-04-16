@@ -79,19 +79,46 @@ public class RolesController : ControllerBase
     [HttpPatch("{id}/desactivar")]
     public async Task<IActionResult> DesactivarRol(int id)
     {
-        await _service.DesactivarRolAsync(id);
-        return NoContent();
+        try
+        {
+            await _service.DesactivarRolAsync(id);
+
+            return Ok();
+        }
+        catch (BusinessException ex)
+        {
+
+            return BadRequest(new
+            {
+                message = ex.Message,
+                code = ex.Code
+            });
+
+        }
+
     }
 
     // 🔹 DELETE: api/roles/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> EliminarRol(int id)
     {
-        await _service.EliminarRolAsync(new EliminarRolDto
+        try
         {
-            RolId = id
-        });
+            await _service.EliminarRolAsync(new EliminarRolDto
+            {
+                RolId = id
+            });
+            return Ok();
+        }
+        catch (BusinessException ex)
+        {
 
-        return NoContent();
+            return BadRequest(new
+            {
+                message = ex.Message,
+                code = ex.Code
+            });
+
+        }
     }
 }

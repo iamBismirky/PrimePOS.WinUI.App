@@ -48,7 +48,7 @@ public sealed partial class RolPage : Page
         {
             IsLoading = true;
 
-            _listaRoles = await _rolApiService.GetRolesAsync();
+            _listaRoles = await _rolApiService.ObtenerRolesAsync();
             dgRoles.ItemsSource = null;
             dgRoles.ItemsSource = _listaRoles;
         }

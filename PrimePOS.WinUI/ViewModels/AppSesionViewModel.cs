@@ -1,6 +1,7 @@
-﻿using PrimePOS.BLL.DTOs.Caja;
+﻿
 using PrimePOS.BLL.DTOs.Turno;
 using PrimePOS.BLL.DTOs.Usuario;
+using PrimePOS.Contracts.DTOs.Caja;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 

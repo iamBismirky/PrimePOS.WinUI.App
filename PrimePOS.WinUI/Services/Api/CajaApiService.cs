@@ -1,4 +1,4 @@
-﻿using PrimePOS.Contracts.DTOs.Rol;
+﻿using PrimePOS.Contracts.DTOs.Caja;
 using PrimePOS.WinUI.Models;
 using System;
 using System.Collections.Generic;
@@ -9,23 +9,24 @@ using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.Services.Api;
 
-public class RolApiService
+public class CajaApiService
 {
     private readonly HttpClient _http;
 
-    public RolApiService(IHttpClientFactory factory)
+    public CajaApiService(IHttpClientFactory factory)
     {
         _http = factory.CreateClient("ApiClient");
     }
 
-    public async Task<List<RolDto>> ObtenerRolesAsync()
+    public async Task<List<CajaDto>> ObtenerCajasAsync()
     {
-        return await _http.GetFromJsonAsync<List<RolDto>>("api/roles") ?? new List<RolDto>();
+        return await _http.GetFromJsonAsync<List<CajaDto>>("api/cajas")
+               ?? new List<CajaDto>();
     }
 
-    public async Task CrearRolAsync(CrearRolDto dto)
+    public async Task CrearCajaAsync(CajaDto dto)
     {
-        var res = await _http.PostAsJsonAsync("api/roles", dto);
+        var res = await _http.PostAsJsonAsync("api/cajas", dto);
 
         if (!res.IsSuccessStatusCode)
         {
@@ -44,9 +45,9 @@ public class RolApiService
         }
     }
 
-    public async Task ActualizarRolAsync(int id, ActualizarRolDto dto)
+    public async Task ActualizarCajaAsync(int id, CajaDto dto)
     {
-        var res = await _http.PutAsJsonAsync($"api/roles/{id}", dto);
+        var res = await _http.PutAsJsonAsync($"api/cajas/{id}", dto);
 
         if (!res.IsSuccessStatusCode)
         {
@@ -65,9 +66,9 @@ public class RolApiService
         }
     }
 
-    public async Task DesactivarRolAsync(int id)
+    public async Task DesactivarCajaAsync(int id)
     {
-        var res = await _http.PatchAsync($"api/roles/{id}/desactivar", null);
+        var res = await _http.PatchAsync($"api/cajas/{id}/desactivar", null);
 
         if (!res.IsSuccessStatusCode)
         {

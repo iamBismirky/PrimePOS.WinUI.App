@@ -37,7 +37,7 @@ public sealed partial class UsuarioPage : Page
         {
             //Cargar listado de usuarios (DataGrid) y Roles (ComboBox)
             await ListarRoles();
-            await ListarUsuarios();
+            await ListarUsuariosAsync();
 
             //Foco en el textBox Nombre
             txtNombre.Focus(FocusState.Programmatic);
@@ -70,7 +70,7 @@ public sealed partial class UsuarioPage : Page
             };
             await _usuarioService.CrearUsuarioAsync(usuario);
 
-            await ListarUsuarios();
+            await ListarUsuariosAsync();
             LimpiarCampos();
 
 
@@ -100,7 +100,7 @@ public sealed partial class UsuarioPage : Page
             };
             await _usuarioService.ActualizarUsuarioAsync(usuario);
 
-            await ListarUsuarios();
+            await ListarUsuariosAsync();
             LimpiarCampos();
 
         }
@@ -124,7 +124,7 @@ public sealed partial class UsuarioPage : Page
 
             await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Usuario eliminado correctamente");
 
-            await ListarUsuarios();
+            await ListarUsuariosAsync();
             LimpiarCampos();
 
         }
@@ -173,7 +173,7 @@ public sealed partial class UsuarioPage : Page
 
         }
     }
-    private async Task ListarUsuarios()
+    private async Task ListarUsuariosAsync()
     {
         try
         {

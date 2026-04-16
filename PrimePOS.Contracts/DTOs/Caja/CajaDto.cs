@@ -1,4 +1,4 @@
-﻿namespace PrimePOS.BLL.DTOs.Caja
+﻿namespace PrimePOS.Contracts.DTOs.Caja
 {
     public class CajaDto
     {

@@ -69,7 +69,7 @@
                             <FontIcon Glyph="&#xE710;" 
                                       FontFamily="Segoe Fluent Icons" 
                                       FontSize="20"/>
-                            <TextBlock Text="Crear Rol"/>
+                            <TextBlock Text="Nuevo"/>
                         </StackPanel>
                         
 

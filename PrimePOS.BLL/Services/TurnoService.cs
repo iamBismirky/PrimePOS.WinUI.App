@@ -43,7 +43,7 @@ public class TurnoService
                 throw new Exception("Ya hay un turno abierto en esta caja.");
 
             // Validar que la caja exista
-            var existeCaja = await _cajaRepository.ExisteCajaAsync(dto.CajaId);
+            var existeCaja = await _cajaRepository.ExisteCajaIdAsync(dto.CajaId);
 
             if (!existeCaja)
                 throw new Exception("La caja no existe.");

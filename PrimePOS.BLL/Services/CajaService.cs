@@ -1,29 +1,53 @@
-﻿using PrimePOS.BLL.DTOs.Caja;
-using PrimePOS.DAL.Repositories;
+﻿using PrimePOS.BLL.Exceptions;
+using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.DTOs.Caja;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services
 {
-    public class CajaService
+    public class CajaService : ICajaService
     {
-        private readonly CajaRepository _cajaRepository;
+        private readonly ICajaRepository _cajaRepository;
 
-        public CajaService(CajaRepository cajaRepository)
+        public CajaService(ICajaRepository cajaRepository)
         {
             _cajaRepository = cajaRepository;
         }
 
         public async Task CrearCajaAsync(CajaDto dto)
         {
-            var caja = new Caja
+            if (string.IsNullOrWhiteSpace(dto.Nombre))
+                throw new BusinessException("El nombre no puede estar vacío.", "REQUIRED_NAME");
+
+            var existeCaja = await _cajaRepository.ObtenerPorNombreAsync(dto.Nombre);
+
+            if (existeCaja != null)
             {
-                Nombre = dto.Nombre,
-                Estado = dto.Estado
-            };
 
-            _cajaRepository.Crear(caja);
+                if (!existeCaja.Estado)
+                {
+                    existeCaja.Estado = true;
+                    _cajaRepository.Actualizar(existeCaja);
+                    await _cajaRepository.GuardarCambiosAsync();
+                    return;
+                }
+                throw new BusinessException("Ya existe una caja con este nombre.", "DUPLICATE");
 
-            await _cajaRepository.GuardarCambiosAsync();
+            }
+            else
+            {
+                var caja = new Caja
+                {
+                    Nombre = dto.Nombre,
+                    Estado = true
+                };
+
+                _cajaRepository.Crear(caja);
+
+                await _cajaRepository.GuardarCambiosAsync();
+            }
+
         }
 
         public async Task<CajaDto?> ObtenerCajaPorIdAsync(int id)
@@ -54,10 +78,10 @@ namespace PrimePOS.BLL.Services
         public async Task ActualizarCajaAsync(CajaDto dto)
         {
             var caja = await _cajaRepository.ObtenerCajaPorIdAsync(dto.CajaId)
-                ?? throw new Exception("Debe seleccionar una caja");
+                ?? throw new BusinessException("Debe seleccionar una caja", "REQUIRED_NOFOUND");
 
             if (string.IsNullOrWhiteSpace(dto.Nombre))
-                throw new Exception("El nombre no puede estar vacío.");
+                throw new BusinessException("El nombre no puede estar vacío.", "REQUIRED_NAME");
 
 
 
@@ -69,14 +93,26 @@ namespace PrimePOS.BLL.Services
 
         }
 
-        public async Task EliminarCajaAsync(CajaDto dto)
+        public async Task EliminarCajaAsync(int cajaId)
         {
-            var caja = await _cajaRepository.ObtenerCajaPorIdAsync(dto.CajaId);
+            var caja = await _cajaRepository.ObtenerCajaPorIdAsync(cajaId);
 
             if (caja == null)
-                throw new Exception("Debe de seleccionar una caja");
+                throw new BusinessException("Debe de seleccionar una caja", "REQUIRED_NOFOUND");
 
             _cajaRepository.Eliminar(caja);
+            await _cajaRepository.GuardarCambiosAsync();
+
+        }
+        public async Task DesactivarCajaAsync(int cajaId)
+        {
+            var caja = await _cajaRepository.ObtenerCajaPorIdAsync(cajaId);
+
+            if (caja == null)
+                throw new BusinessException("Debe de seleccionar una caja", "REQUIRED_NOFOUND");
+
+            caja.Estado = false;
+            _cajaRepository.Actualizar(caja);
             await _cajaRepository.GuardarCambiosAsync();
 
         }

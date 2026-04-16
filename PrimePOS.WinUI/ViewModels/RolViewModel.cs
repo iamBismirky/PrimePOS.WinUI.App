@@ -50,7 +50,7 @@ public partial class RolViewModel : ObservableObject
             LoadingMessage = "Cargando roles...";
 
 
-            var lista = await _service.GetRolesAsync();
+            var lista = await _service.ObtenerRolesAsync();
 
             Roles.Clear();
             foreach (var rol in lista)
