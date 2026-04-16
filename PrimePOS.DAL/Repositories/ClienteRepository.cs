@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.DAL.Repositories;
 
-public class ClienteRepository
+public class ClienteRepository : IClienteRepository
 {
     private readonly AppDbContext _context;
 
@@ -26,7 +27,7 @@ public class ClienteRepository
 
         _context.Clientes.Remove(cliente);
     }
-    public async Task<List<Cliente>> ListarClientesAsync()
+    public async Task<List<Cliente>> ObtenerTodosAsync()
     {
         return await _context.Clientes.ToListAsync();
     }

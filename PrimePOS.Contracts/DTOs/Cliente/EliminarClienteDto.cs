@@ -1,4 +1,4 @@
-﻿namespace PrimePOS.BLL.DTOs.Cliente
+﻿namespace PrimePOS.Contracts.DTOs.Cliente
 {
     public class EliminarClienteDto
     {

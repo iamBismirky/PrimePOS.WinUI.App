@@ -2,9 +2,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using PrimePOS.BLL.DTOs.Cliente;
 using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.BLL.Services;
+using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.ENTITIES.Models;
 using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Overlays;
@@ -331,7 +331,7 @@ public sealed partial class VentasPage : Page
     {
         try
         {
-            var cliente = await _clienteService.ObtenerPorId(1);
+            var cliente = await _clienteService.ObtenerPorIdAsync(1);
             if (cliente != null)
             {
                 _clienteDto = cliente;
