@@ -17,6 +17,7 @@ public static class DependencyInjection
         services.AddScoped<CategoriaApiService>();
         services.AddScoped<CajaApiService>();
         services.AddScoped<ClienteApiService>();
+        services.AddScoped<ProductoApiService>();
 
         // ViewModels
         services.AddTransient<RolViewModel>();

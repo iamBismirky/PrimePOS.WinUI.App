@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.DAL.Repositories;
 
-public class ProductoRepository
+public class ProductoRepository : IProductoRepository
 {
     private readonly AppDbContext _context;
 
@@ -26,7 +27,7 @@ public class ProductoRepository
     {
         _context.Productos.Remove(producto);
     }
-    public async Task<List<Producto>> ListarAsync()
+    public async Task<List<Producto>> ObtenerTodosAsync()
     {
         return await _context.Productos
             .Include(p => p.Categoria)

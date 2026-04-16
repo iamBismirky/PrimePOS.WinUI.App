@@ -22,12 +22,14 @@ namespace PrimePOS.API
             services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             services.AddScoped<ICajaRepository, CajaRepository>();
             services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<IProductoRepository, ProductoRepository>();
 
             // 🔹 Services
             services.AddScoped<IRolService, RolService>();
             services.AddScoped<ICategoriaService, CategoriaService>();
             services.AddScoped<ICajaService, CajaService>();
             services.AddScoped<IClienteService, ClienteService>();
+            services.AddScoped<IProductoService, ProductoService>();
 
             return services;
         }

@@ -1,4 +1,4 @@
-﻿namespace PrimePOS.BLL.DTOs.Producto
+﻿namespace PrimePOS.Contracts.DTOs.Producto
 {
     public class EliminarProductoDto
     {

@@ -1,15 +1,17 @@
-﻿using PrimePOS.BLL.DTOs.Producto;
+﻿using PrimePOS.BLL.Exceptions;
+using PrimePOS.BLL.Interfaces;
 using PrimePOS.BLL.Validators;
-using PrimePOS.DAL.Repositories;
+using PrimePOS.Contracts.DTOs.Producto;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services;
 
-public class ProductoService
+public class ProductoService : IProductoService
 {
-    private readonly ProductoRepository _productoRepository;
+    private readonly IProductoRepository _productoRepository;
 
-    public ProductoService(ProductoRepository repository)
+    public ProductoService(IProductoRepository repository)
     {
         _productoRepository = repository;
     }
@@ -20,7 +22,7 @@ public class ProductoService
         var existe = await _productoRepository.ExisteCodigoONombreAsync(dto.CodigoBarra.Trim(), dto.Nombre.Trim());
 
         if (existe)
-            throw new Exception("Ya existe un producto con este nombre o codigo barras");
+            throw new BusinessException("Ya existe un producto con este nombre o codigo barras", "DUPLICATE");
 
         var producto = new Producto
         {
@@ -51,7 +53,7 @@ public class ProductoService
         var producto = await _productoRepository.ObtenerPorIdAsync(dto.ProductoId);
 
         if (producto == null)
-            throw new Exception("Producto no existe.");
+            throw new BusinessException("Producto no existe.", "NO_FOUND");
 
 
         producto.CodigoBarra = dto.CodigoBarra;
@@ -67,12 +69,11 @@ public class ProductoService
         await _productoRepository.GuardarCambiosAsync();
 
     }
-    public async Task EliminarProductoAsync(EliminarProductoDto dto)
+    public async Task EliminarProductoAsync(int productoId)
     {
-        ProductoValidator.ValidarEliminar(dto.ProductoId);
+        ProductoValidator.ValidarEliminar(productoId);
 
-        var producto = await _productoRepository.ObtenerPorIdAsync(dto.ProductoId);
-
+        var producto = await _productoRepository.ObtenerPorIdAsync(productoId);
         if (producto == null)
             throw new Exception("Producto no encontrado.");
 
@@ -159,9 +160,9 @@ public class ProductoService
         };
     }
 
-    public async Task<List<ProductoDto>> ListarProductosAsync()
+    public async Task<List<ProductoDto>> ObtenerTodosAsync()
     {
-        var productos = await _productoRepository.ListarAsync();
+        var productos = await _productoRepository.ObtenerTodosAsync();
 
         return productos.Select(p => new ProductoDto
         {

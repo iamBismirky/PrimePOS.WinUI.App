@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.BLL.Services;
+using PrimePOS.Contracts.DTOs.Producto;
 using PrimePOS.WinUI.Helpers;
 using System;
 using System.Threading.Tasks;

@@ -2,8 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using PrimePOS.BLL.DTOs.Producto;
 using PrimePOS.BLL.Services;
+using PrimePOS.Contracts.DTOs.Producto;
 using PrimePOS.WinUI.Overlays;
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,7 @@ namespace PrimePOS.WinUI.Pages
         }
         private async Task CargarProductosAsync()
         {
-            var lista = await _productoService.ListarProductosAsync();
+            var lista = await _productoService.ObtenerTodosAsync();
             _cacheProductos = lista.ToList();
             dgProductos.ItemsSource = _cacheProductos;
         }
@@ -76,14 +76,14 @@ namespace PrimePOS.WinUI.Pages
                 .Where(x => x.Nombre.Contains(texto, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
-        private void BtnEditar_Click(object sender, RoutedEventArgs e)
+        private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
 
             if ((sender as Button)?.DataContext is ProductoDto producto)
             {
                 var overlay = new ProductoOverlay();
 
-                overlay.SetData(producto);
+                await overlay.SetData(producto);
                 overlay.OnClose += CerrarOverlay;
                 //overlay.OnCrear += GuardarProducto;
                 overlay.OnActualizar += ActualizarProducto;
@@ -97,10 +97,8 @@ namespace PrimePOS.WinUI.Pages
 
             if ((sender as Button)?.DataContext is ProductoDto producto)
             {
-                await _productoService.EliminarProductoAsync(new EliminarProductoDto
-                {
-                    ProductoId = producto.ProductoId
-                });
+                await _productoService.EliminarProductoAsync(producto.ProductoId);
+
 
                 await CargarProductosAsync();
             }

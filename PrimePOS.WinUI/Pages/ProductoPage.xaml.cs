@@ -1,202 +1,273 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
-using PrimePOS.BLL.DTOs.Producto;
-using PrimePOS.BLL.Services;
+using PrimePOS.Contracts.DTOs.Categoria;
+using PrimePOS.Contracts.DTOs.Producto;
 using PrimePOS.WinUI.Helpers;
+using PrimePOS.WinUI.Services.Api;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 
-
-namespace PrimePOS.WinUI.Pages;
-
-
-public sealed partial class ProductoPage : Page
+namespace PrimePOS.WinUI.Pages
 {
-    private readonly ProductoService _productoService;
-    private readonly CategoriaService _categoriaService;
-    private int _productoIdSeleccionado = 0;
-    public ProductoPage()
+
+    public sealed partial class ProductoPage : Page
     {
-        InitializeComponent();
+        private ProductoDto? _productoSeleccionado;
+        private readonly ProductoApiService _productoApiService;
+        private readonly CategoriaApiService _categoriaApiService;
+        private List<ProductoDto> _listaProductos = new();
+        private List<CategoriaDto> _listaCategorias = new();
 
-        _productoService = App.Services.GetRequiredService<ProductoService>();
-        _categoriaService = App.Services.GetRequiredService<CategoriaService>();
-
-        //Foco en el textBox Nombre
-        txtNombre.Focus(FocusState.Programmatic);
-
-        //Aplicar formato a los NumericBox decimales
-        NumberBoxHelper.AplicarFormatoMoneda(nbPrecioCompra);
-        NumberBoxHelper.AplicarFormatoMoneda(nbPrecioVenta);
-    }
-    protected override async void OnNavigatedTo(NavigationEventArgs e)
-    {
-        base.OnNavigatedTo(e);
-
-        try
+        private bool _isLoading;
+        public ProductoPage()
         {
-            //Cargar listado de productos (DataGrid) y categorias(ComboBox)
-            await ListarProductosAsync();
-            await ListarCategoriasAsync();
+            InitializeComponent();
 
+            _productoApiService = App.AppServices.GetRequiredService<ProductoApiService>();
+            _categoriaApiService = App.AppServices.GetRequiredService<CategoriaApiService>();
         }
-        catch (Exception ex)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
+            await CargarProductosAsync();
         }
-    }
-    private async void BtnCrear_Click(object sender, RoutedEventArgs e)
-    {
-        try
+
+
+        private void LimpiarCampos()
         {
-            var dto = new CrearProductoDto
+            txtNombre.Text = "";
+            txtDescripcion.Text = "";
+            txtCodigoBarra.Text = "";
+            ndPrecioCompra.Text = "";
+            ndPrecioVenta.Text = "";
+            ndExistencia.Text = "";
+            txtFecha.Text = "";
+            txtCodigo.Text = "";
+            txtBuscar.Focus(FocusState.Programmatic);
+            OverlayProducto.Visibility = Visibility.Collapsed;
+            _productoSeleccionado = null;
+        }
+        private async Task CargarProductosAsync()
+        {
+            try
+            {
+                IsLoading = true;
+
+                _listaProductos = await _productoApiService.ObtenerProductosAsync();
+                dgProductos.ItemsSource = null;
+                dgProductos.ItemsSource = _listaProductos;
+            }
+            catch (Exception ex)
             {
 
-                CodigoBarra = txtCodigoBarra.Text.Trim(),
-                Nombre = txtNombre.Text.Trim(),
-                Descripcion = txtDescripcion.Text.Trim(),
-                CategoriaId = cmbCategoria.SelectedValue != null ? (int)cmbCategoria.SelectedValue : 0,
-                PrecioCompra = (decimal)nbPrecioCompra.Value,
-                PrecioVenta = (decimal)nbPrecioVenta.Value,
-                Existencia = (int)nbExistencia.Value,
-                Estado = tsEstado.IsOn
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
 
-            };
-            await _productoService.CrearProductoAsync(dto);
-            await ListarProductosAsync();
-            LimpiarCampos();
+            }
+            finally { IsLoading = false; }
+
         }
-        catch (Exception ex)
+        private async Task CargarCategoriasAsync()
         {
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-        }
-    }
-
-    private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var dto = new ActualizarProductoDto
+            try
             {
-                ProductoId = _productoIdSeleccionado,
-                CodigoBarra = txtCodigoBarra.Text.Trim(),
-                Nombre = txtNombre.Text.Trim(),
-                Descripcion = txtDescripcion.Text.Trim(),
-                CategoriaId = cmbCategoria.SelectedValue != null ? (int)cmbCategoria.SelectedValue : 0,
-                PrecioCompra = (decimal)nbPrecioCompra.Value,
-                PrecioVenta = (decimal)nbPrecioVenta.Value,
-                Existencia = (int)nbExistencia.Value,
-                Estado = tsEstado.IsOn
+                IsLoading = true;
 
-            };
-            await _productoService.ActualizarProductoAsync(dto);
-            await ListarProductosAsync();
-            LimpiarCampos();
-        }
-        catch (Exception ex)
-        {
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-        }
-
-    }
-
-    private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var dto = new EliminarProductoDto
+                _listaCategorias = await _categoriaApiService.ObtenerCategoriasAsync();
+                cmbCategoria.ItemsSource = null;
+                cmbCategoria.ItemsSource = _listaCategorias;
+                cmbCategoria.DisplayMemberPath = "Nombre";
+                cmbCategoria.SelectedValuePath = "CategoriaId";
+            }
+            catch (Exception ex)
             {
-                ProductoId = _productoIdSeleccionado
 
-            };
-            await _productoService.EliminarProductoAsync(dto);
-            await ListarProductosAsync();
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+
+            }
+            finally { IsLoading = false; }
+
+        }
+        private void FiltrarProductos()
+        {
+            var texto = txtBuscar.Text?.ToLower() ?? "";
+
+            var filtrados = string.IsNullOrWhiteSpace(texto)
+                ? _listaProductos
+                : _listaProductos
+                    .Where(r => r.Nombre.ToLower().Contains(texto))
+                    .ToList();
+
+            dgProductos.ItemsSource = null;
+            dgProductos.ItemsSource = filtrados;
+        }
+        private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            FiltrarProductos();
+        }
+        private void Buscar_Click(object sender, RoutedEventArgs e)
+        {
+            FiltrarProductos();
+        }
+        private async void AbrirOverlay_Click(object sender, RoutedEventArgs e)
+        {
+            txtTitulo.Text = "Crear Producto";
+            txtCodigo.Text = "------";
+            txtFecha.Text = DateTime.Today.ToString("dd/MM/yyyy");
+            txtNombre.Focus(FocusState.Programmatic);
+            OverlayProducto.Visibility = Visibility.Visible;
+            await CargarCategoriasAsync();
+        }
+        private void CerrarOverlay_Click(object sender, RoutedEventArgs e)
+        {
+            OverlayProducto.Visibility = Visibility.Collapsed;
             LimpiarCampos();
         }
-        catch (Exception ex)
+        private async void Editar_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                txtTitulo.Text = "Actualizar Cliente";
+                txtNombre.Focus(FocusState.Programmatic);
+                await CargarCategoriasAsync();
+                var btn = sender as Button;
+                var producto = btn?.Tag as ProductoDto;
+                if (producto == null) return;
 
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+                _productoSeleccionado = producto;
+                txtCodigo.Text = producto.Codigo.ToString();
+                txtFecha.Text = producto.FechaRegistro.ToString("dd/MM/yyyy");
+                txtNombre.Text = producto.Nombre;
+                txtDescripcion.Text = producto.Descripcion;
+                cmbCategoria.SelectedValue = producto.CategoriaId;
+                txtCodigoBarra.Text = producto.CodigoBarra;
+                ndPrecioCompra.Text = producto.PrecioCompra.ToString();
+                ndPrecioVenta.Text = producto.PrecioVenta.ToString();
+                ndExistencia.Text = producto.Existencia.ToString();
+                tsEstado.IsOn = producto.Estado;
+
+
+                OverlayProducto.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Advertencia", ex.ToString());
+                throw;
+            }
+
+        }
+        private async void Eliminar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is Button btn && btn.Tag is ProductoDto producto)
+                {
+
+                    var dialog = new ContentDialog
+                    {
+                        Title = "Confirmar",
+                        Content = $"¿Desactivar el producto '{producto.Nombre}'?",
+                        CloseButtonText = "Cancelar",
+                        PrimaryButtonText = "Sí",
+                        XamlRoot = this.XamlRoot
+                    };
+
+                    var result = await dialog.ShowAsync();
+
+                    if (result != ContentDialogResult.Primary)
+                        return;
+
+
+
+                    await _productoApiService.DesactivarProductoAsync(producto.ProductoId);
+
+
+                    await CargarProductosAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+            }
         }
 
-    }
 
-    private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
-    {
-        LimpiarCampos();
-    }
-
-    private void dgProductos_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (dgProductos.SelectedItem is ProductoDto dto)
+        private async void GuardarOverlay_Click(object sender, RoutedEventArgs e)
         {
-            _productoIdSeleccionado = dto.ProductoId;
-            txtCodigoBarra.Text = dto.CodigoBarra;
-            txtNombre.Text = dto.Nombre;
-            txtDescripcion.Text = dto.Descripcion;
-            cmbCategoria.SelectedValue = dto.CategoriaId;
-            nbPrecioCompra.Value = (double)(decimal)dto.PrecioCompra;
-            nbPrecioVenta.Value = (double)(decimal)dto.PrecioVenta;
-            nbExistencia.Value = (int)dto.Existencia;
-            tsEstado.IsOn = dto.Estado;
+            try
+            {
+                if (!BtnGuardar.IsEnabled) return;
+
+                SetLoadingButton(true);
+                if (_productoSeleccionado == null)
+                {
+                    var dto = new CrearProductoDto
+                    {
+                        Nombre = txtNombre.Text.Trim(),
+                        Descripcion = txtDescripcion.Text.Trim(),
+                        CodigoBarra = txtCodigoBarra.Text.Trim(),
+                        CategoriaId = (int)(cmbCategoria.SelectedValue ?? 0),
+                        PrecioCompra = decimal.Parse(ndPrecioCompra.Text.Trim()),
+                        PrecioVenta = decimal.Parse(ndPrecioVenta.Text.Trim()),
+                        Existencia = int.Parse(ndExistencia.Text.Trim()),
+                        Estado = tsEstado.IsOn,
+
+                    };
+
+                    await _productoApiService.CrearProductoAsync(dto);
+                    await CargarProductosAsync();
+                    LimpiarCampos();
+                }
+                else
+                {
+                    var dto = new ActualizarProductoDto
+                    {
+                        ProductoId = _productoSeleccionado.ProductoId,
+                        Nombre = txtNombre.Text.Trim(),
+                        Descripcion = txtDescripcion.Text.Trim(),
+                        CodigoBarra = txtCodigoBarra.Text.Trim(),
+                        CategoriaId = (int)(cmbCategoria.SelectedValue ?? 0),
+                        PrecioCompra = decimal.Parse(ndPrecioCompra.Text.Trim()),
+                        PrecioVenta = decimal.Parse(ndPrecioVenta.Text.Trim()),
+                        Existencia = int.Parse(ndExistencia.Text.Trim()),
+                        Estado = tsEstado.IsOn,
+                    };
+                    await _productoApiService.ActualizarProductoAsync(dto.ProductoId, dto);
+                    await CargarProductosAsync();
+                    LimpiarCampos();
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+
+
+            }
+            finally { SetLoadingButton(false); }
 
         }
-
-    }
-    private async Task ListarProductosAsync()
-    {
-        try
+        public bool IsLoading
         {
-            var lista = await _productoService.ListarProductosAsync();
-            dgProductos.ItemsSource = lista;
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OverlayLoading.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
-        catch (Exception ex)
+        private void SetLoadingButton(bool isLoading)
         {
+            prCrear.IsActive = isLoading;
+            prCrear.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
 
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+            BtnGuardar.IsEnabled = !isLoading;
+            txtGuardar.Text = isLoading ? "Guardando..." : "Guardar";
         }
-    }
-    private async Task ListarCategoriasAsync()
-    {
-        try
-        {
-            var lista = await _categoriaService.ListarCategoriasAsync();
-            cmbCategoria.ItemsSource = lista;
-
-            cmbCategoria.DisplayMemberPath = "Nombre";
-            cmbCategoria.SelectedValuePath = "CategoriaId";
-        }
-        catch (Exception ex)
-        {
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-        }
-    }
-    private void LimpiarCampos()
-    {
-        txtNombre.Text = "";
-        txtCodigoBarra.Text = "";
-        txtDescripcion.Text = "";
-        cmbCategoria.SelectedIndex = -1;
-        nbPrecioCompra.Value = 0;
-        nbPrecioVenta.Value = 0;
-        nbExistencia.Value = 0;
-        tsEstado.IsOn = true;
-        _productoIdSeleccionado = 0;
-        dgProductos.SelectedItem = null;
-
-
-    }
-    private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-    {
-        throw new NotImplementedException();
     }
 }
-

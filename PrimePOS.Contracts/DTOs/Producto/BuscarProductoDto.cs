@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrimePOS.BLL.DTOs.Producto
+﻿namespace PrimePOS.Contracts.DTOs.Producto
 {
     public class BuscarProductoDto
     {
