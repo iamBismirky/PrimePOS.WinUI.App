@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.WinUI.Infrastructure;
@@ -26,7 +25,7 @@ namespace PrimePOS.WinUI
             RootGrid.RequestedTheme = App.TemaActual;
             this.ExtendsContentIntoTitleBar = true;
 
-            _sesion = App.Services.GetRequiredService<AppSesionViewModel>();
+            //_sesion = App.Services.GetRequiredService<AppSesionViewModel>();
             RootGrid.DataContext = _sesion;
 
 

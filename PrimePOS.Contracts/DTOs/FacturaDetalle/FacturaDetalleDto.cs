@@ -1,4 +1,4 @@
-﻿namespace PrimePOS.BLL.DTOs.FacturaDetalle
+﻿namespace PrimePOS.Contracts.DTOs.FacturaDetalle
 {
     public class FacturaDetalleDto
     {

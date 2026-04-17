@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI;
 using Microsoft.UI.Xaml.Media;
-using PrimePOS.BLL.DTOs.Turno;
 using PrimePOS.BLL.Services;
+using PrimePOS.Contracts.DTOs.Turno;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;

@@ -1,12 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using PrimePOS.BLL.DTOs.Usuario;
-using PrimePOS.BLL.Services;
-using PrimePOS.WinUI.Infrastructure;
-using PrimePOS.WinUI.ViewModels;
 using System;
 using WinRT.Interop;
 
@@ -18,14 +13,20 @@ namespace PrimePOS.WinUI
 
     public sealed partial class LoginWindow : Window
     {
-        private readonly UsuarioService _usuarioService;
-        private readonly AppSesionViewModel _sesionService;
+        //private readonly UsuarioService _usuarioService;
+        //private readonly AppSesionViewModel _sesionService;
+        public LoginViewModel ViewModel { get; }
         public LoginWindow()
         {
             InitializeComponent();
 
-            _usuarioService = App.Services.GetRequiredService<UsuarioService>();
-            _sesionService = App.Services.GetRequiredService<AppSesionViewModel>();
+            //_usuarioService = App.Services.GetRequiredService<UsuarioService>();
+            //_sesionService = App.Services.GetRequiredService<AppSesionViewModel>();
+
+            ViewModel = App.AppServices.GetRequiredService<LoginViewModel>();
+            RootGrid.DataContext = ViewModel;
+
+            ViewModel.LoginSuccess += OnLoginExitoso;
 
             txtUsername.Focus(FocusState.Programmatic);
             this.ExtendsContentIntoTitleBar = true;
@@ -58,40 +59,40 @@ namespace PrimePOS.WinUI
         }
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var loginDto = new AutenticarUsuarioDto
-                {
-                    Username = txtUsername.Text.Trim(),
-                    Password = pwdPassword.Password.Trim(),
+            //try
+            //{
+            //    var loginDto = new AutenticarUsuarioDto
+            //    {
+            //        Username = txtUsername.Text.Trim(),
+            //        Password = pwdPassword.Password.Trim(),
 
-                };
+            //    };
 
-                var usuarioSesion = await _usuarioService.AutenticarUsuarioAsync(loginDto);
-                _sesionService.IniciarSesion(usuarioSesion);
+            //    var usuarioSesion = await _usuarioService.AutenticarUsuarioAsync(loginDto);
+            //    _sesionService.IniciarSesion(usuarioSesion);
 
-                Sesion.UsuarioId = usuarioSesion.UsuarioId;
-                Sesion.UsuarioNombre = usuarioSesion.UsuarioNombre;
-                Sesion.RolId = usuarioSesion.RolId;
-                Sesion.RolNombre = usuarioSesion.RolNombre;
-                Sesion.Activa = true;
+            //    Sesion.UsuarioId = usuarioSesion.UsuarioId;
+            //    Sesion.UsuarioNombre = usuarioSesion.UsuarioNombre;
+            //    Sesion.RolId = usuarioSesion.RolId;
+            //    Sesion.RolNombre = usuarioSesion.RolNombre;
+            //    Sesion.Activa = true;
 
-                MainWindow main = new MainWindow();
-                main.Activate();
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                ContentDialog dialog = new ContentDialog()
-                {
-                    Title = "PrimePOS",
-                    Content = ex.Message,
-                    CloseButtonText = "Aceptar",
-                    XamlRoot = this.Content.XamlRoot
-                };
+            //    MainWindow main = new MainWindow();
+            //    main.Activate();
+            //    this.Close();
+            //}
+            //catch (Exception ex)
+            //{
+            //    ContentDialog dialog = new ContentDialog()
+            //    {
+            //        Title = "PrimePOS",
+            //        Content = ex.Message,
+            //        CloseButtonText = "Aceptar",
+            //        XamlRoot = this.Content.XamlRoot
+            //    };
 
-                await dialog.ShowAsync();
-            }
+            //    await dialog.ShowAsync();
+            //}
 
         }
 
@@ -111,7 +112,22 @@ namespace PrimePOS.WinUI
             }
         }
 
+        private void pwdPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (RootGrid.DataContext is LoginViewModel vm)
+            {
+                vm.Password = pwdPassword.Password;
+            }
 
+        }
+        private void OnLoginExitoso()
+        {
+            // Abrir MainWindow
+            var main = new MainWindow();
+            main.Activate();
+
+            this.Close();
+        }
     }
 
 }

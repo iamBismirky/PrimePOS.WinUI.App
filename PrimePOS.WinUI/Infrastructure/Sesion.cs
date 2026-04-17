@@ -1,4 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.Turno;
+﻿using PrimePOS.Contracts.DTOs.Turno;
 
 namespace PrimePOS.WinUI.Infrastructure
 {

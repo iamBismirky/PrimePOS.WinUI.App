@@ -7,7 +7,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:helpers="using:PrimePOS.WinUI.Helpers"
+    xmlns:globalization="using:Windows.Globalization.NumberFormatting"
     Loaded="Page_Loaded">
+
+    <Page.Resources>
+        <helpers:NumeroConverterHelper x:Key="NumeroConverterHelper"/>
+        <globalization:DecimalFormatter x:Key="DecimalFormatter" FractionDigits="2" IsGrouped="true"/>
+    </Page.Resources>
+    
     <Grid>
         <Grid Padding="20" RowSpacing="20" x:Name="MainGrid">
 
@@ -113,8 +121,8 @@
                                 <controls:DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}"/>
                                 <controls:DataGridTextColumn Header="Descripcion" Binding="{Binding Descripcion}"/>
                                 <controls:DataGridTextColumn Header="Categoria" Binding="{Binding NombreCategoria}"/>
-                                <controls:DataGridTextColumn Header="Precio Compra" Binding="{Binding PrecioCompra}"/>
-                                <controls:DataGridTextColumn Header="Precio Venta" Binding="{Binding PrecioVenta}"/>
+                                <controls:DataGridTextColumn Header="Precio Compra" Binding="{Binding PrecioCompra, Converter={StaticResource  NumeroConverterHelper}}"/>
+                                <controls:DataGridTextColumn Header="Precio Venta" Binding="{Binding PrecioVenta, Converter={StaticResource NumeroConverterHelper}}"/>
                                 <controls:DataGridTextColumn Header="Existencia" Binding="{Binding Existencia}"/>
                                 <controls:DataGridCheckBoxColumn Header="Estado" Binding="{Binding Estado}"/>
                                 <controls:DataGridTextColumn Header="Fecha de Registro" Binding="{Binding FechaRegistro}"/>
@@ -226,10 +234,12 @@
                              PlaceholderText="Seleccione una categoria"/>
                     
                     <NumberBox x:Name="ndPrecioCompra"
-                               Header="Precio Compra"/>
+                               Header="Precio Compra"
+                               NumberFormatter="{StaticResource DecimalFormatter}"/>
                     
                     <NumberBox x:Name="ndPrecioVenta"
-                               Header="Precio Venta"/>
+                               Header="Precio Venta"
+                               NumberFormatter="{StaticResource DecimalFormatter}"/>
                     
                     <NumberBox x:Name="ndExistencia"
                                Header="Existencia"/>

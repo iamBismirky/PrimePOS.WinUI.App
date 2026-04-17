@@ -2,6 +2,7 @@
 using global::PrimePOS.BLL.Services;
 using global::PrimePOS.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using PrimePOS.BLL.Security;
 using PrimePOS.DAL.Context;
 using PrimePOS.DAL.Repositories;
 
@@ -23,6 +24,7 @@ namespace PrimePOS.API
             services.AddScoped<ICajaRepository, CajaRepository>();
             services.AddScoped<IClienteRepository, ClienteRepository>();
             services.AddScoped<IProductoRepository, ProductoRepository>();
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
             // 🔹 Services
             services.AddScoped<IRolService, RolService>();
@@ -30,6 +32,11 @@ namespace PrimePOS.API
             services.AddScoped<ICajaService, CajaService>();
             services.AddScoped<IClienteService, ClienteService>();
             services.AddScoped<IProductoService, ProductoService>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
+
+
+            //jwt
+            services.AddSingleton<JwtHelper>();
 
             return services;
         }

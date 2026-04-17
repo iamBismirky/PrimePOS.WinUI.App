@@ -86,6 +86,7 @@
                 <!-- USUARIO -->
                 <TextBox
                     x:Name="txtUsername"
+                    Text="{Binding Username, Mode=TwoWay}"
                     PlaceholderText="Usuario"
                     CharacterCasing="Upper"
                     TabIndex="1"/>
@@ -93,6 +94,7 @@
                 <!-- PASSWORD -->
                 <PasswordBox
                     x:Name="pwdPassword"
+                    PasswordChanged="pwdPassword_PasswordChanged"
                     PlaceholderText="Contraseña"
                     PasswordChar="#"
                     TabIndex="2"/>
@@ -100,7 +102,7 @@
                 <!-- BOTON -->
                 <Button
                     Content="Iniciar Sesión"
-                    Click="BtnLogin_Click"
+                    Command="{Binding LoginCommand}"
                     Height="40"
                     HorizontalAlignment="Center"/>
                 

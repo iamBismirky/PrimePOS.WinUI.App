@@ -37,7 +37,7 @@ namespace PrimePOS.WinUI
 
             services.AddPrimePOSServices(connectionString);
 
-            Services = services.BuildServiceProvider();
+            //Services = services.BuildServiceProvider();
         }
 
 

@@ -1,4 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.Factura;
+﻿using PrimePOS.Contracts.DTOs.Factura;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 

@@ -3,6 +3,8 @@ using global::PrimePOS.DAL.Context;
 using global::PrimePOS.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PrimePOS.BLL.Interfaces;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.DAL.UnitOfWork;
 using PrimePOS.WinUI.ViewModels;
 namespace PrimePOS.WinUI.Infrastructure
@@ -21,7 +23,7 @@ namespace PrimePOS.WinUI.Infrastructure
                     options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
 
                 //  Repositories
-                services.AddScoped<UsuarioRepository>();
+                services.AddScoped<IUsuarioRepository>();
                 services.AddScoped<RolRepository>();
                 services.AddScoped<CategoriaRepository>();
                 services.AddScoped<ClienteRepository>();
@@ -34,7 +36,7 @@ namespace PrimePOS.WinUI.Infrastructure
                 services.AddScoped<FacturaRepository>();
 
                 //  Services
-                services.AddScoped<UsuarioService>();
+                services.AddScoped<IUsuarioService>();
                 services.AddScoped<RolService>();
                 services.AddScoped<CategoriaService>();
                 services.AddScoped<ClienteService>();

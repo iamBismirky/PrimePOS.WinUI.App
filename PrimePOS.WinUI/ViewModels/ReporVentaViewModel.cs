@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PrimePOS.BLL.DTOs.Venta;
 using PrimePOS.BLL.Services;
+using PrimePOS.Contracts.DTOs.Venta;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;

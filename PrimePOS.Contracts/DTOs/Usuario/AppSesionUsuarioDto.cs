@@ -1,4 +1,4 @@
-﻿namespace PrimePOS.BLL.DTOs.Usuario
+﻿namespace PrimePOS.Contracts.DTOs.Usuario
 {
     public class AppSesionUsuarioDto
     {
@@ -6,5 +6,6 @@
         public string UsuarioNombre { get; set; } = string.Empty;
         public int RolId { get; set; }
         public string RolNombre { get; set; } = string.Empty;
+        public string Token { get; set; } = "";
     }
 }

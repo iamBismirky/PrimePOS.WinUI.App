@@ -1,4 +1,4 @@
-﻿namespace PrimePOS.BLL.DTOs.Usuario
+﻿namespace PrimePOS.Contracts.DTOs.Usuario
 {
     public class CambiarContraseñaDto
     {

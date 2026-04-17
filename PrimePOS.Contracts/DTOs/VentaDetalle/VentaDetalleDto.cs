@@ -1,4 +1,4 @@
-﻿namespace PrimePOS.BLL.DTOs.VentaDetalle
+﻿namespace PrimePOS.Contracts.DTOs.VentaDetalle
 {
     public class VentaDetalleDto
     {

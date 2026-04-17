@@ -1,4 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.Turno;
+﻿using PrimePOS.Contracts.DTOs.Turno;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.DAL.UnitOfWork;
 using PrimePOS.ENTITIES.Models;

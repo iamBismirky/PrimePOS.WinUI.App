@@ -1,7 +1,7 @@
-﻿using PrimePOS.BLL.DTOs.Venta;
-using PrimePOS.BLL.DTOs.VentaDetalle;
-using PrimePOS.BLL.Services;
+﻿using PrimePOS.BLL.Services;
 using PrimePOS.Contracts.DTOs.Producto;
+using PrimePOS.Contracts.DTOs.Venta;
+using PrimePOS.Contracts.DTOs.VentaDetalle;
 using PrimePOS.WinUI.Reportes.PrimePOS.WinUI.Reportes;
 using QuestPDF.Fluent;
 using System;

@@ -1,4 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.Usuario;
+﻿using PrimePOS.Contracts.DTOs.Usuario;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Mappings

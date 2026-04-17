@@ -1,8 +1,6 @@
-﻿using PrimePOS.BLL.DTOs.VentaDetalle;
-
-namespace PrimePOS.BLL.DTOs.Venta
+﻿namespace PrimePOS.Contracts.DTOs.Venta
 {
-    public class CrearVentaDto
+    public class VentaDto
     {
         public int VentaId { get; set; }
         public DateTime FechaRegistro { get; set; }
@@ -11,8 +9,11 @@ namespace PrimePOS.BLL.DTOs.Venta
         public string UsuarioNombre { get; set; } = "";
         public int ClienteId { get; set; }
         public string ClienteNombre { get; set; } = "";
+
         public int MetodoPagoId { get; set; }
+
         public int TurnoId { get; set; }
+
         public string NumeroComprobante { get; set; } = string.Empty;
         public decimal Subtotal { get; set; }
         public decimal Impuesto { get; set; }
@@ -20,8 +21,7 @@ namespace PrimePOS.BLL.DTOs.Venta
         public decimal Total { get; set; }
         public decimal Efectivo { get; set; }
         public decimal Cambio { get; set; }
-        public bool Estado { get; set; }
-        public List<VentaDetalleDto> Items { get; set; } = new();
 
+        public bool Estado { get; set; }
     }
 }

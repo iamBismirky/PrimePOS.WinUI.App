@@ -1,4 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.MetodoPago;
+﻿using PrimePOS.Contracts.DTOs.MetodoPago;
 using PrimePOS.DAL.Repositories;
 
 namespace PrimePOS.BLL.Services

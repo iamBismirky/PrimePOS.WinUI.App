@@ -1,6 +1,6 @@
-﻿using PrimePOS.BLL.DTOs.FacturaDetalle;
+﻿using PrimePOS.Contracts.DTOs.FacturaDetalle;
 
-namespace PrimePOS.BLL.DTOs.Factura
+namespace PrimePOS.Contracts.DTOs.Factura
 {
     public class FacturaDto
     {

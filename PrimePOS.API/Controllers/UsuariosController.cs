@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
-using PrimePOS.Contracts.DTOs.Cliente;
+using PrimePOS.Contracts.DTOs.Usuario;
+
 
 
 namespace PrimePOS.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ClientesController : ControllerBase
+    public class UsuariosController : ControllerBase
     {
-        private readonly IClienteService _service;
+        private readonly IUsuarioService _service;
 
-        public ClientesController(IClienteService service)
+        public UsuariosController(IUsuarioService service)
         {
             _service = service;
         }
@@ -21,29 +22,27 @@ namespace PrimePOS.API.Controllers
         [HttpGet]
         public async Task<IActionResult> ObtenerTodosAsync()
         {
-            var cliente = await _service.ObtenerTodosAsync();
-            return Ok(cliente);
+            var usuarios = await _service.ObtenerTodosAsync();
+            return Ok(usuarios);
         }
 
         //GET: 
         [HttpGet("{id}")]
-        public async Task<IActionResult> ObtenerClientePorIdAsync(int id)
+        public async Task<IActionResult> ObtenerPorIdAsync(int id)
         {
-            var cliente = await _service.ObtenerPorIdAsync(id);
-            if (cliente == null)
-                return NotFound(new { mensaje = "Cliente no encontrado" });
-
-            return Ok(cliente);
+            var usuario = await _service.ObtenerUsuarioPorIdAsync(id);
+            if (usuario == null)
+                return NotFound(new { mensaje = "Usuario no encontrado" });
+            return Ok(usuario);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> CrearClienteAsync([FromBody] CrearClienteDto dto)
+        public async Task<IActionResult> CrearUsuarioAsync([FromBody] CrearUsuarioDto dto)
         {
             try
             {
-                await _service.CrearClienteAsync(dto);
-
+                await _service.CrearUsuarioAsync(dto);
                 return Ok();
             }
             catch (BusinessException ex)
@@ -55,14 +54,14 @@ namespace PrimePOS.API.Controllers
 
         // 🔹 PUT: api/roles/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> ActualizarClienteAsync(int id, [FromBody] ActualizarClienteDto dto)
+        public async Task<IActionResult> ActualizarUsuarioAsync(int id, [FromBody] ActualizarUsuarioDto dto)
         {
             try
 
             {
-                dto.ClienteId = id;
+                dto.UsuarioId = id;
 
-                await _service.ActualizarClienteAsync(dto);
+                await _service.ActualizarUsuarioAsync(dto);
                 return Ok();
             }
             catch (BusinessException ex)
@@ -79,11 +78,11 @@ namespace PrimePOS.API.Controllers
 
         //PATCH
         [HttpPatch("{id}/desactivar")]
-        public async Task<IActionResult> DesactivarClienteAsync(int id)
+        public async Task<IActionResult> DesactivarUsuarioAsync(int id)
         {
             try
             {
-                await _service.DesactivarClienteAsync(id);
+                await _service.DesactivarUsuarioAsync(id);
                 return NoContent();
             }
             catch (BusinessException ex)
@@ -98,11 +97,11 @@ namespace PrimePOS.API.Controllers
 
         //DELETE
         [HttpDelete("{id}")]
-        public async Task<IActionResult> EliminarClienteAsync(int id)
+        public async Task<IActionResult> EliminarUsuarioAsync(int id)
         {
             try
             {
-                await _service.EliminarClienteAsync(id);
+                await _service.EliminarUsuarioAsync(id);
                 return NoContent();
             }
             catch (BusinessException ex)

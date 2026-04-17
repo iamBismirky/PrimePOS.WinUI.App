@@ -1,4 +1,4 @@
-﻿namespace PrimePOS.BLL.DTOs.MetodoPago
+﻿namespace PrimePOS.Contracts.DTOs.MetodoPago
 {
     public class MetodoPagoDto
     {

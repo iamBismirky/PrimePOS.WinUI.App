@@ -17,7 +17,7 @@ public class RolesController : ControllerBase
 
     // 🔹 GET: api/roles
     [HttpGet]
-    public async Task<IActionResult> ObtenerTodos()
+    public async Task<IActionResult> ObtenerTodosAsync()
     {
         var roles = await _service.ListarRolesAsync();
         return Ok(roles);
@@ -25,7 +25,7 @@ public class RolesController : ControllerBase
 
     // 🔹 GET: api/roles/5
     [HttpGet("{id}")]
-    public async Task<IActionResult> ObtenerPorId(int id)
+    public async Task<IActionResult> ObtenerPorIdAsync(int id)
     {
         var rol = await _service.ObtenerRolPorIdAsync(id);
 
@@ -37,7 +37,7 @@ public class RolesController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> CrearRol([FromBody] CrearRolDto dto)
+    public async Task<IActionResult> CrearRolAsync([FromBody] CrearRolDto dto)
     {
         try
         {
@@ -54,7 +54,7 @@ public class RolesController : ControllerBase
 
     // 🔹 PUT: api/roles/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> ActualizarRol(int id, [FromBody] ActualizarRolDto dto)
+    public async Task<IActionResult> ActualizarRolAsync(int id, [FromBody] ActualizarRolDto dto)
     {
         try
         {
@@ -77,7 +77,7 @@ public class RolesController : ControllerBase
 
     // 🔹 PATCH: api/roles/5/desactivar
     [HttpPatch("{id}/desactivar")]
-    public async Task<IActionResult> DesactivarRol(int id)
+    public async Task<IActionResult> DesactivarRolAsync(int id)
     {
         try
         {
@@ -100,7 +100,7 @@ public class RolesController : ControllerBase
 
     // 🔹 DELETE: api/roles/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> EliminarRol(int id)
+    public async Task<IActionResult> EliminarRolAsync(int id)
     {
         try
         {

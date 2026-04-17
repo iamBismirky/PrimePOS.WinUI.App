@@ -1,18 +1,23 @@
-﻿using PrimePOS.BLL.DTOs.Usuario;
+﻿using PrimePOS.BLL.Exceptions;
+using PrimePOS.BLL.Interfaces;
 using PrimePOS.BLL.Security;
 using PrimePOS.BLL.Validators;
-using PrimePOS.DAL.Repositories;
+using PrimePOS.Contracts.DTOs.Usuario;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services
 {
-    public class UsuarioService
+    public class UsuarioService : IUsuarioService
     {
-        private readonly UsuarioRepository _usuarioRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly JwtHelper _jwtHelper;
 
-        public UsuarioService(UsuarioRepository repository)
+        public UsuarioService(IUsuarioRepository repository, JwtHelper jwtHelper)
         {
             _usuarioRepository = repository;
+            _jwtHelper = jwtHelper;
+
         }
 
         public async Task CrearUsuarioAsync(CrearUsuarioDto dto)
@@ -47,10 +52,10 @@ namespace PrimePOS.BLL.Services
             UsuarioValidator.ValidarActualizar(dto);
 
             var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
-                ?? throw new Exception("Usuario no encontrado. Seleccione uno.");
+                ?? throw new BusinessException("Usuario no encontrado. Seleccione uno.", "NO_FOUND");
 
             if (await _usuarioRepository.ExisteUsernameAsync(dto.Username, dto.UsuarioId))
-                throw new Exception("Ya existe un usuario con ese username.");
+                throw new BusinessException("Ya existe un usuario con ese username.", "DUPLICATE");
 
             usuario.Nombre = dto.Nombre;
             usuario.Apellidos = dto.Apellidos;
@@ -63,12 +68,22 @@ namespace PrimePOS.BLL.Services
 
         }
 
-        public async Task<bool> EliminarUsuarioAsync(EliminarUsuarioDto dto)
+        public async Task<bool> EliminarUsuarioAsync(int usuarioId)
         {
-            var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
-                ?? throw new Exception("Usuario no encontrado. Seleccione uno");
+            var usuario = await _usuarioRepository.ObtenerPorId(usuarioId)
+                ?? throw new BusinessException("Usuario no encontrado. Seleccione uno.", "NO_FOUND");
 
             _usuarioRepository.Eliminar(usuario);
+            await _usuarioRepository.GuardarCambiosAsync();
+            return true;
+        }
+        public async Task<bool> DesactivarUsuarioAsync(int usuarioId)
+        {
+            var usuario = await _usuarioRepository.ObtenerPorId(usuarioId)
+                ?? throw new BusinessException("Usuario no encontrado. Seleccione uno.", "NO_FOUND");
+
+            usuario.Estado = false;
+            _usuarioRepository.Actualizar(usuario);
             await _usuarioRepository.GuardarCambiosAsync();
             return true;
         }
@@ -76,7 +91,7 @@ namespace PrimePOS.BLL.Services
         public async Task CambiarEstadoAsync(int id, bool nuevoEstado)
         {
             var usuario = await _usuarioRepository.ObtenerPorId(id)
-                ?? throw new Exception("Usuario no encontrado.");
+                ?? throw new BusinessException("Usuario no encontrado.", "NO_FOUND");
 
             usuario.Estado = nuevoEstado;
 
@@ -104,9 +119,9 @@ namespace PrimePOS.BLL.Services
 
             };
         }
-        public async Task<List<UsuarioDto>> ListarUsuariosAsync()
+        public async Task<List<UsuarioDto>> ObtenerTodosAsync()
         {
-            var usuarios = await _usuarioRepository.ListarUsuariosAsync();
+            var usuarios = await _usuarioRepository.ObtenerTodosAsync();
 
             return usuarios.Select(u => new UsuarioDto
             {
@@ -124,27 +139,27 @@ namespace PrimePOS.BLL.Services
         public async Task CambiarContraseñaAsync(CambiarContraseñaDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.ContraseñaActual))
-                throw new Exception("La contraseña actual es obligatoria.");
+                throw new BusinessException("La contraseña actual es obligatoria.", "REQUIRED");
 
             if (string.IsNullOrWhiteSpace(dto.ContraseñaNueva))
-                throw new Exception("La nueva contraseña es obligatoria.");
+                throw new BusinessException("La nueva contraseña es obligatoria.", "REQUIRED");
 
             if (string.IsNullOrWhiteSpace(dto.Confirmar))
-                throw new Exception("Confirme la contraseña.");
+                throw new BusinessException("Confirme la contraseña.", "REQUIRED");
 
             if (dto.ContraseñaNueva != dto.Confirmar)
-                throw new Exception("La confirmación no coincide con la nueva contraseña.");
+                throw new BusinessException("La confirmación no coincide con la nueva contraseña.", "INVALID");
 
             var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
-                ?? throw new Exception("Usuario no encontrado.");
+                ?? throw new BusinessException("Usuario no encontrado.", "NO_FOUND");
 
             bool esValida = PasswordService.Verify(dto.ContraseñaActual, usuario.Password);
 
             if (!esValida)
-                throw new Exception("La contraseña actual es incorrecta.");
+                throw new BusinessException("La contraseña actual es incorrecta.", "INVALID");
 
             if (PasswordService.Verify(dto.ContraseñaNueva, usuario.Password))
-                throw new Exception("La nueva contraseña no puede ser igual a la actual.");
+                throw new BusinessException("La nueva contraseña no puede ser igual a la actual.", "INVALID");
 
             usuario.Password = PasswordService.Hash(dto.ContraseñaNueva);
 
@@ -159,22 +174,31 @@ namespace PrimePOS.BLL.Services
                 throw new Exception("Usuario y clave obligatorios.");
 
             var usuario = await _usuarioRepository.ObtenerPorUsernameAsync(dto.Username)
-                ?? throw new Exception("Usuario o contraseña incorrectos.");
+                ?? throw new BusinessException("Usuario o contraseña incorrectos.", "INVALID");
 
             if (!usuario.Estado)
-                throw new Exception("Usuario inactivo.");
+                throw new BusinessException("Usuario inactivo.", "INACTIVE");
 
             bool esValida = PasswordService.Verify(dto.Password, usuario.Password);
 
             if (!esValida)
-                throw new Exception("Usuario o contraseña incorrectos.");
+                throw new BusinessException("Usuario o contraseña incorrectos.", "INVALID");
+
+            // 🔐 JWT
+            var token = _jwtHelper.GenerarToken(
+                usuario.UsuarioId,
+                usuario.Username,
+                usuario.Rol?.Nombre ?? ""
+            );
 
             return new AppSesionUsuarioDto
             {
                 UsuarioId = usuario.UsuarioId,
                 UsuarioNombre = usuario.Nombre + " " + usuario.Apellidos,
                 RolId = usuario.RolId,
-                RolNombre = usuario.Rol?.Nombre ?? ""
+                RolNombre = usuario.Rol?.Nombre ?? "",
+                Token = token
+
             };
         }
 

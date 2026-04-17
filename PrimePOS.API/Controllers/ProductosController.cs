@@ -28,7 +28,7 @@ namespace PrimePOS.API.Controllers
 
         //GET: 
         [HttpGet("{id}")]
-        public async Task<IActionResult> ObtenerProductoPorIdAsync(int id)
+        public async Task<IActionResult> ObtenerPorIdAsync(int id)
         {
             var producto = await _service.ObtenerProductoPorIdAsync(id);
             if (producto == null)

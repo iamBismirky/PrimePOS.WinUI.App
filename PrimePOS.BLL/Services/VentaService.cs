@@ -1,4 +1,4 @@
-﻿using PrimePOS.BLL.DTOs.Venta;
+﻿using PrimePOS.Contracts.DTOs.Venta;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.DAL.UnitOfWork;
 using PrimePOS.ENTITIES.Models;

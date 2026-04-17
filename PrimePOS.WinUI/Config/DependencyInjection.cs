@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.WinUI.Services.Api;
+using PrimePOS.WinUI.ViewModels;
 using System;
 
 namespace PrimePOS.WinUI.Config;
@@ -18,9 +19,12 @@ public static class DependencyInjection
         services.AddScoped<CajaApiService>();
         services.AddScoped<ClienteApiService>();
         services.AddScoped<ProductoApiService>();
+        services.AddScoped<UsuarioApiService>();
 
         // ViewModels
         services.AddTransient<RolViewModel>();
+        services.AddTransient<LoginViewModel>();
+        services.AddSingleton<AppSesionViewModel>();
 
         return services;
     }

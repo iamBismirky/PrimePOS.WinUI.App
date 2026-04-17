@@ -1,5 +1,5 @@
-﻿using PrimePOS.BLL.DTOs.Factura;
-using PrimePOS.BLL.DTOs.FacturaDetalle;
+﻿using PrimePOS.Contracts.DTOs.Factura;
+using PrimePOS.Contracts.DTOs.FacturaDetalle;
 using PrimePOS.DAL.Repositories;
 using PrimePOS.ENTITIES.Models;
 

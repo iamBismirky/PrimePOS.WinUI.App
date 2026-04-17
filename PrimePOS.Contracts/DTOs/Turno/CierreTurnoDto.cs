@@ -1,4 +1,4 @@
-﻿namespace PrimePOS.BLL.DTOs.Turno
+﻿namespace PrimePOS.Contracts.DTOs.Turno
 {
     public class CierreTurnoDto
     {
