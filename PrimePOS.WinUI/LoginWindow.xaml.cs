@@ -3,6 +3,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using System;
+using System.Threading.Tasks;
 using WinRT.Interop;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -27,6 +28,7 @@ namespace PrimePOS.WinUI
             RootGrid.DataContext = ViewModel;
 
             ViewModel.LoginSuccess += OnLoginExitoso;
+            ViewModel.ErrorOcurrido += MostrarError;
 
             txtUsername.Focus(FocusState.Programmatic);
             this.ExtendsContentIntoTitleBar = true;
@@ -127,6 +129,19 @@ namespace PrimePOS.WinUI
             main.Activate();
 
             this.Close();
+        }
+        private void MostrarError(string mensaje)
+        {
+            infoError.Message = mensaje;
+            infoError.IsOpen = true;
+
+            _ = Task.Delay(3000).ContinueWith(_ =>
+            {
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    infoError.IsOpen = false;
+                });
+            });
         }
     }
 

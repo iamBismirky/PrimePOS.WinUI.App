@@ -98,12 +98,18 @@ public class UsuarioApiService
 
             try
             {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
+                var error = JsonSerializer.Deserialize<ErrorResponse>(
+                    json,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
                 throw new Exception(error?.Message ?? "Credenciales incorrectas");
             }
             catch
             {
-                throw new Exception(json);
+                throw new Exception("Credenciales incorrectas");
             }
         }
 

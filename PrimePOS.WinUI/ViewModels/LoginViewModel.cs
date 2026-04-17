@@ -11,9 +11,7 @@ public partial class LoginViewModel : ObservableObject
     private readonly UsuarioApiService _usuarioApi;
     private readonly AppSesionViewModel _appSesion;
 
-    public LoginViewModel(
-        UsuarioApiService usuarioApi,
-        AppSesionViewModel appSesion)
+    public LoginViewModel(UsuarioApiService usuarioApi, AppSesionViewModel appSesion)
     {
         _usuarioApi = usuarioApi;
         _appSesion = appSesion;
@@ -21,7 +19,6 @@ public partial class LoginViewModel : ObservableObject
 
     [ObservableProperty]
     private string? username;
-
     [ObservableProperty]
     private string? password;
 
@@ -35,7 +32,12 @@ public partial class LoginViewModel : ObservableObject
         try
         {
             IsLoading = true;
-
+            if (string.IsNullOrWhiteSpace(Username) ||
+                string.IsNullOrWhiteSpace(Password))
+            {
+                ErrorOcurrido?.Invoke("Debe ingresar usuario y contraseña");
+                return;
+            }
             var dto = new AutenticarUsuarioDto
             {
                 Username = Username,
@@ -55,7 +57,8 @@ public partial class LoginViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            ErrorMessage = ex.Message;
+            ErrorOcurrido?.Invoke(ex.Message);
+
         }
         finally
         {
@@ -65,7 +68,5 @@ public partial class LoginViewModel : ObservableObject
 
     // Eventos para UI
     public event Action? LoginSuccess;
-
-    [ObservableProperty]
-    private string? errorMessage;
+    public event Action<string>? ErrorOcurrido;
 }
