@@ -9,16 +9,17 @@ namespace PrimePOS.BLL.Services;
 public class RolService : IRolService
 {
     private readonly IRolRepository _rolRepository;
+
     public RolService(IRolRepository repository)
     {
         _rolRepository = repository;
     }
-    //Crear un rol
+
+    // Crear
     public async Task CrearRolAsync(CrearRolDto dto)
     {
-
         if (string.IsNullOrWhiteSpace(dto.Nombre))
-            throw new BusinessException("El nombre del rol es obligatorio", "REQUIRED");
+            throw new BusinessException("El nombre del rol es obligatorio.", 400);
 
         var existe = await _rolRepository.ExisteRolAsync(dto.Nombre);
 
@@ -31,88 +32,86 @@ public class RolService : IRolService
                 await _rolRepository.GuardarCambiosAsync();
                 return;
             }
-            throw new BusinessException("Ya existe un rol con ese nombre", "DUPLICATE");
 
-
+            throw new BusinessException("Ya existe un rol con ese nombre.", 400);
         }
-        else
+
+        var rol = new Rol
         {
-            var rol = new Rol
-            {
-                Nombre = dto.Nombre,
-                Estado = true
-            };
-            await _rolRepository.Crear(rol);
-            await _rolRepository.GuardarCambiosAsync();
+            Nombre = dto.Nombre,
+            Estado = true
+        };
 
-        }
-
-
+        await _rolRepository.Crear(rol);
+        await _rolRepository.GuardarCambiosAsync();
     }
-    //Actualizar rol
-    public async Task<bool> ActualizarRolAsync(ActualizarRolDto dto)
+
+    // Actualizar
+    public async Task ActualizarRolAsync(ActualizarRolDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Nombre))
-            throw new BusinessException("El nombre del rol es obligario", "REQUIRED");
+            throw new BusinessException("El nombre del rol es obligatorio.", 400);
 
         var rol = await _rolRepository.ObtenerPorIdAsync(dto.RolId);
 
         if (rol == null)
-            throw new BusinessException("Debe seleccionar un Rol", "REQUIRED");
+            throw new BusinessException("El rol no existe.", 404);
 
-        if (dto.Nombre == rol.Nombre)
+        var existe = await _rolRepository.ExisteRolAsync(dto.Nombre);
+
+        if (existe != null && existe.RolId != dto.RolId)
         {
-            if (!dto.Estado)
+            if (!existe.Estado)
             {
-                dto.Estado = true;
-                await _rolRepository.Actualizar(rol);
+                existe.Estado = true;
+                await _rolRepository.Actualizar(existe);
                 await _rolRepository.GuardarCambiosAsync();
+                return;
             }
-            throw new BusinessException("Ya existe un rol con este nombre", "DUPLICATE");
-        }
-        else
-        {
-            rol.Nombre = dto.Nombre;
-            rol.Estado = true;
 
-            await _rolRepository.Actualizar(rol);
-            await _rolRepository.GuardarCambiosAsync();
-            return true;
+            throw new BusinessException("Ya existe un rol con ese nombre.", 400);
         }
 
+        rol.Nombre = dto.Nombre;
+        rol.Estado = dto.Estado;
+
+        await _rolRepository.Actualizar(rol);
+        await _rolRepository.GuardarCambiosAsync();
     }
 
-
-    //Eliminar rol
-    public async Task<bool> EliminarRolAsync(EliminarRolDto dto)
+    // Eliminar
+    public async Task EliminarRolAsync(int rolId)
     {
-        var rol = await _rolRepository.ObtenerPorIdAsync(dto.RolId);
+        var rol = await _rolRepository.ObtenerPorIdAsync(rolId);
 
         if (rol == null)
-            throw new BusinessException("Debe seleccionar un Rol", "REQUIRED");
+            throw new BusinessException("El rol no existe.", 404);
 
         await _rolRepository.Eliminar(rol);
         await _rolRepository.GuardarCambiosAsync();
-        return true;
     }
+
+    // Desactivar
     public async Task DesactivarRolAsync(int rolId)
     {
         var rol = await _rolRepository.ObtenerPorIdAsync(rolId);
 
         if (rol == null)
-            throw new BusinessException("Debe seleccionar un Rol", "REQUIRED");
+            throw new BusinessException("El rol no existe.", 404);
 
         rol.Estado = false;
+
         await _rolRepository.Actualizar(rol);
         await _rolRepository.GuardarCambiosAsync();
-
     }
-    //Obtener rol por id
+
+    // Obtener por Id
     public async Task<RolDto?> ObtenerRolPorIdAsync(int id)
     {
         var rol = await _rolRepository.ObtenerPorIdAsync(id);
 
-        if (rol == null) return null;
+        if (rol == null)
+            throw new BusinessException("El rol no existe.", 404);
 
         return new RolDto
         {
@@ -120,11 +119,9 @@ public class RolService : IRolService
             Nombre = rol.Nombre,
             Estado = rol.Estado,
         };
-
-
-
     }
-    //Listar roles
+
+    // Listar
     public async Task<List<ListaRolesDto>> ListarRolesAsync()
     {
         var roles = await _rolRepository.ListarRolesAsync();
@@ -136,5 +133,4 @@ public class RolService : IRolService
             Estado = r.Estado
         }).ToList();
     }
-
 }

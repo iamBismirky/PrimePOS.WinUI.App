@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="PrimePOS.WinUI.Pages.CajaPage1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded"
+    x:Name="RootPage">
+
+    <Grid x:Name="MainRoot">
+
+        <Grid Padding="20" RowSpacing="20">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <TextBlock Grid.Row="0"
+                       Text="Gestión de Cajas"
+                       FontSize="24"
+                       FontWeight="SemiBold"/>
+
+            <!-- SEARCH + BUTTON -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+
+                <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
+                        CornerRadius="12"
+                        Padding="20"
+                        Width="400"
+                        Margin="20"
+                        Height="90">
+
+                    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+
+                        <TextBox Width="300"
+                                 PlaceholderText="Buscar..."
+                                 Text="{Binding Buscar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 TextChanged="Buscar_TextChanged"/>
+
+                        <Button Command="{Binding FiltrarCommand}">
+                            <FontIcon Glyph="&#xE721;"
+                                      FontFamily="Segoe Fluent Icons"
+                                      FontSize="18"/>
+                        </Button>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- NUEVO -->
+                <Button Command="{Binding NuevoCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="20"/>
+                        <TextBlock Text="Nuevo"/>
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
+
+            <!-- GRID -->
+            <Grid Grid.Row="2">
+            <Border 
+                    Padding="15"
+                    CornerRadius="12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+
+                <StackPanel Spacing="10">
+
+                    <TextBlock Text="Cajas"
+                               FontSize="20"
+                               FontWeight="SemiBold"/>
+
+                    <controls:DataGrid ItemsSource="{Binding Cajas}"
+                                       AutoGenerateColumns="False"
+                                       IsReadOnly="True">
+
+                        <controls:DataGrid.Columns>
+
+                            <controls:DataGridTextColumn Header="Nombre"
+                                                         Binding="{Binding Nombre}"/>
+                                <controls:DataGridCheckBoxColumn Header="Estado" Binding="{Binding Estado}"/>
+
+                                <!-- ACCIONES -->
+                            <controls:DataGridTemplateColumn Header="Acciones">
+                                <controls:DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+
+                                            <!-- EDITAR -->
+                                                <Button Click="Editar_Click"
+                                                        Tag="{Binding}">
+                                                <SymbolIcon Symbol="Edit"/>
+                                            </Button>
+
+                                            <!-- DESACTIVAR -->
+                                            <Button Click="Desactivar_Click"
+                                                    Tag="{Binding}"
+                                                    Background="Red">
+                                                <SymbolIcon Symbol="Delete"/>
+                                            </Button>
+
+                                        </StackPanel>
+
+                                    </DataTemplate>
+                                </controls:DataGridTemplateColumn.CellTemplate>
+                            </controls:DataGridTemplateColumn>
+
+                        </controls:DataGrid.Columns>
+
+                    </controls:DataGrid>
+
+                </StackPanel>
+            </Border>
+                <!-- LOADING -->
+                <Grid Visibility="{Binding IsLoading}"
+                      Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+                      Opacity="0.8">
+
+                    <StackPanel HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="10">
+
+                        <ProgressRing IsActive="True" Width="50" Height="50"/>
+                        <TextBlock Text="Cargando..."/>
+
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            
+
+        </Grid>
+
+        <!-- OVERLAY -->
+        <Grid Visibility="{Binding IsOverlayVisible}"
+              Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+              Opacity="0.8">
+
+            <Border Width="400"
+                    Padding="20"
+                    Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                    CornerRadius="12"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+
+                <StackPanel Spacing="10">
+
+                    <TextBlock Text="Caja"
+                               FontSize="18"
+                               FontWeight="SemiBold"/>
+
+                    <TextBox Header="Nombre"
+                             Text="{Binding Nombre, Mode=TwoWay}"/>
+                    <ToggleSwitch Header="Estado"
+                                  IsOn="{Binding Estado, Mode=TwoWay}"/>
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Spacing="10">
+
+                        <Button Command="{Binding GuardarCommand}">
+                            <TextBlock Text="Guardar"/>
+                        </Button>
+
+                        <Button Command="{Binding CerrarOverlayCommand}">
+                            <TextBlock Text="Cancelar"/>
+                        </Button>
+
+                    </StackPanel>
+
+                </StackPanel>
+
+            </Border>
+
+        </Grid>
+
+    </Grid>
+</Page>

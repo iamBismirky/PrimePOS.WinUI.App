@@ -41,21 +41,21 @@ namespace PrimePOS.WinUI.Pages
         }
         private async Task CargarCajasAsync()
         {
-            try
-            {
-                IsLoading = true;
+            //try
+            //{
+            //    IsLoading = true;
 
-                _listaCajas = await _cajaApiService.ObtenerCajasAsync();
-                dgCajas.ItemsSource = null;
-                dgCajas.ItemsSource = _listaCajas;
-            }
-            catch (Exception ex)
-            {
+            //    _listaCajas = await _cajaApiService.ObtenerCajasAsync();
+            //    dgCajas.ItemsSource = null;
+            //    dgCajas.ItemsSource = _listaCajas;
+            //}
+            //catch (Exception ex)
+            //{
 
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+            //    await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
 
-            }
-            finally { IsLoading = false; }
+            //}
+            //finally { IsLoading = false; }
 
         }
         private void FiltrarCategorias()

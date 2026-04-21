@@ -8,42 +8,43 @@ namespace PrimePOS.BLL.Validators
         public static void ValidarCrear(CrearUsuarioDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Nombre))
-                throw new BusinessException("El nombre es obligatorio.", "REQUIRED");
+                throw new BusinessException("El nombre es obligatorio.", 400);
 
             if (string.IsNullOrWhiteSpace(dto.Apellidos))
-                throw new BusinessException("El apellido es obligatorio.", "REQUIRED");
+                throw new BusinessException("El apellido es obligatorio.", 400);
 
             if (string.IsNullOrWhiteSpace(dto.Username))
-                throw new BusinessException("El nombre de usuario es obligatorio.", "REQUIRED");
+                throw new BusinessException("El nombre de usuario es obligatorio.", 400);
 
             if (string.IsNullOrWhiteSpace(dto.Password))
-                throw new BusinessException("La contraseña es obligatoria.", "REQUIRED");
+                throw new BusinessException("La contraseña es obligatoria.", 400);
 
             if (dto.RolId <= 0)
-                throw new BusinessException("Seleccione un rol.", "REQUIRED");
-
-
+                throw new BusinessException("Debe seleccionar un rol.", 400);
         }
+
         public static void ValidarActualizar(ActualizarUsuarioDto dto)
         {
             if (dto.UsuarioId <= 0)
-                throw new BusinessException("El usuario no es válido.", "INVALID");
+                throw new BusinessException("El usuario no es válido.", 400);
 
             if (string.IsNullOrWhiteSpace(dto.Nombre))
-                throw new BusinessException("El nombre es obligatorio.", "REQUIRED");
+                throw new BusinessException("El nombre es obligatorio.", 400);
 
             if (string.IsNullOrWhiteSpace(dto.Apellidos))
-                throw new BusinessException("El apellido es obligatorio.", "REQUIRED");
+                throw new BusinessException("El apellido es obligatorio.", 400);
 
             if (string.IsNullOrWhiteSpace(dto.Username))
-                throw new BusinessException("El nombre de usuario es obligatorio.", "REQUIRED");
+                throw new BusinessException("El nombre de usuario es obligatorio.", 400);
+
             if (dto.RolId <= 0)
-                throw new BusinessException("Seleccione un rol.", "REQUIRED");
+                throw new BusinessException("Debe seleccionar un rol.", 400);
         }
-        public static void ValidarEliminar(int productoId)
+
+        public static void ValidarEliminar(int usuarioId)
         {
-            if (productoId <= 0)
-                throw new BusinessException("El producto no es válido.", "INVALID");
+            if (usuarioId <= 0)
+                throw new BusinessException("El usuario no es válido.", 400);
         }
     }
 }

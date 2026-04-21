@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using PrimePOS.WinUI.ViewModels;
 using System;
@@ -13,18 +14,25 @@ public static class DependencyInjection
         {
             client.BaseAddress = new Uri("https://localhost:7096/");
         });
-
+        //API Services
         services.AddScoped<RolApiService>();
         services.AddScoped<CategoriaApiService>();
         services.AddScoped<CajaApiService>();
         services.AddScoped<ClienteApiService>();
         services.AddScoped<ProductoApiService>();
         services.AddScoped<UsuarioApiService>();
+        services.AddTransient<BaseApiService>();
 
         // ViewModels
         services.AddTransient<RolViewModel>();
         services.AddTransient<LoginViewModel>();
         services.AddSingleton<AppSesionViewModel>();
+        services.AddTransient<PerfilViewModel>();
+        services.AddScoped<CajaViewModel>();
+
+        //NotificationService
+        services.AddSingleton<NotificationService>();
+        services.AddSingleton<MainWindow>();
 
         return services;
     }

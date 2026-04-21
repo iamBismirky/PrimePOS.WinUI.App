@@ -4,10 +4,10 @@ namespace PrimePOS.BLL.Interfaces
 {
     public interface IRolService
     {
-        Task<bool> ActualizarRolAsync(ActualizarRolDto dto);
+        Task ActualizarRolAsync(ActualizarRolDto dto);
         Task CrearRolAsync(CrearRolDto dto);
 
-        Task<bool> EliminarRolAsync(EliminarRolDto dto);
+        Task EliminarRolAsync(int rolId);
         Task DesactivarRolAsync(int rolId);
         Task<List<ListaRolesDto>> ListarRolesAsync();
         Task<RolDto?> ObtenerRolPorIdAsync(int id);

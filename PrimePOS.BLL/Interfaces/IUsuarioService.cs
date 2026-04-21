@@ -6,11 +6,11 @@ namespace PrimePOS.BLL.Interfaces
     {
         Task ActualizarUsuarioAsync(ActualizarUsuarioDto dto);
         Task<AppSesionUsuarioDto> AutenticarUsuarioAsync(AutenticarUsuarioDto dto);
-        Task CambiarContraseñaAsync(CambiarContraseñaDto dto);
+        Task CambiarPasswordAsync(int usuarioId, CambiarPasswordDto dto);
         Task CambiarEstadoAsync(int id, bool nuevoEstado);
         Task CrearUsuarioAsync(CrearUsuarioDto dto);
-        Task<bool> DesactivarUsuarioAsync(int usuarioId);
-        Task<bool> EliminarUsuarioAsync(int usuarioId);
+        Task DesactivarUsuarioAsync(int usuarioId);
+        Task EliminarUsuarioAsync(int usuarioId);
         Task<List<UsuarioDto>> ObtenerTodosAsync();
         Task<UsuarioDto?> ObtenerUsuarioPorIdAsync(int id);
     }

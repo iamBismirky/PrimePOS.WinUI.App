@@ -11,7 +11,9 @@ namespace PrimePOS.WinUI
 
     public partial class App : Application
     {
-        private static Window? _window;
+
+        public static Window? MainAppWindow { get; private set; }
+
         public static ElementTheme TemaActual = ElementTheme.Dark;
         public static IServiceProvider Services { get; private set; } = null!;
         public static IServiceProvider AppServices { get; private set; } = null!;
@@ -43,9 +45,9 @@ namespace PrimePOS.WinUI
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            _window = new LoginWindow();
-            //_window = new MainWindow();
-            _window.Activate();
+            //_window = new LoginWindow();
+            MainAppWindow = App.AppServices.GetRequiredService<MainWindow>();
+            MainAppWindow.Activate();
         }
         public static void IrALogin()
         {
@@ -54,9 +56,9 @@ namespace PrimePOS.WinUI
             loginWindow.Activate();
 
 
-            if (_window != null)
+            if (MainAppWindow != null)
             {
-                _window.Close();
+                MainAppWindow.Close();
             }
         }
 

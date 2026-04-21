@@ -3,7 +3,6 @@ using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Categoria;
 using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
-using System.Data;
 
 namespace PrimePOS.BLL.Services;
 
@@ -19,7 +18,7 @@ public class CategoriaService : ICategoriaService
     public async Task CrearCategoriaAsync(CategoriaDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Nombre))
-            throw new BusinessException("La categoría no puede estar vacía.", "REQUIRED");
+            throw new BusinessException("La categoría no puede estar vacía.", 400);
 
         var existe = await _categoriaRepository.ExisteCategoriaAsync(dto.Nombre);
 
@@ -32,26 +31,24 @@ public class CategoriaService : ICategoriaService
                 await _categoriaRepository.GuardarCambiosAsync();
                 return;
             }
-            throw new BusinessException("Ya existe una categoría con este nombre.", "DUPLICATE");
 
+            throw new BusinessException("Ya existe una categoría con este nombre.", 400);
         }
-        else
+
+        var categoria = new Categoria
         {
-            var categoria = new Categoria
-            {
-                Nombre = dto.Nombre,
-                Estado = true
-            };
+            Nombre = dto.Nombre,
+            Estado = true
+        };
 
-            _categoriaRepository.Crear(categoria);
-            await _categoriaRepository.GuardarCambiosAsync();
-        }
-
+        _categoriaRepository.Crear(categoria);
+        await _categoriaRepository.GuardarCambiosAsync();
     }
 
     public async Task<List<CategoriaDto>> ListarCategoriasAsync()
     {
         var categorias = await _categoriaRepository.ListarCategoriaAsync();
+
         return categorias.Select(c => new CategoriaDto
         {
             CategoriaId = c.CategoriaId,
@@ -59,83 +56,78 @@ public class CategoriaService : ICategoriaService
             Estado = c.Estado
         }).ToList();
     }
+
     public async Task<CategoriaDto?> ObtenerPorIdAsync(int categoriaId)
     {
-        var dto = await _categoriaRepository.ObtenerPorIdAsync(categoriaId);
-        if (dto == null) return null;
+        var categoria = await _categoriaRepository.ObtenerPorIdAsync(categoriaId);
+
+        if (categoria == null)
+            throw new BusinessException("La categoría no existe.", 404);
 
         return new CategoriaDto
         {
-            CategoriaId = dto.CategoriaId,
-            Nombre = dto.Nombre
+            CategoriaId = categoria.CategoriaId,
+            Nombre = categoria.Nombre,
+            Estado = categoria.Estado
         };
-
     }
 
     public async Task ActualizarCategoriaAsync(CategoriaDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Nombre))
-            throw new BusinessException("La categoría no puede estar vacía.", "REQUIRED");
+            throw new BusinessException("La categoría no puede estar vacía.", 400);
 
-        //  Buscar por nombre primero
         var existente = await _categoriaRepository.ExisteCategoriaAsync(dto.Nombre);
 
         if (existente != null)
         {
-            // 👉 Si existe pero está inactiva → reactivar
-            if (existente.Estado == false)
+            // Reactivar si está inactiva
+            if (!existente.Estado)
             {
                 existente.Estado = true;
 
                 _categoriaRepository.Actualizar(existente);
                 await _categoriaRepository.GuardarCambiosAsync();
-
+                return;
             }
 
-            // Si existe y está activa → error
+            // Si es otra categoría con el mismo nombre
             if (existente.CategoriaId != dto.CategoriaId)
-            {
-                throw new BusinessException("Ya existe una categoría con ese nombre.", "DUPLICATE");
-            }
-        }
-        else
-        {
-            var categoria = await _categoriaRepository.ObtenerPorIdAsync(dto.CategoriaId)
-            ?? throw new BusinessException("Debe seleccionar una categoría", "REQUIRED");
-
-            categoria.Nombre = dto.Nombre;
-
-            _categoriaRepository.Actualizar(categoria);
-            await _categoriaRepository.GuardarCambiosAsync();
-
-
-
+                throw new BusinessException("Ya existe una categoría con ese nombre.", 400);
         }
 
+        var categoria = await _categoriaRepository.ObtenerPorIdAsync(dto.CategoriaId);
+
+        if (categoria == null)
+            throw new BusinessException("La categoría no existe.", 404);
+
+        categoria.Nombre = dto.Nombre;
+
+        _categoriaRepository.Actualizar(categoria);
+        await _categoriaRepository.GuardarCambiosAsync();
     }
 
-    public async Task<bool> EliminarCategoriaAsync(int categoriaId)
+    public async Task EliminarCategoriaAsync(int categoriaId)
     {
         var categoria = await _categoriaRepository.ObtenerPorIdAsync(categoriaId);
 
         if (categoria == null)
-            throw new BusinessException("Debe de seleccionar una categoria", "REQUIRED");
+            throw new BusinessException("La categoría no existe.", 404);
 
         _categoriaRepository.Eliminar(categoria);
         await _categoriaRepository.GuardarCambiosAsync();
-        return true;
     }
+
     public async Task DesactivarCategoriaAsync(int categoriaId)
     {
         var categoria = await _categoriaRepository.ObtenerPorIdAsync(categoriaId);
 
         if (categoria == null)
-            throw new BusinessException("Debe de seleccionar una categoria", "REQUIRED");
+            throw new BusinessException("La categoría no existe.", 404);
 
         categoria.Estado = false;
+
         _categoriaRepository.Actualizar(categoria);
         await _categoriaRepository.GuardarCambiosAsync();
-
     }
 }
-

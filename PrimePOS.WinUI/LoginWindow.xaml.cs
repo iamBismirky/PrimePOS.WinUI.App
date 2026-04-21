@@ -14,15 +14,10 @@ namespace PrimePOS.WinUI
 
     public sealed partial class LoginWindow : Window
     {
-        //private readonly UsuarioService _usuarioService;
-        //private readonly AppSesionViewModel _sesionService;
         public LoginViewModel ViewModel { get; }
         public LoginWindow()
         {
             InitializeComponent();
-
-            //_usuarioService = App.Services.GetRequiredService<UsuarioService>();
-            //_sesionService = App.Services.GetRequiredService<AppSesionViewModel>();
 
             ViewModel = App.AppServices.GetRequiredService<LoginViewModel>();
             RootGrid.DataContext = ViewModel;
@@ -59,44 +54,7 @@ namespace PrimePOS.WinUI
                 (area.Height - 700) / 2));
 
         }
-        private async void BtnLogin_Click(object sender, RoutedEventArgs e)
-        {
-            //try
-            //{
-            //    var loginDto = new AutenticarUsuarioDto
-            //    {
-            //        Username = txtUsername.Text.Trim(),
-            //        Password = pwdPassword.Password.Trim(),
 
-            //    };
-
-            //    var usuarioSesion = await _usuarioService.AutenticarUsuarioAsync(loginDto);
-            //    _sesionService.IniciarSesion(usuarioSesion);
-
-            //    Sesion.UsuarioId = usuarioSesion.UsuarioId;
-            //    Sesion.UsuarioNombre = usuarioSesion.UsuarioNombre;
-            //    Sesion.RolId = usuarioSesion.RolId;
-            //    Sesion.RolNombre = usuarioSesion.RolNombre;
-            //    Sesion.Activa = true;
-
-            //    MainWindow main = new MainWindow();
-            //    main.Activate();
-            //    this.Close();
-            //}
-            //catch (Exception ex)
-            //{
-            //    ContentDialog dialog = new ContentDialog()
-            //    {
-            //        Title = "PrimePOS",
-            //        Content = ex.Message,
-            //        CloseButtonText = "Aceptar",
-            //        XamlRoot = this.Content.XamlRoot
-            //    };
-
-            //    await dialog.ShowAsync();
-            //}
-
-        }
 
         private void BtnTema_Click(object sender, RoutedEventArgs e)
         {
@@ -124,24 +82,23 @@ namespace PrimePOS.WinUI
         }
         private void OnLoginExitoso()
         {
-            // Abrir MainWindow
-            var main = new MainWindow();
-            main.Activate();
+            //Abrir MainWindow
+            //var main = new MainWindow();
+            //main.Activate();
 
-            this.Close();
+            //this.Close();
         }
         private void MostrarError(string mensaje)
         {
             infoError.Message = mensaje;
             infoError.IsOpen = true;
 
-            _ = Task.Delay(3000).ContinueWith(_ =>
-            {
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    infoError.IsOpen = false;
-                });
-            });
+            AutoCloseInfoBar();
+        }
+        private async void AutoCloseInfoBar()
+        {
+            await Task.Delay(3000);
+            infoError.IsOpen = false;
         }
     }
 

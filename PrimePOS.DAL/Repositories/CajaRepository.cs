@@ -26,10 +26,9 @@ namespace PrimePOS.DAL.Repositories
         {
             _context.Cajas.Remove(caja);
         }
-        public async Task<List<Caja>> ListarCajasAsync()
+        public async Task<List<Caja>> ObtenerTodosAsync()
         {
-            return await _context.Cajas
-                .Where(c => c.Estado == true).ToListAsync();
+            return await _context.Cajas.ToListAsync();
         }
 
         public async Task<Caja?> ObtenerCajaPorIdAsync(int id)
@@ -45,12 +44,12 @@ namespace PrimePOS.DAL.Repositories
         public async Task<Caja?> ObtenerPorNombreAsync(string nombre)
         {
             return await _context.Cajas
-                .FirstOrDefaultAsync(c => c.Nombre == c.Nombre);
+                .FirstOrDefaultAsync(c => c.Nombre.ToLower() == c.Nombre.ToLower());
         }
-        public async Task<bool> ExisteCajaIdAsync(int cajaId)
+        public async Task<Caja?> ExisteCajaIdAsync(int cajaId)
         {
-            return await _context.Turnos
-                .AnyAsync(c => c.CajaId == cajaId);
+            return await _context.Cajas
+                .FirstOrDefaultAsync(c => c.CajaId == cajaId);
         }
     }
 }

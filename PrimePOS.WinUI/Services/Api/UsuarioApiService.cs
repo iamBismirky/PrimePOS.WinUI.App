@@ -132,4 +132,18 @@ public class UsuarioApiService
                 new AuthenticationHeaderValue("Bearer", token);
         }
     }
+    public async Task CambiarPasswordAsync(CambiarPasswordDto dto)
+    {
+        var res = await _http.PostAsJsonAsync("api/usuarios/cambiar-password", dto);
+
+        var json = await res.Content.ReadAsStringAsync();
+
+        if (!res.IsSuccessStatusCode)
+        {
+            var error = JsonSerializer.Deserialize<ErrorResponse>(json,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            throw new Exception(error?.Message ?? "Error al cambiar contraseña");
+        }
+    }
 }

@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.251219" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Markdown" Version="7.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
@@ -98,6 +99,9 @@
     <ProjectReference Include="..\PrimePOS.Contracts\PrimePOS.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Pages\CajaPage1.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Pages\TurnoCerrarOverlay.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Categoria;
 
@@ -16,7 +15,7 @@ namespace PrimePOS.API.Controllers
             _service = service;
         }
 
-
+        // GET: api/categorias
         [HttpGet]
         public async Task<IActionResult> ObtenerCategoriasAsync()
         {
@@ -24,98 +23,56 @@ namespace PrimePOS.API.Controllers
             return Ok(categorias);
         }
 
-        // 🔹 GET: api/roles/5
+        // GET: api/categorias/5
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerPorIdAsync(int id)
         {
             var categoria = await _service.ObtenerPorIdAsync(id);
-
-            if (categoria == null)
-                return NotFound(new { mensaje = "Categoria no encontrada" });
-
             return Ok(categoria);
         }
 
-
+        // POST: api/categorias
         [HttpPost]
         public async Task<IActionResult> CrearCategoriaAsync([FromBody] CategoriaDto dto)
         {
-            try
-            {
-                await _service.CrearCategoriaAsync(dto);
+            await _service.CrearCategoriaAsync(dto);
 
-                return Ok();
-            }
-            catch (BusinessException ex)
+            return StatusCode(201, new
             {
-
-                return BadRequest(new { message = ex.Message, code = ex.Code });
-            }
+                message = "Categoría creada correctamente"
+            });
         }
 
-        // 🔹 PUT: api/roles/5
+        // PUT: api/categorias/5
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarCategoriaAsync(int id, [FromBody] CategoriaDto dto)
         {
-            try
+            dto.CategoriaId = id;
 
+            await _service.ActualizarCategoriaAsync(dto);
+
+            return Ok(new
             {
-                dto.CategoriaId = id;
-
-                await _service.ActualizarCategoriaAsync(dto);
-                return Ok();
-            }
-            catch (BusinessException ex)
-            {
-
-                return BadRequest(new
-                {
-                    message = ex.Message,
-                    code = ex.Code
-                });
-
-            }
+                message = "Categoría actualizada correctamente"
+            });
         }
 
-        //PATCH
+        // PATCH: api/categorias/5/desactivar
         [HttpPatch("{id}/desactivar")]
         public async Task<IActionResult> DesactivarCategoriaAsync(int id)
         {
-            try
-            {
-                await _service.DesactivarCategoriaAsync(id);
-                return Ok();
-            }
-            catch (BusinessException ex)
-            {
-                return BadRequest(new
-                {
-                    message = ex.Message,
-                    code = ex.Code
-                });
-            }
+            await _service.DesactivarCategoriaAsync(id);
+
+            return NoContent();
         }
 
-        //DELETE
+        // DELETE: api/categorias/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarCategoriaAsync(int id)
         {
-            try
-            {
-                await _service.EliminarCategoriaAsync(id);
-                return NoContent();
-            }
-            catch (BusinessException ex)
-            {
-                return BadRequest(new
-                {
-                    message = ex.Message,
-                    code = ex.Code
-                });
-            }
+            await _service.EliminarCategoriaAsync(id);
 
-
-
+            return NoContent();
         }
     }
 }

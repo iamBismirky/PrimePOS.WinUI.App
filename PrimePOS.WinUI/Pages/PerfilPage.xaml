@@ -46,14 +46,14 @@
 
                         <StackPanel>
                             <TextBlock Text="Usuario" Opacity="0.6"/>
-                            <TextBlock Text="{Binding UsuarioActual.UsuarioNombre, Mode=OneWay}"
+                            <TextBlock Text="{Binding UsuarioNombre, Mode=OneWay}"
                                        FontSize="18"
                                        FontWeight="SemiBold"/>
                         </StackPanel>
 
                         <StackPanel>
                             <TextBlock Text="Rol" Opacity="0.6"/>
-                            <TextBlock Text="{Binding UsuarioActual.RolNombre, Mode=OneWay}"
+                            <TextBlock Text="{Binding UsuarioRol, Mode=OneWay}"
                                        FontSize="15"/>
                         </StackPanel>
 
@@ -72,22 +72,25 @@
                                    FontWeight="SemiBold"/>
 
                         <PasswordBox x:Name="pwdActual"
+                                     PasswordChanged="Actual_PasswordChanged"
                                      PlaceholderText="Contraseña actual"
                                      PasswordChar="#"/>
 
                         <PasswordBox x:Name="pwdNueva"
+                                     PasswordChanged="Nueva_PasswordChanged"
                                      PlaceholderText="Nueva contraseña"
                                      PasswordChar="#"/>
 
                         <PasswordBox x:Name="pwdConfirmar"
+                                     PasswordChanged="Confirmar_PasswordChanged"
                                      PlaceholderText="Confirmar contraseña"
                                      PasswordChar="#"/>
-
-                        <Button Content="Actualizar contraseña"
-                                Click="BtnActualizarPassword_Click"
-                                HorizontalAlignment="Stretch"
-                                Style="{ThemeResource AccentButtonStyle}"/>
-
+                        <Grid>
+                            <Button Content="Actualizar contraseña"
+                                    Command="{Binding CambiarCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    Style="{ThemeResource AccentButtonStyle}"/>
+                        </Grid>
                     </StackPanel>
 
                 </StackPanel>

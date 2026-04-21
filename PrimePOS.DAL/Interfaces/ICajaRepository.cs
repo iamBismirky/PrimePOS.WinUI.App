@@ -9,8 +9,8 @@ namespace PrimePOS.DAL.Interfaces
         void Eliminar(Caja caja);
         Task<Caja?> ObtenerPorNombreAsync(string nombre);
         Task GuardarCambiosAsync();
-        Task<List<Caja>> ListarCajasAsync();
+        Task<List<Caja>> ObtenerTodosAsync();
         Task<Caja?> ObtenerCajaPorIdAsync(int id);
-        Task<bool> ExisteCajaIdAsync(int cajaId);
+        Task<Caja?> ExisteCajaIdAsync(int cajaId);
     }
 }

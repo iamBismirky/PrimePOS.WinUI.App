@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Producto;
-
-
 
 namespace PrimePOS.API.Controllers
 {
@@ -18,7 +15,7 @@ namespace PrimePOS.API.Controllers
             _service = service;
         }
 
-
+        // GET: api/productos
         [HttpGet]
         public async Task<IActionResult> ObtenerTodosAsync()
         {
@@ -26,97 +23,56 @@ namespace PrimePOS.API.Controllers
             return Ok(productos);
         }
 
-        //GET: 
+        // GET: api/productos/5
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerPorIdAsync(int id)
         {
             var producto = await _service.ObtenerProductoPorIdAsync(id);
-            if (producto == null)
-                return NotFound(new { mensaje = "Producto no encontrado" });
             return Ok(producto);
         }
 
-
+        // POST: api/productos
         [HttpPost]
         public async Task<IActionResult> CrearProductoAsync([FromBody] CrearProductoDto dto)
         {
-            try
-            {
-                await _service.CrearProductoAsync(dto);
+            await _service.CrearProductoAsync(dto);
 
-                return Ok();
-            }
-            catch (BusinessException ex)
+            return StatusCode(201, new
             {
-
-                return BadRequest(new { message = ex.Message, code = ex.Code });
-            }
+                message = "Producto creado correctamente"
+            });
         }
 
-        // 🔹 PUT: api/roles/5
+        // PUT: api/productos/5
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarProductoAsync(int id, [FromBody] ActualizarProductoDto dto)
         {
-            try
+            dto.ProductoId = id;
 
+            await _service.ActualizarProductoAsync(dto);
+
+            return Ok(new
             {
-                dto.ProductoId = id;
-
-                await _service.ActualizarProductoAsync(dto);
-                return Ok();
-            }
-            catch (BusinessException ex)
-            {
-
-                return BadRequest(new
-                {
-                    message = ex.Message,
-                    code = ex.Code
-                });
-
-            }
+                message = "Producto actualizado correctamente"
+            });
         }
 
-        //PATCH
+        // PATCH: api/productos/5/desactivar
         [HttpPatch("{id}/desactivar")]
         public async Task<IActionResult> DesactivarProductoAsync(int id)
         {
-            try
-            {
-                await _service.DesactivarProductoAsync(id);
-                return NoContent();
-            }
-            catch (BusinessException ex)
-            {
-                return BadRequest(new
-                {
-                    message = ex.Message,
-                    code = ex.Code
-                });
-            }
+            await _service.DesactivarProductoAsync(id);
+
+            return NoContent();
         }
 
-        //DELETE
+        // DELETE: api/productos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarProductoAsync(int id)
         {
-            try
-            {
-                await _service.EliminarProductoAsync(id);
-                return NoContent();
-            }
-            catch (BusinessException ex)
-            {
-                return BadRequest(new
-                {
-                    message = ex.Message,
-                    code = ex.Code
-                });
-            }
+            await _service.EliminarProductoAsync(id);
 
-
-
+            return NoContent();
         }
     }
 }
-

@@ -1,89 +1,54 @@
-﻿using PrimePOS.Contracts.DTOs.Caja;
-using PrimePOS.WinUI.Models;
-using System;
+﻿using PrimePOS.Contracts.Common;
+using PrimePOS.Contracts.DTOs.Caja;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.Services.Api;
 
-public class CajaApiService
+public class CajaApiService : BaseApiService
 {
-    private readonly HttpClient _http;
-
     public CajaApiService(IHttpClientFactory factory)
+        : base(factory.CreateClient("ApiClient"))
     {
-        _http = factory.CreateClient("ApiClient");
     }
 
-    public async Task<List<CajaDto>> ObtenerCajasAsync()
+    public Task<ApiResponse<List<CajaDto>>> ObtenerCajasAsync()
     {
-        return await _http.GetFromJsonAsync<List<CajaDto>>("api/cajas")
-               ?? new List<CajaDto>();
+        var request = new HttpRequestMessage(HttpMethod.Get, "api/cajas");
+        return SendAsync<List<CajaDto>>(request);
     }
 
-    public async Task CrearCajaAsync(CajaDto dto)
+    public Task<ApiResponse<object>> CrearCajaAsync(CajaDto dto)
     {
-        var res = await _http.PostAsJsonAsync("api/cajas", dto);
-
-        if (!res.IsSuccessStatusCode)
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/cajas")
         {
-            var json = await res.Content.ReadAsStringAsync();
+            Content = JsonContent.Create(dto)
+        };
 
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+        return SendAsync<object>(request);
     }
 
-    public async Task ActualizarCajaAsync(int id, CajaDto dto)
+    public Task<ApiResponse<object>> ActualizarCajaAsync(int id, CajaDto dto)
     {
-        var res = await _http.PutAsJsonAsync($"api/cajas/{id}", dto);
-
-        if (!res.IsSuccessStatusCode)
+        var request = new HttpRequestMessage(HttpMethod.Put, $"api/cajas/{id}")
         {
-            var json = await res.Content.ReadAsStringAsync();
+            Content = JsonContent.Create(dto)
+        };
 
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+        return SendAsync<object>(request);
     }
 
-    public async Task DesactivarCajaAsync(int id)
+    public Task<ApiResponse<object>> DesactivarCajaAsync(int id)
     {
-        var res = await _http.PatchAsync($"api/cajas/{id}/desactivar", null);
+        var request = new HttpRequestMessage(HttpMethod.Patch, $"api/cajas/{id}/desactivar");
+        return SendAsync<object>(request);
+    }
 
-        if (!res.IsSuccessStatusCode)
-        {
-            var json = await res.Content.ReadAsStringAsync();
-
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+    public Task<ApiResponse<object>> EliminarCajaAsync(int id)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"api/cajas/{id}");
+        return SendAsync<object>(request);
     }
 }

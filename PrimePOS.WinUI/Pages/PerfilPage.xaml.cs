@@ -1,11 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PrimePOS.BLL.Services;
-using PrimePOS.Contracts.DTOs.Usuario;
-using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.ViewModels;
-using System;
 
 
 
@@ -14,50 +10,70 @@ namespace PrimePOS.WinUI.Pages;
 
 public sealed partial class PerfilPage : Page
 {
-    private readonly UsuarioService _usuarioService;
-    private readonly AppSesionViewModel _sesion;
-
-
+    private PerfilViewModel ViewModel;
     public PerfilPage()
     {
         InitializeComponent();
-        CargarDatos();
-
-        _usuarioService = App.Services.GetRequiredService<UsuarioService>();
-        _sesion = App.Services.GetRequiredService<AppSesionViewModel>();
-        this.DataContext = _sesion;
+        ViewModel = App.AppServices.GetRequiredService<PerfilViewModel>();
+        DataContext = ViewModel;
     }
-    private async void BtnActualizarPassword_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var dto = new CambiarContraseñaDto
-            {
-                UsuarioId = _sesion.UsuarioActual!.UsuarioId,
-                ContraseñaActual = pwdActual.Password.Trim(),
-                ContraseñaNueva = pwdNueva.Password.Trim(),
-                Confirmar = pwdConfirmar.Password.Trim(),
 
 
-            };
-            await _usuarioService.CambiarContraseñaAsync(dto);
-            LimpiarCampos();
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Contraseña actualizada correctamente");
-        }
-        catch (Exception ex)
-        {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-        }
-    }
-    private void CargarDatos()
-    {
-        //txtUsuario.Text = Sesion.UsuarioNombre;
-        //txtRol.Text = Sesion.RolNombre;
-    }
     private void LimpiarCampos()
     {
         pwdActual.Password = "";
         pwdNueva.Password = "";
         pwdConfirmar.Password = "";
     }
+    private void Actual_PasswordChanged(object sender, RoutedEventArgs e)
+    {
+        ViewModel.PasswordActual = ((PasswordBox)sender).Password;
+    }
+
+    private void Nueva_PasswordChanged(object sender, RoutedEventArgs e)
+    {
+        ViewModel.PasswordNueva = ((PasswordBox)sender).Password;
+    }
+
+    private void Confirmar_PasswordChanged(object sender, RoutedEventArgs e)
+    {
+        ViewModel.Confirmar = ((PasswordBox)sender).Password;
+    }
+    //private void MostrarError(string msg)
+    //{
+    //    infoBar.Title = "Error";
+    //    infoBar.Message = msg;
+    //    infoBar.Severity = InfoBarSeverity.Error;
+    //    infoBar.IsOpen = true;
+
+    //    AutoClose();
+    //}
+
+    //private void MostrarExito(string msg)
+    //{
+    //    infoBar.Title = "Éxito";
+    //    infoBar.Message = msg;
+    //    infoBar.Severity = InfoBarSeverity.Success;
+    //    infoBar.IsOpen = true;
+
+    //    AutoClose();
+    //}
+
+    //private async void AutoClose()
+    //{
+    //    await Task.Delay(3000);
+    //    infoBar.IsOpen = false;
+    //}
+    //private void MostrarError(string mensaje)
+    //{
+    //    infoError.Message = mensaje;
+    //    infoError.IsOpen = true;
+
+    //    AutoCloseInfoBar();
+    //}
+    //private async void AutoCloseInfoBar()
+    //{
+    //    await Task.Delay(3000);
+    //    infoError.IsOpen = false;
+    //}
 }

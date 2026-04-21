@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Usuario;
 
@@ -15,22 +14,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(AutenticarUsuarioDto dto)
+    public async Task<IActionResult> Login([FromBody] AutenticarUsuarioDto dto)
     {
+        var result = await _usuarioService.AutenticarUsuarioAsync(dto);
 
-        try
-        {
-            var result = await _usuarioService.AutenticarUsuarioAsync(dto);
-
-            if (result == null)
-                return Unauthorized();
-
-            return Ok(result);
-        }
-        catch (BusinessException ex)
-        {
-
-            return BadRequest(new { message = ex.Message, code = ex.Code });
-        }
+        return Ok(result);
     }
 }

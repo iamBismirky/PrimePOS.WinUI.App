@@ -15,18 +15,19 @@ public class ProductoService : IProductoService
     {
         _productoRepository = repository;
     }
+
     public async Task CrearProductoAsync(CrearProductoDto dto)
     {
         ProductoValidator.ValidarCrearProducto(dto);
 
-        var existe = await _productoRepository.ExisteCodigoONombreAsync(dto.CodigoBarra.Trim(), dto.Nombre.Trim());
+        var existe = await _productoRepository
+            .ExisteCodigoONombreAsync(dto.CodigoBarra.Trim(), dto.Nombre.Trim());
 
         if (existe)
-            throw new BusinessException("Ya existe un producto con este nombre o codigo barras", "DUPLICATE");
+            throw new BusinessException("Ya existe un producto con ese nombre o código de barras.", 400);
 
         var producto = new Producto
         {
-
             CodigoBarra = dto.CodigoBarra,
             Nombre = dto.Nombre,
             Descripcion = dto.Descripcion,
@@ -46,6 +47,7 @@ public class ProductoService : IProductoService
 
         await _productoRepository.GuardarCambiosAsync();
     }
+
     public async Task ActualizarProductoAsync(ActualizarProductoDto dto)
     {
         ProductoValidator.ValidarActualizar(dto);
@@ -53,8 +55,7 @@ public class ProductoService : IProductoService
         var producto = await _productoRepository.ObtenerPorIdAsync(dto.ProductoId);
 
         if (producto == null)
-            throw new BusinessException("Producto no existe.", "NO_FOUND");
-
+            throw new BusinessException("El producto no existe.", 404);
 
         producto.CodigoBarra = dto.CodigoBarra;
         producto.Nombre = dto.Nombre;
@@ -67,65 +68,61 @@ public class ProductoService : IProductoService
 
         _productoRepository.Actualizar(producto);
         await _productoRepository.GuardarCambiosAsync();
-
     }
+
     public async Task EliminarProductoAsync(int productoId)
     {
         ProductoValidator.ValidarEliminar(productoId);
 
         var producto = await _productoRepository.ObtenerPorIdAsync(productoId);
+
         if (producto == null)
-            throw new Exception("Producto no encontrado.");
+            throw new BusinessException("El producto no existe.", 404);
 
         _productoRepository.Eliminar(producto);
-
         await _productoRepository.GuardarCambiosAsync();
-
     }
+
     public async Task DesactivarProductoAsync(int productoId)
     {
         ProductoValidator.ValidarEliminar(productoId);
 
         var producto = await _productoRepository.ObtenerPorIdAsync(productoId);
+
         if (producto == null)
-            throw new Exception("Producto no encontrado.");
+            throw new BusinessException("El producto no existe.", 404);
 
         producto.Estado = false;
+
         _productoRepository.Actualizar(producto);
         await _productoRepository.GuardarCambiosAsync();
-
     }
+
     public async Task<List<ProductoDto>> BuscarProductoCodigoONombreListAsync(string buscar)
     {
-        var producto = await _productoRepository.BuscarPorCodigoONombreListAsync(buscar);
+        var productos = await _productoRepository.BuscarPorCodigoONombreListAsync(buscar);
 
-
-        return producto.Select(p => new ProductoDto
+        return productos.Select(p => new ProductoDto
         {
             ProductoId = p.ProductoId,
             Nombre = p.Nombre,
             Codigo = p.Codigo,
             PrecioVenta = p.PrecioVenta
         }).ToList();
-
     }
+
     public async Task<ProductoDto?> BuscarProductoCodigoONombreAsync(string buscar)
     {
         if (string.IsNullOrWhiteSpace(buscar))
-            return null;
+            throw new BusinessException("Debe ingresar un valor de búsqueda.", 400);
 
         buscar = buscar.Trim();
 
-        var producto = await _productoRepository.BuscarPorCodigoAsync(buscar);
+        var producto = await _productoRepository.BuscarPorCodigoAsync(buscar)
+                      ?? await _productoRepository.BuscarPorNombreAsync(buscar);
 
         if (producto == null)
-        {
-            producto = await _productoRepository.BuscarPorNombreAsync(buscar);
-        }
-
-        if (producto == null)
-            return null;
-
+            throw new BusinessException("Producto no encontrado.", 404);
 
         return new ProductoDto
         {
@@ -134,17 +131,18 @@ public class ProductoService : IProductoService
             Codigo = producto.Codigo,
             PrecioVenta = producto.PrecioVenta
         };
-
     }
 
     public async Task<ProductoDto?> ObtenerProductoPorIdAsync(int id)
     {
         var producto = await _productoRepository.ObtenerPorIdAsync(id);
 
-        if (producto == null) return null;
+        if (producto == null)
+            throw new BusinessException("El producto no existe.", 404);
 
         return new ProductoDto
         {
+            ProductoId = producto.ProductoId,
             Codigo = producto.Codigo,
             CodigoBarra = producto.CodigoBarra,
             Nombre = producto.Nombre,
@@ -156,7 +154,6 @@ public class ProductoService : IProductoService
             Existencia = producto.Existencia,
             Estado = producto.Estado,
             FechaRegistro = producto.FechaRegistro,
-
         };
     }
 
@@ -178,11 +175,9 @@ public class ProductoService : IProductoService
             Existencia = p.Existencia,
             Estado = p.Estado,
             FechaRegistro = p.FechaRegistro,
-
-
-
         }).ToList();
     }
+
     private string GenerarCodigoProducto(int productoId)
     {
         return $"PROD-{productoId:D4}";

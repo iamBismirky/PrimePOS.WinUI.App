@@ -45,7 +45,7 @@ public class TurnoService
             // Validar que la caja exista
             var existeCaja = await _cajaRepository.ExisteCajaIdAsync(dto.CajaId);
 
-            if (!existeCaja)
+            if (existeCaja == null)
                 throw new Exception("La caja no existe.");
 
             int numeroTurno = await ObtenerSiguienteTurno();

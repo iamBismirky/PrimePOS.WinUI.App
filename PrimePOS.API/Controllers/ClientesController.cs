@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Cliente;
-
 
 namespace PrimePOS.API.Controllers
 {
@@ -17,106 +15,64 @@ namespace PrimePOS.API.Controllers
             _service = service;
         }
 
-
+        // GET: api/clientes
         [HttpGet]
         public async Task<IActionResult> ObtenerTodosAsync()
         {
-            var cliente = await _service.ObtenerTodosAsync();
-            return Ok(cliente);
+            var clientes = await _service.ObtenerTodosAsync();
+            return Ok(clientes);
         }
 
-        //GET: 
+        // GET: api/clientes/5
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerClientePorIdAsync(int id)
         {
             var cliente = await _service.ObtenerPorIdAsync(id);
-            if (cliente == null)
-                return NotFound(new { mensaje = "Cliente no encontrado" });
-
             return Ok(cliente);
         }
 
-
+        // POST: api/clientes
         [HttpPost]
         public async Task<IActionResult> CrearClienteAsync([FromBody] CrearClienteDto dto)
         {
-            try
-            {
-                await _service.CrearClienteAsync(dto);
+            await _service.CrearClienteAsync(dto);
 
-                return Ok();
-            }
-            catch (BusinessException ex)
+            return StatusCode(201, new
             {
-
-                return BadRequest(new { message = ex.Message, code = ex.Code });
-            }
+                message = "Cliente creado correctamente"
+            });
         }
 
-        // 🔹 PUT: api/roles/5
+        // PUT: api/clientes/5
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarClienteAsync(int id, [FromBody] ActualizarClienteDto dto)
         {
-            try
+            dto.ClienteId = id;
 
+            await _service.ActualizarClienteAsync(dto);
+
+            return Ok(new
             {
-                dto.ClienteId = id;
-
-                await _service.ActualizarClienteAsync(dto);
-                return Ok();
-            }
-            catch (BusinessException ex)
-            {
-
-                return BadRequest(new
-                {
-                    message = ex.Message,
-                    code = ex.Code
-                });
-
-            }
+                message = "Cliente actualizado correctamente"
+            });
         }
 
-        //PATCH
+        // PATCH: api/clientes/5/desactivar
         [HttpPatch("{id}/desactivar")]
         public async Task<IActionResult> DesactivarClienteAsync(int id)
         {
-            try
-            {
-                await _service.DesactivarClienteAsync(id);
-                return NoContent();
-            }
-            catch (BusinessException ex)
-            {
-                return BadRequest(new
-                {
-                    message = ex.Message,
-                    code = ex.Code
-                });
-            }
+            await _service.DesactivarClienteAsync(id);
+
+            return NoContent();
         }
 
-        //DELETE
+        // DELETE: api/clientes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarClienteAsync(int id)
         {
-            try
-            {
-                await _service.EliminarClienteAsync(id);
-                return NoContent();
-            }
-            catch (BusinessException ex)
-            {
-                return BadRequest(new
-                {
-                    message = ex.Message,
-                    code = ex.Code
-                });
-            }
+            await _service.EliminarClienteAsync(id);
 
-
-
+            return NoContent();
         }
     }
 }
-

@@ -6,7 +6,7 @@ namespace PrimePOS.BLL.Interfaces
     {
         Task ActualizarCategoriaAsync(CategoriaDto dto);
         Task CrearCategoriaAsync(CategoriaDto dto);
-        Task<bool> EliminarCategoriaAsync(int categoriaId);
+        Task EliminarCategoriaAsync(int categoriaId);
         Task DesactivarCategoriaAsync(int categoriaId);
         Task<List<CategoriaDto>> ListarCategoriasAsync();
         Task<CategoriaDto?> ObtenerPorIdAsync(int categoriaId);
