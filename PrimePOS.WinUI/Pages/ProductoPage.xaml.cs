@@ -75,7 +75,7 @@ namespace PrimePOS.WinUI.Pages
             {
                 IsLoading = true;
 
-                _listaCategorias = await _categoriaApiService.ObtenerCategoriasAsync();
+                //_listaCategorias = await _categoriaApiService.ObtenerCategoriasAsync();
                 cmbCategoria.ItemsSource = null;
                 cmbCategoria.ItemsSource = _listaCategorias;
                 cmbCategoria.DisplayMemberPath = "Nombre";

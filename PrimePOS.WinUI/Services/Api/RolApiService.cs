@@ -1,88 +1,54 @@
-﻿using PrimePOS.Contracts.DTOs.Rol;
-using PrimePOS.WinUI.Models;
-using System;
+﻿using PrimePOS.Contracts.Common;
+using PrimePOS.Contracts.DTOs.Rol;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.Services.Api;
 
-public class RolApiService
+public class RolApiService : BaseApiService
 {
-    private readonly HttpClient _http;
-
     public RolApiService(IHttpClientFactory factory)
+        : base(factory.CreateClient("ApiClient"))
     {
-        _http = factory.CreateClient("ApiClient");
     }
 
-    public async Task<List<RolDto>> ObtenerRolesAsync()
+    public Task<ApiResponse<List<RolDto>>> ObtenerRolesAsync()
     {
-        return await _http.GetFromJsonAsync<List<RolDto>>("api/roles") ?? new List<RolDto>();
+        var request = new HttpRequestMessage(HttpMethod.Get, "api/roles");
+        return SendAsync<List<RolDto>>(request);
     }
 
-    public async Task CrearRolAsync(CrearRolDto dto)
+    public Task<ApiResponse<object>> CrearRolAsync(RolDto dto)
     {
-        var res = await _http.PostAsJsonAsync("api/roles", dto);
-
-        if (!res.IsSuccessStatusCode)
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/roles")
         {
-            var json = await res.Content.ReadAsStringAsync();
+            Content = JsonContent.Create(dto)
+        };
 
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+        return SendAsync<object>(request);
     }
 
-    public async Task ActualizarRolAsync(int id, ActualizarRolDto dto)
+    public Task<ApiResponse<object>> ActualizarRolAsync(int id, RolDto dto)
     {
-        var res = await _http.PutAsJsonAsync($"api/roles/{id}", dto);
-
-        if (!res.IsSuccessStatusCode)
+        var request = new HttpRequestMessage(HttpMethod.Put, $"api/roles/{id}")
         {
-            var json = await res.Content.ReadAsStringAsync();
+            Content = JsonContent.Create(dto)
+        };
 
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+        return SendAsync<object>(request);
     }
 
-    public async Task DesactivarRolAsync(int id)
+    public Task<ApiResponse<object>> DesactivarRolAsync(int id)
     {
-        var res = await _http.PatchAsync($"api/roles/{id}/desactivar", null);
+        var request = new HttpRequestMessage(HttpMethod.Patch, $"api/roles/{id}/desactivar");
+        return SendAsync<object>(request);
+    }
 
-        if (!res.IsSuccessStatusCode)
-        {
-            var json = await res.Content.ReadAsStringAsync();
-
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+    public Task<ApiResponse<object>> EliminarRolAsync(int id)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"api/roles/{id}");
+        return SendAsync<object>(request);
     }
 }

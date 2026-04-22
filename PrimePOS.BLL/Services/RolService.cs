@@ -122,11 +122,11 @@ public class RolService : IRolService
     }
 
     // Listar
-    public async Task<List<ListaRolesDto>> ListarRolesAsync()
+    public async Task<List<RolDto>> ListarRolesAsync()
     {
         var roles = await _rolRepository.ListarRolesAsync();
 
-        return roles.Select(r => new ListaRolesDto
+        return roles.Select(r => new RolDto
         {
             RolId = r.RolId,
             Nombre = r.Nombre,

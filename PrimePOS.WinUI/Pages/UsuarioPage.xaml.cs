@@ -73,7 +73,7 @@ namespace PrimePOS.WinUI.Pages
             {
                 IsLoading = true;
 
-                _listaRoles = await _rolApiService.ObtenerRolesAsync();
+                //_listaRoles = await _rolApiService.ObtenerRolesAsync();
                 cmbRol.ItemsSource = null;
                 cmbRol.ItemsSource = _listaRoles;
                 cmbRol.DisplayMemberPath = "Nombre";

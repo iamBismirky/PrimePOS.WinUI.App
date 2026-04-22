@@ -29,6 +29,10 @@ public static class DependencyInjection
         services.AddSingleton<AppSesionViewModel>();
         services.AddTransient<PerfilViewModel>();
         services.AddScoped<CajaViewModel>();
+        services.AddScoped<CategoriaViewModel>();
+        services.AddScoped<ClienteViewModel>();
+        services.AddScoped<CajaViewModel>();
+
 
         //NotificationService
         services.AddSingleton<NotificationService>();

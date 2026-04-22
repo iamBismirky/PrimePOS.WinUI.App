@@ -35,7 +35,6 @@ public class RolRepository : IRolRepository
     public async Task<List<Rol>> ListarRolesAsync()
     {
         return await _context.Roles
-            .Where(r => r.Estado == true)
             .ToListAsync();
     }
     public async Task<Rol?> ExisteRolAsync(string nombre)

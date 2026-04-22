@@ -1,95 +1,90 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Usuario;
-using System.Security.Claims;
 
-namespace PrimePOS.API.Controllers
+namespace PrimePOS.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class UsuariosController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UsuariosController : ControllerBase
+    private readonly IUsuarioService _service;
+
+    public UsuariosController(IUsuarioService service)
     {
-        private readonly IUsuarioService _service;
+        _service = service;
+    }
 
-        public UsuariosController(IUsuarioService service)
+    [HttpGet]
+    public async Task<IActionResult> ObtenerTodosAsync()
+    {
+        var usuarios = await _service.ObtenerTodosAsync();
+
+        return Ok(new ApiResponse<List<UsuarioDto>>
         {
-            _service = service;
-        }
+            Success = true,
+            Data = usuarios
+        });
+    }
 
-        // GET: api/usuarios
-        [HttpGet]
-        public async Task<IActionResult> ObtenerTodosAsync()
+    [HttpGet("{id}")]
+    public async Task<IActionResult> ObtenerUsuarioPorIdAsync(int id)
+    {
+        var usuario = await _service.ObtenerUsuarioPorIdAsync(id);
+        return Ok(new ApiResponse<UsuarioDto>
         {
-            var usuarios = await _service.ObtenerTodosAsync();
-            return Ok(usuarios);
-        }
+            Success = true,
+            Data = usuario
+        });
+    }
 
-        // GET: api/usuarios/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> ObtenerPorIdAsync(int id)
+    [HttpPost]
+    public async Task<IActionResult> CrearUsuarioAsync([FromBody] CrearUsuarioDto dto)
+    {
+        await _service.CrearUsuarioAsync(dto);
+
+        return Ok(new ApiResponse<object>
         {
-            var usuario = await _service.ObtenerUsuarioPorIdAsync(id);
-            return Ok(usuario);
-        }
+            Success = true,
+            Message = "Usuario creado correctamente"
+        });
+    }
 
-        // POST: api/usuarios
-        [HttpPost]
-        public async Task<IActionResult> CrearUsuarioAsync([FromBody] CrearUsuarioDto dto)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> ActualizarUsuarioAsync(int id, [FromBody] ActualizarUsuarioDto dto)
+    {
+        dto.UsuarioId = id;
+
+        await _service.ActualizarUsuarioAsync(dto);
+        return Ok(new ApiResponse<object>
         {
-            await _service.CrearUsuarioAsync(dto);
+            Success = true,
+            Message = "Usuario actualizado correctamente"
+        });
+    }
 
-            return StatusCode(201, new
-            {
-                message = "Usuario creado correctamente"
-            });
-        }
+    [HttpPatch("{id}/desactivar")]
+    public async Task<IActionResult> DesactivarUsuarioAsync(int id)
+    {
+        await _service.DesactivarUsuarioAsync(id);
 
-        // PUT: api/usuarios/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> ActualizarUsuarioAsync(int id, [FromBody] ActualizarUsuarioDto dto)
+        return Ok(new ApiResponse<object>
         {
-            dto.UsuarioId = id;
+            Success = true,
+            Message = "Usuario desactivado correctamente"
+        });
+    }
 
-            await _service.ActualizarUsuarioAsync(dto);
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> EliminarUsuarioAsync(int id)
+    {
+        await _service.EliminarUsuarioAsync(id);
 
-            return Ok(new
-            {
-                message = "Usuario actualizado correctamente"
-            });
-        }
-
-        // PATCH: api/usuarios/5/desactivar
-        [HttpPatch("{id}/desactivar")]
-        public async Task<IActionResult> DesactivarUsuarioAsync(int id)
+        return Ok(new ApiResponse<object>
         {
-            await _service.DesactivarUsuarioAsync(id);
-
-            return NoContent();
-        }
-
-        // DELETE: api/usuarios/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> EliminarUsuarioAsync(int id)
-        {
-            await _service.EliminarUsuarioAsync(id);
-
-            return NoContent();
-        }
-
-        // PATCH: api/usuarios/cambiar-password
-        [Authorize]
-        [HttpPatch("cambiar-password")]
-        public async Task<IActionResult> CambiarPassword(CambiarPasswordDto dto)
-        {
-            var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-            await _service.CambiarPasswordAsync(usuarioId, dto);
-
-            return Ok(new
-            {
-                message = "Contraseña actualizada correctamente"
-            });
-        }
+            Success = true,
+            Message = "Usuario eliminado correctamente"
+        });
     }
 }

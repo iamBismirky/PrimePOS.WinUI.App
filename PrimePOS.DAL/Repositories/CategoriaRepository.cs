@@ -36,7 +36,7 @@ public class CategoriaRepository : ICategoriaRepository
     }
     public async Task<List<Categoria>> ListarCategoriaAsync()
     {
-        return await _context.Categorias.Where(c => c.Estado == true).ToListAsync();
+        return await _context.Categorias.ToListAsync();
     }
     public async Task<Categoria?> ExisteCategoriaAsync(string nombre)
     {

@@ -1,78 +1,92 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Categoria;
 
-namespace PrimePOS.API.Controllers
+namespace PrimePOS.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class CategoriasController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CategoriasController : ControllerBase
+    private readonly ICategoriaService _service;
+
+    public CategoriasController(ICategoriaService service)
     {
-        private readonly ICategoriaService _service;
+        _service = service;
+    }
 
-        public CategoriasController(ICategoriaService service)
+    [HttpGet]
+    public async Task<IActionResult> ObtenerTodosAsync()
+    {
+        var categorias = await _service.ListarCategoriasAsync();
+
+        return Ok(new ApiResponse<List<CategoriaDto>>
         {
-            _service = service;
-        }
+            Success = true,
+            Data = categorias
+        });
+    }
 
-        // GET: api/categorias
-        [HttpGet]
-        public async Task<IActionResult> ObtenerCategoriasAsync()
+    [HttpGet("{id}")]
+    public async Task<IActionResult> ObtenerCategoriaPorIdAsync(int id)
+    {
+        var categoria = await _service.ObtenerPorIdAsync(id);
+
+        return Ok(new ApiResponse<CategoriaDto>
         {
-            var categorias = await _service.ListarCategoriasAsync();
-            return Ok(categorias);
-        }
+            Success = true,
+            Data = categoria
+        });
+    }
 
-        // GET: api/categorias/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> ObtenerPorIdAsync(int id)
+    [HttpPost]
+    public async Task<IActionResult> CrearCategoriaAsync([FromBody] CategoriaDto dto)
+    {
+        await _service.CrearCategoriaAsync(dto);
+
+        return Ok(new ApiResponse<object>
         {
-            var categoria = await _service.ObtenerPorIdAsync(id);
-            return Ok(categoria);
-        }
+            Success = true,
+            Message = "Categoria creada correctamente"
+        });
+    }
 
-        // POST: api/categorias
-        [HttpPost]
-        public async Task<IActionResult> CrearCategoriaAsync([FromBody] CategoriaDto dto)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> ActualizarCategoriaAsync(int id, [FromBody] CategoriaDto dto)
+    {
+        dto.CategoriaId = id;
+
+        await _service.ActualizarCategoriaAsync(dto);
+
+        return Ok(new ApiResponse<object>
         {
-            await _service.CrearCategoriaAsync(dto);
+            Success = true,
+            Message = "Categoria actualizada correctamente"
+        });
+    }
 
-            return StatusCode(201, new
-            {
-                message = "Categoría creada correctamente"
-            });
-        }
+    [HttpPatch("{id}/desactivar")]
+    public async Task<IActionResult> DesactivarCategoriaAsync(int id)
+    {
+        await _service.DesactivarCategoriaAsync(id);
 
-        // PUT: api/categorias/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> ActualizarCategoriaAsync(int id, [FromBody] CategoriaDto dto)
+        return Ok(new ApiResponse<object>
         {
-            dto.CategoriaId = id;
+            Success = true,
+            Message = "Categoria desactivada correctamente"
+        });
+    }
 
-            await _service.ActualizarCategoriaAsync(dto);
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> EliminarCategoriaAsync(int id)
+    {
+        await _service.EliminarCategoriaAsync(id);
 
-            return Ok(new
-            {
-                message = "Categoría actualizada correctamente"
-            });
-        }
-
-        // PATCH: api/categorias/5/desactivar
-        [HttpPatch("{id}/desactivar")]
-        public async Task<IActionResult> DesactivarCategoriaAsync(int id)
+        return Ok(new ApiResponse<object>
         {
-            await _service.DesactivarCategoriaAsync(id);
-
-            return NoContent();
-        }
-
-        // DELETE: api/categorias/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> EliminarCategoriaAsync(int id)
-        {
-            await _service.EliminarCategoriaAsync(id);
-
-            return NoContent();
-        }
+            Success = true,
+            Message = "Categoria eliminada correctamente"
+        });
     }
 }

@@ -2,12 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.Contracts.DTOs.Cliente;
-using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Services.Api;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using PrimePOS.WinUI.ViewModels;
 
 
 namespace PrimePOS.WinUI.Pages
@@ -15,225 +10,41 @@ namespace PrimePOS.WinUI.Pages
 
     public sealed partial class ClientePage : Page
     {
-        private ClienteDto? _clienteSeleccionado;
-        private readonly ClienteApiService _clienteApiService;
-        private List<ClienteDto> _listaClientes = new();
-        private bool _isLoading;
+        private readonly ClienteViewModel ViewModel;
         public ClientePage()
         {
             InitializeComponent();
+            ViewModel = App.AppServices.GetRequiredService<ClienteViewModel>();
 
-            _clienteApiService = App.AppServices.GetRequiredService<ClienteApiService>();
+            this.DataContext = ViewModel;
+
         }
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            await CargarClientesAsync();
+            await ViewModel.CargarClientesCommand.ExecuteAsync(null);
         }
 
-
-        private void LimpiarCampos()
+        private void Buscar_TextChanged(object sender, TextChangedEventArgs e)
         {
-            txtNombre.Text = "";
-            txtDocumento.Text = "";
-            txtTelefono.Text = "";
-            txtEmail.Text = "";
-            txtDireccion.Text = "";
-            txtFecha.Text = "";
-            txtCodigo.Text = "";
-            txtBuscar.Focus(FocusState.Programmatic);
-            OverlayCliente.Visibility = Visibility.Collapsed;
-            _clienteSeleccionado = null;
-        }
-        private async Task CargarClientesAsync()
-        {
-            try
+            if (DataContext is ClienteViewModel vm)
             {
-                IsLoading = true;
-
-                _listaClientes = await _clienteApiService.ObtenerClientesAsync();
-                dgClientes.ItemsSource = null;
-                dgClientes.ItemsSource = _listaClientes;
+                vm.FiltrarCommand.Execute(null);
             }
-            catch (Exception ex)
-            {
 
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-            }
-            finally { IsLoading = false; }
-
-        }
-        private void FiltrarClientes()
-        {
-            var texto = txtBuscar.Text?.ToLower() ?? "";
-
-            var filtrados = string.IsNullOrWhiteSpace(texto)
-                ? _listaClientes
-                : _listaClientes
-                    .Where(r => r.Nombre.ToLower().Contains(texto))
-                    .ToList();
-
-            dgClientes.ItemsSource = null;
-            dgClientes.ItemsSource = filtrados;
-        }
-        private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            FiltrarClientes();
-        }
-        private void Buscar_Click(object sender, RoutedEventArgs e)
-        {
-            FiltrarClientes();
-        }
-        private void AbrirOverlay_Click(object sender, RoutedEventArgs e)
-        {
-            txtTitulo.Text = "Crear Cliente";
-            txtCodigo.Text = "------";
-            txtFecha.Text = DateTime.Today.ToString("dd/MM/yyyy");
-            txtNombre.Focus(FocusState.Programmatic);
-            OverlayCliente.Visibility = Visibility.Visible;
-        }
-        private void CerrarOverlay_Click(object sender, RoutedEventArgs e)
-        {
-            OverlayCliente.Visibility = Visibility.Collapsed;
-            LimpiarCampos();
         }
         private async void Editar_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (DataContext is ClienteViewModel vm && sender is Button btn && btn.DataContext is ClienteDto cliente)
             {
-                txtTitulo.Text = "Actualizar Cliente";
-                txtNombre.Focus(FocusState.Programmatic);
-
-                var btn = sender as Button;
-                var cliente = btn?.Tag as ClienteDto;
-                if (cliente == null) return;
-
-                _clienteSeleccionado = cliente;
-                txtCodigo.Text = cliente.Codigo.ToString();
-                txtFecha.Text = cliente.FechaRegistro.ToString("dd/MM/yyyy");
-                txtNombre.Text = cliente.Nombre;
-                txtDocumento.Text = cliente.Documento;
-                txtEmail.Text = cliente.Email;
-                txtTelefono.Text = cliente.Telefono;
-                txtDireccion.Text = cliente.Direccion;
-                tsEstado.IsOn = cliente.Estado;
-
-
-                OverlayCliente.Visibility = Visibility.Visible;
-            }
-            catch (Exception ex)
-            {
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Advertencia", ex.ToString());
-                throw;
-            }
-
-        }
-        private async void Eliminar_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (sender is Button btn && btn.Tag is ClienteDto cliente)
-                {
-
-                    var dialog = new ContentDialog
-                    {
-                        Title = "Confirmar",
-                        Content = $"¿Desactivar el cliente '{cliente.Nombre}'?",
-                        CloseButtonText = "Cancelar",
-                        PrimaryButtonText = "Sí",
-                        XamlRoot = this.XamlRoot
-                    };
-
-                    var result = await dialog.ShowAsync();
-
-                    if (result != ContentDialogResult.Primary)
-                        return;
-
-
-
-                    await _clienteApiService.DesactivarClienteAsync(cliente.ClienteId);
-
-
-                    await CargarClientesAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
+                vm.EditarCommand.Execute(cliente);
             }
         }
-
-
-        private async void GuardarOverlay_Click(object sender, RoutedEventArgs e)
+        private void Desactivar_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (DataContext is ClienteViewModel vm && sender is Button btn && btn.DataContext is ClienteDto cliente)
             {
-                if (!BtnGuardar.IsEnabled) return;
-
-                SetLoadingButton(true);
-                if (_clienteSeleccionado == null)
-                {
-                    var dto = new CrearClienteDto
-                    {
-                        Nombre = txtNombre.Text.Trim(),
-                        Documento = txtDocumento.Text.Trim(),
-                        Telefono = txtTelefono.Text.Trim(),
-                        Email = txtEmail.Text.Trim(),
-                        Direccion = txtDireccion.Text.Trim(),
-                        Estado = tsEstado.IsOn,
-
-                    };
-
-                    await _clienteApiService.CrearClienteAsync(dto);
-                    await CargarClientesAsync();
-                    LimpiarCampos();
-                }
-                else
-                {
-                    var dto = new ActualizarClienteDto
-                    {
-                        ClienteId = _clienteSeleccionado.ClienteId,
-                        Nombre = txtNombre.Text.Trim(),
-                        Documento = txtDocumento.Text.Trim(),
-                        Telefono = txtTelefono.Text.Trim(),
-                        Email = txtEmail.Text.Trim(),
-                        Direccion = txtDireccion.Text.Trim(),
-                        Estado = tsEstado.IsOn,
-                    };
-                    await _clienteApiService.ActualizarClienteAsync(dto.ClienteId, dto);
-                    await CargarClientesAsync();
-                    LimpiarCampos();
-
-                }
-
-
+                vm.DesactivarCommand.Execute(cliente);
             }
-            catch (Exception ex)
-            {
-
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-
-            }
-            finally { SetLoadingButton(false); }
-
-        }
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set
-            {
-                _isLoading = value;
-                OverlayLoading.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-        private void SetLoadingButton(bool isLoading)
-        {
-            prCrear.IsActive = isLoading;
-            prCrear.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
-
-            BtnGuardar.IsEnabled = !isLoading;
-            txtGuardar.Text = isLoading ? "Guardando..." : "Guardar";
         }
     }
 }

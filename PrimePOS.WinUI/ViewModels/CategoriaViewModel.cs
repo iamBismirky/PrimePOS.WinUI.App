@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
-using PrimePOS.Contracts.DTOs.Rol;
+using PrimePOS.Contracts.DTOs.Categoria;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.ViewModels;
 
-public partial class RolViewModel : ObservableObject
+public partial class CategoriaViewModel : ObservableObject
 {
-    private readonly RolApiService _api;
+    private readonly CategoriaApiService _api;
     private readonly NotificationService _notify;
 
-    public RolViewModel(RolApiService api, NotificationService notify)
+    public CategoriaViewModel(CategoriaApiService api, NotificationService notify)
     {
         _api = api;
         _notify = notify;
@@ -28,10 +28,10 @@ public partial class RolViewModel : ObservableObject
     // =========================
 
     [ObservableProperty]
-    private ObservableCollection<RolDto> roles = new();
+    private ObservableCollection<CategoriaDto> categorias = new();
 
     [ObservableProperty]
-    private RolDto? rolSeleccionado;
+    private CategoriaDto? categoriaSeleccionada;
 
     [ObservableProperty]
     private string nombre = "";
@@ -49,7 +49,7 @@ public partial class RolViewModel : ObservableObject
     private bool isOverlayVisible;
 
     // cache para filtros
-    private List<RolDto> _cache = new();
+    private List<CategoriaDto> _cache = new();
 
     // =========================
     // VISIBILIDAD (SIN CONVERTER)
@@ -77,16 +77,16 @@ public partial class RolViewModel : ObservableObject
         {
             IsLoading = true;
 
-            var res = await _api.ObtenerRolesAsync();
+            var res = await _api.ObtenerCategoriasAsync();
 
             if (!res.Success)
             {
-                _notify.Error(res.Message ?? "Error al cargar cajas");
+                _notify.Error(res.Message ?? "Error al cargar categorias");
                 return;
             }
 
-            _cache = res.Data ?? new List<RolDto>();
-            Roles = new ObservableCollection<RolDto>(res.Data ?? new());
+            _cache = res.Data ?? new List<CategoriaDto>();
+            Categorias = new ObservableCollection<CategoriaDto>(res.Data ?? new());
         }
         catch (Exception ex)
         {
@@ -110,11 +110,11 @@ public partial class RolViewModel : ObservableObject
             }
 
 
-            if (RolSeleccionado == null)
+            if (CategoriaSeleccionada == null)
             {
 
 
-                var res = await _api.CrearRolAsync(new RolDto
+                var res = await _api.CrearCategoriaAsync(new CategoriaDto
                 {
                     Nombre = Nombre.Trim(),
                     Estado = Estado
@@ -130,20 +130,20 @@ public partial class RolViewModel : ObservableObject
             }
             else
             {
-                RolSeleccionado.Nombre = Nombre.Trim();
-                RolSeleccionado.Estado = Estado;
+                CategoriaSeleccionada.Nombre = Nombre.Trim();
+                CategoriaSeleccionada.Estado = Estado;
 
-                var res = await _api.ActualizarRolAsync(
-                    RolSeleccionado.RolId,
-                    RolSeleccionado);
+                var res = await _api.ActualizarCategoriaAsync(
+                    CategoriaSeleccionada.CategoriaId,
+                    CategoriaSeleccionada);
 
                 if (!res.Success)
                 {
-                    _notify.Error(res.Message ?? "Error al actualizar rol");
+                    _notify.Error(res.Message ?? "Error al actualizar categoria");
                     return;
                 }
 
-                _notify.Success(res.Message ?? "Rol actualizado correctamente");
+                _notify.Success(res.Message ?? "Categoria actualizada correctamente");
             }
 
             await CargarAsync();
@@ -157,18 +157,18 @@ public partial class RolViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void Editar(RolDto rol)
+    public void Editar(CategoriaDto categoria)
     {
-        RolSeleccionado = rol;
-        Nombre = rol.Nombre;
-        Estado = rol.Estado;
+        CategoriaSeleccionada = categoria;
+        Nombre = categoria.Nombre;
+        Estado = categoria.Estado;
         AbrirOverlay();
     }
 
     [RelayCommand]
-    public async Task DesactivarAsync(RolDto rol)
+    public async Task DesactivarAsync(CategoriaDto categoria)
     {
-        var res = await _api.DesactivarRolAsync(rol.RolId);
+        var res = await _api.DesactivarCategoriaAsync(categoria.CategoriaId);
 
         if (!res.Success)
         {
@@ -176,7 +176,7 @@ public partial class RolViewModel : ObservableObject
             return;
         }
 
-        _notify.Success(res.Message ?? "Caja desactivada");
+        _notify.Success(res.Message ?? "Categoria desactivada");
         await CargarAsync();
     }
 
@@ -185,7 +185,7 @@ public partial class RolViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(Buscar))
         {
-            Roles = new ObservableCollection<RolDto>(_cache);
+            Categorias = new ObservableCollection<CategoriaDto>(_cache);
             return;
         }
 
@@ -193,7 +193,7 @@ public partial class RolViewModel : ObservableObject
             .Where(x => x.Nombre.Contains(Buscar, StringComparison.OrdinalIgnoreCase))
             .ToList();
 
-        Roles = new ObservableCollection<RolDto>(filtradas);
+        Categorias = new ObservableCollection<CategoriaDto>(filtradas);
     }
 
     [RelayCommand]
@@ -207,7 +207,8 @@ public partial class RolViewModel : ObservableObject
     public void Limpiar()
     {
         Nombre = "";
-        RolSeleccionado = null;
+        Estado = true;
+        CategoriaSeleccionada = null;
     }
 
     [RelayCommand]

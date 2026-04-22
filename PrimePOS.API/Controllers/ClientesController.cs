@@ -1,78 +1,92 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Cliente;
 
-namespace PrimePOS.API.Controllers
+namespace PrimePOS.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class ClientesController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ClientesController : ControllerBase
+    private readonly IClienteService _service;
+
+    public ClientesController(IClienteService service)
     {
-        private readonly IClienteService _service;
+        _service = service;
+    }
 
-        public ClientesController(IClienteService service)
+    [HttpGet]
+    public async Task<IActionResult> ObtenerTodosAsync()
+    {
+        var clientes = await _service.ObtenerTodosAsync();
+
+        return Ok(new ApiResponse<List<ClienteDto>>
         {
-            _service = service;
-        }
+            Success = true,
+            Data = clientes
+        });
+    }
 
-        // GET: api/clientes
-        [HttpGet]
-        public async Task<IActionResult> ObtenerTodosAsync()
+    [HttpGet("{id}")]
+    public async Task<IActionResult> ObtenerClientePorIdAsync(int id)
+    {
+        var cliente = await _service.ObtenerPorIdAsync(id);
+
+        return Ok(new ApiResponse<ClienteDto>
         {
-            var clientes = await _service.ObtenerTodosAsync();
-            return Ok(clientes);
-        }
+            Success = true,
+            Data = cliente
+        });
+    }
 
-        // GET: api/clientes/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> ObtenerClientePorIdAsync(int id)
+    [HttpPost]
+    public async Task<IActionResult> CrearClienteAsync([FromBody] CrearClienteDto dto)
+    {
+        await _service.CrearClienteAsync(dto);
+
+        return Ok(new ApiResponse<object>
         {
-            var cliente = await _service.ObtenerPorIdAsync(id);
-            return Ok(cliente);
-        }
+            Success = true,
+            Message = "Cliente creado correctamente"
+        });
+    }
 
-        // POST: api/clientes
-        [HttpPost]
-        public async Task<IActionResult> CrearClienteAsync([FromBody] CrearClienteDto dto)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> ActualizarClienteAsync(int id, [FromBody] ActualizarClienteDto dto)
+    {
+        dto.ClienteId = id;
+
+        await _service.ActualizarClienteAsync(dto);
+
+        return Ok(new ApiResponse<object>
         {
-            await _service.CrearClienteAsync(dto);
+            Success = true,
+            Message = "Cliente actualizado correctamente"
+        });
+    }
 
-            return StatusCode(201, new
-            {
-                message = "Cliente creado correctamente"
-            });
-        }
+    [HttpPatch("{id}/desactivar")]
+    public async Task<IActionResult> DesactivarClienteAsync(int id)
+    {
+        await _service.DesactivarClienteAsync(id);
 
-        // PUT: api/clientes/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> ActualizarClienteAsync(int id, [FromBody] ActualizarClienteDto dto)
+        return Ok(new ApiResponse<object>
         {
-            dto.ClienteId = id;
+            Success = true,
+            Message = "Cliente desactivado correctamente"
+        });
+    }
 
-            await _service.ActualizarClienteAsync(dto);
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> EliminarClienteAsync(int id)
+    {
+        await _service.EliminarClienteAsync(id);
 
-            return Ok(new
-            {
-                message = "Cliente actualizado correctamente"
-            });
-        }
-
-        // PATCH: api/clientes/5/desactivar
-        [HttpPatch("{id}/desactivar")]
-        public async Task<IActionResult> DesactivarClienteAsync(int id)
+        return Ok(new ApiResponse<object>
         {
-            await _service.DesactivarClienteAsync(id);
-
-            return NoContent();
-        }
-
-        // DELETE: api/clientes/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> EliminarClienteAsync(int id)
-        {
-            await _service.EliminarClienteAsync(id);
-
-            return NoContent();
-        }
+            Success = true,
+            Message = "Cliente eliminado correctamente"
+        });
     }
 }

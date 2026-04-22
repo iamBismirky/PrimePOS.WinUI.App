@@ -9,7 +9,7 @@ namespace PrimePOS.BLL.Interfaces
 
         Task EliminarRolAsync(int rolId);
         Task DesactivarRolAsync(int rolId);
-        Task<List<ListaRolesDto>> ListarRolesAsync();
+        Task<List<RolDto>> ListarRolesAsync();
         Task<RolDto?> ObtenerRolPorIdAsync(int id);
     }
 }

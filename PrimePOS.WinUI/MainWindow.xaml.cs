@@ -5,7 +5,6 @@ using PrimePOS.WinUI.Pages;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.ViewModels;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -25,12 +24,12 @@ public sealed partial class MainWindow : Window
         Appsesion = App.AppServices.GetRequiredService<AppSesionViewModel>();
         RootGrid.DataContext = Appsesion;
 
-        CancellationTokenSource? _cts;
+
 
         notify.OnNotify += async (msg, type) =>
         {
             GlobalInfoBar.Message = msg;
-            GlobalInfoBar.Severity = type; // ✔ ya es enum
+            GlobalInfoBar.Severity = type;
             GlobalInfoBar.IsOpen = true;
 
             await Task.Delay(3000);

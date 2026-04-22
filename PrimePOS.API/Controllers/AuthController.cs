@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Usuario;
 
 [ApiController]
@@ -18,6 +19,10 @@ public class AuthController : ControllerBase
     {
         var result = await _usuarioService.AutenticarUsuarioAsync(dto);
 
-        return Ok(result);
+        return Ok(new ApiResponse<object>
+        {
+            Success = true,
+            Message = "Usuario autenticado correctamente",
+        });
     }
 }
