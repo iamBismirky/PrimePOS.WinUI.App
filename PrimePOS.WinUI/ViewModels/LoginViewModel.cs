@@ -44,13 +44,13 @@ public partial class LoginViewModel : ObservableObject
                 Password = Password
             };
 
-            var result = await _usuarioApi.LoginAsync(dto);
+            //var result = await _usuarioApi.LoginAsync(dto);
 
             // Guardar sesión
-            _appSesion.IniciarSesion(result);
+            //_appSesion.IniciarSesion(result);
 
             // Aplicar token
-            _usuarioApi.SetToken(result.Token);
+            //_usuarioApi.SetToken(result.Token);
 
             //Navegación
             LoginSuccess?.Invoke();

@@ -46,8 +46,6 @@
     <None Remove="Pages\DashboardPage.xaml" />
     <None Remove="Pages\InventarioPage.xaml" />
     <None Remove="Pages\PerfilPage.xaml" />
-    <None Remove="Pages\ProductoPage.xaml" />
-    <None Remove="Pages\ProductoPageVM.xaml" />
     <None Remove="Pages\ReportesPage.xaml" />
     <None Remove="Pages\RolPage.xaml" />
     <None Remove="Pages\UsuarioPage.xaml" />
@@ -99,7 +97,7 @@
     <ProjectReference Include="..\PrimePOS.Contracts\PrimePOS.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Pages\CajaPage1.xaml">
+    <Page Update="Pages\CajaPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Pages\TurnoCerrarOverlay.xaml">
@@ -117,11 +115,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Pages\CajaPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <Page Update="LoginWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -133,11 +126,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\CategoriaPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\ProductoPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
@@ -195,7 +183,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Pages\ProductoPageVM.xaml">
+    <Page Update="Pages\ProductoPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

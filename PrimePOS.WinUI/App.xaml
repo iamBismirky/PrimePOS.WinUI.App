@@ -5,7 +5,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PrimePOS.WinUI" 
     xmlns:controls="using:System.Windows.Controls" 
-    xmlns:converters="using:CommunityToolkit.WinUI.UI.Converters">
+    xmlns:converters="using:CommunityToolkit.WinUI.UI.Converters"
+    xmlns:helpers="using:PrimePOS.WinUI.Helpers"
+    xmlns:globalization="using:Windows.Globalization.NumberFormatting">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,7 +16,13 @@
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+            <helpers:NumeroConverterHelper x:Key="NumeroConverterHelper"/>
 
+            <!-- Formatter global -->
+            <globalization:DecimalFormatter 
+            x:Key="DecimalFormatter"
+            FractionDigits="2"
+            IsGrouped="True"/>
 
         </ResourceDictionary>
     </Application.Resources>

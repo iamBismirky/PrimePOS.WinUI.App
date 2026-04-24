@@ -24,9 +24,7 @@ public partial class ClienteViewModel : ObservableObject
         _notify = notify;
     }
 
-    // =========================
-    // PROPIEDADES
-    // =========================
+
 
     [ObservableProperty] private ObservableCollection<ClienteDto> clientes = new();
     [ObservableProperty] private ObservableCollection<RolDto> roles = new();
@@ -43,12 +41,9 @@ public partial class ClienteViewModel : ObservableObject
     [ObservableProperty] private bool isLoading;
     [ObservableProperty] private bool isOverlayVisible;
 
-    // cache para filtros
+
     private List<ClienteDto> _cache = new();
 
-    // =========================
-    // VISIBILIDAD (SIN CONVERTER)
-    // =========================
     public Visibility OverlayVisibility =>
         IsOverlayVisible ? Visibility.Visible : Visibility.Collapsed;
 

@@ -71,7 +71,7 @@ namespace PrimePOS.WinUI.ViewModels
                 };
 
                 // API CALL
-                await _api.CambiarPasswordAsync(dto);
+                //await _api.CambiarPasswordAsync(dto);
 
                 // SUCCESS
                 ExitoOcurrido?.Invoke("Contraseña actualizada correctamente");

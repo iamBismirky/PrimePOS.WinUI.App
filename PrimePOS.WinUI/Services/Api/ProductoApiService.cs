@@ -1,90 +1,54 @@
-﻿using PrimePOS.Contracts.DTOs.Producto;
-using PrimePOS.WinUI.Models;
-using System;
+﻿using PrimePOS.Contracts.Common;
+using PrimePOS.Contracts.DTOs.Producto;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
-
 
 namespace PrimePOS.WinUI.Services.Api;
 
-public class ProductoApiService
+public class ProductoApiService : BaseApiService
 {
-    private readonly HttpClient _http;
-
     public ProductoApiService(IHttpClientFactory factory)
+        : base(factory.CreateClient("ApiClient"))
     {
-        _http = factory.CreateClient("ApiClient");
     }
 
-    public async Task<List<ProductoDto>> ObtenerProductosAsync()
+    public Task<ApiResponse<List<ProductoDto>>> ObtenerProductosAsync()
     {
-        return await _http.GetFromJsonAsync<List<ProductoDto>>("api/productos")
-               ?? new List<ProductoDto>();
+        var request = new HttpRequestMessage(HttpMethod.Get, "api/productos");
+        return SendAsync<List<ProductoDto>>(request);
     }
 
-    public async Task CrearProductoAsync(CrearProductoDto dto)
+    public Task<ApiResponse<object>> CrearProductoAsync(CrearProductoDto dto)
     {
-        var res = await _http.PostAsJsonAsync("api/productos", dto);
-
-        if (!res.IsSuccessStatusCode)
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/productos")
         {
-            var json = await res.Content.ReadAsStringAsync();
+            Content = JsonContent.Create(dto)
+        };
 
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+        return SendAsync<object>(request);
     }
 
-    public async Task ActualizarProductoAsync(int id, ActualizarProductoDto dto)
+    public Task<ApiResponse<object>> ActualizarProductoAsync(int id, ActualizarProductoDto dto)
     {
-        var res = await _http.PutAsJsonAsync($"api/productos/{id}", dto);
-
-        if (!res.IsSuccessStatusCode)
+        var request = new HttpRequestMessage(HttpMethod.Put, $"api/productos/{id}")
         {
-            var json = await res.Content.ReadAsStringAsync();
+            Content = JsonContent.Create(dto)
+        };
 
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+        return SendAsync<object>(request);
     }
 
-    public async Task DesactivarProductoAsync(int id)
+    public Task<ApiResponse<object>> DesactivarProductoAsync(int id)
     {
-        var res = await _http.PatchAsync($"api/productos/{id}/desactivar", null);
+        var request = new HttpRequestMessage(HttpMethod.Patch, $"api/productos/{id}/desactivar");
+        return SendAsync<object>(request);
+    }
 
-        if (!res.IsSuccessStatusCode)
-        {
-            var json = await res.Content.ReadAsStringAsync();
-
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+    public Task<ApiResponse<object>> EliminarProductoAsync(int id)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"api/productos/{id}");
+        return SendAsync<object>(request);
     }
 }

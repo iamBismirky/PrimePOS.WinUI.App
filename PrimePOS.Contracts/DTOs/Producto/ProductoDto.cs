@@ -8,7 +8,7 @@
         public string Nombre { get; set; } = string.Empty;
         public string Descripcion { get; set; } = string.Empty;
         public int CategoriaId { get; set; }
-        public string NombreCategoria { get; set; } = string.Empty;
+        public string CategoriaNombre { get; set; } = string.Empty;
         public decimal PrecioCompra { get; set; }
         public decimal PrecioVenta { get; set; }
         public int Existencia { get; set; }

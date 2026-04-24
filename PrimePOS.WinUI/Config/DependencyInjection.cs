@@ -32,6 +32,8 @@ public static class DependencyInjection
         services.AddScoped<CategoriaViewModel>();
         services.AddScoped<ClienteViewModel>();
         services.AddScoped<CajaViewModel>();
+        services.AddScoped<ProductoViewModel>();
+        services.AddScoped<UsuarioViewModel>();
 
 
         //NotificationService

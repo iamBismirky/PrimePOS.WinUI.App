@@ -1,149 +1,54 @@
-﻿using PrimePOS.Contracts.DTOs.Usuario;
-using PrimePOS.WinUI.Models;
-using System;
+﻿using PrimePOS.Contracts.Common;
+using PrimePOS.Contracts.DTOs.Usuario;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
-
 
 namespace PrimePOS.WinUI.Services.Api;
 
-public class UsuarioApiService
+public class UsuarioApiService : BaseApiService
 {
-    private readonly HttpClient _http;
-
     public UsuarioApiService(IHttpClientFactory factory)
+        : base(factory.CreateClient("ApiClient"))
     {
-        _http = factory.CreateClient("ApiClient");
     }
 
-    public async Task<List<UsuarioDto>> ObtenerUsuariosAsync()
+    public Task<ApiResponse<List<UsuarioDto>>> ObtenerUsuariosAsync()
     {
-        return await _http.GetFromJsonAsync<List<UsuarioDto>>("api/usuarios")
-               ?? new List<UsuarioDto>();
+        var request = new HttpRequestMessage(HttpMethod.Get, "api/usuarios");
+        return SendAsync<List<UsuarioDto>>(request);
     }
 
-    public async Task CrearUsuarioAsync(CrearUsuarioDto dto)
+    public Task<ApiResponse<object>> CrearUsuarioAsync(CrearUsuarioDto dto)
     {
-        var res = await _http.PostAsJsonAsync("api/usuarios", dto);
-
-        if (!res.IsSuccessStatusCode)
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/usuarios")
         {
-            var json = await res.Content.ReadAsStringAsync();
+            Content = JsonContent.Create(dto)
+        };
 
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+        return SendAsync<object>(request);
     }
 
-    public async Task ActualizarUsuarioAsync(int id, ActualizarUsuarioDto dto)
+    public Task<ApiResponse<object>> ActualizarUsuarioAsync(int id, ActualizarUsuarioDto dto)
     {
-        var res = await _http.PutAsJsonAsync($"api/usuarios/{id}", dto);
-
-        if (!res.IsSuccessStatusCode)
+        var request = new HttpRequestMessage(HttpMethod.Put, $"api/usuarios/{id}")
         {
-            var json = await res.Content.ReadAsStringAsync();
+            Content = JsonContent.Create(dto)
+        };
 
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+        return SendAsync<object>(request);
     }
 
-    public async Task DesactivarUsuarioAsync(int id)
+    public Task<ApiResponse<object>> DesactivarUsuarioAsync(int id)
     {
-        var res = await _http.PatchAsync($"api/usuarios/{id}/desactivar", null);
-
-        if (!res.IsSuccessStatusCode)
-        {
-            var json = await res.Content.ReadAsStringAsync();
-
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(json);
-
-                throw new Exception(error?.Message ?? "Error desconocido");
-            }
-            catch
-            {
-                throw new Exception(json);
-            }
-        }
+        var request = new HttpRequestMessage(HttpMethod.Patch, $"api/usuarios/{id}/desactivar");
+        return SendAsync<object>(request);
     }
-    public async Task<AppSesionUsuarioDto> LoginAsync(AutenticarUsuarioDto dto)
+
+    public Task<ApiResponse<object>> EliminarUsuarioAsync(int id)
     {
-        var res = await _http.PostAsJsonAsync("api/auth/login", dto);
-
-        if (!res.IsSuccessStatusCode)
-        {
-            var json = await res.Content.ReadAsStringAsync();
-
-            try
-            {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(
-                    json,
-                    new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-
-                throw new Exception(error?.Message ?? "Credenciales incorrectas");
-            }
-            catch
-            {
-                throw new Exception("Credenciales incorrectas");
-            }
-        }
-
-        var result = await res.Content.ReadFromJsonAsync<AppSesionUsuarioDto>();
-
-        if (result == null)
-            throw new Exception("Respuesta inválida del servidor");
-
-        return result;
-    }
-    public void SetToken(string? token)
-    {
-        if (string.IsNullOrEmpty(token))
-        {
-            _http.DefaultRequestHeaders.Authorization = null;
-        }
-        else
-        {
-            _http.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-        }
-    }
-    public async Task CambiarPasswordAsync(CambiarPasswordDto dto)
-    {
-        var res = await _http.PostAsJsonAsync("api/usuarios/cambiar-password", dto);
-
-        var json = await res.Content.ReadAsStringAsync();
-
-        if (!res.IsSuccessStatusCode)
-        {
-            var error = JsonSerializer.Deserialize<ErrorResponse>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            throw new Exception(error?.Message ?? "Error al cambiar contraseña");
-        }
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"api/usuarios/{id}");
+        return SendAsync<object>(request);
     }
 }
