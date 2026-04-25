@@ -1,105 +1,116 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using PrimePOS.WinUI.Services;
 using System;
 using System.Threading.Tasks;
 using WinRT.Interop;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace PrimePOS.WinUI
+namespace PrimePOS.WinUI;
+
+
+public sealed partial class LoginWindow : Window
 {
-
-    public sealed partial class LoginWindow : Window
+    public LoginViewModel _viewModel;
+    public NotificationService _notify;
+    public LoginWindow()
     {
-        public LoginViewModel ViewModel { get; }
-        public LoginWindow()
+        InitializeComponent();
+        ConfigurarVentana();
+        ConfigurarUI();
+
+        _viewModel = App.AppServices.GetRequiredService<LoginViewModel>();
+        _notify = App.AppServices.GetRequiredService<NotificationService>();
+
+        RootGrid.DataContext = _viewModel;
+        _viewModel.LoginSuccess += OnLoginExitoso;
+
+
+
+
+        _notify.OnNotify += (msg, type) =>
         {
-            InitializeComponent();
+            _ = MostrarNotificacionAsync(msg, type);
+        };
 
-            ViewModel = App.AppServices.GetRequiredService<LoginViewModel>();
-            RootGrid.DataContext = ViewModel;
+    }
 
-            ViewModel.LoginSuccess += OnLoginExitoso;
-            ViewModel.ErrorOcurrido += MostrarError;
-
-            txtUsername.Focus(FocusState.Programmatic);
-            this.ExtendsContentIntoTitleBar = true;
-            this.SystemBackdrop = new MicaBackdrop();
-            var hwnd = WindowNative.GetWindowHandle(this);
-            var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
-            var appWindow = AppWindow.GetFromWindowId(windowId);
-
-            var presenter = appWindow.Presenter as OverlappedPresenter;
-
-            if (presenter != null)
-            {
-                presenter.IsMaximizable = false;
-                presenter.IsMinimizable = false;
-                presenter.IsResizable = false;
-
-            }
-
-            // Tamaño ventana
-            appWindow.Resize(new Windows.Graphics.SizeInt32(420, 700));
-
-            // Centrar ventana
-            var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
-            var area = displayArea.WorkArea;
-
-            appWindow.Move(new Windows.Graphics.PointInt32(
-                (area.Width - 420) / 2,
-                (area.Height - 700) / 2));
-
+    private void BtnTema_Click(object sender, RoutedEventArgs e)
+    {
+        if (App.TemaActual == ElementTheme.Light)
+        {
+            RootGrid.RequestedTheme = ElementTheme.Dark;
+            iconTema.Glyph = "\uE706"; // luna
+            App.TemaActual = ElementTheme.Dark;
         }
-
-
-        private void BtnTema_Click(object sender, RoutedEventArgs e)
+        else
         {
-            if (App.TemaActual == ElementTheme.Light)
-            {
-                RootGrid.RequestedTheme = ElementTheme.Dark;
-                iconTema.Glyph = "\uE706"; // luna
-                App.TemaActual = ElementTheme.Dark;
-            }
-            else
-            {
-                RootGrid.RequestedTheme = ElementTheme.Light;
-                iconTema.Glyph = "\uE708"; // sol
-                App.TemaActual = ElementTheme.Light;
-            }
-        }
-
-        private void pwdPassword_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (RootGrid.DataContext is LoginViewModel vm)
-            {
-                vm.Password = pwdPassword.Password;
-            }
-
-        }
-        private void OnLoginExitoso()
-        {
-            //Abrir MainWindow
-            //var main = new MainWindow();
-            //main.Activate();
-
-            //this.Close();
-        }
-        private void MostrarError(string mensaje)
-        {
-            infoError.Message = mensaje;
-            infoError.IsOpen = true;
-
-            AutoCloseInfoBar();
-        }
-        private async void AutoCloseInfoBar()
-        {
-            await Task.Delay(3000);
-            infoError.IsOpen = false;
+            RootGrid.RequestedTheme = ElementTheme.Light;
+            iconTema.Glyph = "\uE708"; // sol
+            App.TemaActual = ElementTheme.Light;
         }
     }
 
+    private void pwdPassword_PasswordChanged(object sender, RoutedEventArgs e)
+    {
+        if (RootGrid.DataContext is LoginViewModel vm)
+        {
+            vm.Password = pwdPassword.Password;
+        }
+
+    }
+    private void OnLoginExitoso()
+    {
+
+        var main = new MainWindow();
+        main.Activate();
+
+        this.Close();
+    }
+    private async Task MostrarNotificacionAsync(string msg, InfoBarSeverity type)
+    {
+        GlobalInfoBar.Message = msg;
+        GlobalInfoBar.Severity = type;
+        GlobalInfoBar.IsOpen = true;
+
+        await Task.Delay(3000);
+
+        GlobalInfoBar.IsOpen = false;
+    }
+    private void ConfigurarVentana()
+    {
+        var hwnd = WindowNative.GetWindowHandle(this);
+        var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+        var appWindow = AppWindow.GetFromWindowId(windowId);
+
+        if (appWindow.Presenter is OverlappedPresenter presenter)
+        {
+            presenter.IsMaximizable = false;
+            presenter.IsMinimizable = false;
+            presenter.IsResizable = false;
+        }
+
+        const int width = 420;
+        const int height = 700;
+
+        appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
+
+        var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary).WorkArea;
+
+        var x = displayArea.X + (displayArea.Width - width) / 2;
+        var y = displayArea.Y + (displayArea.Height - height) / 2;
+
+        appWindow.Move(new Windows.Graphics.PointInt32(x, y));
+    }
+    private void ConfigurarUI()
+    {
+        txtUsername.Focus(FocusState.Programmatic);
+
+        this.ExtendsContentIntoTitleBar = true;
+        this.SystemBackdrop = new MicaBackdrop();
+    }
 }

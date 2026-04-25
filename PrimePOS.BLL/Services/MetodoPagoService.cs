@@ -1,13 +1,14 @@
-﻿using PrimePOS.Contracts.DTOs.MetodoPago;
-using PrimePOS.DAL.Repositories;
+﻿using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.DTOs.MetodoPago;
+using PrimePOS.DAL.Interfaces;
 
 namespace PrimePOS.BLL.Services
 {
-    public class MetodoPagoService
+    public class MetodoPagoService : IMetodoPagoService
     {
-        private readonly MetodoPagoRepository _metodoPagoRepository;
+        private readonly IMetodoPagoRepository _metodoPagoRepository;
 
-        public MetodoPagoService(MetodoPagoRepository metodoPagoRepository)
+        public MetodoPagoService(IMetodoPagoRepository metodoPagoRepository)
         {
             _metodoPagoRepository = metodoPagoRepository;
         }

@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.DAL.Repositories;
 
-public class VentaRepository
+public class VentaRepository : IVentaRepository
 {
     private readonly AppDbContext _context;
     public VentaRepository(AppDbContext context)

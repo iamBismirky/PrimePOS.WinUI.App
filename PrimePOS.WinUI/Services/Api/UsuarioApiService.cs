@@ -19,7 +19,11 @@ public class UsuarioApiService : BaseApiService
         var request = new HttpRequestMessage(HttpMethod.Get, "api/usuarios");
         return SendAsync<List<UsuarioDto>>(request);
     }
-
+    public Task<ApiResponse<UsuarioDto>> ObtenerUsuarioPorIdAsync(int id)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/usuarios/{id}");
+        return SendAsync<UsuarioDto>(request);
+    }
     public Task<ApiResponse<object>> CrearUsuarioAsync(CrearUsuarioDto dto)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "api/usuarios")
@@ -51,4 +55,24 @@ public class UsuarioApiService : BaseApiService
         var request = new HttpRequestMessage(HttpMethod.Delete, $"api/usuarios/{id}");
         return SendAsync<object>(request);
     }
+    public async Task<ApiResponse<AppSesionUsuarioDto>> LoginAsync(LoginDto dto)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/login")
+        {
+            Content = JsonContent.Create(dto)
+        };
+
+        return await SendAsync<AppSesionUsuarioDto>(request);
+    }
+
+    public Task<ApiResponse<object>> CambiarPasswordAsync(CambiarPasswordDto dto)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/usuarios/cambiar-password")
+        {
+            Content = JsonContent.Create(dto)
+        };
+
+        return SendAsync<object>(request);
+    }
+
 }

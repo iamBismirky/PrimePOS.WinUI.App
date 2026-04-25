@@ -32,7 +32,8 @@
             BackRequested="TitleBar_BackRequested"
             PaneToggleRequested="TitleBar_PaneToggleRequested"
             IsBackButtonVisible="{x:Bind contentFrame.CanGoBack, Mode=OneWay}"
-            IsPaneToggleButtonVisible="True">
+            IsPaneToggleButtonVisible="True"
+            >
 
             <!-- ===================== -->
             <!-- IZQUIERDA -->
@@ -96,7 +97,7 @@
         <!-- ===================== -->
         <NavigationView
             x:Name="navView"
-            SelectionChanged="navView_SelectionChanged"
+            ItemInvoked="navView_ItemInvoked"
             Grid.Row="1"
             IsPaneToggleButtonVisible="False"
             IsSettingsVisible="False"
@@ -142,14 +143,22 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem Content="Cerrar Sesión" Tag="cerrarSesion">
+                <!--<NavigationViewItem Content="Cerrar Sesión" Tag="cerrarSesion">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xF3B1;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>-->
+
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="Cerrar sesión" Tag="cerrarSesion">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xF3B1;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-            </NavigationView.MenuItems>
-
+               
+            </NavigationView.FooterMenuItems>
             <NavigationView.Content>
 
                 <Grid>
@@ -164,12 +173,12 @@
                           Width="500">
 
                         <InfoBar x:Name="GlobalInfoBar"
-                     IsOpen="False"
-                     VerticalAlignment="Top"
-                     HorizontalAlignment="Stretch"
-                     Severity="Informational"
-                     Title="Mensaje"
-                     Message=""/>
+                                 IsOpen="False"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Stretch"
+                                 Severity="Informational"
+                                 Title="Mensaje"
+                                 Message=""/>
                     </Grid>
 
                 </Grid>

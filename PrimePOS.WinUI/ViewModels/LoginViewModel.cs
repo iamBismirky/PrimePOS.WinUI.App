@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Usuario;
+using PrimePOS.WinUI.Models;
+using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using PrimePOS.WinUI.ViewModels;
 using System;
@@ -10,11 +12,13 @@ public partial class LoginViewModel : ObservableObject
 {
     private readonly UsuarioApiService _usuarioApi;
     private readonly AppSesionViewModel _appSesion;
+    private readonly NotificationService _notify;
 
-    public LoginViewModel(UsuarioApiService usuarioApi, AppSesionViewModel appSesion)
+    public LoginViewModel(UsuarioApiService usuarioApi, AppSesionViewModel appSesion, NotificationService notify)
     {
         _usuarioApi = usuarioApi;
         _appSesion = appSesion;
+        _notify = notify;
     }
 
     [ObservableProperty]
@@ -29,35 +33,38 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     private async Task LoginAsync()
     {
+        if (string.IsNullOrWhiteSpace(Username) ||
+                string.IsNullOrWhiteSpace(Password))
+        {
+            _notify.Warning("Debe ingresar usuario y contraseña");
+            return;
+        }
         try
         {
             IsLoading = true;
-            if (string.IsNullOrWhiteSpace(Username) ||
-                string.IsNullOrWhiteSpace(Password))
-            {
-                ErrorOcurrido?.Invoke("Debe ingresar usuario y contraseña");
-                return;
-            }
-            var dto = new AutenticarUsuarioDto
+
+            var dto = new LoginDto
             {
                 Username = Username,
                 Password = Password
             };
 
-            //var result = await _usuarioApi.LoginAsync(dto);
+            var result = await _usuarioApi.LoginAsync(dto);
 
-            // Guardar sesión
-            //_appSesion.IniciarSesion(result);
-
-            // Aplicar token
-            //_usuarioApi.SetToken(result.Token);
-
+            if (!result.Success)
+            {
+                _notify.Error(result.Message);
+                return;
+            }
+            TokenStorage.SetToken(result.Data!.Token);
+            _appSesion.IniciarSesion(result.Data!);
+            _notify.Success("¡Bienvenido " + result.Data!.UsuarioNombre + "!");
             //Navegación
             LoginSuccess?.Invoke();
         }
         catch (Exception ex)
         {
-            ErrorOcurrido?.Invoke(ex.Message);
+            _notify.Error(ex.Message);
 
         }
         finally
@@ -68,5 +75,4 @@ public partial class LoginViewModel : ObservableObject
 
     // Eventos para UI
     public event Action? LoginSuccess;
-    public event Action<string>? ErrorOcurrido;
 }

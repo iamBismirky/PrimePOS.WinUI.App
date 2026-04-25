@@ -11,12 +11,10 @@ namespace PrimePOS.BLL.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository;
-        private readonly JwtHelper _jwtHelper;
 
-        public UsuarioService(IUsuarioRepository repository, JwtHelper jwtHelper)
+        public UsuarioService(IUsuarioRepository repository)
         {
             _usuarioRepository = repository;
-            _jwtHelper = jwtHelper;
         }
 
         public async Task CrearUsuarioAsync(CrearUsuarioDto dto)
@@ -151,18 +149,24 @@ namespace PrimePOS.BLL.Services
                 string.IsNullOrWhiteSpace(dto.Confirmar))
                 throw new BusinessException("Todos los campos son obligatorios.", 400);
 
+            dto.PasswordActual = dto.PasswordActual.Trim();
+            dto.PasswordNueva = dto.PasswordNueva.Trim();
+            dto.Confirmar = dto.Confirmar.Trim();
+
             if (dto.PasswordNueva != dto.Confirmar)
                 throw new BusinessException("La confirmación no coincide.", 400);
 
-            var usuario = await _usuarioRepository.ObtenerPorId(usuarioId);
+            if (dto.PasswordNueva.Length < 6)
+                throw new BusinessException("La contraseña debe tener al menos 6 caracteres.", 400);
 
-            if (usuario == null)
-                throw new BusinessException("El usuario no existe.", 404);
+            var usuario = await _usuarioRepository.ObtenerPorId(usuarioId)
+                ?? throw new BusinessException("El usuario no existe.", 404);
 
             if (!PasswordService.Verify(dto.PasswordActual, usuario.Password))
                 throw new BusinessException("La contraseña actual es incorrecta.", 400);
 
-            if (dto.PasswordNueva == dto.PasswordActual)
+            //  Validación correcta contra hash
+            if (PasswordService.Verify(dto.PasswordNueva, usuario.Password))
                 throw new BusinessException("La nueva contraseña no puede ser igual a la actual.", 400);
 
             usuario.Password = PasswordService.Hash(dto.PasswordNueva);
@@ -171,7 +175,7 @@ namespace PrimePOS.BLL.Services
             await _usuarioRepository.GuardarCambiosAsync();
         }
 
-        public async Task<AppSesionUsuarioDto> AutenticarUsuarioAsync(AutenticarUsuarioDto dto)
+        public async Task<AppSesionUsuarioDto> AutenticarUsuarioAsync(LoginDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Username) ||
                 string.IsNullOrWhiteSpace(dto.Password))
@@ -188,19 +192,16 @@ namespace PrimePOS.BLL.Services
             if (!PasswordService.Verify(dto.Password, usuario.Password))
                 throw new BusinessException("Usuario o contraseña incorrectos.", 401);
 
-            var token = _jwtHelper.GenerarToken(
-                usuario.UsuarioId,
-                usuario.Username,
-                usuario.Rol?.Nombre ?? ""
-            );
+
 
             return new AppSesionUsuarioDto
             {
                 UsuarioId = usuario.UsuarioId,
                 UsuarioNombre = $"{usuario.Nombre} {usuario.Apellidos}",
+                Username = usuario.Username,
                 RolId = usuario.RolId,
                 RolNombre = usuario.Rol?.Nombre ?? "",
-                Token = token
+
             };
         }
 

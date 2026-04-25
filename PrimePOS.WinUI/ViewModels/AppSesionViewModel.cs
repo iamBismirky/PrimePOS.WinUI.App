@@ -2,6 +2,8 @@
 using PrimePOS.Contracts.DTOs.Caja;
 using PrimePOS.Contracts.DTOs.Turno;
 using PrimePOS.Contracts.DTOs.Usuario;
+using PrimePOS.WinUI.Models;
+using System;
 
 namespace PrimePOS.WinUI.ViewModels
 {
@@ -25,12 +27,14 @@ namespace PrimePOS.WinUI.ViewModels
 
         public bool EstaAutenticado => UsuarioActual != null;
 
-        // 🔹 Métodos de sesión
+        // Eventos
+        public event Action? SesionCerrada;
 
         public void IniciarSesion(AppSesionUsuarioDto usuario)
         {
             UsuarioActual = usuario;
             Token = usuario.Token;
+            TokenStorage.SetToken(usuario.Token);
         }
 
         public void CerrarSesion()
@@ -38,6 +42,8 @@ namespace PrimePOS.WinUI.ViewModels
             UsuarioActual = null;
             TurnoActual = null;
             Token = null;
+            TokenStorage.Clear();
+            SesionCerrada?.Invoke();
         }
 
         public void AbrirCaja(CajaDto caja)

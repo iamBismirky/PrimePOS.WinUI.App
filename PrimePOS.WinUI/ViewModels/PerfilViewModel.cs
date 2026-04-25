@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Usuario;
+using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
 using System.Threading.Tasks;
@@ -11,21 +12,21 @@ namespace PrimePOS.WinUI.ViewModels
     {
         private readonly AppSesionViewModel _session;
         private readonly UsuarioApiService _api;
+        private readonly NotificationService _notify;
 
-        public PerfilViewModel(AppSesionViewModel session, UsuarioApiService api)
+        public PerfilViewModel(AppSesionViewModel session, UsuarioApiService api, NotificationService notify)
         {
             _session = session;
             _api = api;
+            _notify = notify;
         }
 
-        //  DATOS DEL USUARIO LOGUEADO
-        public string UsuarioNombre =>
-            _session.UsuarioActual?.UsuarioNombre ?? "";
-        public string UsuarioRol =>
-            _session.UsuarioActual?.RolNombre ?? "";
 
-        public int UsuarioId =>
-            _session.UsuarioActual?.UsuarioId ?? 0;
+        public string UsuarioNombre => _session.UsuarioActual?.UsuarioNombre ?? "";
+        public string UsuarioRol => _session.UsuarioActual?.RolNombre ?? "";
+        public string Username => _session.UsuarioActual?.Username ?? "";
+
+        public int UsuarioId => _session.UsuarioActual?.UsuarioId ?? 0;
 
         // CAMPOS UI
         [ObservableProperty]
@@ -37,30 +38,26 @@ namespace PrimePOS.WinUI.ViewModels
         [ObservableProperty]
         private string confirmar = string.Empty;
 
-        // 🔥 EVENTO PARA UI (INFOBAR)
-        public event Action<string>? ErrorOcurrido;
-        public event Action<string>? ExitoOcurrido;
 
-        // 🔥 COMMAND
         [RelayCommand]
         private async Task CambiarPasswordAsync()
         {
             try
             {
                 // VALIDACIONES BÁSICAS
-                if (string.IsNullOrWhiteSpace(PasswordActual) ||
-                    string.IsNullOrWhiteSpace(PasswordNueva) ||
-                    string.IsNullOrWhiteSpace(Confirmar))
-                {
-                    ErrorOcurrido?.Invoke("Todos los campos son obligatorios");
-                    return;
-                }
+                //if (string.IsNullOrWhiteSpace(PasswordActual) ||
+                //    string.IsNullOrWhiteSpace(PasswordNueva) ||
+                //    string.IsNullOrWhiteSpace(Confirmar))
+                //{
+                //    _notify.Warning("Todos los campos son obligatorios");
+                //    return;
+                //}
 
-                if (PasswordNueva != Confirmar)
-                {
-                    ErrorOcurrido?.Invoke("Las contraseñas no coinciden");
-                    return;
-                }
+                //if (PasswordNueva != Confirmar)
+                //{
+                //    _notify.Warning("Las contraseñas no coinciden");
+                //    return;
+                //}
 
                 // DTO
                 var dto = new CambiarPasswordDto
@@ -70,20 +67,24 @@ namespace PrimePOS.WinUI.ViewModels
                     Confirmar = Confirmar
                 };
 
-                // API CALL
-                //await _api.CambiarPasswordAsync(dto);
 
-                // SUCCESS
-                ExitoOcurrido?.Invoke("Contraseña actualizada correctamente");
+                var result = await _api.CambiarPasswordAsync(dto);
+                if (result.Success)
+                {
+                    _notify.Success("Contraseña actualizada correctamente");
+                    PasswordActual = "";
+                    PasswordNueva = "";
+                    Confirmar = "";
+                }
+                else
+                {
+                    _notify.Error(result.Message);
+                }
 
-                // LIMPIAR CAMPOS
-                PasswordActual = "";
-                PasswordNueva = "";
-                Confirmar = "";
             }
             catch (Exception ex)
             {
-                ErrorOcurrido?.Invoke(ex.Message);
+                _notify.Error(ex.Message);
             }
         }
     }

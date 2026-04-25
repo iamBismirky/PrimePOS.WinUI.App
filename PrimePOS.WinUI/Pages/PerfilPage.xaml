@@ -1,7 +1,8 @@
 <Page
     x:Class="PrimePOS.WinUI.Pages.PerfilPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
 
@@ -56,6 +57,11 @@
                             <TextBlock Text="{Binding UsuarioRol, Mode=OneWay}"
                                        FontSize="15"/>
                         </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Nombre Usuario" Opacity="0.6"/>
+                            <TextBlock Text="{Binding Username, Mode=OneWay}"
+               FontSize="15"/>
+                        </StackPanel>
 
                     </StackPanel>
 
@@ -71,23 +77,23 @@
                                    FontSize="16"
                                    FontWeight="SemiBold"/>
 
-                        <PasswordBox x:Name="pwdActual"
+                        <PasswordBox Password="{Binding PasswordActual, Mode=TwoWay}"
                                      PasswordChanged="Actual_PasswordChanged"
                                      PlaceholderText="Contraseña actual"
                                      PasswordChar="#"/>
 
-                        <PasswordBox x:Name="pwdNueva"
+                        <PasswordBox Password="{Binding PasswordNueva, Mode=TwoWay}"
                                      PasswordChanged="Nueva_PasswordChanged"
                                      PlaceholderText="Nueva contraseña"
                                      PasswordChar="#"/>
 
-                        <PasswordBox x:Name="pwdConfirmar"
+                        <PasswordBox Password="{Binding Confirmar, Mode=TwoWay}"
                                      PasswordChanged="Confirmar_PasswordChanged"
                                      PlaceholderText="Confirmar contraseña"
                                      PasswordChar="#"/>
                         <Grid>
                             <Button Content="Actualizar contraseña"
-                                    Command="{Binding CambiarCommand}"
+                                    Command="{Binding CambiarPasswordCommand}"
                                     HorizontalAlignment="Stretch"
                                     Style="{ThemeResource AccentButtonStyle}"/>
                         </Grid>

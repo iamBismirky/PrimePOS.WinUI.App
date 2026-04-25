@@ -41,8 +41,22 @@
         </Grid>
         <Grid Grid.Row="2" >
             
-        
-        <Border
+            <Grid VerticalAlignment="Top"
+                  HorizontalAlignment="Center"
+                  Margin="0,15,0,0"
+                  Width="300"
+                  Height="500">
+
+                <InfoBar x:Name="GlobalInfoBar"
+                         IsOpen="False"
+                         VerticalAlignment="Top"
+                         HorizontalAlignment="Stretch"
+                         Severity="Informational"
+                         Title="Mensaje"
+                         Message=""/>
+            </Grid>
+
+            <Border
             Width="400"
             Height="550"
             Padding="50"

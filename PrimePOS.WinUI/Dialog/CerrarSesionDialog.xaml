@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title=""
+    Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
     PrimaryButtonText="Cerrar Sesión"
     CloseButtonText="Cancelar"
     DefaultButton="Close"
@@ -21,7 +22,7 @@
             <Grid Width="60" Height="60"
                   HorizontalAlignment="Center"
                   CornerRadius="30"
-                  Background="{ThemeResource AccentFillColorDefaultBrush}">
+                  Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
                 <FontIcon Glyph="&#xE748;"/>
 
             </Grid>

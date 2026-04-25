@@ -1,10 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace PrimePOS.BLL.Security;
+namespace PrimePOS.API.Security;
 
 public class JwtHelper
 {
@@ -19,11 +18,9 @@ public class JwtHelper
     {
         var jwt = _config.GetSection("Jwt");
 
-        var keyString = jwt["Key"]
-    ?? throw new Exception("Jwt:Key no configurado");
+        var keyString = jwt["Key"] ?? throw new Exception("Jwt:Key no configurado");
 
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(keyString));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -34,11 +31,9 @@ public class JwtHelper
             new Claim(ClaimTypes.Role, rol)
         };
 
-        var expireMinutesString = jwt["ExpireMinutes"]
-        ?? throw new Exception("Jwt:ExpireMinutes no configurado");
+        var expireMinutesString = jwt["ExpireMinutes"] ?? throw new Exception("Jwt:ExpireMinutes no configurado");
 
-        if (!int.TryParse(expireMinutesString, out int expireMinutes))
-            throw new Exception("Jwt:ExpireMinutes inválido");
+        if (!int.TryParse(expireMinutesString, out int expireMinutes)) throw new Exception("Jwt:ExpireMinutes inválido");
 
         var token = new JwtSecurityToken(
             issuer: jwt["Issuer"],

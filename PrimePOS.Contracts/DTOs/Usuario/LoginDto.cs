@@ -1,6 +1,6 @@
 ﻿namespace PrimePOS.Contracts.DTOs.Usuario
 {
-    public class AutenticarUsuarioDto
+    public class LoginDto
     {
         public int UsuarioId { get; set; }
         public string Username { get; set; } = string.Empty;

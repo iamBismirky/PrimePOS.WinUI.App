@@ -1,16 +1,16 @@
-﻿using PrimePOS.Contracts.DTOs.Venta;
-using PrimePOS.DAL.Repositories;
-using PrimePOS.DAL.UnitOfWork;
+﻿using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.DTOs.Venta;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services;
 
-public class VentaService
+public class VentaService : IVentaService
 {
-    private readonly VentaRepository _ventaRepository;
-    private readonly ProductoRepository _productoRepository;
-    private readonly UnitOfWork _unitOfWork;
-    public VentaService(VentaRepository ventaRepository, ProductoRepository productoRepository, UnitOfWork unitOfWork)
+    private readonly IVentaRepository _ventaRepository;
+    private readonly IProductoRepository _productoRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    public VentaService(IVentaRepository ventaRepository, IProductoRepository productoRepository, IUnitOfWork unitOfWork)
     {
         _ventaRepository = ventaRepository;
         _productoRepository = productoRepository;

@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Usuario;
+using System.Security.Claims;
 
 namespace PrimePOS.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class UsuariosController : ControllerBase
@@ -86,5 +89,19 @@ public class UsuariosController : ControllerBase
             Success = true,
             Message = "Usuario eliminado correctamente"
         });
+    }
+    [HttpPost("cambiar-password")]
+    public async Task<IActionResult> CambiarPassword([FromBody] CambiarPasswordDto dto)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        await _service.CambiarPasswordAsync(userId, dto);
+
+        return Ok(new ApiResponse<object>
+        {
+            Success = true,
+            Message = "Contraseña actualizada correctamente"
+        });
+
     }
 }

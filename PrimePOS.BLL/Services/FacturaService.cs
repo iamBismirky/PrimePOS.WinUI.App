@@ -1,16 +1,17 @@
-﻿using PrimePOS.Contracts.DTOs.Factura;
+﻿using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.DTOs.Factura;
 using PrimePOS.Contracts.DTOs.FacturaDetalle;
-using PrimePOS.DAL.Repositories;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services
 {
-    public class FacturaService
+    public class FacturaService : IFacturaService
     {
-        private readonly FacturaRepository _facturaRepository;
-        private readonly VentaRepository _ventaRepository;
+        private readonly IFacturaRepository _facturaRepository;
+        private readonly IVentaRepository _ventaRepository;
 
-        public FacturaService(FacturaRepository repo, VentaRepository ventaRepository)
+        public FacturaService(IFacturaRepository repo, IVentaRepository ventaRepository)
         {
             _facturaRepository = repo;
             _ventaRepository = ventaRepository;

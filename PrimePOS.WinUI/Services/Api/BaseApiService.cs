@@ -1,6 +1,9 @@
 ﻿using PrimePOS.Contracts.Common;
+using PrimePOS.WinUI.Models;
 using System;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -10,6 +13,7 @@ public class BaseApiService
 {
     protected readonly HttpClient _http;
 
+    public static Action? OnUnauthorized;
     public BaseApiService(HttpClient http)
     {
         _http = http;
@@ -19,59 +23,66 @@ public class BaseApiService
     {
         try
         {
-            var response = await _http.SendAsync(request);
-            var content = await response.Content.ReadAsStringAsync();
-            System.Diagnostics.Debug.WriteLine("RESPONSE API:");
-            System.Diagnostics.Debug.WriteLine(content);
-            System.Diagnostics.Debug.WriteLine("STATUS: " + response.StatusCode);
-            // Intentar leer respuesta del backend (éxito o error)
-            ApiResponse<T>? result = null;
+            var token = TokenStorage.GetToken();
 
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                request.Headers.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await _http.SendAsync(request);
+
+            // 🔐 SOLO manejar 401 (infraestructura)
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                TokenStorage.Clear();
+                OnUnauthorized?.Invoke();
+
+                // ⚠️ Aquí SÍ creas uno porque el backend no lo manejó
+                return new ApiResponse<T>
+                {
+                    Success = false,
+                    Message = "Sesión expirada"
+                };
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            // ⚠️ Si el backend respondió → usarlo SIEMPRE
             if (!string.IsNullOrWhiteSpace(content))
             {
-                result = JsonSerializer.Deserialize<ApiResponse<T>>(content,
+                var result = JsonSerializer.Deserialize<ApiResponse<T>>(content,
                     new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     });
+
+                if (result != null)
+                    return result; // 🔥 ESTE es el mensaje real del BLL
             }
 
-            // ❌ Si no se pudo deserializar
-            if (result == null)
-            {
-                return new ApiResponse<T>
-                {
-                    Success = false,
-                    Message = content ?? "Respuesta inválida del servidor"
-                };
-            }
-
-            // ❌ Si HTTP fue error (400, 500, etc)
-            if (!response.IsSuccessStatusCode)
-            {
-                return new ApiResponse<T>
-                {
-                    Success = false,
-                    Message = result.Message ?? $"Error HTTP: {(int)response.StatusCode}"
-                };
-            }
-
-            return result;
-        }
-        catch (HttpRequestException ex)
-        {
+            // ⚠️ SOLO si el backend NO respondió correctamente
             return new ApiResponse<T>
             {
                 Success = false,
-                Message = "Error de conexión: " + ex.Message
+                Message = "Respuesta inválida del servidor"
             };
         }
-        catch (Exception ex)
+        catch (HttpRequestException)
         {
             return new ApiResponse<T>
             {
                 Success = false,
-                Message = "Error inesperado: " + ex.Message
+                Message = "Error de conexión"
+            };
+        }
+        catch (Exception)
+        {
+            return new ApiResponse<T>
+            {
+                Success = false,
+                Message = "Error inesperado"
             };
         }
     }

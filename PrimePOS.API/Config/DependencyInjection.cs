@@ -1,12 +1,12 @@
-﻿using global::PrimePOS.BLL.Interfaces;
-using global::PrimePOS.BLL.Services;
-using global::PrimePOS.DAL.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using PrimePOS.BLL.Security;
+﻿using Microsoft.EntityFrameworkCore;
+using PrimePOS.API.Security;
+using PrimePOS.BLL.Interfaces;
+using PrimePOS.BLL.Services;
 using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.DAL.Repositories;
 
-namespace PrimePOS.API
+namespace PrimePOS.API.Config
 {
 
     public static class DependencyInjection

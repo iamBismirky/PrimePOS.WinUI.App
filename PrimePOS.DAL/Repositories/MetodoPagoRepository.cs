@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.DAL.Repositories
 {
-    public class MetodoPagoRepository
+    public class MetodoPagoRepository : IMetodoPagoRepository
     {
         private readonly AppDbContext _context;
         public MetodoPagoRepository(AppDbContext context)

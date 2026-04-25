@@ -34,7 +34,9 @@ public static class DependencyInjection
         services.AddScoped<CajaViewModel>();
         services.AddScoped<ProductoViewModel>();
         services.AddScoped<UsuarioViewModel>();
-
+        services.AddScoped<VentaViewModel>();
+        services.AddScoped<CerrarTurnoViewModel>();
+        services.AddScoped<ReporVentaViewModel>();
 
         //NotificationService
         services.AddSingleton<NotificationService>();

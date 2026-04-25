@@ -1,5 +1,8 @@
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using PrimePOS.API.Config;
 using PrimePOS.API.Middleware;
+using System.Text;
 
 namespace PrimePOS.API
 {
@@ -9,13 +12,28 @@ namespace PrimePOS.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddPrimePOS(builder.Configuration);
-
-
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            var key = builder.Configuration["Jwt:Key"];
+            var keyBytes = Encoding.UTF8.GetBytes(key!);
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = false, // 🔥 sin expiración por ahora
+
+                        IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+                    };
+                });
 
             var app = builder.Build();
             app.UseMiddleware<ExceptionMiddleware>();

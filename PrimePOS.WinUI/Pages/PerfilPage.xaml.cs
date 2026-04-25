@@ -19,12 +19,6 @@ public sealed partial class PerfilPage : Page
     }
 
 
-    private void LimpiarCampos()
-    {
-        pwdActual.Password = "";
-        pwdNueva.Password = "";
-        pwdConfirmar.Password = "";
-    }
     private void Actual_PasswordChanged(object sender, RoutedEventArgs e)
     {
         ViewModel.PasswordActual = ((PasswordBox)sender).Password;
@@ -39,41 +33,5 @@ public sealed partial class PerfilPage : Page
     {
         ViewModel.Confirmar = ((PasswordBox)sender).Password;
     }
-    //private void MostrarError(string msg)
-    //{
-    //    infoBar.Title = "Error";
-    //    infoBar.Message = msg;
-    //    infoBar.Severity = InfoBarSeverity.Error;
-    //    infoBar.IsOpen = true;
 
-    //    AutoClose();
-    //}
-
-    //private void MostrarExito(string msg)
-    //{
-    //    infoBar.Title = "Éxito";
-    //    infoBar.Message = msg;
-    //    infoBar.Severity = InfoBarSeverity.Success;
-    //    infoBar.IsOpen = true;
-
-    //    AutoClose();
-    //}
-
-    //private async void AutoClose()
-    //{
-    //    await Task.Delay(3000);
-    //    infoBar.IsOpen = false;
-    //}
-    //private void MostrarError(string mensaje)
-    //{
-    //    infoError.Message = mensaje;
-    //    infoError.IsOpen = true;
-
-    //    AutoCloseInfoBar();
-    //}
-    //private async void AutoCloseInfoBar()
-    //{
-    //    await Task.Delay(3000);
-    //    infoError.IsOpen = false;
-    //}
 }

@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.WinUI.Pages;
@@ -6,6 +8,8 @@ using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.ViewModels;
 using System;
 using System.Threading.Tasks;
+using Windows.Graphics;
+using WinRT.Interop;
 
 
 
@@ -13,28 +17,24 @@ namespace PrimePOS.WinUI;
 
 public sealed partial class MainWindow : Window
 {
-    public AppSesionViewModel Appsesion;
-    public MainWindow(NotificationService notify)
+    public AppSesionViewModel _sesion;
+    public NotificationService _notify;
+    public MainWindow()
     {
         InitializeComponent();
         contentFrame.Navigate(typeof(DashboardPage));
         RootGrid.RequestedTheme = App.TemaActual;
         this.ExtendsContentIntoTitleBar = true;
 
-        Appsesion = App.AppServices.GetRequiredService<AppSesionViewModel>();
-        RootGrid.DataContext = Appsesion;
+        _sesion = App.AppServices.GetRequiredService<AppSesionViewModel>();
+        _notify = App.AppServices.GetRequiredService<NotificationService>();
+        RootGrid.DataContext = _sesion;
+        SetWindowSizeAndCenter(1600, 900);
 
 
-
-        notify.OnNotify += async (msg, type) =>
+        _notify.OnNotify += (msg, type) =>
         {
-            GlobalInfoBar.Message = msg;
-            GlobalInfoBar.Severity = type;
-            GlobalInfoBar.IsOpen = true;
-
-            await Task.Delay(3000);
-
-            GlobalInfoBar.IsOpen = false;
+            _ = MostrarNotificacionAsync(msg, type);
         };
 
 
@@ -73,11 +73,11 @@ public sealed partial class MainWindow : Window
     {
         navView.IsPaneOpen = !navView.IsPaneOpen;
     }
-    private async void navView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+    private async void navView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
     {
 
-        if (args.SelectedItemContainer is NavigationViewItem item
-            && contentFrame != null)
+        if (args.InvokedItemContainer is not NavigationViewItem item)
+            return;
         {
             switch (item.Tag?.ToString())
             {
@@ -110,15 +110,48 @@ public sealed partial class MainWindow : Window
 
                     if (result == ContentDialogResult.Primary)
                     {
-                        Appsesion.CerrarSesion();
-                        App.IrALogin();
+                        _sesion.CerrarSesion();
+                        var login = new LoginWindow();
+                        login.Activate();
+                        this.Close();
                     }
                     sender.SelectedItem = null;
+                    sender.SelectedItem = sender.MenuItems[0];
                     break;
 
 
             }
         }
+    }
+    private async Task MostrarNotificacionAsync(string msg, InfoBarSeverity type)
+    {
+        GlobalInfoBar.Message = msg;
+        GlobalInfoBar.Severity = type;
+        GlobalInfoBar.IsOpen = true;
+
+        await Task.Delay(3000);
+
+        GlobalInfoBar.IsOpen = false;
+    }
+    private void SetWindowSizeAndCenter(int width, int height)
+    {
+        var hwnd = WindowNative.GetWindowHandle(this);
+        var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+        var appWindow = AppWindow.GetFromWindowId(windowId);
+
+        // 🔥 Tamaño
+        appWindow.Resize(new SizeInt32(width, height));
+
+        // 🔥 Obtener tamaño de pantalla
+        var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
+        var workArea = displayArea.WorkArea;
+
+        // 🔥 Calcular centro
+        int x = workArea.X + (workArea.Width - width) / 2;
+        int y = workArea.Y + (workArea.Height - height) / 2;
+
+        // 🔥 Mover ventana
+        appWindow.Move(new PointInt32(x, y));
     }
 
 

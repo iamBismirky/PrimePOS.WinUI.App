@@ -1,14 +1,10 @@
 ﻿using PrimePOS.DAL.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.DAL.Repositories;
 
-public class DetalleRepository
+public class DetalleRepository : IDetalleRepository
 {
     private readonly AppDbContext _context;
     public DetalleRepository(AppDbContext context)

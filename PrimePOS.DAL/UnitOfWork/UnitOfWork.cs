@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 
 namespace PrimePOS.DAL.UnitOfWork
 {
-    public class UnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
         private IDbContextTransaction? _transaction;
