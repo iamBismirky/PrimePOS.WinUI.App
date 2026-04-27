@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Cliente;
 
 namespace PrimePOS.API.Controllers;
 
-[Authorize]
+
 [ApiController]
 [Route("api/[controller]")]
 public class ClientesController : ControllerBase
@@ -31,7 +30,7 @@ public class ClientesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> ObtenerClientePorIdAsync(int id)
+    public async Task<IActionResult> ObtenerPorIdAsync(int id)
     {
         var cliente = await _service.ObtenerPorIdAsync(id);
 
@@ -89,6 +88,17 @@ public class ClientesController : ControllerBase
         {
             Success = true,
             Message = "Cliente eliminado correctamente"
+        });
+    }
+    [HttpGet("buscar")]
+    public async Task<IActionResult> BuscarClientesAsync([FromQuery] string texto)
+    {
+        var clientes = await _service.BuscarClientesAsync(texto);
+
+        return Ok(new ApiResponse<List<ClienteDto>>
+        {
+            Success = true,
+            Data = clientes
         });
     }
 }

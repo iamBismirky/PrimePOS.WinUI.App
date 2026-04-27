@@ -22,6 +22,10 @@ public static class DependencyInjection
         services.AddScoped<ProductoApiService>();
         services.AddScoped<UsuarioApiService>();
         services.AddTransient<BaseApiService>();
+        services.AddScoped<TurnoApiService>();
+        services.AddScoped<FacturaApiService>();
+        services.AddScoped<MetodoPagoApiService>();
+        services.AddScoped<VentaApiService>();
 
         // ViewModels
         services.AddTransient<RolViewModel>();

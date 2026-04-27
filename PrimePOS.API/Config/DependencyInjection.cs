@@ -5,6 +5,7 @@ using PrimePOS.BLL.Services;
 using PrimePOS.DAL.Context;
 using PrimePOS.DAL.Interfaces;
 using PrimePOS.DAL.Repositories;
+using PrimePOS.DAL.UnitOfWork;
 
 namespace PrimePOS.API.Config
 {
@@ -25,6 +26,14 @@ namespace PrimePOS.API.Config
             services.AddScoped<IClienteRepository, ClienteRepository>();
             services.AddScoped<IProductoRepository, ProductoRepository>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IMetodoPagoRepository, MetodoPagoRepository>();
+            services.AddScoped<IVentaRepository, VentaRepository>();
+            services.AddScoped<IFacturaRepository, FacturaRepository>();
+            services.AddScoped<ITurnoRepository, TurnoRepository>();
+            services.AddScoped<ICierreTurnoRepository, CierreTurnoRepository>();
+            services.AddScoped<IDetalleRepository, DetalleRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
             // 🔹 Services
             services.AddScoped<IRolService, RolService>();
@@ -33,10 +42,14 @@ namespace PrimePOS.API.Config
             services.AddScoped<IClienteService, ClienteService>();
             services.AddScoped<IProductoService, ProductoService>();
             services.AddScoped<IUsuarioService, UsuarioService>();
-
+            services.AddScoped<IMetodoPagoService, MetodoPagoService>();
+            services.AddScoped<IVentaService, VentaService>();
+            services.AddScoped<IFacturaService, FacturaService>();
+            services.AddScoped<ITurnoService, TurnoService>();
 
             //jwt
             services.AddSingleton<JwtHelper>();
+
 
             return services;
         }

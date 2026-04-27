@@ -1,80 +1,47 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.UI;
-using Microsoft.UI.Xaml.Media;
+using CommunityToolkit.Mvvm.Input;
 using System;
-using System.Threading.Tasks;
-namespace PrimePOS.WinUI.ViewModels
+
+namespace PrimePOS.WinUI.ViewModels;
+
+public partial class CobrarViewModel : ObservableObject
 {
-    public class CobrarViewModel : ObservableObject
+    public decimal Total { get; }
+
+    public CobrarViewModel(decimal total)
     {
-        public decimal Total { get; set; }
-        public CobrarViewModel(decimal total)
-        {
-            Total = total;
-            EfectivoTexto = "";
-        }
-        private string? _efectivoTexto;
-        public string? EfectivoTexto
-        {
-            get => _efectivoTexto;
-            set
-            {
-                if (SetProperty(ref _efectivoTexto, value))
-                {
+        Total = total;
+    }
 
+    // 🔹 INPUT
+    [ObservableProperty]
+    private decimal efectivo;
 
-                    OnPropertyChanged(nameof(Efectivo));
-                    OnPropertyChanged(nameof(Cambio));
-                    OnPropertyChanged(nameof(Falta));
-                    OnPropertyChanged(nameof(EsPagoValido));
-                }
-            }
-        }
+    // 🔹 OUTPUT
+    public decimal Cambio => Efectivo - Total;
 
-        public decimal Efectivo
-        {
-            get
-            {
-                if (decimal.TryParse(EfectivoTexto, out var monto))
-                    return monto;
+    partial void OnEfectivoChanged(decimal value)
+    {
+        OnPropertyChanged(nameof(Cambio));
+    }
 
-                return -1;
-            }
-        }
-        public decimal Cambio => (decimal)Efectivo >= Total ? (decimal)Efectivo - Total : 0;
+    // 🔹 EVENTOS
+    public event Action<CobrarViewModel>? Confirmado;
+    public event Action? Cancelado;
 
-        public decimal Falta => (decimal)Efectivo < Total ? Total - (decimal)Efectivo : 0;
+    // 🔹 COMANDOS
+    [RelayCommand]
+    private void Confirmar()
+    {
+        if (Efectivo < Total)
+            return;
 
-        public bool EsPagoValido => (decimal)Efectivo >= Total;
+        Confirmado?.Invoke(this);
+    }
 
-        public event Func<CobrarViewModel, Task>? Confirmado;
-
-        public async Task ConfirmarAsync()
-        {
-            //if (Efectivo == 0)
-            //    throw new Exception("Ingrese un monto.");
-
-            if (!EsPagoValido)
-                throw new Exception("El monto es insuficiente.");
-
-            if (Confirmado != null)
-                await Confirmado.Invoke(this);
-        }
-        public SolidColorBrush FaltaColor
-        {
-            get
-            {
-                if (Falta > 0)
-                    return new SolidColorBrush(Colors.Red);
-
-                if (Falta == 0)
-                    return new SolidColorBrush(Colors.Green);
-
-                return new SolidColorBrush(Colors.Gray);
-            }
-        }
-
-
-
+    [RelayCommand]
+    private void Cancelar()
+    {
+        Cancelado?.Invoke();
     }
 }

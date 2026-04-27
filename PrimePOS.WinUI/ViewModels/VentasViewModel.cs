@@ -1,66 +1,244 @@
-﻿using PrimePOS.BLL.Services;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using PrimePOS.Contracts.DTOs.Cliente;
+using PrimePOS.Contracts.DTOs.MetodoPago;
 using PrimePOS.Contracts.DTOs.Producto;
 using PrimePOS.Contracts.DTOs.Venta;
 using PrimePOS.Contracts.DTOs.VentaDetalle;
-using PrimePOS.WinUI.Reportes.PrimePOS.WinUI.Reportes;
-using QuestPDF.Fluent;
+using PrimePOS.WinUI.Services;
+using PrimePOS.WinUI.Services.Api;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.ViewModels;
 
-public class VentaViewModel : INotifyPropertyChanged
+public partial class VentaViewModel : ObservableObject
 {
-    private readonly VentaService _ventaService;
-    private readonly ProductoService _productoService;
+    private readonly ProductoApiService _productoApi;
+    private readonly ClienteApiService _clienteApi;
+    private readonly MetodoPagoApiService _metodoPagoApi;
+    private readonly TurnoApiService _turnoApi;
+    private readonly VentaApiService _ventaApi;
+    private readonly FacturaApiService _facturaApi;
+    private readonly NotificationService _notify;
     private readonly AppSesionViewModel _sesion;
-    private readonly FacturaService _facturaService;
 
     public AppSesionViewModel AppSesion => _sesion;
 
-    public VentaViewModel(VentaService ventaService,
-            ProductoService productoService,
-                AppSesionViewModel sesionService,
-                FacturaService facturaService)
+    public VentaViewModel(
+        ProductoApiService productoApi,
+        ClienteApiService clienteApi,
+        MetodoPagoApiService metodoPagoApi,
+        TurnoApiService turnoApi,
+        VentaApiService ventaApi,
+        FacturaApiService facturaApi,
+        NotificationService notify,
+        AppSesionViewModel sesion)
     {
-        _ventaService = ventaService;
-        _productoService = productoService;
-        _sesion = sesionService;
-        _facturaService = facturaService;
+        _productoApi = productoApi;
+        _clienteApi = clienteApi;
+        _metodoPagoApi = metodoPagoApi;
+        _turnoApi = turnoApi;
+        _ventaApi = ventaApi;
+        _facturaApi = facturaApi;
+        _notify = notify;
+        _sesion = sesion;
     }
 
-    public ObservableCollection<CarritoItemViewModel> Carrito { get; set; } = new();
+    // =========================
+    // 🔥 OVERLAYS
+    // =========================
+    public Action<object>? MostrarOverlay;
+    public Action? CerrarOverlay;
 
+    // =========================
+    // 🔹 PROPIEDADES
+    // =========================
 
+    [ObservableProperty] private string textoProducto = "";
+    [ObservableProperty] private string textoCliente = "";
+
+    [ObservableProperty] private ObservableCollection<ProductoDto> productos = new();
+    [ObservableProperty] private ObservableCollection<ClienteDto> clientes = new();
+
+    [ObservableProperty] private ObservableCollection<MetodoPagoDto> metodosPago = new();
+    [ObservableProperty] private MetodoPagoDto? metodoPagoSeleccionado;
+
+    [ObservableProperty] private ClienteDto? clienteSeleccionado;
+
+    [ObservableProperty] private ObservableCollection<CarritoItemViewModel> carrito = new();
+
+    [ObservableProperty] private decimal descuentoPorcentaje;
+
+    // =========================
+    // 🔹 TOTALES
+    // =========================
 
     public decimal Subtotal => Carrito.Sum(x => x.Total);
-
-    public decimal DescuentoPorcentaje { get; set; }
     public decimal DescuentoMonto => Subtotal * (DescuentoPorcentaje / 100);
     public decimal SubtotalConDescuento => Subtotal - DescuentoMonto;
     public decimal Impuesto => SubtotalConDescuento * 0.18m;
-
     public decimal Total => Subtotal + Impuesto - DescuentoMonto;
+
+    partial void OnDescuentoPorcentajeChanged(decimal value)
+    {
+        NotificarTotales();
+    }
+
+    private void NotificarTotales()
+    {
+        OnPropertyChanged(nameof(Subtotal));
+        OnPropertyChanged(nameof(DescuentoMonto));
+        OnPropertyChanged(nameof(SubtotalConDescuento));
+        OnPropertyChanged(nameof(Impuesto));
+        OnPropertyChanged(nameof(Total));
+    }
+
+    // =========================
+    // 🔹 INIT
+    // =========================
+
+    public async Task InicializarAsync()
+    {
+        await CargarMetodosPagoAsync();
+        await CargarConsumidorFinalAsync();
+        await VerificarTurnoAsync();
+    }
+
+    // =========================
+    // 🔹 TURNO
+    // =========================
+
+    private async Task VerificarTurnoAsync()
+    {
+        var res = await _turnoApi.ObtenerTurnoAbiertoAsync();
+
+        if (res.Success && res.Data != null)
+        {
+            _sesion.TurnoActual = res.Data;
+        }
+
+        if (!_sesion.HayTurnoAbierto)
+        {
+            _notify.Warning("Debe abrir un turno");
+        }
+    }
+
+    // =========================
+    // 🔹 CLIENTE DEFAULT
+    // =========================
+
+    private async Task CargarConsumidorFinalAsync()
+    {
+        var res = await _clienteApi.ObtenerClientePorIdAsync(1);
+
+        if (res.Success && res.Data != null)
+        {
+            ClienteSeleccionado = res.Data;
+        }
+    }
+
+    private async Task CargarMetodosPagoAsync()
+    {
+        var res = await _metodoPagoApi.ObtenerMetodosPagoAsync();
+
+        if (!res.Success || res.Data == null)
+        {
+            _notify.Warning(res.Message);
+            return;
+        }
+
+        MetodosPago = new ObservableCollection<MetodoPagoDto>(res.Data);
+        MetodoPagoSeleccionado = MetodosPago.FirstOrDefault();
+    }
+
+
+    [RelayCommand]
+    public async Task BuscarProductosAsync()
+    {
+        try
+        {
+            // 🔹 evitar llamadas innecesarias
+            if (string.IsNullOrWhiteSpace(TextoProducto) || TextoProducto.Length < 2)
+            {
+                Productos.Clear();
+                return;
+            }
+
+            var res = await _productoApi.BuscarProductosAsync(TextoProducto);
+
+            // 🔥 patrón correcto con ApiResponse
+            if (!res.Success)
+            {
+                _notify.Warning(res.Message);
+                System.Diagnostics.Debug.WriteLine(res.Message);
+
+                return;
+            }
+
+            // 🔹 evitar null
+            Productos = new ObservableCollection<ProductoDto>(
+                res.Data ?? new List<ProductoDto>()
+            );
+        }
+        catch (Exception)
+        {
+            _notify.Error("Error al buscar productos");
+        }
+    }
+
+    [RelayCommand]
+    public async Task SeleccionarProductoAsync(ProductoDto producto)
+    {
+        if (producto == null) return;
+
+        await AgregarProductoCarritoAsync(producto);
+
+        TextoProducto = "";
+        Productos.Clear();
+    }
+
+    // =========================
+    // 🔹 BUSCAR CLIENTES
+    // =========================
+
+    [RelayCommand]
+    public async Task BuscarClientesAsync()
+    {
+        if (TextoCliente.Length < 2)
+        {
+            Clientes.Clear();
+            return;
+        }
+
+        var res = await _clienteApi.BuscarClientesAsync(TextoCliente);
+
+        if (res.Success && res.Data != null)
+            Clientes = new ObservableCollection<ClienteDto>(res.Data);
+    }
+
+    [RelayCommand]
+    public void SeleccionarCliente(ClienteDto cliente)
+    {
+        ClienteSeleccionado = cliente;
+        TextoCliente = "";
+    }
+
+    // =========================
+    // 🔹 CARRITO
+    // =========================
 
     public async Task AgregarProductoCarritoAsync(ProductoDto dto)
     {
-
-
         var existente = Carrito.FirstOrDefault(p => p.ProductoId == dto.ProductoId);
-        if (existente != null)
-        {
-            existente.Cantidad++;
-            NotificarTotales();
 
-        }
+        if (existente != null)
+            existente.Cantidad++;
         else
-        {
             Carrito.Add(new CarritoItemViewModel
             {
                 Codigo = dto.Codigo,
@@ -69,72 +247,86 @@ public class VentaViewModel : INotifyPropertyChanged
                 Precio = dto.PrecioVenta,
                 Cantidad = 1
             });
-        }
+
         NotificarTotales();
     }
-    public void EliminarProductoCarrito(int productoId)
+
+    [RelayCommand]
+    public void EliminarProducto(CarritoItemViewModel item)
     {
-        var item = Carrito.FirstOrDefault(x => x.ProductoId == productoId);
+        if (item == null) return;
 
-        if (item != null)
-            Carrito.Remove(item);
-
+        Carrito.Remove(item);
         NotificarTotales();
     }
-    // 🧹 LIMPIAR
-    public void VaciarCarrito()
+
+    [RelayCommand]
+    private void Limpiar()
     {
         Carrito.Clear();
+        DescuentoPorcentaje = 0;
         NotificarTotales();
     }
-    private void NotificarTotales()
-    {
-        OnPropertyChanged(nameof(Subtotal));
-        OnPropertyChanged(nameof(DescuentoMonto));
-        OnPropertyChanged(nameof(SubtotalConDescuento));
-        OnPropertyChanged(nameof(Impuesto));
-        OnPropertyChanged(nameof(DescuentoPorcentaje));
-        OnPropertyChanged(nameof(Total));
-    }
-    public void AplicarDescuento(decimal porcentaje)
-    {
-        DescuentoPorcentaje = porcentaje;
-        NotificarTotales();
-    }
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected void OnPropertyChanged([CallerMemberName] string name = "")
+    // =========================
+    // 💰 COBRAR (ABRE OVERLAY)
+    // =========================
+
+    [RelayCommand]
+    private void Cobrar()
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        if (!Carrito.Any())
+        {
+            _notify.Warning("No hay productos");
+            return;
+        }
+
+        if (!_sesion.HayTurnoAbierto)
+        {
+            _notify.Warning("Debe abrir un turno");
+            return;
+        }
+
+        var vm = new CobrarViewModel(Total);
+
+        vm.Cancelado += () => CerrarOverlay?.Invoke();
+
+        vm.Confirmado += async (cobro) =>
+        {
+            await FacturarDesdeCobroAsync(cobro.Efectivo, cobro.Cambio);
+            CerrarOverlay?.Invoke();
+        };
+
+        MostrarOverlay?.Invoke(vm);
     }
-    public async Task FacturarAsync(int clienteId, string clienteNombre, int metodoPagoId, decimal efectivo, decimal cambio)
+
+    // =========================
+    // 🧾 FACTURAR DESDE COBRO
+    // =========================
+
+    public async Task FacturarDesdeCobroAsync(decimal efectivo, decimal cambio)
     {
         try
         {
-            if (!Carrito.Any())
-                throw new Exception("El carrito está vacío.");
-
-
-            if (AppSesion.TurnoActual == null)
-                throw new Exception("No hay turno abierto.");
-
-            var ventaDto = new CrearVentaDto
+            if (MetodoPagoSeleccionado == null)
             {
-                ClienteId = clienteId,
-                ClienteNombre = clienteNombre,
-                UsuarioId = AppSesion.TurnoActual.UsuarioId,
-                UsuarioNombre = AppSesion.TurnoActual.UsuarioNombre,
-                MetodoPagoId = metodoPagoId,
-                TurnoId = AppSesion.TurnoActual.TurnoId,
+                _notify.Warning("Seleccione un método de pago");
+                return;
+            }
+
+            var dto = new CrearVentaDto
+            {
+                //ClienteId = ClienteSeleccionado?.ClienteId,
+                //ClienteNombre = ClienteSeleccionado?.Nombre,
+                MetodoPagoId = MetodoPagoSeleccionado.MetodoPagoId,
+                TurnoId = _sesion.TurnoActual!.TurnoId,
 
                 Subtotal = Subtotal,
                 Impuesto = Impuesto,
                 Descuento = DescuentoMonto,
+                Total = Total,
                 Efectivo = efectivo,
                 Cambio = cambio,
-                Total = Total,
-
-
 
                 Items = Carrito.Select(x => new VentaDetalleDto
                 {
@@ -142,68 +334,43 @@ public class VentaViewModel : INotifyPropertyChanged
                     ProductoId = x.ProductoId,
                     Cantidad = x.Cantidad,
                     PrecioUnitario = x.Precio,
-                    Total = x.Total,
-
-                }).ToList(),
+                    Total = x.Total
+                }).ToList()
             };
 
-            var ventaId = await _ventaService.CrearVentaAsync(ventaDto);
-            var factura = await _facturaService.GenerarFacturaDesdeVenta(ventaId);
+            var resVenta = await _ventaApi.CrearVentaAsync(dto);
 
-            var facturaDto = _facturaService.MapearFactura(factura);
-
-            // Generar PDF
-            var document = new Factura80mmDocument(facturaDto);
-
-            string carpeta = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "PrimePOS", "Facturas");
-
-            Directory.CreateDirectory(carpeta);
-
-            string path = Path.Combine(carpeta, $"Factura_{facturaDto.Numero}.pdf");
-
-            document.GeneratePdf(path);
-
-            // 6️⃣ Abrir PDF
-            Process.Start(new ProcessStartInfo
+            if (!resVenta.Success)
             {
-                FileName = path,
-                UseShellExecute = true
-            });
+                _notify.Error(resVenta.Message);
+                return;
+            }
 
-            VaciarCarrito();
+            var resFactura = await _facturaApi.GenerarFacturaAsync(resVenta.Data);
 
+            if (!resFactura.Success)
+            {
+                _notify.Error(resFactura.Message);
+                return;
+            }
 
-            DescuentoPorcentaje = 0;
+            //if (!string.IsNullOrEmpty(resFactura.Data.UrlPdf))
+            //{
+            //    Process.Start(new ProcessStartInfo
+            //    {
+            //        FileName = resFactura.Data.UrlPdf,
+            //        UseShellExecute = true
+            //    });
+            //}
 
+            _notify.Success("Venta realizada correctamente");
+
+            Limpiar();
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error al facturar: {ex.Message}");
-            throw;
+            Debug.WriteLine(ex);
+            _notify.Error("Error al procesar la venta");
         }
-
-
-
     }
-    public Action<object>? MostrarOverlay;
-    public Action? CerrarOverlay;
-    public async Task AbrirCobrarAsync()
-    {
-
-        if (!Carrito.Any())
-            return;
-
-
-        if (AppSesion.TurnoActual == null)
-            return;
-
-        var vm = new CobrarViewModel(Total);
-
-        MostrarOverlay?.Invoke(vm);
-
-
-    }
-
 }

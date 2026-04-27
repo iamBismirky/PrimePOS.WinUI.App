@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Producto;
 
 namespace PrimePOS.API.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ProductosController : ControllerBase
@@ -33,7 +31,7 @@ public class ProductosController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> ObtenerProductoPorIdAsync(int id)
     {
-        var producto = await _service.ObtenerProductoPorIdAsync(id);
+        var producto = await _service.ObtenerPorIdAsync(id);
 
         return Ok(new ApiResponse<ProductoDto>
         {
@@ -89,5 +87,16 @@ public class ProductosController : ControllerBase
             Success = true,
             Message = "Producto eliminado correctamente"
         });
+    }
+    [HttpGet("buscar")]
+    public async Task<IActionResult> Buscar([FromQuery] string texto)
+    {
+        var data = await _service.BuscarProductosAsync(texto);
+        return Ok(new ApiResponse<List<ProductoDto>>
+        {
+            Success = true,
+            Data = data
+        });
+
     }
 }

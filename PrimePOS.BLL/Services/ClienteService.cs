@@ -130,40 +130,27 @@ public class ClienteService : IClienteService
         };
     }
 
-    public async Task<ClienteDto?> BuscarClienteCodigoONombreAsync(string buscar)
+
+
+
+    private string GenerarCodigoCliente(int clienteId)
     {
-        buscar = buscar.Trim();
-
-        var cliente = await _clienteRepository.BuscarPorCodigoONombreAsync(buscar)
-                      ?? await _clienteRepository.BuscarClientePorNombreAsync(buscar);
-
-        if (cliente == null)
-            throw new BusinessException("Cliente no encontrado.", 404);
-
-        return new ClienteDto
-        {
-            ClienteId = cliente.ClienteId,
-            Nombre = cliente.Nombre,
-            Codigo = cliente.Codigo,
-            Documento = cliente.Documento,
-        };
+        return $"CLIENT-{clienteId:D4}";
     }
-
-    public async Task<List<ClienteDto>> BuscarClienteCodigoONombreListAsync(string buscar)
+    public async Task<List<ClienteDto>> BuscarClientesAsync(string texto)
     {
-        var clientes = await _clienteRepository.BuscarPorCodigoONombreListAsync(buscar);
+        if (string.IsNullOrWhiteSpace(texto))
+            return new List<ClienteDto>();
 
+        var clientes = await _clienteRepository.BuscarAsync(texto);
+        if (clientes == null)
+            throw new BusinessException("Cliente no encontrado.", 404);
         return clientes.Select(c => new ClienteDto
         {
             ClienteId = c.ClienteId,
             Codigo = c.Codigo,
             Nombre = c.Nombre,
-            Documento = c.Documento,
+            Documento = c.Documento
         }).ToList();
-    }
-
-    private string GenerarCodigoCliente(int clienteId)
-    {
-        return $"CLIENT-{clienteId:D4}";
     }
 }

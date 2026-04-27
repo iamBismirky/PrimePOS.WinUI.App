@@ -1,5 +1,6 @@
 ﻿using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Producto;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -50,5 +51,14 @@ public class ProductoApiService : BaseApiService
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"api/productos/{id}");
         return SendAsync<object>(request);
+    }
+    public Task<ApiResponse<List<ProductoDto>>> BuscarProductosAsync(string texto)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"api/productos/buscar?texto={Uri.EscapeDataString(texto)}"
+        );
+
+        return SendAsync<List<ProductoDto>>(request);
     }
 }

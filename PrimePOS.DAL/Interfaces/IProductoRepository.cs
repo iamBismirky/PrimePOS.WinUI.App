@@ -5,6 +5,7 @@ namespace PrimePOS.DAL.Interfaces
     public interface IProductoRepository
     {
         void Actualizar(Producto producto);
+        Task<List<Producto>> BuscarAsync(string texto);
         Task<Producto?> BuscarPorCodigoAsync(string codigo);
         Task<Producto?> BuscarPorCodigoONombreAsync(string buscar);
         Task<List<Producto>> BuscarPorCodigoONombreListAsync(string buscar);

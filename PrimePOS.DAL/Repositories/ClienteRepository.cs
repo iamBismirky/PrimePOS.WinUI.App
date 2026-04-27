@@ -58,5 +58,22 @@ public class ClienteRepository : IClienteRepository
     {
         await _context.SaveChangesAsync();
     }
+    public async Task<List<Cliente>> BuscarAsync(string texto)
+    {
+        texto = texto.ToLower();
+
+        return await _context.Clientes
+            .Where(p =>
+                p.Estado == true &&
+                (
+                    p.Nombre.ToLower().Contains(texto) ||
+                    p.Codigo.ToLower().Contains(texto) ||
+                    p.Documento.ToLower().Contains(texto)
+                )
+            )
+            .OrderBy(p => p.Nombre)
+            .Take(20)
+            .ToListAsync();
+    }
 
 }

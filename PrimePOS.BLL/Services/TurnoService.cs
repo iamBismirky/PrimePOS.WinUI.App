@@ -1,4 +1,5 @@
-﻿using PrimePOS.BLL.Interfaces;
+﻿using PrimePOS.BLL.Exceptions;
+using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Turno;
 using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
@@ -40,13 +41,13 @@ public class TurnoService : ITurnoService
             var existe = await _turnoRepository.ExisteTurnoAbierto(dto.CajaId);
 
             if (existe)
-                throw new Exception("Ya hay un turno abierto en esta caja.");
+                throw new BusinessException("Ya hay un turno abierto en esta caja.", 400);
 
             // Validar que la caja exista
             var existeCaja = await _cajaRepository.ExisteCajaIdAsync(dto.CajaId);
 
             if (existeCaja == null)
-                throw new Exception("La caja no existe.");
+                throw new BusinessException("La caja no existe.", 404);
 
             int numeroTurno = await ObtenerSiguienteTurno();
             // 🧱 Crear entidad

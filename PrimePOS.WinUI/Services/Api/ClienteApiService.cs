@@ -1,5 +1,6 @@
 ﻿using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Cliente;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -50,5 +51,19 @@ public class ClienteApiService : BaseApiService
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"api/clientes/{id}");
         return SendAsync<object>(request);
+    }
+    public Task<ApiResponse<ClienteDto>> ObtenerClientePorIdAsync(int id)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/clientes/{id}");
+        return SendAsync<ClienteDto>(request);
+    }
+    public Task<ApiResponse<List<ClienteDto>>> BuscarClientesAsync(string texto)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"api/clientes/buscar?texto={Uri.EscapeDataString(texto)}"
+        );
+
+        return SendAsync<List<ClienteDto>>(request);
     }
 }

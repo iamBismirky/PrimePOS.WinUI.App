@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Usuario;
@@ -7,7 +6,7 @@ using System.Security.Claims;
 
 namespace PrimePOS.API.Controllers;
 
-[Authorize]
+
 [ApiController]
 [Route("api/[controller]")]
 public class UsuariosController : ControllerBase

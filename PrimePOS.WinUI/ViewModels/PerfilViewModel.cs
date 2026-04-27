@@ -44,20 +44,20 @@ namespace PrimePOS.WinUI.ViewModels
         {
             try
             {
-                // VALIDACIONES BÁSICAS
-                //if (string.IsNullOrWhiteSpace(PasswordActual) ||
-                //    string.IsNullOrWhiteSpace(PasswordNueva) ||
-                //    string.IsNullOrWhiteSpace(Confirmar))
-                //{
-                //    _notify.Warning("Todos los campos son obligatorios");
-                //    return;
-                //}
 
-                //if (PasswordNueva != Confirmar)
-                //{
-                //    _notify.Warning("Las contraseñas no coinciden");
-                //    return;
-                //}
+                if (string.IsNullOrWhiteSpace(PasswordActual) ||
+                    string.IsNullOrWhiteSpace(PasswordNueva) ||
+                    string.IsNullOrWhiteSpace(Confirmar))
+                {
+                    _notify.Warning("Todos los campos son obligatorios");
+                    return;
+                }
+
+                if (PasswordNueva != Confirmar)
+                {
+                    _notify.Warning("Las contraseñas no coinciden");
+                    return;
+                }
 
                 // DTO
                 var dto = new CambiarPasswordDto

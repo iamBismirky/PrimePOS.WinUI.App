@@ -5,6 +5,7 @@ namespace PrimePOS.DAL.Interfaces
     public interface IClienteRepository
     {
         void Actualizar(Cliente cliente);
+        Task<List<Cliente>> BuscarAsync(string texto);
         Task<Cliente?> BuscarClientePorCodigoAsync(string codigo);
         Task<Cliente?> BuscarClientePorNombreAsync(string nombre);
         Task<Cliente?> BuscarPorCodigoONombreAsync(string buscar);

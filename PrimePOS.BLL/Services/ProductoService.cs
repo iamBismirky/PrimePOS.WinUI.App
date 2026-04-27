@@ -98,42 +98,8 @@ public class ProductoService : IProductoService
         await _productoRepository.GuardarCambiosAsync();
     }
 
-    public async Task<List<ProductoDto>> BuscarProductoCodigoONombreListAsync(string buscar)
-    {
-        var productos = await _productoRepository.BuscarPorCodigoONombreListAsync(buscar);
 
-        return productos.Select(p => new ProductoDto
-        {
-            ProductoId = p.ProductoId,
-            Nombre = p.Nombre,
-            Codigo = p.Codigo,
-            PrecioVenta = p.PrecioVenta
-        }).ToList();
-    }
-
-    public async Task<ProductoDto?> BuscarProductoCodigoONombreAsync(string buscar)
-    {
-        if (string.IsNullOrWhiteSpace(buscar))
-            throw new BusinessException("Debe ingresar un valor de búsqueda.", 400);
-
-        buscar = buscar.Trim();
-
-        var producto = await _productoRepository.BuscarPorCodigoAsync(buscar)
-                      ?? await _productoRepository.BuscarPorNombreAsync(buscar);
-
-        if (producto == null)
-            throw new BusinessException("Producto no encontrado.", 404);
-
-        return new ProductoDto
-        {
-            ProductoId = producto.ProductoId,
-            Nombre = producto.Nombre,
-            Codigo = producto.Codigo,
-            PrecioVenta = producto.PrecioVenta
-        };
-    }
-
-    public async Task<ProductoDto?> ObtenerProductoPorIdAsync(int id)
+    public async Task<ProductoDto?> ObtenerPorIdAsync(int id)
     {
         var producto = await _productoRepository.ObtenerPorIdAsync(id);
 
@@ -181,5 +147,22 @@ public class ProductoService : IProductoService
     private string GenerarCodigoProducto(int productoId)
     {
         return $"PROD-{productoId:D4}";
+    }
+    public async Task<List<ProductoDto>> BuscarProductosAsync(string texto)
+    {
+        if (string.IsNullOrWhiteSpace(texto))
+            return new List<ProductoDto>();
+
+        var productos = await _productoRepository.BuscarAsync(texto);
+        if (productos == null)
+            throw new BusinessException("Producto no encontrado.", 404);
+
+        return productos.Select(p => new ProductoDto
+        {
+            ProductoId = p.ProductoId,
+            Codigo = p.Codigo,
+            Nombre = p.Nombre,
+            PrecioVenta = p.PrecioVenta
+        }).ToList();
     }
 }

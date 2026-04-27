@@ -70,4 +70,21 @@ public class ProductoRepository : IProductoRepository
     {
         await _context.SaveChangesAsync();
     }
+    public async Task<List<Producto>> BuscarAsync(string texto)
+    {
+        texto = texto.ToLower();
+
+        return await _context.Productos
+            .Where(p =>
+                p.Estado == true &&
+                (
+                    p.Nombre.ToLower().Contains(texto) ||
+                    p.Codigo.ToLower().Contains(texto) ||
+                    p.CodigoBarra.ToLower().Contains(texto)
+                )
+            )
+            .OrderBy(p => p.Nombre)
+            .Take(20)
+            .ToListAsync();
+    }
 }

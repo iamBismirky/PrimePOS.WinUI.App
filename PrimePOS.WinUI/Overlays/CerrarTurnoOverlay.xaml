@@ -1,120 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?>
 <UserControl
     x:Class="PrimePOS.WinUI.Overlays.CerrarTurnoOverlay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:PrimePOS.WinUI.Pages"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Loaded="Page_Loaded">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid Background="#80000000">
-        <!-- Fondo oscuro tipo overlay -->
 
-        <Border Width="500"
-            Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
-            CornerRadius="12"
-            Padding="20"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
+        <Border Width="400"
+                Padding="20"
+                Background="White"
+                CornerRadius="12"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
 
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="10">
 
-                <!-- Título -->
-                <TextBlock Text="Cierre de Turno"
-                       FontSize="22"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"/>
-
-                <!-- Separador -->
-                <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
-
-                <!-- Info del turno -->
-                <StackPanel Orientation="Vertical" Spacing="5">
-                    <TextBlock>
-                        <Run Text="Usuario:" FontSize="16" FontWeight="SemiBold"/>
-                        <Run Text="{Binding Usuario}"/>
-                    </TextBlock>
-                    <TextBlock Opacity="0.7">
-                        <Run Text="Rol:" FontSize="16" FontWeight="SemiBold" />
-                        <Run Text="{Binding Rol}"/>
-                    </TextBlock>
-                    <TextBlock>
-                        <Run Text="Caja:" FontSize="16" FontWeight="SemiBold"/>
-                        <Run Text="{Binding Caja}" FontWeight="Medium"/>
-                    </TextBlock>
-
-                    <TextBlock Text="Turno:" FontWeight="SemiBold"/>
-                    <TextBlock Text="{Binding NumeroTurno}" FontSize="16"/>
-                </StackPanel>
-                <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
-
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Monto Inicial::" Width="200"/>
-                    <TextBlock Text="{Binding MontoInicial}" FontWeight="Bold"/>
-                </StackPanel>
-                
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Total Efectivo:" Width="200"/>
-                    <TextBlock Text="{Binding TotalEfectivo}" FontWeight="Bold"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Total Tarjeta:" Width="200"/>
-                    <TextBlock Text="{Binding TotalTarjeta}" FontWeight="Bold"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Total Transferencia:" Width="200"/>
-                    <TextBlock Text ="{Binding TotalTransferencia}" FontWeight="Bold"/>
-                </StackPanel>
-                <!-- Ventas -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <TextBlock Text="Total General:" Width="200"/>
-                    <TextBlock Text ="{Binding TotalGeneral}" FontWeight="Bold"/>
-                </StackPanel>
-                
-                <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
-
-                <!-- Efectivo esperado -->
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Efectivo Esperado:" Width="200"/>
-                    <TextBlock Text ="{Binding EfectivoEsperado}" FontWeight="Bold"/>
-                </StackPanel>
-
-                <!-- Input efectivo contado -->
-                <StackPanel Spacing="90" Orientation="Horizontal">
-                    <TextBlock Text="Efectivo Contado"/>
-                    <TextBox Text="{Binding EfectivoContado, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Width="200"/>
-                    
-                              
-                </StackPanel>
-                
-                <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
-
-                <!-- Diferencia -->
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Diferencia:" Width="200"/>
-                    <TextBlock Text ="{Binding Diferencia}"
-                           Foreground="{Binding DiferenciaColor}"
+                <TextBlock Text="Cerrar Turno"
+                           FontSize="22"
                            FontWeight="Bold"/>
-                </StackPanel>
 
-                <!-- Botones -->
-                <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Spacing="10"
-                        Margin="0,10,0,0">
+                <TextBlock Text="{Binding MontoInicial}"/>
+                <TextBlock Text="{Binding TotalEfectivo}"/>
+                <TextBlock Text="{Binding TotalTarjeta}"/>
+                <TextBlock Text="{Binding TotalTransferencia}"/>
 
+                <NumberBox Header="Efectivo contado"
+                           Value="{Binding EfectivoContado, Mode=TwoWay}" />
+
+                <TextBlock Text="{Binding Diferencia}"
+                           Foreground="Red"/>
+
+                <StackPanel Orientation="Horizontal" Spacing="10">
                     <Button Content="Cancelar"
-                        Background="Gray"
-                        Foreground="White"
-                        Click="BtnCancelar_Click"/>
-
+                            Command="{Binding CancelarCommand}" />
                     <Button Content="Cerrar Turno"
-                        Background="#0078D4"
-                        Foreground="White"
-                        Click="BtnCerrarTurno_Click"/>
+                            Command="{Binding CerrarCommand}" />
                 </StackPanel>
 
             </StackPanel>

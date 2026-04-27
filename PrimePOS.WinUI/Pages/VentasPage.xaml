@@ -7,8 +7,7 @@
     xmlns:local1="using:PrimePOS.WinUI.ViewModels"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:helpers="using:PrimePOS.WinUI.Helpers" 
-    Loaded="Page_loaded"
+    xmlns:helpers="using:PrimePOS.WinUI.Helpers"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
@@ -37,7 +36,7 @@
                     Text="Ventas"/>
 
         </StackPanel>
-        <!-- Buscador de producto -->
+         <!--Buscador de producto--> 
         <Grid Grid.Row="1" ColumnSpacing="20" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -58,14 +57,15 @@
 
                     <TextBlock Text="Buscar producto" FontWeight="Bold"  FontFamily="Segoe UI"/>
                         <AutoSuggestBox Grid.Column="0"
-                                    x:Name="txtBuscarProducto" 
-                                    TextChanged="txtBuscarProducto_TextChanged"
-                                    QuerySubmitted="txtBuscarProducto_QuerySubmitted"
-                                    SuggestionChosen="txtBuscarProducto_SuggestionChosen"
-                                    Width="300"
-                                    PlaceholderText="Buscar producto por código o nombre..."
-                                    QueryIcon="Find"
-                                    UpdateTextOnSelect="False">
+                                        x:Name="txtBuscarProducto" 
+                                        Text="{Binding TextoProducto, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{Binding Productos}"
+                                        TextChanged="txtBuscarProducto_TextChanged"
+                                        QuerySubmitted="txtBuscarProducto_QuerySubmitted"
+                                        Width="300"
+                                        PlaceholderText="Buscar producto por código o nombre..."
+                                        QueryIcon="Find"
+                                        UpdateTextOnSelect="False">
 
 
                             <AutoSuggestBox.ItemTemplate>
@@ -75,7 +75,7 @@
                                         <TextBlock Text="{Binding Nombre}"/>
                                         <TextBlock>
                                         <Run Text="$"/>
-                                        <Run Text="{Binding PrecioVenta, Converter={StaticResource NumeroConverterHelper}}"/>
+                                        <Run Text="{Binding PrecioVenta}"/>
                                         </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
@@ -92,7 +92,7 @@
                     CornerRadius="10"
                     Padding="15"
                     Grid.Column="1"
-                    Width="auto">
+                    Width="600">
                 
                     <Grid ColumnSpacing="10">
                         <Grid.ColumnDefinitions>
@@ -106,6 +106,8 @@
 
                             <AutoSuggestBox Grid.Column="0"
                                             x:Name="txtBuscarCliente" 
+                                            Text="{Binding TextoCliente, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            ItemsSource="{Binding Clientes}"
                                             TextChanged="txtBuscarCliente_TextChanged"
                                             QuerySubmitted="txtBuscarCliente_QuerySubmitted"
                                             SuggestionChosen="txtBuscarCliente_SuggestionChosen"
@@ -119,8 +121,8 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Spacing="10">
                                             <TextBlock Text="{Binding Codigo}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="{Binding Nombre}"/>
-                                        </StackPanel>
+                                                <TextBlock Text="{Binding Nombre}"/>
+                                            </StackPanel>
                                     </DataTemplate>
                                 </AutoSuggestBox.ItemTemplate>
                             </AutoSuggestBox>
@@ -130,19 +132,20 @@
                                 BorderThickness="1"
                                 BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                                 CornerRadius="10"
-                                Padding="15">
+                                Padding="15"
+                                Width="250">
                                 <controls:WrapPanel Orientation="Vertical" >
                                     <TextBlock>
-                                <Run Text="Codigo"/>
-                                <Run x:Name="txtCodigoCliente"/>
+                                        <Run Text="Cliente: "/>
+                                        <Run Text="{Binding ClienteSeleccionado.Codigo}"/>
                                     </TextBlock>
                                     <TextBlock>
-                                <Run Text="Nombre"/>
-                                <Run x:Name="txtNombreCliente"/>
+                                        <Run Text="Nombre: "/>     
+                                        <Run Text="{Binding ClienteSeleccionado.Nombre}"/>
                                     </TextBlock>
                                     <TextBlock>
-                                <Run Text="Documento"/>
-                                <Run x:Name="txtDocumentoCliente"/>
+                                        <Run Text="Documento: "/>
+                                        <Run Text="{Binding ClienteSeleccionado.Documento}"/>
                                     </TextBlock>
                                 </controls:WrapPanel>
                         </Border>
@@ -160,7 +163,9 @@
                 <controls:WrapPanel Orientation="Vertical" VerticalSpacing="15" >
 
                     <TextBlock Text="Metodo de Pago" FontWeight="Bold"  FontFamily="Segoe UI"/>
-                    <ComboBox x:Name="cmbMetodoPago"/>
+                            <ComboBox ItemsSource="{Binding MetodosPago}"
+                                      SelectedItem="{Binding MetodoPagoSeleccionado, Mode=TwoWay}"
+                                      DisplayMemberPath="Nombre" />
 
                 </controls:WrapPanel>
             </Border>
@@ -202,7 +207,7 @@
             </Grid>
 
 
-        <!--  DataGrid como carrito -->
+          <!--DataGrid como carrito--> 
         <Border Grid.Row="2">
             
             <controls:DataGrid Grid.Row="2" 
@@ -214,7 +219,7 @@
                                ColumnHeaderHeight="40"
                                FontSize="14"
                                IsReadOnly="True"
-                               ItemsSource="{x:Bind _ventaViewModel.Carrito, Mode=OneWay}">
+                               ItemsSource="{Binding Carrito, Mode=OneWay}">
 
                         <controls:DataGrid.Columns>
                     <controls:DataGridTextColumn Header="Codigo" Binding="{Binding Codigo}" Width="*"/>
@@ -227,11 +232,11 @@
                         <controls:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <Button Click="BtnEliminarProducto_Click"
+                                    <!--<Button Click="BtnEliminarProducto_Click"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
                                         <FontIcon Glyph="&#xE74D;"/>
-                                    </Button>
+                                    </Button>-->
                                 </Grid>
                             </DataTemplate>
                         </controls:DataGridTemplateColumn.CellTemplate>
@@ -240,7 +245,7 @@
 
             </controls:DataGrid>
         </Border>
-        <!-- 4️⃣ Totales y botones -->
+         <!--4️⃣ Totales y botones--> 
         <Border Grid.Row="3">
             <Grid Grid.Row="3" ColumnSpacing="20">
                 <Grid.ColumnDefinitions>
@@ -259,23 +264,25 @@
 
                         <TextBlock>
                                   <Run Text="SubTotal: " FontSize="20" FontWeight="SemiBold" />
-                                  <Run Text="{x:Bind _ventaViewModel.SubtotalConDescuento, Mode=OneWay, Converter={StaticResource NumeroConverterHelper}}" FontSize="20" FontWeight="SemiBold"/>
-                        </TextBlock>
+                                  <Run Text="{Binding SubtotalConDescuento, Converter={StaticResource NumeroConverterHelper}}"/>
+
+                                </TextBlock>
 
                         <TextBlock>
                                   <Run Text="Impuesto: " FontSize="20" FontWeight="SemiBold" />
-                                  <Run Text="{x:Bind _ventaViewModel.Impuesto, Mode=OneWay, Converter={StaticResource NumeroConverterHelper}}" FontSize="20" FontWeight="SemiBold"/>
-                        </TextBlock>
+                                  <Run Text="{Binding Impuesto, Converter={StaticResource NumeroConverterHelper}}"/>
+
+                                </TextBlock>
 
                         
 
                         <TextBlock>
                                   <Run Text="Total: " FontSize="24" FontWeight="Bold" />
-                                  <Run Text="{x:Bind _ventaViewModel.Total, Mode=OneWay, Converter={StaticResource NumeroConverterHelper}}"  FontSize="24" FontWeight="SemiBold"/>
+                                  <Run Text="{Binding Total, Converter={StaticResource NumeroConverterHelper}}"  FontSize="24" FontWeight="SemiBold"/>
                         </TextBlock>
                                 <TextBlock>
                                   <Run Text="Descuento: " FontSize="20" FontWeight="SemiBold" />
-                                  <Run Text="{x:Bind _ventaViewModel.DescuentoMonto, Mode=OneWay, Converter={StaticResource NumeroConverterHelper}}" FontSize="20" FontWeight="SemiBold"/>
+                                  <Run Text="{Binding DescuentoMonto, Converter={StaticResource NumeroConverterHelper}}" FontSize="20" FontWeight="SemiBold"/>
                                 </TextBlock>
 
                             </StackPanel>
@@ -290,7 +297,6 @@
                     <StackPanel Orientation="Horizontal" Spacing="15">
                         <TextBlock Text="Aplicar Descuento" FontWeight="Bold"  FontFamily="Segoe UI"/>
                         <ComboBox x:Name="cmbDescuento" 
-                                  SelectionChanged="cmbDescuento_SelectionChanged" 
                                   Width="100"
                                   SelectedValuePath="Tag"
                                   SelectedIndex="0">
@@ -303,7 +309,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Botones de acción -->
+                 <!--Botones de acción--> 
                 <Border Grid.Column="2"
                         BorderThickness="1"
                     BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
@@ -311,11 +317,11 @@
                     Padding="15"
                     >
                             <StackPanel Orientation="Vertical" Spacing="10" HorizontalAlignment="Right">
-                                <Button Content="Generar Factura" Click="BtnGenerarFactura_Click" Background="#FF2D89EF" Foreground="White"/>
-                                <Button Content="Limpiar Pantalla" Click="BtnLimpiar_Click"/>
-                                <Button Content="Cobrar" Click="Cobrar_Click"/>
-                                <Button Content="Abrir Turno" Click="BtnAbrirTurno_Click"/>
-                                <Button Content="Cerrar Turno" Click="BtnCerrarTurno_Click"/>
+                                
+                                <Button Content="Limpiar Pantalla" Command="{Binding LimpiarCommand}"/>
+                                <Button Content="Cobrar" Command="{Binding CobrarCommand}"/>
+                                <Button Content="Abrir Turno" Command="{Binding AbrirTurnoCommand}"/>
+                                <Button Content="Cerrar Turno" Command="{Binding CerrarTurnoCommand}"/>
                             </StackPanel>
                 </Border>
             </Grid>
