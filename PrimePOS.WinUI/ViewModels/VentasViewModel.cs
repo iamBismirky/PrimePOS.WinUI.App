@@ -21,6 +21,7 @@ public partial class VentaViewModel : ObservableObject
     private readonly ProductoApiService _productoApi;
     private readonly ClienteApiService _clienteApi;
     private readonly MetodoPagoApiService _metodoPagoApi;
+    private readonly CajaApiService _cajaApi;
     private readonly TurnoApiService _turnoApi;
     private readonly VentaApiService _ventaApi;
     private readonly FacturaApiService _facturaApi;
@@ -33,6 +34,7 @@ public partial class VentaViewModel : ObservableObject
         ProductoApiService productoApi,
         ClienteApiService clienteApi,
         MetodoPagoApiService metodoPagoApi,
+        CajaApiService cajaApi,
         TurnoApiService turnoApi,
         VentaApiService ventaApi,
         FacturaApiService facturaApi,
@@ -42,6 +44,7 @@ public partial class VentaViewModel : ObservableObject
         _productoApi = productoApi;
         _clienteApi = clienteApi;
         _metodoPagoApi = metodoPagoApi;
+        _cajaApi = cajaApi;
         _turnoApi = turnoApi;
         _ventaApi = ventaApi;
         _facturaApi = facturaApi;
@@ -65,6 +68,7 @@ public partial class VentaViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<ProductoDto> productos = new();
     [ObservableProperty] private ObservableCollection<ClienteDto> clientes = new();
 
+
     [ObservableProperty] private ObservableCollection<MetodoPagoDto> metodosPago = new();
     [ObservableProperty] private MetodoPagoDto? metodoPagoSeleccionado;
 
@@ -73,6 +77,7 @@ public partial class VentaViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<CarritoItemViewModel> carrito = new();
 
     [ObservableProperty] private decimal descuentoPorcentaje;
+    [ObservableProperty] private decimal descuentoSeleccionado;
 
     // =========================
     // 🔹 TOTALES
@@ -83,7 +88,13 @@ public partial class VentaViewModel : ObservableObject
     public decimal SubtotalConDescuento => Subtotal - DescuentoMonto;
     public decimal Impuesto => SubtotalConDescuento * 0.18m;
     public decimal Total => Subtotal + Impuesto - DescuentoMonto;
-
+    public ObservableCollection<Decimal> Descuentos { get; } = new()
+    { 0,5,10,15,20,25,30};
+    partial void OnDescuentoSeleccionadoChanged(decimal value)
+    {
+        DescuentoPorcentaje = value;
+        NotificarTotales();
+    }
     partial void OnDescuentoPorcentajeChanged(decimal value)
     {
         NotificarTotales();
@@ -115,7 +126,7 @@ public partial class VentaViewModel : ObservableObject
 
     private async Task VerificarTurnoAsync()
     {
-        var res = await _turnoApi.ObtenerTurnoAbiertoAsync();
+        var res = await _turnoApi.ObtenerTurnoActivoAsync(_sesion.CajaId);
 
         if (res.Success && res.Data != null)
         {
@@ -171,16 +182,15 @@ public partial class VentaViewModel : ObservableObject
 
             var res = await _productoApi.BuscarProductosAsync(TextoProducto);
 
-            // 🔥 patrón correcto con ApiResponse
+            // patrón correcto con ApiResponse
             if (!res.Success)
             {
                 _notify.Warning(res.Message);
-                System.Diagnostics.Debug.WriteLine(res.Message);
 
                 return;
             }
 
-            // 🔹 evitar null
+            // evitar null
             Productos = new ObservableCollection<ProductoDto>(
                 res.Data ?? new List<ProductoDto>()
             );
@@ -273,7 +283,23 @@ public partial class VentaViewModel : ObservableObject
     // =========================
 
     [RelayCommand]
-    private void Cobrar()
+    private async Task AbrirTurnoAsync()
+    {
+        var vm = new AbrirTurnoViewModel(
+            _cajaApi,
+            _turnoApi,
+            _notify,
+            _sesion
+        );
+
+        await vm.InicializarAsync();
+
+        vm.OnCerrar += () => CerrarOverlay?.Invoke();
+
+        MostrarOverlay?.Invoke(vm);
+    }
+    [RelayCommand]
+    private async Task CobrarAsync()
     {
         if (!Carrito.Any())
         {

@@ -49,27 +49,14 @@ public class TurnoApiService : BaseApiService
         return SendAsync<int>(request);
     }
 
-    // 🔹 TURNOS POR CAJA
-    public Task<ApiResponse<object>> ObtenerPorCajaAsync(int cajaId)
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"api/turno/por-caja/{cajaId}");
-        return SendAsync<object>(request);
-    }
 
-    // 🔹 TURNO ABIERTO
-    public Task<ApiResponse<TurnoDto?>> ObtenerTurnoAbiertoAsync()
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, "api/turno/abierto");
-        return SendAsync<TurnoDto?>(request);
-    }
-
-    // 🔹 TURNO ABIERTO POR CAJA
-    public Task<ApiResponse<TurnoDto?>> ObtenerTurnoAbiertoPorCajaAsync(int cajaId)
+    public Task<ApiResponse<TurnoDto>> ObtenerTurnoActivoAsync(int cajaId)
     {
         var request = new HttpRequestMessage(
             HttpMethod.Get,
-            $"api/turno/abierto-por-caja?cajaId={cajaId}");
+            $"api/turnos/activo/{cajaId}"
+        );
 
-        return SendAsync<TurnoDto?>(request);
+        return SendAsync<TurnoDto>(request);
     }
 }

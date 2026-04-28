@@ -70,40 +70,22 @@ public class TurnosController : ControllerBase
         });
     }
 
-    // 🔹 TURNOS POR CAJA
-    [HttpGet("por-caja/{cajaId}")]
-    public async Task<IActionResult> ObtenerTurnosPorCajaAsync(int cajaId)
-    {
-        var turnos = await _service.ObtenerTurnosPorCajaAsync(cajaId);
-
-        return Ok(new ApiResponse<object>
-        {
-            Success = true,
-            Data = turnos
-        });
-    }
-
-    // 🔹 TURNO ABIERTO (USUARIO)
-    [HttpGet("abierto")]
-    public async Task<IActionResult> ObtenerTurnoAbiertoAsync()
-    {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-        var turno = await _service.ObtenerTurnoAbiertoAsync(userId);
-
-        return Ok(new ApiResponse<TurnoDto?>
-        {
-            Success = true,
-            Data = turno
-        });
-    }
 
     // 🔹 TURNO ABIERTO (CAJA + USUARIO)
-    [HttpGet("abierto-por-caja")]
-    public async Task<IActionResult> ObtenerTurnoAbiertoPorCajaAsync([FromQuery] int cajaId)
+    [HttpGet("activo/{cajaId}")]
+    public async Task<IActionResult> ObtenerTurnoActivo(int cajaId)
     {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            return Unauthorized(new ApiResponse<object>
+            {
+                Success = false,
+                Message = "Usuario no autenticado"
+            });
+        }
 
+        var userId = int.Parse(userIdClaim.Value);
         var turno = await _service.ObtenerTurnoAbiertoAsync(cajaId, userId);
 
         return Ok(new ApiResponse<TurnoDto?>

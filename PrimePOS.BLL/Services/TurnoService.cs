@@ -160,24 +160,7 @@ public class TurnoService : ITurnoService
 
         return (ultimoTurno?.NumeroTurno ?? 0) + 1;
     }
-    public async Task<TurnoDto?> ObtenerTurnoAbiertoAsync(int usuarioId)
-    {
-        var turno = await _turnoRepository.ObtenerTurnoAbiertoPorUsuarioAsync(usuarioId);
-        if (turno == null) return null;
 
-        return new TurnoDto
-        {
-            TurnoId = turno.TurnoId,
-            CajaId = turno.CajaId,
-            UsuarioId = turno.UsuarioId,
-            FechaApertura = turno.FechaApertura,
-            NumeroTurno = turno.NumeroTurno,
-            MontoInicial = turno.MontoInicial,
-            FechaCierre = turno.FechaCierre,
-            EstaAbierto = turno.EstaAbierto
-
-        };
-    }
     public async Task<TurnoDto?> ObtenerTurnoAbiertoAsync(int cajaId, int usuarioId)
     {
         var turno = await _turnoRepository.ObtenerTurnoAbiertoAsync(cajaId, usuarioId);

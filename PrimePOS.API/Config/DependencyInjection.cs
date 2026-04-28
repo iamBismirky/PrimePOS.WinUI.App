@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PrimePOS.API.Extensions;
 using PrimePOS.API.Security;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.BLL.Services;
@@ -50,7 +51,9 @@ namespace PrimePOS.API.Config
             //jwt
             services.AddSingleton<JwtHelper>();
 
-
+            // 🔐 AUTH + SWAGGER + EXTRA CONFIG
+            services.AddJwtAuthentication(config);
+            services.AddSwaggerConfig();
             return services;
         }
     }

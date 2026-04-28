@@ -1,5 +1,4 @@
 ﻿using PrimePOS.Contracts.DTOs.Turno;
-using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Interfaces
 {
@@ -10,8 +9,6 @@ namespace PrimePOS.BLL.Interfaces
         Task<TurnoDto> CrearTurnoDtoAsync(CrearTurnoDto dto);
         Task<CierreTurnoDto> ObtenerResumenTurno(int turnoId);
         Task<int> ObtenerSiguienteTurno();
-        Task<TurnoDto?> ObtenerTurnoAbiertoAsync(int usuarioId);
         Task<TurnoDto?> ObtenerTurnoAbiertoAsync(int cajaId, int usuarioId);
-        Task<List<Turno>> ObtenerTurnosPorCajaAsync(int cajaId);
     }
 }

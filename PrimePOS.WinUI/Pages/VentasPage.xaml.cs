@@ -168,4 +168,13 @@ public sealed partial class VentasPage : Page
             _vm.SeleccionarCliente(cliente);
         }
     }
+    private void Eliminar_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn &&
+        btn.DataContext is CarritoItemViewModel item &&
+        DataContext is VentaViewModel vm)
+        {
+            vm.EliminarProductoCommand.Execute(item);
+        }
+    }
 }
