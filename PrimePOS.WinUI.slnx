@@ -4,6 +4,16 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Screenshots/">
+    <File Path="../../Users/Bismi/OneDrive/Imágenes/Screenshots/Administracion.png" />
+    <File Path="../../Users/Bismi/OneDrive/Imágenes/Screenshots/Dashboard.png" />
+    <File Path="../../Users/Bismi/OneDrive/Imágenes/Screenshots/Login.png" />
+    <File Path="../../Users/Bismi/OneDrive/Imágenes/Screenshots/Perfil.png" />
+    <File Path="../../Users/Bismi/OneDrive/Imágenes/Screenshots/Ventas.png" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
