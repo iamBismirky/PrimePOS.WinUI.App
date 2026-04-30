@@ -17,7 +17,7 @@
             <!-- Other app resources here -->
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
             <helpers:NumeroConverterHelper x:Key="NumeroConverterHelper"/>
-
+            <helpers:DecimalToDoubleConverter x:Key="DecimalToDouble"/>
             <!-- Formatter global -->
             <globalization:DecimalFormatter 
             x:Key="DecimalFormatter"

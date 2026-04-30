@@ -14,7 +14,7 @@ public class JwtHelper
         _config = config;
     }
 
-    public string GenerarToken(int usuarioId, string username, string rol)
+    public string GenerarToken(int usuarioId, string username, string nombre, string rol)
     {
         var jwt = _config.GetSection("Jwt");
 
@@ -27,8 +27,10 @@ public class JwtHelper
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, usuarioId.ToString()),
-            new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.Role, rol)
+            new Claim(ClaimTypes.Name, nombre),
+            new Claim(ClaimTypes.Role, rol),
+
+            new Claim("username", username)
         };
 
         var expireMinutesString = jwt["ExpireMinutes"] ?? throw new Exception("Jwt:ExpireMinutes no configurado");

@@ -119,6 +119,17 @@ public sealed partial class VentasPage : Page
 
                     return view;
                 }
+            case FacturaViewModel factura:
+                {
+                    var view = new FacturaOverlay
+                    {
+                        DataContext = factura
+                    };
+
+                    factura.OnCerrar += CerrarOverlay;
+
+                    return view;
+                }
         }
 
         throw new Exception("No hay vista para este ViewModel");

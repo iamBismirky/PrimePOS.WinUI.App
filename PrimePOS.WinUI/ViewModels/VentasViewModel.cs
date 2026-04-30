@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.Contracts.DTOs.MetodoPago;
 using PrimePOS.Contracts.DTOs.Producto;
@@ -10,7 +11,6 @@ using PrimePOS.WinUI.Services.Api;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,7 +27,6 @@ public partial class VentaViewModel : ObservableObject
     private readonly FacturaApiService _facturaApi;
     private readonly NotificationService _notify;
     private readonly AppSesionViewModel _sesion;
-
     public AppSesionViewModel AppSesion => _sesion;
 
     public VentaViewModel(
@@ -78,6 +77,7 @@ public partial class VentaViewModel : ObservableObject
 
     [ObservableProperty] private decimal descuentoPorcentaje;
     [ObservableProperty] private decimal descuentoSeleccionado;
+    [ObservableProperty] public bool isLoading;
 
     // =========================
     // 🔹 TOTALES
@@ -314,36 +314,52 @@ public partial class VentaViewModel : ObservableObject
         }
 
         var vm = new CobrarViewModel(Total);
-
-        vm.Cancelado += () => CerrarOverlay?.Invoke();
-
-        vm.Confirmado += async (cobro) =>
+        MostrarOverlay?.Invoke(vm);
+        vm.ConfirmadoAsync += async (cobro) =>
         {
-            await FacturarDesdeCobroAsync(cobro.Efectivo, cobro.Cambio);
+            var result = await FacturarDesdeCobroAsync(cobro.Efectivo);
+
+            if (result == null || !result.Success || result.Data == null)
+            {
+                _notify.Warning("Error al procesar la factura");
+                return;
+            }
+
+
+            // cerrar cobrar
             CerrarOverlay?.Invoke();
+
+            // abrir factura
+            MostrarOverlay?.Invoke(new FacturaViewModel(result.Data.UrlPdf));
         };
 
-        MostrarOverlay?.Invoke(vm);
+
     }
 
     // =========================
     // 🧾 FACTURAR DESDE COBRO
     // =========================
 
-    public async Task FacturarDesdeCobroAsync(decimal efectivo, decimal cambio)
+    public async Task<ApiResponse<VentaResponseDto>?> FacturarDesdeCobroAsync(decimal efectivo)
     {
         try
         {
             if (MetodoPagoSeleccionado == null)
             {
                 _notify.Warning("Seleccione un método de pago");
-                return;
+                return null;
+            }
+
+            if (ClienteSeleccionado == null)
+            {
+                _notify.Warning("Seleccione un cliente");
+                return null;
             }
 
             var dto = new CrearVentaDto
             {
-                //ClienteId = ClienteSeleccionado?.ClienteId,
-                //ClienteNombre = ClienteSeleccionado?.Nombre,
+                ClienteId = ClienteSeleccionado.ClienteId,
+                ClienteNombre = ClienteSeleccionado.Nombre,
                 MetodoPagoId = MetodoPagoSeleccionado.MetodoPagoId,
                 TurnoId = _sesion.TurnoActual!.TurnoId,
 
@@ -352,7 +368,6 @@ public partial class VentaViewModel : ObservableObject
                 Descuento = DescuentoMonto,
                 Total = Total,
                 Efectivo = efectivo,
-                Cambio = cambio,
 
                 Items = Carrito.Select(x => new VentaDetalleDto
                 {
@@ -364,39 +379,23 @@ public partial class VentaViewModel : ObservableObject
                 }).ToList()
             };
 
-            var resVenta = await _ventaApi.CrearVentaAsync(dto);
+            var result = await _ventaApi.CrearVentaAsync(dto);
 
-            if (!resVenta.Success)
+            if (!result.Success)
             {
-                _notify.Error(resVenta.Message);
-                return;
+                _notify.Error(result.Message);
+                return result;
             }
-
-            var resFactura = await _facturaApi.GenerarFacturaAsync(resVenta.Data);
-
-            if (!resFactura.Success)
-            {
-                _notify.Error(resFactura.Message);
-                return;
-            }
-
-            //if (!string.IsNullOrEmpty(resFactura.Data.UrlPdf))
-            //{
-            //    Process.Start(new ProcessStartInfo
-            //    {
-            //        FileName = resFactura.Data.UrlPdf,
-            //        UseShellExecute = true
-            //    });
-            //}
 
             _notify.Success("Venta realizada correctamente");
-
             Limpiar();
+
+            return result;
         }
-        catch (Exception ex)
+        catch
         {
-            Debug.WriteLine(ex);
             _notify.Error("Error al procesar la venta");
+            return null;
         }
     }
 }

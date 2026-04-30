@@ -73,7 +73,7 @@ public partial class AbrirTurnoViewModel : ObservableObject
 
         var res = await _turnoApi.AbrirTurnoAsync(dto);
 
-        if (!res.Success)
+        if (!res.Success || res.Data == null)
         {
             _notify.Error(res.Message);
             return;

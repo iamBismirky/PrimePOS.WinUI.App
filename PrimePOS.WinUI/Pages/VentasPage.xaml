@@ -331,10 +331,11 @@
         
     </Border>
         <Grid x:Name="OverlayContainer"
-              Background="#80000000"
               Visibility="Collapsed"
               HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch"/>
+              VerticalAlignment="Stretch"
+              Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+              Opacity="0.8"/>
         
         <ContentControl x:Name="OverlayContent"
                         HorizontalAlignment="Center"

@@ -5,8 +5,9 @@ namespace PrimePOS.BLL.Interfaces
 {
     public interface IFacturaService
     {
+        Task<(Factura factura, string pdfUrl)> GenerarFacturaDesdeVenta(int ventaId);
+
         Task AnularFactura(int facturaId);
-        Task<Factura> GenerarFacturaDesdeVenta(int ventaId);
         FacturaDto MapearFactura(Factura factura);
     }
 }

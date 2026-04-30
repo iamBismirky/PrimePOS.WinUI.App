@@ -15,14 +15,14 @@ public class VentaApiService : BaseApiService
     }
 
     // 🔹 CREAR VENTA
-    public Task<ApiResponse<int>> CrearVentaAsync(CrearVentaDto dto)
+    public Task<ApiResponse<VentaResponseDto>> CrearVentaAsync(CrearVentaDto dto)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "api/venta")
         {
             Content = JsonContent.Create(dto)
         };
 
-        return SendAsync<int>(request);
+        return SendAsync<VentaResponseDto>(request);
     }
 
     // 🔹 VENTAS POR TURNO

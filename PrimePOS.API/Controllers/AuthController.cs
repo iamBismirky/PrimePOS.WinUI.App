@@ -26,6 +26,7 @@ public class AuthController : ControllerBase
         var token = _jwtHelper.GenerarToken(
             usuario.UsuarioId,
             usuario.Username,
+            usuario.UsuarioNombre,
             usuario.RolNombre ?? ""
         );
 

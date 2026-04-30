@@ -23,15 +23,15 @@ public class VentaController : ControllerBase
     public async Task<IActionResult> CrearVentaAsync([FromBody] CrearVentaDto dto)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var nombre = User.Identity!.Name;
+        var ventaResponse = await _service.CrearVentaAsync(userId, nombre!, dto);
 
-        dto.UsuarioId = userId;
-
-        var ventaId = await _service.CrearVentaAsync(dto);
-
-        return Ok(new ApiResponse<int>
+        var urlPdf = $"{Request.Scheme}://{Request.Host}/facturas/{ventaResponse.FileName}";
+        ventaResponse.UrlPdf = urlPdf;
+        return Ok(new ApiResponse<VentaResponseDto>
         {
             Success = true,
-            Data = ventaId,
+            Data = ventaResponse,
             Message = "Venta registrada correctamente"
         });
     }

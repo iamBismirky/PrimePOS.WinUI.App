@@ -4,7 +4,7 @@ namespace PrimePOS.BLL.Interfaces
 {
     public interface IVentaService
     {
-        Task<int> CrearVentaAsync(CrearVentaDto dto);
+        Task<VentaResponseDto> CrearVentaAsync(int userId, string nombre, CrearVentaDto dto);
         Task<List<VentaDto>> ObtenerVentasDelDiaAsync();
         Task<List<VentaDto>> ObtenerVentasPorTurnoAsync(int turnoId);
     }

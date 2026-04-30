@@ -1,5 +1,6 @@
 using PrimePOS.API.Config;
 using PrimePOS.API.Middleware;
+using QuestPDF.Infrastructure;
 
 namespace PrimePOS.API;
 
@@ -7,6 +8,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        QuestPDF.Settings.License = LicenseType.Community;
         var builder = WebApplication.CreateBuilder(args);
 
         // 🔧 SERVICES (todo centralizado aquí)
@@ -37,6 +39,7 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
+        app.UseStaticFiles();
 
         app.Run();
     }
