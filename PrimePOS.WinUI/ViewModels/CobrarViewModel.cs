@@ -1,80 +1,84 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.UI;
-using Microsoft.UI.Xaml.Media;
+using CommunityToolkit.Mvvm.Input;
+using PrimePOS.Contracts.DTOs.Venta;
+using PrimePOS.WinUI.Helpers;
 using System;
 using System.Threading.Tasks;
-namespace PrimePOS.WinUI.ViewModels
+
+namespace PrimePOS.WinUI.ViewModels;
+
+public partial class CobrarViewModel : ObservableObject
 {
-    public class CobrarViewModel : ObservableObject
+    public decimal Total { get; }
+
+    public CobrarViewModel(decimal total)
     {
-        public decimal Total { get; set; }
-        public CobrarViewModel(decimal total)
+        Total = total;
+        EfectivoTexto = MoneyHelper.ToString(0);
+    }
+
+    // 🔹 INPUT
+    [ObservableProperty] private decimal efectivo;
+    [ObservableProperty] private bool isLoading;
+    private string efectivoTexto = "";
+    public string EfectivoTexto
+    {
+        get => efectivoTexto;
+        set
         {
-            Total = total;
-            EfectivoTexto = "";
-        }
-        private string? _efectivoTexto;
-        public string? EfectivoTexto
-        {
-            get => _efectivoTexto;
-            set
+            if (SetProperty(ref efectivoTexto, value))
             {
-                if (SetProperty(ref _efectivoTexto, value))
-                {
-
-
-                    OnPropertyChanged(nameof(Efectivo));
-                    OnPropertyChanged(nameof(Cambio));
-                    OnPropertyChanged(nameof(Falta));
-                    OnPropertyChanged(nameof(EsPagoValido));
-                }
+                Efectivo = MoneyHelper.ToDecimal(value);
             }
         }
+    }
+    // 🔹 OUTPUT
+    public decimal Cambio => Efectivo - Total;
 
-        public decimal Efectivo
+    partial void OnEfectivoChanged(decimal value)
+    {
+        OnPropertyChanged(nameof(Cambio));
+    }
+
+    // 🔹 EVENTOS
+    public Func<CobroResult, Task>? ConfirmadoAsync;
+    public event Action? Cancelado;
+
+    // 🔹 COMANDOS
+
+
+    [RelayCommand]
+    private async Task ConfirmarAsync()
+    {
+        if (Efectivo < Total)
+            return;
+
+        if (ConfirmadoAsync == null)
+            return;
+
+        try
         {
-            get
+            IsLoading = true;
+
+            await ConfirmadoAsync.Invoke(new CobroResult
             {
-                if (decimal.TryParse(EfectivoTexto, out var monto))
-                    return monto;
-
-                return -1;
-            }
+                Efectivo = Efectivo,
+                Cambio = Cambio
+            });
         }
-        public decimal Cambio => (decimal)Efectivo >= Total ? (decimal)Efectivo - Total : 0;
-
-        public decimal Falta => (decimal)Efectivo < Total ? Total - (decimal)Efectivo : 0;
-
-        public bool EsPagoValido => (decimal)Efectivo >= Total;
-
-        public event Func<CobrarViewModel, Task>? Confirmado;
-
-        public async Task ConfirmarAsync()
+        finally
         {
-            //if (Efectivo == 0)
-            //    throw new Exception("Ingrese un monto.");
-
-            if (!EsPagoValido)
-                throw new Exception("El monto es insuficiente.");
-
-            if (Confirmado != null)
-                await Confirmado.Invoke(this);
+            IsLoading = false;
         }
-        public SolidColorBrush FaltaColor
-        {
-            get
-            {
-                if (Falta > 0)
-                    return new SolidColorBrush(Colors.Red);
+    }
 
-                if (Falta == 0)
-                    return new SolidColorBrush(Colors.Green);
-
-                return new SolidColorBrush(Colors.Gray);
-            }
-        }
-
-
-
+    [RelayCommand]
+    private void Cancelar()
+    {
+        Cancelado?.Invoke();
+    }
+    public void FormatearEfectivo()
+    {
+        EfectivoTexto = MoneyHelper.ToString(Efectivo);
     }
 }

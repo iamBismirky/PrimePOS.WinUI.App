@@ -1,12 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PrimePOS.BLL.DTOs.Caja;
-using PrimePOS.BLL.Services;
-using PrimePOS.WinUI.Helpers;
-using System;
-using System.Threading.Tasks;
-
+using PrimePOS.Contracts.DTOs.Caja;
+using PrimePOS.WinUI.ViewModels;
 
 
 namespace PrimePOS.WinUI.Pages
@@ -14,119 +10,41 @@ namespace PrimePOS.WinUI.Pages
 
     public sealed partial class CajaPage : Page
     {
-        private readonly CajaService _cajaService;
-        private int _cajaIdSeleccionado = 0;
+        private readonly CajaViewModel ViewModel;
         public CajaPage()
         {
             InitializeComponent();
+            ViewModel = App.AppServices.GetRequiredService<CajaViewModel>();
 
-            _cajaService = App.Services.GetRequiredService<CajaService>();
+            this.DataContext = ViewModel;
+
         }
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            await ListarCajasAsync();
-        }
-        private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
-        {
-            LimpiarCampos();
+            await ViewModel.CargarCommand.ExecuteAsync(null);
         }
 
-        private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
+        private void Buscar_TextChanged(object sender, TextChangedEventArgs e)
         {
-            try
+            if (DataContext is CajaViewModel vm)
             {
-
-                var dto = new CajaDto
-                {
-                    CajaId = _cajaIdSeleccionado
-
-                };
-
-                await _cajaService.EliminarCajaAsync(dto);
-                await ListarCajasAsync();
-                LimpiarCampos();
-
-
-            }
-            catch (Exception ex)
-            {
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-            }
-        }
-
-        private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-
-                var dto = new CajaDto
-                {
-                    CajaId = _cajaIdSeleccionado,
-                    Nombre = txtNombre.Text,
-                    Estado = (bool)tsEstado.IsOn
-
-                };
-
-                await _cajaService.ActualizarCajaAsync(dto);
-                await ListarCajasAsync();
-                LimpiarCampos();
-
-
-            }
-            catch (Exception ex)
-            {
-
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-            }
-        }
-
-        private async void BtnCrear_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var dto = new CajaDto
-                {
-                    Nombre = txtNombre.Text.Trim(),
-                    Estado = tsEstado.IsOn
-                };
-
-                await _cajaService.CrearCajaAsync(dto);
-                await ListarCajasAsync();
-                LimpiarCampos();
-            }
-            catch (Exception ex)
-            {
-
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-
-            }
-        }
-
-        private void dgCajas_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dgCajas.SelectedItem is CajaDto caja)
-            {
-                _cajaIdSeleccionado = caja.CajaId;
-                txtNombre.Text = caja.Nombre;
-                tsEstado.IsOn = caja.Estado;
+                vm.FiltrarCommand.Execute(null);
             }
 
         }
-
-        private async Task ListarCajasAsync()
+        private void Editar_Click(object sender, RoutedEventArgs e)
         {
-            var lista = await _cajaService.ListarCajasAsync();
-
-            dgCajas.ItemsSource = lista;
+            if (DataContext is CajaViewModel vm && sender is Button btn && btn.DataContext is CajaDto caja)
+            {
+                vm.EditarCommand.Execute(caja);
+            }
         }
-        private void LimpiarCampos()
+        private void Desactivar_Click(object sender, RoutedEventArgs e)
         {
-            txtNombre.Text = "";
-            tsEstado.IsOn = true;
-            _cajaIdSeleccionado = 0;
+            if (DataContext is CajaViewModel vm && sender is Button btn && btn.DataContext is CajaDto caja)
+            {
+                vm.DesactivarCommand.Execute(caja);
+            }
         }
     }
 }

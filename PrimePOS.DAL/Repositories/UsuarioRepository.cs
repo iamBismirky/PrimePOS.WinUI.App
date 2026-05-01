@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.DAL.Repositories;
 
-public class UsuarioRepository
+public class UsuarioRepository : IUsuarioRepository
 {
     private readonly AppDbContext _context;
 
@@ -37,7 +38,7 @@ public class UsuarioRepository
             .FirstOrDefaultAsync(u => u.UsuarioId == id);
     }
 
-    public async Task<List<Usuario>> ListarUsuariosAsync()
+    public async Task<List<Usuario>> ObtenerTodosAsync()
     {
         return await _context.Usuarios
             .Include(u => u.Rol)
@@ -58,7 +59,7 @@ public class UsuarioRepository
             .FirstOrDefaultAsync(u => u.Username == username);
     }
 
-  
+
 
     public async Task GuardarCambiosAsync()
     {

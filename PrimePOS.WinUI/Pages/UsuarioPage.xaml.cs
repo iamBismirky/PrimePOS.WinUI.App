@@ -1,201 +1,50 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
-using PrimePOS.BLL.DTOs.Usuario;
-using PrimePOS.BLL.Services;
-using PrimePOS.WinUI.Helpers;
+using PrimePOS.Contracts.DTOs.Usuario;
+using PrimePOS.WinUI.ViewModels;
 using System;
-using System.Threading.Tasks;
 
 
-namespace PrimePOS.WinUI.Pages;
-
-
-public sealed partial class UsuarioPage : Page
+namespace PrimePOS.WinUI.Pages
 {
-    private readonly UsuarioService _usuarioService;
-    private readonly RolService _rolService;
-    private int usuarioIdSeleccionado = 0;
-    public UsuarioPage()
-    {
-        InitializeComponent();
 
-        _usuarioService = App.Services.GetRequiredService<UsuarioService>();
-        _rolService = App.Services.GetRequiredService<RolService>();
-
-    }
-    public void btnCancelar_Click(object sender, RoutedEventArgs e)
+    public sealed partial class UsuarioPage : Page
     {
-        Frame.GoBack();
-    }
-    protected override async void OnNavigatedTo(NavigationEventArgs e)
-    {
-        base.OnNavigatedTo(e);
-
-        try
+        public UsuarioViewModel ViewModel;
+        public UsuarioPage()
         {
-            //Cargar listado de usuarios (DataGrid) y Roles (ComboBox)
-            await ListarRoles();
-            await ListarUsuarios();
+            InitializeComponent();
 
-            //Foco en el textBox Nombre
-            txtNombre.Focus(FocusState.Programmatic);
-
+            ViewModel = App.AppServices.GetRequiredService<UsuarioViewModel>();
+            DataContext = ViewModel;
         }
-        catch (Exception ex)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
+            await ViewModel.CargarUsuariosCommand.ExecuteAsync(null);
         }
-    }
 
-
-    public async void BtnCrear_Click(object sender, RoutedEventArgs e)
-    {
-        try
+        private void Buscar_TextChanged(object sender, TextChangedEventArgs e)
         {
-
-
-            var usuario = new CrearUsuarioDto
+            if (DataContext is UsuarioViewModel vm)
             {
-                Nombre = txtNombre.Text.Trim(),
-                Apellidos = txtApellidos.Text.Trim(),
-                Username = txtUsername.Text.Trim(),
-                Password = pwdPassword.Password.Trim(),
-                RolId = cmbRol.SelectedValue != null ? (int)cmbRol.SelectedValue : 0,
-                Estado = (bool)tsEstado.IsOn
-
-
-            };
-            await _usuarioService.CrearUsuarioAsync(usuario);
-
-            await ListarUsuarios();
-            LimpiarCampos();
-
-
-
+                vm.FiltrarCommand.Execute(null);
+            }
 
         }
-        catch (Exception ex)
+        private async void Editar_Click(object sender, RoutedEventArgs e)
         {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-        }
-    }
-    private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-
-
-            var usuario = new ActualizarUsuarioDto
+            if (DataContext is UsuarioViewModel vm && sender is Button btn && btn.DataContext is UsuarioDto usuario)
             {
-                UsuarioId = usuarioIdSeleccionado,
-                Nombre = txtNombre.Text.Trim(),
-                Apellidos = txtApellidos.Text.Trim(),
-                Username = txtUsername.Text.Trim(),
-                RolId = cmbRol.SelectedValue != null ? (int)cmbRol.SelectedValue : 0,
-                Estado = tsEstado.IsOn,
-
-            };
-            await _usuarioService.ActualizarUsuarioAsync(usuario);
-
-            await ListarUsuarios();
-            LimpiarCampos();
-
-        }
-        catch (Exception ex)
-        {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-        }
-
-    }
-    private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var usuario = new EliminarUsuarioDto
-            {
-                UsuarioId = usuarioIdSeleccionado,
-
-
-            };
-            await _usuarioService.EliminarUsuarioAsync(usuario);
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Exito", "Usuario eliminado correctamente");
-
-            await ListarUsuarios();
-            LimpiarCampos();
-
-        }
-        catch (Exception ex)
-        {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-        }
-
-    }
-    private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
-    {
-        LimpiarCampos();
-    }
-    private void dgUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (dgUsuarios.SelectedItem is UsuarioDto dto)
-        {
-            usuarioIdSeleccionado = dto.UsuarioId;
-            txtNombre.Text = dto.Nombre;
-            txtApellidos.Text = dto.Apellidos;
-            txtUsername.Text = dto.Username;
-            cmbRol.SelectedValue = dto.RolId;
-            tsEstado.IsOn = dto.Estado;
-
-        }
-        pwdPassword.IsEnabled = false;
-    }
-
-    private async Task ListarRoles()
-    {
-        try
-        {
-            var roles = await _rolService.ListarRolesAsync();
-            if (roles != null)
-            {
-
-                cmbRol.ItemsSource = roles;
-                cmbRol.DisplayMemberPath = "Nombre";
-                cmbRol.SelectedValuePath = "RolId";
+                vm.EditarCommand.Execute(usuario);
             }
         }
-        catch (Exception ex)
+        private void Desactivar_Click(object sender, RoutedEventArgs e)
         {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-
+            if (DataContext is UsuarioViewModel vm && sender is Button btn && btn.DataContext is UsuarioDto usuario)
+            {
+                vm.DesactivarCommand.Execute(usuario);
+            }
         }
     }
-    private async Task ListarUsuarios()
-    {
-        try
-        {
-            var lista = await _usuarioService.ListarUsuariosAsync();
-            dgUsuarios.ItemsSource = lista;
-        }
-        catch (Exception ex)
-        {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-        }
-    }
-    private void LimpiarCampos()
-    {
-        txtNombre.Text = "";
-        txtApellidos.Text = "";
-        txtUsername.Text = "";
-        pwdPassword.Password = "";
-        cmbRol.SelectedIndex = -1;
-        tsEstado.IsOn = true;
-        usuarioIdSeleccionado = 0;
-        pwdPassword.IsEnabled = true;
-    }
-
-
 }

@@ -4,8 +4,22 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Screenshots/">
+    <File Path="../../Users/Bismi/OneDrive/Imágenes/Screenshots/Administracion.png" />
+    <File Path="../../Users/Bismi/OneDrive/Imágenes/Screenshots/Dashboard.png" />
+    <File Path="../../Users/Bismi/OneDrive/Imágenes/Screenshots/Login.png" />
+    <File Path="../../Users/Bismi/OneDrive/Imágenes/Screenshots/Perfil.png" />
+    <File Path="../../Users/Bismi/OneDrive/Imágenes/Screenshots/Ventas.png" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Project Path="PrimePOS.API/PrimePOS.API.csproj" Id="00ee55d4-d185-44f2-a6f0-82f21bff5dc8" />
   <Project Path="PrimePOS.BLL/PrimePOS.BLL.csproj" />
+  <Project Path="PrimePOS.Contracts/PrimePOS.Contracts.csproj" Id="23fcbc85-09ae-4b2a-ad63-e51e89708a6c" />
   <Project Path="PrimePOS.DAL/PrimePOS.DAL.csproj" />
   <Project Path="PrimePOS.ENTITIES/PrimePOS.ENTITIES.csproj" />
   <Project Path="PrimePOS.WinUI/PrimePOS.WinUI.csproj">

@@ -1,30 +1,33 @@
-﻿using PrimePOS.BLL.DTOs.Venta;
-using PrimePOS.DAL.Repositories;
-using PrimePOS.DAL.UnitOfWork;
+﻿using PrimePOS.BLL.Exceptions;
+using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.DTOs.Venta;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services;
 
-public class VentaService
+public class VentaService : IVentaService
 {
-    private readonly VentaRepository _ventaRepository;
-    private readonly ProductoRepository _productoRepository;
-    private readonly UnitOfWork _unitOfWork;
-    public VentaService(VentaRepository ventaRepository, ProductoRepository productoRepository, UnitOfWork unitOfWork)
+    private readonly IVentaRepository _ventaRepository;
+    private readonly IProductoRepository _productoRepository;
+    private readonly IFacturaService _facturaService;
+    private readonly IUnitOfWork _unitOfWork;
+    public VentaService(IVentaRepository ventaRepository, IProductoRepository productoRepository, IFacturaService facturaService, IUnitOfWork unitOfWork)
     {
         _ventaRepository = ventaRepository;
         _productoRepository = productoRepository;
+        _facturaService = facturaService;
         _unitOfWork = unitOfWork;
     }
 
 
-    public async Task<int> CrearVentaAsync(CrearVentaDto dto)
+    public async Task<VentaResponseDto> CrearVentaAsync(int userId, string nombre, CrearVentaDto dto)
     {
         if (dto.TurnoId == 0)
-            throw new Exception("Turno inválido.");
+            throw new BusinessException("Turno inválido.", 400);
 
         if (!dto.Items.Any())
-            throw new Exception("La venta no tiene productos.");
+            throw new BusinessException("La venta no tiene productos.", 404);
 
 
         await _unitOfWork.BeginTransactionAsync();
@@ -36,8 +39,8 @@ public class VentaService
             var venta = new Venta
             {
                 TurnoId = dto.TurnoId,
-                UsuarioId = dto.UsuarioId,
-                UsuarioNombre = dto.UsuarioNombre,
+                UsuarioId = userId,
+                UsuarioNombre = nombre,
                 ClienteId = dto.ClienteId,
                 ClienteNombre = dto.ClienteNombre,
                 MetodoPagoId = dto.MetodoPagoId,
@@ -61,9 +64,9 @@ public class VentaService
                 var producto = await _productoRepository.ObtenerPorIdAsync(item.ProductoId);
 
                 if (producto == null)
-                    throw new Exception($"Producto no existe {producto!.Nombre}");
+                    throw new BusinessException($"Producto no existe {producto!.Nombre}", 404);
                 if (producto!.Existencia < item.Cantidad)
-                    throw new Exception($"Stock insuficiente {producto.Nombre}");
+                    throw new BusinessException($"Stock insuficiente {producto.Nombre}", 400);
 
                 producto.Existencia -= item.Cantidad;
                 _productoRepository.Actualizar(producto);
@@ -95,9 +98,18 @@ public class VentaService
             _ventaRepository.Crear(venta);
             await _ventaRepository.GuardarCambiosAsync();
 
+            var (factura, pdfUrl) = await _facturaService.GenerarFacturaDesdeVenta(venta.VentaId);
+
             await _unitOfWork.CommitAsync();
 
-            return venta.VentaId;
+            return new VentaResponseDto
+            {
+                VentaId = venta.VentaId,
+                NumeroFactura = factura.Numero,
+                FileName = $"factura-{factura.Numero}.pdf",
+                Fecha = venta.FechaRegistro,
+                Total = venta.Total
+            };
         }
         catch
         {

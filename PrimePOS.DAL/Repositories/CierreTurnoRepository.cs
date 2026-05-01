@@ -1,9 +1,10 @@
 ﻿using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.DAL.Repositories
 {
-    public class CierreTurnoRepository
+    public class CierreTurnoRepository : ICierreTurnoRepository
     {
         private readonly AppDbContext _context;
 
@@ -12,20 +13,15 @@ namespace PrimePOS.DAL.Repositories
             _context = context;
         }
 
-        public async Task AgregarAsync(CierreTurno cierreTurno)
+        public void Crear(CierreTurno cierreTurno)
         {
-            await _context.CierresTurno.AddAsync(cierreTurno);
+            _context.CierresTurno.Add(cierreTurno);
         }
 
         public void Actualizar(CierreTurno cierreTurn)
         {
             _context.CierresTurno.Update(cierreTurn);
         }
-
-
-
-
-
 
 
         public async Task GuardarCambiosAsync()

@@ -6,188 +6,187 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PrimePOS.WinUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    mc:Ignorable="d"
     xmlns:helpers="using:PrimePOS.WinUI.Helpers"
+    mc:Ignorable="d"
     Title="PrimePOS.WinUI">
 
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
-    
 
-        <Grid x:Name="RootGrid">
-            
+    <Grid x:Name="RootGrid">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <!-- TITLE BAR -->
-           
+        <!-- ===================== -->
+        <!-- TITLE BAR -->
+        <!-- ===================== -->
         <TitleBar
-                x:Name="titleBar"
-                Grid.Row="0"
-                BackRequested="TitleBar_BackRequested"
-                PaneToggleRequested="TitleBar_PaneToggleRequested"
-                IsBackButtonVisible="{x:Bind contentFrame.CanGoBack, Mode=OneWay}"
-                IsPaneToggleButtonVisible="True">
-                
+            x:Name="titleBar"
+            Grid.Row="0"
+            BackRequested="TitleBar_BackRequested"
+            PaneToggleRequested="TitleBar_PaneToggleRequested"
+            IsBackButtonVisible="{x:Bind contentFrame.CanGoBack, Mode=OneWay}"
+            IsPaneToggleButtonVisible="True"
+            >
 
-            <TitleBar.Content>
+            <!-- ===================== -->
+            <!-- IZQUIERDA -->
+            <!-- ===================== -->
+            <TitleBar.LeftHeader>
 
-                <Grid HorizontalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal"
+                    Spacing="10"
+                    VerticalAlignment="Center">
 
-                    <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                    <Image Source="Assets/PrimePOS.png"
+                   Width="26"
+                   Height="26"/>
 
-                            <!-- IZQUIERDA (Nombre App) -->
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="10"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Left"
-                                        Margin="-10,0,0,0">
-                            <Image
-                                         Source="Assets/PrimePOS.png"
-                                         Width="26"
-                                         Height="26"
-                                         VerticalAlignment="Center"/>
-                            <TextBlock
-                                        Text="PrimePOS"
-                                        FontSize="18"
-                                        FontWeight="SemiBold"
-                                        VerticalAlignment="Center"/>
-                            </StackPanel>
+                    <TextBlock Text="PrimePOS"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center"/>
 
-                            
-                            <!-- DERECHA (Usuario + Modo) -->
-                             <StackPanel
-                                        Grid.Column="1"
-                                        Orientation="Horizontal"
-                                        Spacing="5"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        Margin="500,0,0,0">
+                    <PersonPicture
+                DisplayName="{Binding UsuarioActual.UsuarioNombre}"
+                Width="35"
+                VerticalAlignment="Center"/>
 
-                                        <Button
-                                        x:Name="btnTema"
-                                        Width="42"
-                                        Height="40"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        BorderThickness="0"
-                                        Background="Transparent"
-                                        Margin="1"
-                                        Click="BtnTema_Click">
+                    <TextBlock Text="{Binding UsuarioActual.UsuarioNombre}"
+                       VerticalAlignment="Center"/>
 
-                                        <FontIcon
-                                        x:Name="iconTema"
-                                        Glyph="&#xE708;"
-                                        FontFamily="Segoe MDL2 Assets"/>
+                    <TextBlock Text="{Binding UsuarioActual.RolNombre}"
+                       FontSize="12"
+                       Opacity="0.6"
+                       VerticalAlignment="Center"/>
 
-                                        </Button>
-                        <StackPanel>
-                               <TextBlock
-                                        Text="{Binding UsuarioActual.UsuarioNombre}"
-                                        VerticalAlignment="Center"/>
+                </StackPanel>
 
-                               <TextBlock
-                                        Text="{Binding UsuarioActual.RolNombre}"
-                                        VerticalAlignment="Center"/>
+            </TitleBar.LeftHeader>
+
+            <!-- ===================== -->
+            <!-- DERECHA (ESTO ES LO IMPORTANTE) -->
+            <!-- ===================== -->
+            <TitleBar.RightHeader>
+
+                <Button x:Name="btnTema"
+                Width="42"
+                Height="40"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="BtnTema_Click">
+
+                    <FontIcon x:Name="iconTema"
+                      Glyph="&#xE708;"
+                      FontFamily="Segoe MDL2 Assets"/>
+                </Button>
+
+            </TitleBar.RightHeader>
+
+        </TitleBar>
 
 
-                        </StackPanel>
-                                        
-                    </StackPanel>
+        <!-- ===================== -->
+        <!-- NAVIGATION VIEW -->
+        <!-- ===================== -->
+        <NavigationView
+            x:Name="navView"
+            ItemInvoked="navView_ItemInvoked"
+            Grid.Row="1"
+            IsPaneToggleButtonVisible="False"
+            IsSettingsVisible="False"
+            IsBackEnabled="False"
+            IsBackButtonVisible="Collapsed"
+            IsPaneOpen="False">
 
+            <NavigationView.MenuItems>
 
-
-                </Grid>    
-                </TitleBar.Content>
-
-            </TitleBar>
-
-            <NavigationView x:Name="navView"
-                            SelectionChanged="navView_SelectionChanged"
-                            Grid.Row="2"
-                            IsPaneToggleButtonVisible="False"
-                            IsSettingsVisible="False"
-                            IsBackEnabled="False"
-                            IsBackButtonVisible="Collapsed"
-                            IsPaneOpen="False">
-                
-
-                <NavigationView.MenuItems>
-
-                <!-- Dashboard -->
                 <NavigationViewItem Content="Dashboard" Tag="dashboard">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xECA5;"/>
-                        <!-- Home -->
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <!-- Ventas -->
                 <NavigationViewItem Content="Ventas" Tag="ventas">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xEC5A;;"/>
-                        <!-- Shop -->
+                        <FontIcon Glyph="&#xEC5A;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <!-- Inventario -->
                 <NavigationViewItem Content="Inventario" Tag="inventario">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7B8;"/>
-                        <!-- Folder -->
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <!-- Reportes -->
                 <NavigationViewItem Content="Reportes" Tag="reportes">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE9D2;"/>
-                        <!-- Report -->
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <!-- Administrar -->
                 <NavigationViewItem Content="Administrar" Tag="administrar">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE713;"/>
-                        <!-- Settings -->
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <!-- Perfil -->
                 <NavigationViewItem Content="Perfil" Tag="perfil">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE77B;"/>
-                        <!-- User -->
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <!-- Cerrar Sesión -->
-                <NavigationViewItem Content="Cerrar Sesión" Tag="cerrarSesion">
+                <!--<NavigationViewItem Content="Cerrar Sesión" Tag="cerrarSesion">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xF3B1;"/>
-                        <!-- Logout -->
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>-->
+
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="Cerrar sesión" Tag="cerrarSesion">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xF3B1;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-            </NavigationView.MenuItems>
+               
+            </NavigationView.FooterMenuItems>
+            <NavigationView.Content>
 
-                <!-- AQUÍ VA EL FRAME -->
-                <NavigationView.Content>
+                <Grid>
+
+                    <!-- CONTENIDO -->
                     <Frame x:Name="contentFrame"/>
-                </NavigationView.Content>
-            </NavigationView>
-        </Grid>
-    
+
+                    <!-- INFOBAR OVERLAY -->
+                    <Grid VerticalAlignment="Top"
+                          HorizontalAlignment="Center"
+                          Margin="0,15,0,0"
+                          Width="500">
+
+                        <InfoBar x:Name="GlobalInfoBar"
+                                 IsOpen="False"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Stretch"
+                                 Severity="Informational"
+                                 Title="Mensaje"
+                                 Message=""/>
+                    </Grid>
+
+                </Grid>
+
+            </NavigationView.Content>
+
+        </NavigationView>
+
+    </Grid>
 
 </Window>

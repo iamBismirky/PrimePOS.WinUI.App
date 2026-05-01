@@ -1,48 +1,38 @@
-﻿using PrimePOS.BLL.DTOs.Caja;
-using PrimePOS.DAL.Repositories;
+﻿using PrimePOS.BLL.Exceptions;
+using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.DTOs.Caja;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services
 {
-    public class CajaService
+    public class CajaService : ICajaService
     {
-        private readonly CajaRepository _cajaRepository;
+        private readonly ICajaRepository _cajaRepository;
 
-        public CajaService(CajaRepository cajaRepository)
+        public CajaService(ICajaRepository cajaRepository)
         {
             _cajaRepository = cajaRepository;
         }
-
-        public async Task CrearCajaAsync(CajaDto dto)
-        {
-            var caja = new Caja
-            {
-                Nombre = dto.Nombre,
-                Estado = dto.Estado
-            };
-
-            _cajaRepository.Crear(caja);
-
-            await _cajaRepository.GuardarCambiosAsync();
-        }
-
         public async Task<CajaDto?> ObtenerCajaPorIdAsync(int id)
         {
             var caja = await _cajaRepository.ObtenerCajaPorIdAsync(id);
 
             if (caja == null)
-                return null;
+                throw new BusinessException("La caja no existe.", 404);
 
             return new CajaDto
             {
-
+                CajaId = caja.CajaId,
                 Nombre = caja.Nombre,
                 Estado = caja.Estado,
             };
         }
+
         public async Task<List<CajaDto>> ListarCajasAsync()
         {
-            var cajas = await _cajaRepository.ListarCajasAsync();
+            var cajas = await _cajaRepository.ObtenerTodosAsync();
+
             return cajas.Select(c => new CajaDto
             {
                 CajaId = c.CajaId,
@@ -50,36 +40,69 @@ namespace PrimePOS.BLL.Services
                 Estado = c.Estado
             }).ToList();
         }
+        public async Task CrearCajaAsync(CajaDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Nombre))
+                throw new BusinessException("El nombre no puede estar vacío.", 400);
+
+            var nombre = dto.Nombre.Trim();
+
+            var existeCaja = await _cajaRepository.ObtenerPorNombreAsync(nombre);
+
+            if (existeCaja != null)
+                throw new BusinessException("Ya existe una caja con este nombre.", 400);
+
+            var caja = new Caja
+            {
+                Nombre = nombre,
+                Estado = true
+            };
+
+            _cajaRepository.Crear(caja);
+            await _cajaRepository.GuardarCambiosAsync();
+        }
 
         public async Task ActualizarCajaAsync(CajaDto dto)
         {
+            var nombre = dto.Nombre.Trim();
+
+            var existeCaja = await _cajaRepository.ObtenerPorNombreAsync(nombre);
+
+            if (existeCaja != null && existeCaja.CajaId != dto.CajaId)
+                throw new BusinessException("Ya existe una caja con este nombre.", 400);
+
             var caja = await _cajaRepository.ObtenerCajaPorIdAsync(dto.CajaId)
-                ?? throw new Exception("Debe seleccionar una caja");
+                ?? throw new BusinessException("Caja no encontrada", 404);
 
-            if (string.IsNullOrWhiteSpace(dto.Nombre))
-                throw new Exception("El nombre no puede estar vacío.");
-
-
-
-            caja.Nombre = dto.Nombre;
+            caja.Nombre = nombre;
             caja.Estado = dto.Estado;
 
             _cajaRepository.Actualizar(caja);
             await _cajaRepository.GuardarCambiosAsync();
-
         }
 
-        public async Task EliminarCajaAsync(CajaDto dto)
+        public async Task EliminarCajaAsync(int cajaId)
         {
-            var caja = await _cajaRepository.ObtenerCajaPorIdAsync(dto.CajaId);
+            var caja = await _cajaRepository.ObtenerCajaPorIdAsync(cajaId);
 
             if (caja == null)
-                throw new Exception("Debe de seleccionar una caja");
+                throw new BusinessException("La caja no existe.", 404);
 
             _cajaRepository.Eliminar(caja);
             await _cajaRepository.GuardarCambiosAsync();
-
         }
 
+        public async Task DesactivarCajaAsync(int cajaId)
+        {
+            var caja = await _cajaRepository.ObtenerCajaPorIdAsync(cajaId);
+
+            if (caja == null)
+                throw new BusinessException("La caja no existe.", 404);
+
+            caja.Estado = false;
+
+            _cajaRepository.Actualizar(caja);
+            await _cajaRepository.GuardarCambiosAsync();
+        }
     }
 }

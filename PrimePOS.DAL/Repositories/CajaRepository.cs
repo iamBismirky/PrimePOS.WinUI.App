@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.DAL.Repositories
 {
-    public class CajaRepository
+    public class CajaRepository : ICajaRepository
     {
         private readonly AppDbContext _context;
 
@@ -25,7 +26,7 @@ namespace PrimePOS.DAL.Repositories
         {
             _context.Cajas.Remove(caja);
         }
-        public async Task<List<Caja>> ListarCajasAsync()
+        public async Task<List<Caja>> ObtenerTodosAsync()
         {
             return await _context.Cajas.ToListAsync();
         }
@@ -40,9 +41,15 @@ namespace PrimePOS.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> ExisteCajaAsync(int cajaId)
+        public async Task<Caja?> ObtenerPorNombreAsync(string nombre)
         {
-            return await _context.Turnos.AnyAsync(c => c.CajaId == cajaId);
+            return await _context.Cajas
+                .FirstOrDefaultAsync(c => c.Nombre.ToLower() == c.Nombre.ToLower());
+        }
+        public async Task<Caja?> ExisteCajaIdAsync(int cajaId)
+        {
+            return await _context.Cajas
+                .FirstOrDefaultAsync(c => c.CajaId == cajaId);
         }
     }
 }

@@ -9,9 +9,6 @@ using System;
 
 namespace PrimePOS.WinUI.Pages;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
 public sealed partial class ReportesPage : Page
 {
     public ReporVentaViewModel ViewModel { get; }
@@ -19,7 +16,7 @@ public sealed partial class ReportesPage : Page
     public ReportesPage()
     {
         InitializeComponent();
-        ViewModel = App.Services.GetRequiredService<ReporVentaViewModel>();
+        ViewModel = App.AppServices.GetRequiredService<ReporVentaViewModel>();
         this.DataContext = ViewModel;
     }
     private void BtnLimpiarFiltros_Click(object sender, RoutedEventArgs e)

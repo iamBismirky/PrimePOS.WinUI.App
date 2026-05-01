@@ -1,11 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PrimePOS.BLL.DTOs.Categoria;
-using PrimePOS.BLL.Services;
-using PrimePOS.WinUI.Helpers;
-using System;
-using System.Threading.Tasks;
+using PrimePOS.Contracts.DTOs.Categoria;
+using PrimePOS.WinUI.ViewModels;
 
 
 namespace PrimePOS.WinUI.Pages
@@ -13,126 +10,40 @@ namespace PrimePOS.WinUI.Pages
 
     public sealed partial class CategoriaPage : Page
     {
-        private readonly CategoriaService _categoriaService;
-        private int _categoriaIdSeleccionado = 0;
+        private readonly CategoriaViewModel ViewModel;
         public CategoriaPage()
         {
             InitializeComponent();
-
-            _categoriaService = App.Services.GetRequiredService<CategoriaService>();
+            ViewModel = App.AppServices.GetRequiredService<CategoriaViewModel>();
+            DataContext = ViewModel;
 
         }
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            await ListarCategoriasAsync();
+            await ViewModel.CargarCommand.ExecuteAsync(null);
         }
 
-        private void dgCategorias_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Buscar_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (dgCategorias.SelectedItem is CategoriaDto categoria)
+            if (DataContext is CategoriaViewModel vm)
             {
-                _categoriaIdSeleccionado = categoria.CategoriaId;
-                txtNombre.Text = categoria.Nombre;
-                tsEstado.IsOn = categoria.Estado;
+                vm.FiltrarCommand.Execute(null);
             }
+
         }
-        private async void BtnCrear_Click(object sender, RoutedEventArgs e)
+        private void Editar_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (DataContext is CategoriaViewModel vm && sender is Button btn && btn.DataContext is CategoriaDto categoria)
             {
-                var dto = new CategoriaDto
-                {
-                    Nombre = txtNombre.Text.Trim(),
-                    Estado = tsEstado.IsOn
-                };
-
-                await _categoriaService.CrearCategoriaAsync(dto);
-                await ListarCategoriasAsync();
-                LimpiarCampos();
+                vm.EditarCommand.Execute(categoria);
             }
-            catch (Exception ex)
-            {
-
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-
-            }
-
         }
-        private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
+        private void Desactivar_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (DataContext is CategoriaViewModel vm && sender is Button btn && btn.DataContext is CategoriaDto categoria)
             {
-
-                var dto = new CategoriaDto
-                {
-                    CategoriaId = _categoriaIdSeleccionado,
-                    Nombre = txtNombre.Text,
-                    Estado = (bool)tsEstado.IsOn
-
-                };
-
-                await _categoriaService.ActualizarCategoriaAsync(dto);
-                await ListarCategoriasAsync();
-                LimpiarCampos();
-
-
-            }
-            catch (Exception ex)
-            {
-
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
+                vm.DesactivarCommand.Execute(categoria);
             }
         }
-        private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-
-                var dto = new CategoriaDto
-                {
-                    CategoriaId = _categoriaIdSeleccionado
-
-                };
-
-                await _categoriaService.EliminarCategoriaAsync(dto);
-                await ListarCategoriasAsync();
-                LimpiarCampos();
-
-
-            }
-            catch (Exception ex)
-            {
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-            }
-        }
-        private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
-        {
-            LimpiarCampos();
-        }
-
-        private async Task ListarCategoriasAsync()
-        {
-            try
-            {
-                var categorias = await _categoriaService.ListarCategoriasAsync();
-                dgCategorias.ItemsSource = categorias;
-            }
-            catch (Exception ex)
-            {
-
-                await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-            }
-        }
-        private void LimpiarCampos()
-        {
-            txtNombre.Text = "";
-            _categoriaIdSeleccionado = 0;
-
-        }
-
     }
 }

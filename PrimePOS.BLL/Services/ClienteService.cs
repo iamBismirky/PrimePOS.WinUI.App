@@ -1,25 +1,27 @@
-﻿using PrimePOS.BLL.DTOs.Cliente;
-using PrimePOS.DAL.Repositories;
+﻿using PrimePOS.BLL.Exceptions;
+using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.DTOs.Cliente;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services;
 
-
-public class ClienteService
+public class ClienteService : IClienteService
 {
-    private readonly ClienteRepository _clienteRepository;
-    public ClienteService(ClienteRepository clienteRepository)
+    private readonly IClienteRepository _clienteRepository;
+
+    public ClienteService(IClienteRepository clienteRepository)
     {
         _clienteRepository = clienteRepository;
     }
+
     public async Task CrearClienteAsync(CrearClienteDto dto)
     {
-
-
         if (string.IsNullOrWhiteSpace(dto.Nombre))
-            throw new Exception("El nombre del cliente es obligatorio.");
-        if (!dto.Estado)
-            throw new Exception("El estado del cliente es obligatorio.");
+            throw new BusinessException("El nombre del cliente es obligatorio.", 400);
+
+        if (string.IsNullOrWhiteSpace(dto.Documento))
+            throw new BusinessException("El documento del cliente es obligatorio.", 400);
 
         var cliente = new Cliente
         {
@@ -30,7 +32,6 @@ public class ClienteService
             Direccion = dto.Direccion,
             Estado = dto.Estado,
             FechaRegistro = DateTime.Now,
-
         };
 
         _clienteRepository.Crear(cliente);
@@ -41,20 +42,19 @@ public class ClienteService
         _clienteRepository.Actualizar(cliente);
         await _clienteRepository.GuardarCambiosAsync();
     }
+
     public async Task ActualizarClienteAsync(ActualizarClienteDto dto)
     {
-        if (dto == null)
-            throw new Exception("Datos inválidos.");
-
         if (string.IsNullOrWhiteSpace(dto.Nombre))
-            throw new Exception("El nombre del cliente es obligatorio.");
+            throw new BusinessException("El nombre del cliente es obligatorio.", 400);
 
+        if (string.IsNullOrWhiteSpace(dto.Documento))
+            throw new BusinessException("El documento del cliente es obligatorio.", 400);
 
-        var cliente = await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId)
-            ?? throw new Exception("Cliente no encontrado.");
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
 
         if (cliente == null)
-            throw new Exception("Cliente no encontrado");
+            throw new BusinessException("Cliente no encontrado.", 404);
 
         cliente.Nombre = dto.Nombre;
         cliente.Documento = dto.Documento;
@@ -63,30 +63,40 @@ public class ClienteService
         cliente.Telefono = dto.Telefono;
         cliente.Estado = dto.Estado;
 
-
         _clienteRepository.Actualizar(cliente);
         await _clienteRepository.GuardarCambiosAsync();
     }
-    public async Task EliminarClienteAsync(EliminarClienteDto dto)
+
+    public async Task EliminarClienteAsync(int clienteId)
     {
-        var cliente = await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(clienteId);
 
         if (cliente == null)
-            throw new Exception("Cliente no encontrado.");
-
-
+            throw new BusinessException("Cliente no encontrado.", 404);
 
         _clienteRepository.Eliminar(cliente);
         await _clienteRepository.GuardarCambiosAsync();
     }
-    // Listar
-    public async Task<List<ClienteDto>> ListarClientes()
+
+    public async Task DesactivarClienteAsync(int clienteId)
     {
-        var clientes = await _clienteRepository.ListarClientesAsync();
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(clienteId);
+
+        if (cliente == null)
+            throw new BusinessException("Cliente no encontrado.", 404);
+
+        cliente.Estado = false;
+
+        _clienteRepository.Actualizar(cliente);
+        await _clienteRepository.GuardarCambiosAsync();
+    }
+
+    public async Task<List<ClienteDto>> ObtenerTodosAsync()
+    {
+        var clientes = await _clienteRepository.ObtenerTodosAsync();
 
         return clientes.Select(c => new ClienteDto
         {
-
             ClienteId = c.ClienteId,
             Codigo = c.Codigo,
             Nombre = c.Nombre,
@@ -96,18 +106,15 @@ public class ClienteService
             Telefono = c.Telefono,
             Estado = c.Estado,
             FechaRegistro = c.FechaRegistro,
-
-
         }).ToList();
     }
 
-    // Buscar por Id
-    public async Task<ClienteDto?> ObtenerPorId(int id)
+    public async Task<ClienteDto?> ObtenerPorIdAsync(int id)
     {
         var cliente = await _clienteRepository.ObtenerPorIdAsync(id);
 
         if (cliente == null)
-            return null;
+            throw new BusinessException("Cliente no encontrado.", 404);
 
         return new ClienteDto
         {
@@ -123,59 +130,27 @@ public class ClienteService
         };
     }
 
-    // Eliminar lógico
-    public async Task DesactivarCliente(ClienteDto dto)
-    {
-        var cliente = await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
-
-        if (cliente == null)
-            throw new Exception("Cliente no encontrado.");
-
-        cliente.Estado = false;
-
-        _clienteRepository.Actualizar(cliente);
-        await _clienteRepository.GuardarCambiosAsync();
-    }
-    public async Task<ClienteDto?> BuscarClienteCodigoONombreAsync(string buscar)
-    {
-        buscar = buscar.Trim();
-
-        var cliente = await _clienteRepository.BuscarPorCodigoONombreAsync(buscar);
-
-        if (cliente == null)
-        {
-            cliente = await _clienteRepository.BuscarClientePorNombreAsync(buscar);
-        }
-        if (cliente == null)
-            return null;
-
-        return new ClienteDto
-        {
-            ClienteId = cliente.ClienteId,
-            Nombre = cliente.Nombre,
-            Codigo = cliente.Codigo,
-            Documento = cliente.Documento,
-
-        };
-
-    }
-    public async Task<List<ClienteDto>> BuscarClienteCodigoONombreListAsync(string buscar)
-    {
-        var cliente = await _clienteRepository.BuscarPorCodigoONombreListAsync(buscar);
 
 
-        return cliente.Select(c => new ClienteDto
-        {
-            ClienteId = c.ClienteId,
-            Codigo = c.Codigo,
-            Nombre = c.Nombre,
-            Documento = c.Documento,
 
-        }).ToList();
-    }
     private string GenerarCodigoCliente(int clienteId)
     {
         return $"CLIENT-{clienteId:D4}";
     }
+    public async Task<List<ClienteDto>> BuscarClientesAsync(string texto)
+    {
+        if (string.IsNullOrWhiteSpace(texto))
+            return new List<ClienteDto>();
 
+        var clientes = await _clienteRepository.BuscarAsync(texto);
+        if (clientes == null)
+            throw new BusinessException("Cliente no encontrado.", 404);
+        return clientes.Select(c => new ClienteDto
+        {
+            ClienteId = c.ClienteId,
+            Codigo = c.Codigo,
+            Nombre = c.Nombre,
+            Documento = c.Documento
+        }).ToList();
+    }
 }

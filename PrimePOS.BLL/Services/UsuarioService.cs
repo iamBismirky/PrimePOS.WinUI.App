@@ -1,16 +1,18 @@
-﻿using PrimePOS.BLL.DTOs.Usuario;
+﻿using PrimePOS.BLL.Exceptions;
+using PrimePOS.BLL.Interfaces;
 using PrimePOS.BLL.Security;
 using PrimePOS.BLL.Validators;
-using PrimePOS.DAL.Repositories;
+using PrimePOS.Contracts.DTOs.Usuario;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.BLL.Services
 {
-    public class UsuarioService
+    public class UsuarioService : IUsuarioService
     {
-        private readonly UsuarioRepository _usuarioRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
 
-        public UsuarioService(UsuarioRepository repository)
+        public UsuarioService(IUsuarioRepository repository)
         {
             _usuarioRepository = repository;
         }
@@ -18,6 +20,9 @@ namespace PrimePOS.BLL.Services
         public async Task CrearUsuarioAsync(CrearUsuarioDto dto)
         {
             UsuarioValidator.ValidarCrear(dto);
+
+            if (await _usuarioRepository.ExisteUsernameAsync(dto.Username, null))
+                throw new BusinessException("Ya existe un usuario con ese username.", 400);
 
             var usuario = new Usuario
             {
@@ -37,20 +42,19 @@ namespace PrimePOS.BLL.Services
 
             _usuarioRepository.Actualizar(usuario);
             await _usuarioRepository.GuardarCambiosAsync();
-
         }
-
-
 
         public async Task ActualizarUsuarioAsync(ActualizarUsuarioDto dto)
         {
             UsuarioValidator.ValidarActualizar(dto);
 
-            var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
-                ?? throw new Exception("Usuario no encontrado. Seleccione uno.");
+            var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId);
+
+            if (usuario == null)
+                throw new BusinessException("El usuario no existe.", 404);
 
             if (await _usuarioRepository.ExisteUsernameAsync(dto.Username, dto.UsuarioId))
-                throw new Exception("Ya existe un usuario con ese username.");
+                throw new BusinessException("Ya existe un usuario con ese username.", 400);
 
             usuario.Nombre = dto.Nombre;
             usuario.Apellidos = dto.Apellidos;
@@ -60,53 +64,69 @@ namespace PrimePOS.BLL.Services
 
             _usuarioRepository.Actualizar(usuario);
             await _usuarioRepository.GuardarCambiosAsync();
-
         }
 
-        public async Task<bool> EliminarUsuarioAsync(EliminarUsuarioDto dto)
+        public async Task EliminarUsuarioAsync(int usuarioId)
         {
-            var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
-                ?? throw new Exception("Usuario no encontrado. Seleccione uno");
+            var usuario = await _usuarioRepository.ObtenerPorId(usuarioId);
+
+            if (usuario == null)
+                throw new BusinessException("El usuario no existe.", 404);
 
             _usuarioRepository.Eliminar(usuario);
             await _usuarioRepository.GuardarCambiosAsync();
-            return true;
+        }
+
+        public async Task DesactivarUsuarioAsync(int usuarioId)
+        {
+            var usuario = await _usuarioRepository.ObtenerPorId(usuarioId);
+
+            if (usuario == null)
+                throw new BusinessException("El usuario no existe.", 404);
+
+            usuario.Estado = false;
+
+            _usuarioRepository.Actualizar(usuario);
+            await _usuarioRepository.GuardarCambiosAsync();
         }
 
         public async Task CambiarEstadoAsync(int id, bool nuevoEstado)
         {
-            var usuario = await _usuarioRepository.ObtenerPorId(id)
-                ?? throw new Exception("Usuario no encontrado.");
+            var usuario = await _usuarioRepository.ObtenerPorId(id);
+
+            if (usuario == null)
+                throw new BusinessException("El usuario no existe.", 404);
 
             usuario.Estado = nuevoEstado;
 
             _usuarioRepository.Actualizar(usuario);
             await _usuarioRepository.GuardarCambiosAsync();
         }
+
         public async Task<UsuarioDto?> ObtenerUsuarioPorIdAsync(int id)
         {
             var usuario = await _usuarioRepository.ObtenerPorId(id);
 
-            if (usuario == null) return null;
+            if (usuario == null)
+                throw new BusinessException("El usuario no existe.", 404);
 
             return new UsuarioDto
             {
                 UsuarioId = usuario.UsuarioId,
-
-                Nombre = usuario.Nombre,
                 Codigo = usuario.Codigo,
+                Nombre = usuario.Nombre,
                 Apellidos = usuario.Apellidos,
                 Username = usuario.Username,
                 RolId = usuario.RolId,
                 RolNombre = usuario.Rol?.Nombre ?? "",
                 Estado = usuario.Estado,
                 FechaRegistro = usuario.FechaRegistro
-
             };
         }
-        public async Task<List<UsuarioDto>> ListarUsuariosAsync()
+
+        public async Task<List<UsuarioDto>> ObtenerTodosAsync()
         {
-            var usuarios = await _usuarioRepository.ListarUsuariosAsync();
+            var usuarios = await _usuarioRepository.ObtenerTodosAsync();
 
             return usuarios.Select(u => new UsuarioDto
             {
@@ -121,68 +141,73 @@ namespace PrimePOS.BLL.Services
                 FechaRegistro = u.FechaRegistro
             }).ToList();
         }
-        public async Task CambiarContraseñaAsync(CambiarContraseñaDto dto)
+
+        public async Task CambiarPasswordAsync(int usuarioId, CambiarPasswordDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.ContraseñaActual))
-                throw new Exception("La contraseña actual es obligatoria.");
+            if (string.IsNullOrWhiteSpace(dto.PasswordActual) ||
+                string.IsNullOrWhiteSpace(dto.PasswordNueva) ||
+                string.IsNullOrWhiteSpace(dto.Confirmar))
+                throw new BusinessException("Todos los campos son obligatorios.", 400);
 
-            if (string.IsNullOrWhiteSpace(dto.ContraseñaNueva))
-                throw new Exception("La nueva contraseña es obligatoria.");
+            dto.PasswordActual = dto.PasswordActual.Trim();
+            dto.PasswordNueva = dto.PasswordNueva.Trim();
+            dto.Confirmar = dto.Confirmar.Trim();
 
-            if (string.IsNullOrWhiteSpace(dto.Confirmar))
-                throw new Exception("Confirme la contraseña.");
+            if (dto.PasswordNueva != dto.Confirmar)
+                throw new BusinessException("La confirmación no coincide.", 400);
 
-            if (dto.ContraseñaNueva != dto.Confirmar)
-                throw new Exception("La confirmación no coincide con la nueva contraseña.");
+            if (dto.PasswordNueva.Length < 6)
+                throw new BusinessException("La contraseña debe tener al menos 6 caracteres.", 400);
 
-            var usuario = await _usuarioRepository.ObtenerPorId(dto.UsuarioId)
-                ?? throw new Exception("Usuario no encontrado.");
+            var usuario = await _usuarioRepository.ObtenerPorId(usuarioId)
+                ?? throw new BusinessException("El usuario no existe.", 404);
 
-            bool esValida = PasswordService.Verify(dto.ContraseñaActual, usuario.Password);
+            if (!PasswordService.Verify(dto.PasswordActual, usuario.Password))
+                throw new BusinessException("La contraseña actual es incorrecta.", 400);
 
-            if (!esValida)
-                throw new Exception("La contraseña actual es incorrecta.");
+            //  Validación correcta contra hash
+            if (PasswordService.Verify(dto.PasswordNueva, usuario.Password))
+                throw new BusinessException("La nueva contraseña no puede ser igual a la actual.", 400);
 
-            if (PasswordService.Verify(dto.ContraseñaNueva, usuario.Password))
-                throw new Exception("La nueva contraseña no puede ser igual a la actual.");
-
-            usuario.Password = PasswordService.Hash(dto.ContraseñaNueva);
+            usuario.Password = PasswordService.Hash(dto.PasswordNueva);
 
             _usuarioRepository.Actualizar(usuario);
             await _usuarioRepository.GuardarCambiosAsync();
         }
 
-        public async Task<AppSesionUsuarioDto> AutenticarUsuarioAsync(AutenticarUsuarioDto dto)
+        public async Task<AppSesionUsuarioDto> AutenticarUsuarioAsync(LoginDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Username) ||
                 string.IsNullOrWhiteSpace(dto.Password))
-                throw new Exception("Usuario y clave obligatorios.");
+                throw new BusinessException("Usuario y contraseña obligatorios.", 400);
 
-            var usuario = await _usuarioRepository.ObtenerPorUsernameAsync(dto.Username)
-                ?? throw new Exception("Usuario o contraseña incorrectos.");
+            var usuario = await _usuarioRepository.ObtenerPorUsernameAsync(dto.Username);
+
+            if (usuario == null)
+                throw new BusinessException("Usuario o contraseña incorrectos.", 401);
 
             if (!usuario.Estado)
-                throw new Exception("Usuario inactivo.");
+                throw new BusinessException("Usuario inactivo.", 403);
 
-            bool esValida = PasswordService.Verify(dto.Password, usuario.Password);
+            if (!PasswordService.Verify(dto.Password, usuario.Password))
+                throw new BusinessException("Usuario o contraseña incorrectos.", 401);
 
-            if (!esValida)
-                throw new Exception("Usuario o contraseña incorrectos.");
+
 
             return new AppSesionUsuarioDto
             {
                 UsuarioId = usuario.UsuarioId,
-                UsuarioNombre = usuario.Nombre + " " + usuario.Apellidos,
+                UsuarioNombre = $"{usuario.Nombre} {usuario.Apellidos}",
+                Username = usuario.Username,
                 RolId = usuario.RolId,
-                RolNombre = usuario.Rol?.Nombre ?? ""
+                RolNombre = usuario.Rol?.Nombre ?? "",
+
             };
         }
 
-        private string GenerarCodigoUsuario(int UsuarioId)
+        private string GenerarCodigoUsuario(int usuarioId)
         {
-            return $"USER-{UsuarioId:D4}";
+            return $"USER-{usuarioId:D4}";
         }
     }
 }
-
-

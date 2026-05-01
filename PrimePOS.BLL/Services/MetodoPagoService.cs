@@ -1,13 +1,15 @@
-﻿using PrimePOS.BLL.DTOs.MetodoPago;
-using PrimePOS.DAL.Repositories;
+﻿using PrimePOS.BLL.Exceptions;
+using PrimePOS.BLL.Interfaces;
+using PrimePOS.Contracts.DTOs.MetodoPago;
+using PrimePOS.DAL.Interfaces;
 
 namespace PrimePOS.BLL.Services
 {
-    public class MetodoPagoService
+    public class MetodoPagoService : IMetodoPagoService
     {
-        private readonly MetodoPagoRepository _metodoPagoRepository;
+        private readonly IMetodoPagoRepository _metodoPagoRepository;
 
-        public MetodoPagoService(MetodoPagoRepository metodoPagoRepository)
+        public MetodoPagoService(IMetodoPagoRepository metodoPagoRepository)
         {
             _metodoPagoRepository = metodoPagoRepository;
         }
@@ -16,7 +18,7 @@ namespace PrimePOS.BLL.Services
         public async Task<List<MetodoPagoDto>> ListarMetodosPagosAsync()
         {
             var metodosPago = await _metodoPagoRepository.ListarMetodosPagosAsync();
-
+            if (metodosPago == null) throw new BusinessException("Error al obtener los métodos de pago", 404);
 
             return metodosPago.Select(m => new MetodoPagoDto
             {

@@ -1,91 +1,71 @@
-﻿using PrimePOS.BLL.DTOs.Caja;
-using PrimePOS.BLL.DTOs.Turno;
-using PrimePOS.BLL.DTOs.Usuario;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using PrimePOS.Contracts.DTOs.Caja;
+using PrimePOS.Contracts.DTOs.Turno;
+using PrimePOS.Contracts.DTOs.Usuario;
+using PrimePOS.WinUI.Models;
+using System;
 
 namespace PrimePOS.WinUI.ViewModels
 {
-    public class AppSesionViewModel : INotifyPropertyChanged
+    public partial class AppSesionViewModel : ObservableObject
     {
-        private AppSesionUsuarioDto? _usuarioActual;
-        private TurnoDto? _turnoActual;
-        private CajaDto? _cajaActual;
+        [ObservableProperty]
+        private AppSesionUsuarioDto? usuarioActual;
+
+        [ObservableProperty]
+        private TurnoDto? turnoActual;
+
+        [ObservableProperty]
+        private CajaDto? cajaActual;
+
+        [ObservableProperty]
+        private string? token;
+
         public int CajaId { get; set; } = 1;
 
-        public AppSesionUsuarioDto? UsuarioActual
-        {
-            get => _usuarioActual;
-            set
-            {
-                if (_usuarioActual != value)
-                {
-                    _usuarioActual = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        public CajaDto? CajaActual
-        {
-            get => _cajaActual;
-            set
-            {
-                if (_cajaActual != value)
-                {
-                    _cajaActual = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        public void AbrirCaja(CajaDto caja)
-        {
-            CajaActual = caja;
-        }
-        public void CerrarCaja()
-        {
-            CajaActual = null;
-        }
+        public bool HayTurnoAbierto => TurnoActual != null;
+
+        public bool EstaAutenticado => UsuarioActual != null;
+
+        // Eventos
+        public event Action? SesionCerrada;
+
         public void IniciarSesion(AppSesionUsuarioDto usuario)
         {
             UsuarioActual = usuario;
+            Token = usuario.Token;
+            TokenStorage.SetToken(usuario.Token);
         }
 
         public void CerrarSesion()
         {
             UsuarioActual = null;
             TurnoActual = null;
+            Token = null;
+            TokenStorage.Clear();
+            SesionCerrada?.Invoke();
         }
-        public TurnoDto? TurnoActual
+
+        public void AbrirCaja(CajaDto caja)
         {
-            get => _turnoActual;
-            set
-            {
-                if (_turnoActual != value)
-                {
-                    _turnoActual = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(HayTurnoAbierto));
-                }
-            }
+            CajaActual = caja;
         }
-        public bool HayTurnoAbierto => TurnoActual != null;
+
+        public void CerrarCaja()
+        {
+            CajaActual = null;
+        }
 
         public void AbrirTurno(TurnoDto turno)
         {
             TurnoActual = turno;
+            OnPropertyChanged(nameof(HayTurnoAbierto));
         }
 
         public void CerrarTurno()
         {
             TurnoActual = null;
-        }
-
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string name = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            OnPropertyChanged(nameof(HayTurnoAbierto));
         }
     }
 }

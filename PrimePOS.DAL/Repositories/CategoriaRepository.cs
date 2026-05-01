@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
+using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
 namespace PrimePOS.DAL.Repositories;
 
-public class CategoriaRepository
+public class CategoriaRepository : ICategoriaRepository
 {
     private readonly AppDbContext _context;
 
@@ -37,10 +38,10 @@ public class CategoriaRepository
     {
         return await _context.Categorias.ToListAsync();
     }
-    public async Task<bool> ExisteCategoriaAsync(string nombre)
+    public async Task<Categoria?> ExisteCategoriaAsync(string nombre)
     {
         return await _context.Categorias
-            .AnyAsync(c => c.Nombre == nombre);
+            .FirstOrDefaultAsync(c => c.Nombre == nombre);
     }
     public async Task GuardarCambiosAsync()
     {

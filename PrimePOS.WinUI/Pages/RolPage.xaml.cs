@@ -1,158 +1,49 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PrimePOS.BLL.DTOs.Rol;
-using PrimePOS.BLL.Services;
-using PrimePOS.WinUI.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using PrimePOS.Contracts.DTOs.Rol;
+using PrimePOS.WinUI.ViewModels;
 
 
-
-namespace PrimePOS.WinUI.Pages;
-
-
-public sealed partial class RolPage : Page
+namespace PrimePOS.WinUI.Pages
 {
-    private readonly RolService _rolService;
-    private int _rolIdSeleccionado = 0;
 
-    public RolPage()
+    public sealed partial class RolPage : Page
     {
-        InitializeComponent();
-
-        _rolService = App.Services.GetRequiredService<RolService>();
-
-    }
-    private async void Page_Loaded(object sender, RoutedEventArgs e)
-    {
-        await CargarRoles();
-    }
-    private async void BtnCrear_Click(object sender, RoutedEventArgs e)
-    {
-
-        try
+        private readonly RolViewModel ViewModel;
+        public RolPage()
         {
-            var dto = new CrearRolDto
+            InitializeComponent();
+            ViewModel = App.AppServices.GetRequiredService<RolViewModel>();
+            DataContext = ViewModel;
+
+        }
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            await ViewModel.CargarCommand.ExecuteAsync(null);
+        }
+
+        private void Buscar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (DataContext is RolViewModel vm)
             {
-                Nombre = txtNombre.Text,
-                Estado = tsEstado.IsOn
-
-            };
-
-            await _rolService.CrearRolAsync(dto);
-            await CargarRoles();
-            LimpiarCampos();
+                vm.FiltrarCommand.Execute(null);
+            }
 
         }
-        catch (Exception ex)
+        private void Editar_Click(object sender, RoutedEventArgs e)
         {
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-
-        }
-
-    }
-    private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-
-            var dto = new ActualizarRolDto
+            if (DataContext is RolViewModel vm && sender is Button btn && btn.DataContext is RolDto rol)
             {
-                RolId = _rolIdSeleccionado,
-                Nombre = txtNombre.Text,
-                Estado = (bool)tsEstado.IsOn
-
-            };
-
-            await _rolService.ActualizarRolAsync(dto);
-            await CargarRoles();
-            LimpiarCampos();
-
-
-        }
-        catch (Exception ex)
-        {
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-        }
-    }
-    private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-
-
-            var dto = new EliminarRolDto
-            {
-                RolId = _rolIdSeleccionado
-
-            };
-
-            await _rolService.EliminarRolAsync(dto);
-            await CargarRoles();
-            LimpiarCampos();
-
-
-        }
-        catch (Exception ex)
-        {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-        }
-
-    }
-    private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
-    {
-        LimpiarCampos();
-    }
-
-    private async void dgRoles_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        try
-        {
-
-            if (dgRoles.SelectedItem is ListaRolesDto rol)
-            {
-
-                _rolIdSeleccionado = rol.RolId;
-                txtNombre.Text = rol.Nombre.ToString();
-                tsEstado.IsOn = rol.Estado;
+                vm.EditarCommand.Execute(rol);
             }
         }
-        catch (Exception ex)
+        private void Desactivar_Click(object sender, RoutedEventArgs e)
         {
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
+            if (DataContext is RolViewModel vm && sender is Button btn && btn.DataContext is RolDto rol)
+            {
+                vm.DesactivarCommand.Execute(rol);
+            }
         }
-    }
-    private void LimpiarCampos()
-    {
-        txtNombre.Text = "";
-        _rolIdSeleccionado = 0;
-        tsEstado.IsOn = true;
-    }
-    private async Task CargarRoles()
-    {
-        try
-        {
-            List<ListaRolesDto> listaRoles = await _rolService.ListarRolesAsync();
-            dgRoles.ItemsSource = null;
-            dgRoles.ItemsSource = listaRoles;
-        }
-        catch (Exception ex)
-        {
-
-            await DialogHelper.MostrarMensaje(this.XamlRoot, "Error", ex.Message);
-
-        }
-
     }
 }
-
-
-

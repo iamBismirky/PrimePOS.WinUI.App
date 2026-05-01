@@ -41,8 +41,22 @@
         </Grid>
         <Grid Grid.Row="2" >
             
-        
-        <Border
+            <Grid VerticalAlignment="Top"
+                  HorizontalAlignment="Center"
+                  Margin="0,15,0,0"
+                  Width="300"
+                  Height="500">
+
+                <InfoBar x:Name="GlobalInfoBar"
+                         IsOpen="False"
+                         VerticalAlignment="Top"
+                         HorizontalAlignment="Stretch"
+                         Severity="Informational"
+                         Title="Mensaje"
+                         Message=""/>
+            </Grid>
+
+            <Border
             Width="400"
             Height="550"
             Padding="50"
@@ -52,7 +66,13 @@
             VerticalAlignment="Center">
             
             <StackPanel Spacing="15">
-                <Button
+                    <InfoBar
+                        x:Name="infoError"
+                        Title="Error"
+                        IsOpen="False"
+                        Severity="Error"
+                        IsClosable="True"/>
+                    <Button
                     x:Name="btnTema"
                     Width="42"
                     Height="40"
@@ -86,6 +106,7 @@
                 <!-- USUARIO -->
                 <TextBox
                     x:Name="txtUsername"
+                    Text="{Binding Username, Mode=TwoWay}"
                     PlaceholderText="Usuario"
                     CharacterCasing="Upper"
                     TabIndex="1"/>
@@ -93,22 +114,26 @@
                 <!-- PASSWORD -->
                 <PasswordBox
                     x:Name="pwdPassword"
+                    PasswordChanged="pwdPassword_PasswordChanged"
                     PlaceholderText="Contraseña"
                     PasswordChar="#"
                     TabIndex="2"/>
-
-                <!-- BOTON -->
-                <Button
-                    Content="Iniciar Sesión"
-                    Click="BtnLogin_Click"
-                    Height="40"
-                    HorizontalAlignment="Center"/>
+                    <Grid>
+                        <Button
+                               Content="Iniciar Sesión"
+                               Command="{Binding LoginCommand}"
+                               Height="40"
+                               HorizontalAlignment="Center"
+                               TabIndex="3"/>
+                        <ProgressRing
+                               IsActive="{Binding IsLoading}"
+                               Width="30"
+                               Height="30"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                    </Grid>
                 
-                <!-- ERROR -->
-                <TextBlock
-                    x:Name="txtError"
-                    Foreground="Red"
-                    TextAlignment="Center"/>
+                
 
             </StackPanel>
 
