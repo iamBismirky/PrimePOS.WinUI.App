@@ -335,6 +335,18 @@ public partial class VentaViewModel : ObservableObject
 
 
     }
+    [RelayCommand]
+    public async Task CerrarTurnoAsync()
+    {
+        var vm = new CerrarTurnoViewModel(
+            _turnoApi,
+            _notify,
+            _sesion
+        );
+        await vm.InicializarAsync();
+        vm.OnCerrar += () => CerrarOverlay?.Invoke();
+        MostrarOverlay?.Invoke(vm);
+    }
 
     // =========================
     // 🧾 FACTURAR DESDE COBRO

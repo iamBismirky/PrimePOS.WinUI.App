@@ -52,7 +52,7 @@ public partial class AbrirTurnoViewModel : ObservableObject
         CajaSeleccionada = Cajas.FirstOrDefault();
 
         var numero = await _turnoApi.ObtenerSiguienteTurnoAsync();
-        TurnoTexto = $"Turno: {DateTime.Today:dd/MM/yyyy} - T{numero}";
+        TurnoTexto = $"Turno: {DateTime.Today:dd/MM/yyyy} - T{numero.Data}";
     }
 
     // 🔹 ABRIR

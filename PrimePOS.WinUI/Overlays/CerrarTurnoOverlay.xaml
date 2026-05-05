@@ -17,16 +17,23 @@
                 <TextBlock Text="Cerrar Turno"
                            FontSize="22"
                            FontWeight="Bold"/>
-
+                <TextBlock Text="Monto inicial: "/>
                 <TextBlock Text="{Binding MontoInicial}"/>
-                <TextBlock Text="{Binding TotalEfectivo}"/>
-                <TextBlock Text="{Binding TotalTarjeta}"/>
-                <TextBlock Text="{Binding TotalTransferencia}"/>
+                <TextBlock Text="Total Efectivo: "/>
+                <TextBlock Text="{Binding TotalEfectivo, Converter={StaticResource NumeroConverterHelper}}"/>
+                    <TextBlock Text="Total Tarjeta: "/>
+                        
+                <TextBlock Text="{Binding TotalTarjeta, Converter={StaticResource NumeroConverterHelper }}"/>
+                    <TextBlock Text="Total Transferencia: "/>
+                        
+                <TextBlock Text="{Binding TotalTransferencia, Converter={StaticResource NumeroConverterHelper}}"/>
 
-                <NumberBox Header="Efectivo contado"
-                           Value="{Binding EfectivoContado, Mode=TwoWay}" />
+                <TextBox x:Name="txtEfectivo" 
+                         Header="Efectivo contado"
+                         LostFocus="txtEfectivo_LostFocus"
+                         Text="{Binding EfectivoTexto, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <TextBlock Text="{Binding Diferencia}"
+                <TextBlock Text="{Binding Diferencia, Converter={StaticResource NumeroConverterHelper}}"
                            Foreground="Red"/>
 
                 <StackPanel Orientation="Horizontal" Spacing="10">

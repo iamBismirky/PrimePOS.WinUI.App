@@ -53,7 +53,8 @@ public class TurnosController : ControllerBase
         {
             Success = true,
             Data = resumen,
-            Message = "Resumen del turno obtenido correctamente"
+            Message = "Resumen del turno obtenido correctamente",
+            StatusCode = 200
         });
     }
 

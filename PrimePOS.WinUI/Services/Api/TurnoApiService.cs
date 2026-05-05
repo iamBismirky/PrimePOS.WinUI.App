@@ -16,7 +16,7 @@ public class TurnoApiService : BaseApiService
     // 🔹 ABRIR TURNO
     public Task<ApiResponse<TurnoDto>> AbrirTurnoAsync(CrearTurnoDto dto)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "api/turno/abrir")
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/turnos/abrir")
         {
             Content = JsonContent.Create(dto)
         };
@@ -27,7 +27,7 @@ public class TurnoApiService : BaseApiService
     // 🔹 CERRAR TURNO
     public Task<ApiResponse<object>> CerrarTurnoAsync(CierreTurnoDto dto)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "api/turno/cerrar")
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/turnos/cerrar")
         {
             Content = JsonContent.Create(dto)
         };
@@ -38,14 +38,14 @@ public class TurnoApiService : BaseApiService
     // 🔹 RESUMEN
     public Task<ApiResponse<CierreTurnoDto>> ObtenerResumenAsync(int turnoId)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"api/turno/resumen/{turnoId}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/turnos/resumen/{turnoId}");
         return SendAsync<CierreTurnoDto>(request);
     }
 
     // 🔹 SIGUIENTE TURNO
     public Task<ApiResponse<int>> ObtenerSiguienteTurnoAsync()
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "api/turno/siguiente");
+        var request = new HttpRequestMessage(HttpMethod.Get, "api/turnos/siguiente");
         return SendAsync<int>(request);
     }
 

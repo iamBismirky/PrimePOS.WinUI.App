@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Turno;
+using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using PrimePOS.WinUI.ViewModels;
@@ -28,14 +29,21 @@ public partial class CerrarTurnoViewModel : ObservableObject
     [ObservableProperty] private decimal totalEfectivo;
     [ObservableProperty] private decimal totalTarjeta;
     [ObservableProperty] private decimal totalTransferencia;
+    [ObservableProperty] private string? efectivoTexto;
     [ObservableProperty] private decimal efectivoContado;
 
     public decimal Diferencia =>
         EfectivoContado - (MontoInicial + TotalEfectivo);
 
+    partial void OnEfectivoTextoChanged(string value)
+    {
+        EfectivoContado = MoneyHelper.ToDecimal(value);
+        //OnPropertyChanged(nameof(Diferencia));
+    }
     partial void OnEfectivoContadoChanged(decimal value)
     {
         OnPropertyChanged(nameof(Diferencia));
+
     }
 
     public event Action? OnCerrar;
@@ -93,5 +101,9 @@ public partial class CerrarTurnoViewModel : ObservableObject
     private void Cancelar()
     {
         OnCerrar?.Invoke();
+    }
+    public void FormatearEfectivo()
+    {
+        EfectivoTexto = MoneyHelper.ToString(EfectivoContado);
     }
 }
