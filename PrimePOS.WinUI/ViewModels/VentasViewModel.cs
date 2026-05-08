@@ -136,6 +136,7 @@ public partial class VentaViewModel : ObservableObject
         if (!_sesion.HayTurnoAbierto)
         {
             _notify.Warning("Debe abrir un turno");
+            await AbrirTurnoAsync();
         }
     }
 
@@ -285,18 +286,43 @@ public partial class VentaViewModel : ObservableObject
     [RelayCommand]
     private async Task AbrirTurnoAsync()
     {
+        //var vm = new AbrirTurnoViewModel(
+        //    _cajaApi,
+        //    _turnoApi,
+        //    _notify,
+        //    _sesion
+        //);
+
+        //await vm.InicializarAsync();
+
+
+        //MostrarOverlay?.Invoke(vm);
+        //if (_sesion.HayTurnoAbierto == false)
+        //{
+        //    vm.OnCerrar += () => CerrarOverlay?.Invoke();
+        //    _notify.Warning("Debe abrir un turno para continuar");
+        //}
         var vm = new AbrirTurnoViewModel(
-            _cajaApi,
-            _turnoApi,
-            _notify,
-            _sesion
-        );
+        _cajaApi,
+        _turnoApi,
+        _notify,
+        _sesion);
 
         await vm.InicializarAsync();
 
-        vm.OnCerrar += () => CerrarOverlay?.Invoke();
+        // SOLO cuando el turno abra correctamente
+        vm.OnTurnoAbierto += () =>
+       {
+           CerrarOverlay?.Invoke();
+       };
 
         MostrarOverlay?.Invoke(vm);
+
+        if (!_sesion.HayTurnoAbierto)
+        {
+            _notify.Warning(
+                "Debe abrir un turno para continuar");
+        }
     }
     [RelayCommand]
     private async Task CobrarAsync()

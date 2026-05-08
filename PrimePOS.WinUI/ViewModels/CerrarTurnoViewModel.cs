@@ -35,7 +35,7 @@ public partial class CerrarTurnoViewModel : ObservableObject
     public decimal Diferencia =>
         EfectivoContado - (MontoInicial + TotalEfectivo);
 
-    partial void OnEfectivoTextoChanged(string value)
+    partial void OnEfectivoTextoChanged(string? value)
     {
         EfectivoContado = MoneyHelper.ToDecimal(value);
         //OnPropertyChanged(nameof(Diferencia));

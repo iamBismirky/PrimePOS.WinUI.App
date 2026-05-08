@@ -11,7 +11,7 @@ namespace PrimePOS.WinUI.Helpers
 
         private static bool _dialogAbierto = false;
 
-        public static async Task MostrarMensaje(XamlRoot xamlRoot, string titulo, string mensaje)
+        public static async Task MostrarMensajeAsync(XamlRoot xamlRoot, string titulo, string mensaje)
         {
             if (_dialogAbierto) return; // evita abrir más de uno
             _dialogAbierto = true;

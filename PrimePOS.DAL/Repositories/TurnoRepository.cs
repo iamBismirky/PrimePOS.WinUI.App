@@ -26,9 +26,11 @@ public class TurnoRepository : ITurnoRepository
     {
         await _context.SaveChangesAsync();
     }
-    public async Task<bool> ExisteTurnoAbierto(int cajaId)
+    public async Task<bool> ExisteTurnoAbierto(int usuarioId, int cajaId)
     {
-        return await _context.Turnos.AnyAsync(t => t.CajaId == cajaId && t.EstaAbierto);
+        return await _context.Turnos.AnyAsync(t => t.UsuarioId == usuarioId
+        && t.CajaId == cajaId
+        && t.EstaAbierto == true);
     }
     public async Task<Turno?> ObtenerPorIdAsync(int id)
     {

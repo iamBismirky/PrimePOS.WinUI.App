@@ -92,6 +92,7 @@
                                 <controls:DataGridTextColumn Header="Categoria" Binding="{Binding CategoriaNombre}"/>
                                 <controls:DataGridTextColumn Header="Precio Compra" Binding="{Binding PrecioCompra, Converter={StaticResource NumeroConverterHelper}}"/>
                                 <controls:DataGridTextColumn Header="Precio Venta" Binding="{Binding PrecioVenta, Converter={StaticResource NumeroConverterHelper}}"/>
+                                <controls:DataGridTextColumn Header="Existencia" Binding="{Binding Existencia}"/>
                                 <controls:DataGridCheckBoxColumn Header="Estado" Binding="{Binding Estado}"/>
                                 <controls:DataGridTextColumn Header="Fecha Registro" Binding="{Binding FechaRegistro}"/>
 

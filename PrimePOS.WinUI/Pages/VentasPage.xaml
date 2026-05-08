@@ -178,16 +178,14 @@
                         Grid.Column="3"
                         Width="300">
 
-                    <controls:WrapPanel Orientation="Vertical" >
-
-                       
+                        <controls:WrapPanel Orientation="Vertical" >
                         <TextBlock>
                             <Run Text="Usuario" FontFamily="Segoe UI" FontWeight="Bold"/>
-                            <Run Text="{Binding AppSesion.TurnoActual.UsuarioNombre, Mode=OneWay}"/>
+                            <Run Text="{Binding AppSesion.UsuarioActual.UsuarioNombre, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock>
                             <Run Text="Rol" FontFamily="Segoe UI" FontWeight="Bold"/>
-                            <Run Text="{Binding AppSesion.TurnoActual.RolNombre, Mode=OneWay}"/>
+                            <Run Text="{Binding AppSesion.UsuarioActual.RolNombre, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock>
                             <Run Text="Caja" FontFamily="Segoe UI" FontWeight="Bold"/>
@@ -309,20 +307,39 @@
                 </Border>
 
                  <!--Botones de acción--> 
-                <Border Grid.Column="2"
-                        BorderThickness="1"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                    CornerRadius="10"
-                    Padding="15"
-                    >
-                            <StackPanel Orientation="Vertical" Spacing="10" HorizontalAlignment="Right">
+                        <Border Grid.Column="2"
+                                BorderThickness="1"
+                                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                CornerRadius="10"
+                                Padding="15" >
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Vertical" Spacing="10" Grid.Column="0">
+                                    <Button Content="Abrir Turno" Command="{Binding AbrirTurnoCommand}"/>
+                                    <Button Content="Cerrar Turno" Command="{Binding CerrarTurnoCommand}"/>
+                                    <Button Content="Limpiar Pantalla" Command="{Binding LimpiarCommand}"/>
+
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Spacing="10" Grid.Column="1">
+                                    <Button 
+                                            Command="{Binding CobrarCommand}"
+                                            Background="#FF2D89EF"
+                                            Foreground="White">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Cobrar"/>
+                                            <FontIcon Glyph="&#xE7BF;" FontFamily="Segoe Fluent Icons"/>
+                                        </StackPanel>
+                                        
+                                    </Button>
+
+                                </StackPanel>
                                 
-                                <Button Content="Limpiar Pantalla" Command="{Binding LimpiarCommand}"/>
-                                <Button Content="Cobrar" Command="{Binding CobrarCommand}"/>
-                                <Button Content="Abrir Turno" Command="{Binding AbrirTurnoCommand}"/>
-                                <Button Content="Cerrar Turno" Command="{Binding CerrarTurnoCommand}"/>
-                            </StackPanel>
-                </Border>
+                                
+                            </Grid>
+                        </Border>
             </Grid>
         </Border>
             

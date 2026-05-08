@@ -18,20 +18,29 @@
                            FontSize="22"
                            FontWeight="Bold"/>
 
-                <TextBlock Text="{Binding TurnoTexto}" />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="Caja" FontSize="18" FontWeight="SemiBold"/>
+                    <ComboBox 
+                            ItemsSource="{Binding Cajas}"
+                            SelectedItem="{Binding CajaSeleccionada}"
+                            DisplayMemberPath="Nombre"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Spacing="10">
+                    <TextBlock Text="{Binding TurnoTexto}" FontSize="18" FontWeight="SemiBold"/>
 
-                <ComboBox ItemsSource="{Binding Cajas}"
-                          SelectedItem="{Binding CajaSeleccionada}"
-                          DisplayMemberPath="Nombre"/>
-
-                <NumberBox Header="Monto Inicial"
-                           Value="{Binding MontoInicial, Mode=TwoWay}" />
+                    <NumberBox Header="Monto Inicial"
+                               Value="{Binding MontoInicial, Mode=TwoWay, Converter={StaticResource DecimalToDouble}}"
+                               NumberFormatter="{StaticResource DecimalFormatter}"/>
+                </StackPanel>
+                
 
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <Button Content="Cancelar"
-                            Command="{Binding CancelarCommand}" />
+                            Command="{Binding CancelarCommand}"
+                            Style="{StaticResource SubtleButtonStyle}"/>
                     <Button Content="Abrir"
-                            Command="{Binding AbrirCommand}" />
+                            Command="{Binding AbrirCommand}"
+                            Style="{StaticResource AccentButtonStyle}"/>
                 </StackPanel>
 
             </StackPanel>

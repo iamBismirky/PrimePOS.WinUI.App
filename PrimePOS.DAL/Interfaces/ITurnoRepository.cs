@@ -6,7 +6,7 @@ namespace PrimePOS.DAL.Interfaces
     {
         void Actualizar(Turno turno);
         Task AgregarAsync(Turno turno);
-        Task<bool> ExisteTurnoAbierto(int cajaId);
+        Task<bool> ExisteTurnoAbierto(int usuarioId, int cajaId);
         Task<List<Turno>> GetTurnosPorFecha(int cajaId, DateTime fecha);
         Task GuardarCambiosAsync();
         Task<List<Turno>> ObtenerPorCajaAsync(int cajaId);

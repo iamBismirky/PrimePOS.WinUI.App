@@ -36,6 +36,7 @@ public partial class AbrirTurnoViewModel : ObservableObject
     [ObservableProperty] private string turnoTexto = "";
 
     public event Action? OnCerrar;
+    public Action? OnTurnoAbierto;
 
     // 🔹 INIT
     public async Task InicializarAsync()
@@ -68,7 +69,8 @@ public partial class AbrirTurnoViewModel : ObservableObject
         var dto = new CrearTurnoDto
         {
             CajaId = CajaSeleccionada.CajaId,
-            MontoInicial = MontoInicial
+            MontoInicial = MontoInicial,
+
         };
 
         var res = await _turnoApi.AbrirTurnoAsync(dto);
@@ -79,11 +81,11 @@ public partial class AbrirTurnoViewModel : ObservableObject
             return;
         }
 
+
         _sesion.AbrirTurno(res.Data);
 
         _notify.Success("Turno abierto");
-
-        OnCerrar?.Invoke();
+        OnTurnoAbierto?.Invoke();
     }
 
     // 🔹 CANCELAR

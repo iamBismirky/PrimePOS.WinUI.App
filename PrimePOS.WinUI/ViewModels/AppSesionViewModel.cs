@@ -9,17 +9,15 @@ namespace PrimePOS.WinUI.ViewModels
 {
     public partial class AppSesionViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private AppSesionUsuarioDto? usuarioActual;
+        [ObservableProperty] private AppSesionUsuarioDto? usuarioActual;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HayTurnoAbierto))]
         private TurnoDto? turnoActual;
 
-        [ObservableProperty]
-        private CajaDto? cajaActual;
+        [ObservableProperty] private CajaDto? cajaActual;
 
-        [ObservableProperty]
-        private string? token;
+        [ObservableProperty] private string? token;
 
         public int CajaId { get; set; } = 1;
 
@@ -59,13 +57,13 @@ namespace PrimePOS.WinUI.ViewModels
         public void AbrirTurno(TurnoDto turno)
         {
             TurnoActual = turno;
-            OnPropertyChanged(nameof(HayTurnoAbierto));
+            //OnPropertyChanged(nameof(HayTurnoAbierto));
         }
 
         public void CerrarTurno()
         {
             TurnoActual = null;
-            OnPropertyChanged(nameof(HayTurnoAbierto));
+            //OnPropertyChanged(nameof(HayTurnoAbierto));
         }
     }
 }

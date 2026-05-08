@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrimePOS.DAL.Context;
 
@@ -11,9 +12,11 @@ using PrimePOS.DAL.Context;
 namespace PrimePOS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260508180726_UpdateTurnoTable")]
+    partial class UpdateTurnoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,6 +71,48 @@ namespace PrimePOS.DAL.Migrations
                     b.HasKey("CategoriaId");
 
                     b.ToTable("Categorias");
+                });
+
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.CierreTurno", b =>
+                {
+                    b.Property<int>("CierreTurnoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CierreTurnoId"));
+
+                    b.Property<decimal>("Diferencia")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("EfectivoContado")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("FechaCierre")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("MontoInicial")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalEfectivo")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalGeneral")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalTarjeta")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalTransferencia")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TurnoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CierreTurnoId");
+
+                    b.HasIndex("TurnoId");
+
+                    b.ToTable("CierresTurno");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Cliente", b =>
@@ -579,6 +624,17 @@ namespace PrimePOS.DAL.Migrations
                     b.ToTable("VentasDetalle");
                 });
 
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.CierreTurno", b =>
+                {
+                    b.HasOne("PrimePOS.ENTITIES.Models.Turno", "Turno")
+                        .WithMany("CierresTurno")
+                        .HasForeignKey("TurnoId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Turno");
+                });
+
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Factura", b =>
                 {
                     b.HasOne("PrimePOS.ENTITIES.Models.Cliente", "Cliente")
@@ -749,6 +805,8 @@ namespace PrimePOS.DAL.Migrations
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Turno", b =>
                 {
+                    b.Navigation("CierresTurno");
+
                     b.Navigation("Ventas");
                 });
 

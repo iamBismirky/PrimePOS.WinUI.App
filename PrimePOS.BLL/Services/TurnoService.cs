@@ -10,21 +10,18 @@ public class TurnoService : ITurnoService
 {
     private readonly ITurnoRepository _turnoRepository;
     private readonly ICajaRepository _cajaRepository;
-    private readonly ICierreTurnoRepository _cierreTurnoRepository;
     private readonly IVentaRepository _ventaRepository;
     private readonly IMetodoPagoRepository _metodoPagoRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public TurnoService(ITurnoRepository turnoRepository,
         ICajaRepository cajaRepository,
-        ICierreTurnoRepository cierreTurnoRepository,
         IVentaRepository ventaRepository,
         IMetodoPagoRepository metodoPagoRepository,
         IUnitOfWork unitOfWork)
     {
         _turnoRepository = turnoRepository;
         _cajaRepository = cajaRepository;
-        _cierreTurnoRepository = cierreTurnoRepository;
         _ventaRepository = ventaRepository;
         _metodoPagoRepository = metodoPagoRepository;
         _unitOfWork = unitOfWork;
@@ -38,10 +35,10 @@ public class TurnoService : ITurnoService
             var ahora = DateTime.Now;
 
             //  Validar que no haya turno abierto en la caja
-            var existe = await _turnoRepository.ExisteTurnoAbierto(dto.CajaId);
+            var existe = await _turnoRepository.ExisteTurnoAbierto(dto.UsuarioId, dto.CajaId);
 
             if (existe)
-                throw new BusinessException("Ya hay un turno abierto en esta caja.", 400);
+                throw new BusinessException("Ya hay un turno abierto en esta caja con este usuario.", 400);
 
             // Validar que la caja exista
             var existeCaja = await _cajaRepository.ExisteCajaIdAsync(dto.CajaId);
@@ -73,6 +70,7 @@ public class TurnoService : ITurnoService
             {
                 TurnoId = turno.TurnoId,
                 CajaId = turno.CajaId,
+                CajaNombre = turno.Caja?.Nombre ?? "",
                 NumeroTurno = turno.NumeroTurno,
                 UsuarioId = turno.UsuarioId,
                 FechaApertura = turno.FechaApertura,
@@ -87,33 +85,28 @@ public class TurnoService : ITurnoService
         }
     }
 
-    public async Task CerrarTurnoAsync(CierreTurnoDto cierre)
+    public async Task CerrarTurnoAsync(TurnoDto dto)
     {
-        var turno = await _turnoRepository.ObtenerPorIdAsync(cierre.TurnoId);
+        var turno = await _turnoRepository.ObtenerPorIdAsync(dto.TurnoId);
 
         if (!turno!.EstaAbierto)
-            throw new Exception("El turno ya está cerrado");
+            throw new BusinessException("El turno ya está cerrado", 400);
 
-        cierre.Diferencia = cierre.EfectivoContado -
-            (cierre.MontoInicial + cierre.TotalEfectivo);
+        dto.Diferencia = dto.EfectivoContado -
+            (dto.MontoInicial + dto.TotalEfectivo);
+        var totalGeneral = dto.MontoInicial + dto.TotalEfectivo + dto.TotalTarjeta
+            + dto.TotalTransferencia;
 
-        // (Opcional pero recomendado)
-        var cierreEntity = new CierreTurno
-        {
-            TurnoId = cierre.TurnoId,
-            MontoInicial = cierre.MontoInicial,
-            TotalEfectivo = cierre.TotalEfectivo,
-            TotalTarjeta = cierre.TotalTarjeta,
-            TotalTransferencia = cierre.TotalTransferencia,
-            EfectivoContado = cierre.EfectivoContado,
-            Diferencia = cierre.Diferencia,
-            FechaCierre = DateTime.Now
-        };
-
-        _cierreTurnoRepository.Crear(cierreEntity);
-        await _cierreTurnoRepository.GuardarCambiosAsync();
+        turno.TotalEfectivo = dto.TotalEfectivo;
+        turno.TotalTarjeta = dto.TotalTarjeta;
+        turno.TotalTransferencia = dto.TotalTransferencia;
+        turno.EfectivoContado = dto.EfectivoContado;
+        turno.Diferencia = dto.Diferencia;
         turno.EstaAbierto = false;
+        turno.MontoCierre = totalGeneral;
+        turno.TotalGeneral = totalGeneral;
         turno.FechaCierre = DateTime.Now;
+
 
         _turnoRepository.Actualizar(turno);
         await _turnoRepository.GuardarCambiosAsync();

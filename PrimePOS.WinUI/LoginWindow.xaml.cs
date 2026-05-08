@@ -3,7 +3,9 @@ using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Services;
 using System;
 using System.Threading.Tasks;
@@ -37,6 +39,8 @@ public sealed partial class LoginWindow : Window
             _ = MostrarNotificacionAsync(msg, type);
         };
 
+        KeyboardService.Attach((UIElement)Content);
+        EnterAsTab.Attach(RootGrid);
     }
 
     private void BtnTema_Click(object sender, RoutedEventArgs e)
@@ -113,4 +117,28 @@ public sealed partial class LoginWindow : Window
         this.ExtendsContentIntoTitleBar = true;
         this.SystemBackdrop = new MicaBackdrop();
     }
+    private void Control_KeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key != Windows.System.VirtualKey.Enter)
+            return;
+
+        switch (sender)
+        {
+            case TextBox tb when tb == txtUsername:
+
+                pwdPassword.Focus(
+                    FocusState.Programmatic);
+
+                break;
+
+            case PasswordBox pb when pb == pwdPassword:
+
+                btnLogin.Focus(
+                    FocusState.Programmatic);
+
+                break;
+        }
+
+    }
+
 }

@@ -18,10 +18,18 @@ public class Turno
     public DateTime FechaApertura { get; set; }
     public DateTime FechaOperacion { get; set; }
     public decimal MontoInicial { get; set; }
+    public decimal TotalEfectivo { get; set; }
+    public decimal TotalTarjeta { get; set; }
+    public decimal TotalTransferencia { get; set; }
+
+    public decimal TotalGeneral { get; set; }
+
+    public decimal EfectivoContado { get; set; }
+
+    public decimal Diferencia { get; set; }
     public decimal? MontoCierre { get; set; }
     public DateTime? FechaCierre { get; set; }
     public bool EstaAbierto { get; set; }
 
     public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
-    public ICollection<CierreTurno> CierresTurno { get; set; } = new List<CierreTurno>();
 }

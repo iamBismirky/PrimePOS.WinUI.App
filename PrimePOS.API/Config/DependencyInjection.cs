@@ -31,7 +31,6 @@ namespace PrimePOS.API.Config
             services.AddScoped<IVentaRepository, VentaRepository>();
             services.AddScoped<IFacturaRepository, FacturaRepository>();
             services.AddScoped<ITurnoRepository, TurnoRepository>();
-            services.AddScoped<ICierreTurnoRepository, CierreTurnoRepository>();
             services.AddScoped<IDetalleRepository, DetalleRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -37,6 +37,8 @@ public sealed partial class MainWindow : Window
             _ = MostrarNotificacionAsync(msg, type);
         };
 
+        KeyboardService.Attach((UIElement)Content);
+
 
     }
     private void TitleBar_BackRequested(TitleBar sender, object args)
@@ -153,6 +155,7 @@ public sealed partial class MainWindow : Window
         // 🔥 Mover ventana
         appWindow.Move(new PointInt32(x, y));
     }
+
 
 
 }

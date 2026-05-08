@@ -15,7 +15,8 @@
     
     <Grid x:Name="RootGrid"
           VerticalAlignment="Center"
-          HorizontalAlignment="Center">
+          HorizontalAlignment="Center"
+          TabFocusNavigation="Cycle">
         
              <Grid.RowDefinitions>
                  <RowDefinition Height="40"/>
@@ -104,27 +105,32 @@
                     HorizontalAlignment="Center"/>
 
                 <!-- USUARIO -->
-                <TextBox
-                    x:Name="txtUsername"
+                    <TextBox 
+                        x:Name="txtUsername"
                     Text="{Binding Username, Mode=TwoWay}"
                     PlaceholderText="Usuario"
                     CharacterCasing="Upper"
-                    TabIndex="1"/>
+                    TabIndex="0"
+                    KeyDown="Control_KeyDown"/>
 
-                <!-- PASSWORD -->
+
+
+                    <!-- PASSWORD -->
                 <PasswordBox
                     x:Name="pwdPassword"
                     PasswordChanged="pwdPassword_PasswordChanged"
                     PlaceholderText="Contraseña"
                     PasswordChar="#"
-                    TabIndex="2"/>
+                    TabIndex="1"
+                    KeyDown="Control_KeyDown"/>
                     <Grid>
-                        <Button
+                        <Button x:Name="btnLogin"
                                Content="Iniciar Sesión"
                                Command="{Binding LoginCommand}"
                                Height="40"
                                HorizontalAlignment="Center"
-                               TabIndex="3"/>
+                               TabIndex="2"
+                            />
                         <ProgressRing
                                IsActive="{Binding IsLoading}"
                                Width="30"

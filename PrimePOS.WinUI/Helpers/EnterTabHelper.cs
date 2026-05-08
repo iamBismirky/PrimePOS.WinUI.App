@@ -1,81 +1,65 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Windows.System;
 
-namespace PrimePOS.WinUI.Helpers
+namespace PrimePOS.WinUI.Helpers;
+
+public static class EnterAsTab
 {
-
-    public static class EnterTabHelper
+    public static void Attach(UIElement root)
     {
-        /// <summary>
-        /// Activa Enter como Tab en toda la página.
-        /// </summary>
-        /// <param name="root">Elemento raíz de la página (this)</param>
-        /// <param name="accionFinal">Acción a ejecutar en el último control</param>
-        public static void Activar(UIElement root, Action? accionFinal = null)
-        {
-            root.KeyDown += (s, e) =>
+        root.AddHandler(
+            UIElement.KeyDownEvent,
+            new KeyEventHandler((s, e) =>
             {
-                if (e.Key != Windows.System.VirtualKey.Enter)
-                    return;
+                HandleKeyDown(root, e);
+            }),
+            true);
+    }
 
-                var controles = ObtenerControlesOrdenados(root);
+    private static void HandleKeyDown(
+        UIElement root,
+        KeyRoutedEventArgs e)
+    {
+        if (e.Key != VirtualKey.Enter)
+            return;
 
-                if (controles.Count == 0)
-                    return;
+        var focused = FocusManager.GetFocusedElement();
 
-                var focused = FocusManager.GetFocusedElement() as Control;
-                if (focused == null)
-                    return;
+        if (focused == null)
+            return;
 
-                int index = controles.IndexOf(focused);
-                if (index == -1)
-                    return;
+        // Ignorar AutoSuggestBox
+        if (focused is AutoSuggestBox)
+            return;
 
-                // Siguiente control
-                if (index < controles.Count - 1)
-                {
-                    controles[index + 1].Focus(FocusState.Keyboard);
-                }
-                else
-                {
-                    // Último → ejecutar acción final
-                    accionFinal?.Invoke();
-                }
+        // Ignorar multilinea
+        if (focused is TextBox tb &&
+            tb.AcceptsReturn)
+            return;
 
-                e.Handled = true;
-            };
-        }
+        e.Handled = true;
 
-        // Obtiene todos los controles con TabIndex ordenados
-        private static List<Control> ObtenerControlesOrdenados(DependencyObject parent)
+        // BUTTON = CLICK
+        if (focused is Button button)
         {
-            var lista = new List<Control>();
-            Recorrer(parent, lista);
-            return lista
-                .Where(c => c.IsTabStop)
-                .OrderBy(c => c.TabIndex)
-                .ToList();
-        }
-
-        // Recursivo para obtener todos los controles hijos
-        private static void Recorrer(DependencyObject parent, List<Control> lista)
-        {
-            int count = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < count; i++)
+            if (button.Command?.CanExecute(null) == true)
             {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is Control control)
-                {
-                    lista.Add(control);
-                }
-                Recorrer(child, lista);
+                button.Command.Execute(null);
             }
+
+            return;
         }
+
+        // ENTER = TAB
+        var options = new FindNextElementOptions
+        {
+            SearchRoot = root
+        };
+
+        FocusManager.TryMoveFocus(
+            FocusNavigationDirection.Next,
+            options);
     }
 }
-

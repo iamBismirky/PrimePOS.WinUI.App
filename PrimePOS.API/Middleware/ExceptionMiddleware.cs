@@ -13,7 +13,7 @@ public class ExceptionMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext context)
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {
@@ -21,17 +21,29 @@ public class ExceptionMiddleware
         }
         catch (BusinessException ex)
         {
-            await WriteResponse(context, ex.Message, ex.StatusCode);
+            await WriteResponseAsync(
+                context,
+                ex.Message,
+                ex.StatusCode);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            await WriteResponse(context, ex.Message, 500);
+            // Aquí luego puedes agregar logging
+
+            await WriteResponseAsync(
+                context,
+                "Ha ocurrido un error interno.",
+                StatusCodes.Status500InternalServerError);
         }
     }
 
-    private static async Task WriteResponse(HttpContext context, string message, int statusCode)
+    private static async Task WriteResponseAsync(
+        HttpContext context,
+        string message,
+        int statusCode)
     {
         context.Response.ContentType = "application/json";
+
         context.Response.StatusCode = statusCode;
 
         var response = new ApiResponse<object>
@@ -40,7 +52,8 @@ public class ExceptionMiddleware
             Message = message
         };
 
-        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
-    }
+        var json = JsonSerializer.Serialize(response);
 
+        await context.Response.WriteAsync(json);
+    }
 }

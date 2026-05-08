@@ -1,7 +1,5 @@
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PrimePOS.WinUI.ViewModels;
 using System;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -11,13 +9,13 @@ namespace PrimePOS.WinUI.Pages;
 
 public sealed partial class ReportesPage : Page
 {
-    public ReporVentaViewModel ViewModel { get; }
+    //public ReporVentaViewModel ViewModel { get; }
 
     public ReportesPage()
     {
         InitializeComponent();
-        ViewModel = App.AppServices.GetRequiredService<ReporVentaViewModel>();
-        this.DataContext = ViewModel;
+        //ViewModel = App.AppServices.GetRequiredService<ReporVentaViewModel>();
+        //this.DataContext = ViewModel;
     }
     private void BtnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
     {
