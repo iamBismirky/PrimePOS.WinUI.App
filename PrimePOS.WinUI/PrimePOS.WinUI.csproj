@@ -58,7 +58,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Utilities" Version="17.14.40264" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1839" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.0.1" />
-    <PackageReference Include="QuestPDF" Version="2026.2.4" />
+    <PackageReference Include="QuestPDF" Version="2026.5.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PrimePOS.BLL\PrimePOS.BLL.csproj" />
