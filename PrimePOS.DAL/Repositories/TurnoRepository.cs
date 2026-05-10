@@ -73,13 +73,13 @@ public class TurnoRepository : ITurnoRepository
             .FirstOrDefaultAsync();
 
     }
-    public async Task<Turno?> ObtenerTurnoAbiertoAsync(int cajaId, int usuarioId)
+    public async Task<Turno?> ObtenerTurnoAbiertoAsync(int usuarioId)
     {
         return await _context.Turnos
             .Include(t => t.Usuario)
             .ThenInclude(u => u!.Rol)
             .Include(t => t.Caja)
-            .Where(t => t.CajaId == cajaId && t.UsuarioId == usuarioId && t.FechaCierre == null)
+            .Where(t => t.UsuarioId == usuarioId && t.FechaCierre == null)
             .OrderByDescending(t => t.FechaApertura)
             .FirstOrDefaultAsync();
     }

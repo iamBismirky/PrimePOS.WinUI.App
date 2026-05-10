@@ -11,7 +11,7 @@ namespace PrimePOS.DAL.Interfaces
         Task GuardarCambiosAsync();
         Task<List<Turno>> ObtenerPorCajaAsync(int cajaId);
         Task<Turno?> ObtenerPorIdAsync(int id);
-        Task<Turno?> ObtenerTurnoAbiertoAsync(int cajaId, int usuarioId);
+        Task<Turno?> ObtenerTurnoAbiertoAsync(int usuarioId);
         Task<Turno?> ObtenerTurnoAbiertoPorUsuarioAsync(int usuarioId);
         Task<Turno?> ObtenerUltimoTurnoDelDia(DateTime fecha);
         Task<Turno?> ObtenerUltimoTurnoDelDiaAsync(int cajaId, DateTime fecha);

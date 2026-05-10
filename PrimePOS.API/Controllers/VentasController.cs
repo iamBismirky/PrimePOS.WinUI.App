@@ -37,12 +37,12 @@ public class VentaController : ControllerBase
     }
 
     // 🔹 VENTAS POR TURNO
-    [HttpGet("por-turno/{turnoId}")]
+    [HttpGet("ventas-turno/{turnoId}")]
     public async Task<IActionResult> ObtenerPorTurnoAsync(int turnoId)
     {
         var ventas = await _service.ObtenerVentasPorTurnoAsync(turnoId);
 
-        return Ok(new ApiResponse<List<VentaDto>>
+        return Ok(new ApiResponse<decimal>
         {
             Success = true,
             Data = ventas

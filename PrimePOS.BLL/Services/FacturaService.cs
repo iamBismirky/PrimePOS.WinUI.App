@@ -69,12 +69,13 @@ namespace PrimePOS.BLL.Services
             factura.Numero = $"F-{factura.FacturaId:D6}";
             await _facturaRepository.GuardarCambiosAsync();
 
-            // 🔥 PDF
-            var url = GenerarPdf(factura);
+            var facturaDto = MapearFactura(factura);
+            // PDF
+            var url = GenerarPdf(facturaDto);
 
             return (factura, url);
         }
-        private string GenerarPdf(Factura factura)
+        private string GenerarPdf(FacturaDto factura)
         {
             var baseUrl = _config["App:BaseUrl"]; // ej: https://localhost:5001
 
@@ -114,10 +115,10 @@ namespace PrimePOS.BLL.Services
                 Subtotal = factura.Subtotal,
                 Impuesto = factura.Impuesto,
                 Total = factura.Total,
-                MetodoPago = factura.MetodoPago,
+                MetodoPago = factura.MetodoPago?.ToString(),
                 Turno = factura.Venta?.Turno?.NumeroTurno.ToString() ?? "",
-                ClienteNombre = factura.Venta?.Cliente?.Nombre ?? "",
-                UsuarioNombre = factura.Usuario?.Nombre ?? "",
+                ClienteNombre = factura.ClienteNombre ?? "",
+                UsuarioNombre = factura.UsuarioNombre ?? "",
                 Efectivo = factura.Efectivo,
                 Cambio = factura.Cambio,
 

@@ -118,18 +118,10 @@ public class VentaService : IVentaService
         }
     }
 
-    public async Task<List<VentaDto>> ObtenerVentasPorTurnoAsync(int turnoId)
+    public async Task<decimal> ObtenerVentasPorTurnoAsync(int turnoId)
     {
-        var ventas = await _ventaRepository.ObtenerPorTurnoAsync(turnoId);
-
-        return ventas.Select(v => new VentaDto
-        {
-            VentaId = v.VentaId,
-            FechaRegistro = v.FechaRegistro,
-            ClienteNombre = v.ClienteNombre,
-            MetodoPagoId = v.MetodoPagoId,
-            Total = v.Total
-        }).ToList();
+        return await _ventaRepository
+            .ObtenerTotalVentasPorTurnoAsync(turnoId);
     }
 
     public async Task<List<VentaDto>> ObtenerVentasDelDiaAsync()

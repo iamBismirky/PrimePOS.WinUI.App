@@ -50,11 +50,11 @@ public class TurnoApiService : BaseApiService
     }
 
 
-    public Task<ApiResponse<TurnoDto>> ObtenerTurnoActivoAsync(int cajaId)
+    public Task<ApiResponse<TurnoDto>> ObtenerTurnoActivoAsync()
     {
         var request = new HttpRequestMessage(
             HttpMethod.Get,
-            $"api/turnos/activo/{cajaId}"
+            $"api/turnos/activo/actual"
         );
 
         return SendAsync<TurnoDto>(request);

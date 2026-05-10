@@ -131,7 +131,7 @@ public sealed partial class MainWindow : Window
         GlobalInfoBar.Severity = type;
         GlobalInfoBar.IsOpen = true;
 
-        await Task.Delay(3000);
+        await Task.Delay(5000);
 
         GlobalInfoBar.IsOpen = false;
     }

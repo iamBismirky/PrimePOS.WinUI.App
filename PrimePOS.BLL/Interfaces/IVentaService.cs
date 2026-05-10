@@ -6,6 +6,6 @@ namespace PrimePOS.BLL.Interfaces
     {
         Task<VentaResponseDto> CrearVentaAsync(int userId, string nombre, CrearVentaDto dto);
         Task<List<VentaDto>> ObtenerVentasDelDiaAsync();
-        Task<List<VentaDto>> ObtenerVentasPorTurnoAsync(int turnoId);
+        Task<decimal> ObtenerVentasPorTurnoAsync(int turnoId);
     }
 }

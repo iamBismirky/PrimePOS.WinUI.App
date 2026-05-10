@@ -126,7 +126,7 @@ public partial class VentaViewModel : ObservableObject
 
     private async Task VerificarTurnoAsync()
     {
-        var res = await _turnoApi.ObtenerTurnoActivoAsync(_sesion.CajaId);
+        var res = await _turnoApi.ObtenerTurnoActivoAsync();
 
         if (res.Success && res.Data != null)
         {
@@ -196,9 +196,9 @@ public partial class VentaViewModel : ObservableObject
                 res.Data ?? new List<ProductoDto>()
             );
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            _notify.Error("Error al buscar productos");
+            _notify.Error(ex.Message);
         }
     }
 
@@ -245,7 +245,17 @@ public partial class VentaViewModel : ObservableObject
 
     public async Task AgregarProductoCarritoAsync(ProductoDto dto)
     {
+
         var existente = Carrito.FirstOrDefault(p => p.ProductoId == dto.ProductoId);
+        if (dto.Existencia <= 0)
+        {
+            _notify.Warning($"No hay stock disponible de {dto.Nombre}");
+            return;
+        }
+        if (dto.Existencia <= 5)
+        {
+            _notify.Warning($"Inventario bajo de {dto.Nombre} - Existen {dto.Existencia}");
+        }
 
         if (existente != null)
             existente.Cantidad++;
@@ -347,7 +357,7 @@ public partial class VentaViewModel : ObservableObject
 
             if (result == null || !result.Success || result.Data == null)
             {
-                _notify.Warning("Error al procesar la factura");
+                _notify.Warning(result!.Message);
                 return;
             }
 
@@ -430,9 +440,9 @@ public partial class VentaViewModel : ObservableObject
 
             return result;
         }
-        catch
+        catch (Exception ex)
         {
-            _notify.Error("Error al procesar la venta");
+            _notify.Error(ex.Message);
             return null;
         }
     }

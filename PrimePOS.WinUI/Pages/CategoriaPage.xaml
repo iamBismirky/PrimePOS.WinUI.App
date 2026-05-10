@@ -156,6 +156,7 @@
 
                     <TextBox Header="Nombre"
                              Text="{Binding Nombre, Mode=TwoWay}"/>
+                    
                     <ToggleSwitch Header="Estado"
                                   IsOn="{Binding Estado, Mode=TwoWay}"/>
 

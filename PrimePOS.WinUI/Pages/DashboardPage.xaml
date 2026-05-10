@@ -34,7 +34,7 @@
             <Border Grid.Column="0" Background="#FF2D89EF" CornerRadius="10" Padding="15">
                 <StackPanel>
                     <TextBlock Text="Ventas Hoy" FontWeight="SemiBold" Foreground="White"/>
-                    <TextBlock Text="Total ventas de hoy"/>
+                    <TextBlock Text="{Binding TotalVentas, Mode=OneWay, Converter={StaticResource NumeroConverterHelper}}"/>
                 </StackPanel>
             </Border>
 

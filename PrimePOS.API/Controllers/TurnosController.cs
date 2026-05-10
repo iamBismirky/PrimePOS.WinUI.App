@@ -74,8 +74,8 @@ public class TurnosController : ControllerBase
 
 
     // 🔹 TURNO ABIERTO (CAJA + USUARIO)
-    [HttpGet("activo/{cajaId}")]
-    public async Task<IActionResult> ObtenerTurnoActivo(int cajaId)
+    [HttpGet("activo/actual")]
+    public async Task<IActionResult> ObtenerTurnoActivo()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
         if (userIdClaim == null)
@@ -88,7 +88,7 @@ public class TurnosController : ControllerBase
         }
 
         var userId = int.Parse(userIdClaim.Value);
-        var turno = await _service.ObtenerTurnoAbiertoAsync(cajaId, userId);
+        var turno = await _service.ObtenerTurnoAbiertoAsync(userId);
 
         return Ok(new ApiResponse<TurnoDto?>
         {

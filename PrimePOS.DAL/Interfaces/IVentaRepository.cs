@@ -13,5 +13,6 @@ namespace PrimePOS.DAL.Interfaces
         Task<Venta?> ObtenerPorId(int id);
         Task<List<Venta>> ObtenerPorTurnoAsync(int turnoId);
         Task<decimal> ObtenerTotalPorMetodoPagoAsync(int turnoId, int metodoPagoId);
+        Task<decimal> ObtenerTotalVentasPorTurnoAsync(int turnoId);
     }
 }

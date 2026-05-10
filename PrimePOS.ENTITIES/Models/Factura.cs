@@ -8,7 +8,7 @@ namespace PrimePOS.ENTITIES.Models
     {
         [Key]
         public int FacturaId { get; set; }
-        public string Numero { get; set; } = string.Empty;
+        public string? Numero { get; set; } = "";
         public DateTime Fecha { get; set; }
 
         public int VentaId { get; set; }
@@ -16,11 +16,11 @@ namespace PrimePOS.ENTITIES.Models
 
         public int UsuarioId { get; set; }
         public Usuario? Usuario { get; set; }
-        public string UsuarioNombre { get; set; } = "";
+        public string? UsuarioNombre { get; set; }
 
         public int ClienteId { get; set; }
         public Cliente? Cliente { get; set; }
-        public string ClienteNombre { get; set; } = "";
+        public string? ClienteNombre { get; set; }
 
         public decimal Subtotal { get; set; }
         public decimal Descuento { get; set; }
@@ -30,7 +30,7 @@ namespace PrimePOS.ENTITIES.Models
         public decimal Efectivo { get; set; }
         public decimal Cambio { get; set; }
         public string Estado { get; set; } = "Activa";
-        public string MetodoPago { get; set; } = string.Empty;
+        public string? MetodoPago { get; set; }
         public ICollection<FacturaDetalle> Detalles { get; set; } = new List<FacturaDetalle>();
 
     }

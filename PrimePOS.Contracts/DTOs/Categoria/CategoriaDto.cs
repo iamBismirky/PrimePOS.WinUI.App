@@ -3,7 +3,8 @@
     public class CategoriaDto
     {
         public int CategoriaId { get; set; }
-        public string Nombre { get; set; } = string.Empty;
+        public string? Nombre { get; set; }
+        public string? Glyph { get; set; }
         public bool Estado { get; set; }
     }
 }

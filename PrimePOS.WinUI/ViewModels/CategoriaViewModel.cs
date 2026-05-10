@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using PrimePOS.Contracts.DTOs.Categoria;
+using PrimePOS.WinUI.Helpers;
+using PrimePOS.WinUI.Models;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
@@ -16,11 +18,18 @@ public partial class CategoriaViewModel : ObservableObject
 {
     private readonly CategoriaApiService _api;
     private readonly NotificationService _notify;
+    [ObservableProperty]
+    private ObservableCollection<GlyphItem> glyphs = [];
+
+    [ObservableProperty]
+    private GlyphItem? glyphSeleccionado;
 
     public CategoriaViewModel(CategoriaApiService api, NotificationService notify)
     {
         _api = api;
         _notify = notify;
+        Glyphs = new ObservableCollection<GlyphItem>(
+            GlyphCatalog.Todos);
     }
 
     // =========================
@@ -160,8 +169,11 @@ public partial class CategoriaViewModel : ObservableObject
     public void Editar(CategoriaDto categoria)
     {
         CategoriaSeleccionada = categoria;
+
         Nombre = categoria.Nombre;
         Estado = categoria.Estado;
+
+
         AbrirOverlay();
     }
 

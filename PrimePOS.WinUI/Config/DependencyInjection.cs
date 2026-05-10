@@ -43,6 +43,7 @@ public static class DependencyInjection
         services.AddScoped<AbrirTurnoViewModel>();
         services.AddScoped<CerrarTurnoViewModel>();
         services.AddScoped<ReporVentaViewModel>();
+        services.AddScoped<DashboardViewModel>();
 
 
 

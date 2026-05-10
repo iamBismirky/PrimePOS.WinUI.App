@@ -1,4 +1,4 @@
-﻿using PrimePOS.ENTITIES.Models;
+﻿using PrimePOS.Contracts.DTOs.Factura;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -8,9 +8,9 @@ namespace PrimePOS.BLL.Reportes;
 
 public class Factura80mmDocument : IDocument
 {
-    private readonly Factura _factura;
+    private readonly FacturaDto _factura;
 
-    public Factura80mmDocument(Factura factura)
+    public Factura80mmDocument(FacturaDto factura)
     {
         _factura = factura;
     }
@@ -35,7 +35,7 @@ public class Factura80mmDocument : IDocument
 
                 // Info venta
                 stack.Item().Text($"Fecha: {_factura.Fecha:dd/MM/yyyy HH:mm}");
-                //stack.Item().Text($"Turno: {_factura.Turno}   Cajero: {_factura.UsuarioNombre}");
+                stack.Item().Text($"Turno: {_factura.Turno}   Cajero: {_factura.UsuarioNombre}");
                 stack.Item().Text($"Cliente: {_factura.ClienteNombre}");
                 stack.Item().LineHorizontal(1);
 
@@ -45,11 +45,11 @@ public class Factura80mmDocument : IDocument
 
                 foreach (var item in _factura.Detalles)
                 {
-                    //var nombre = item.Nombre.Length > 16 ? item.Nombre.Substring(0, 16) : item.Nombre.PadRight(16);
+                    var nombre = item.Nombre.Length > 16 ? item.Nombre.Substring(0, 16) : item.Nombre.PadRight(16);
                     var cantidad = item.Cantidad.ToString().PadLeft(4);
                     var total = item.Total.ToString("0.00").PadLeft(6);
 
-                    //stack.Item().Text($"{nombre}{cantidad}{total}");
+                    stack.Item().Text($"{nombre}{cantidad}{total}");
                 }
 
                 stack.Item().LineHorizontal(1);

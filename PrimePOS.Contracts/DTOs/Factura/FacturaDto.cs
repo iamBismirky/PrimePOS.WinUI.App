@@ -4,12 +4,12 @@ namespace PrimePOS.Contracts.DTOs.Factura
 {
     public class FacturaDto
     {
-        public string Numero { get; set; } = string.Empty;
+        public string? Numero { get; set; }
         public DateTime Fecha { get; set; }
-        public string Turno { get; set; } = string.Empty;
+        public string? Turno { get; set; }
 
-        public string ClienteNombre { get; set; } = string.Empty;
-        public string UsuarioNombre { get; set; } = string.Empty;
+        public string? ClienteNombre { get; set; }
+        public string? UsuarioNombre { get; set; }
 
 
         public decimal Subtotal { get; set; }
@@ -18,7 +18,7 @@ namespace PrimePOS.Contracts.DTOs.Factura
 
         public decimal Efectivo { get; set; }
         public decimal Cambio { get; set; }
-        public string MetodoPago { get; set; } = string.Empty;
+        public string? MetodoPago { get; set; }
 
 
         public List<FacturaDetalleDto> Detalles { get; set; } = new List<FacturaDetalleDto>();

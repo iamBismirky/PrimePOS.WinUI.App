@@ -18,7 +18,7 @@
                            FontSize="22"
                            FontWeight="Bold"/>
                 <TextBlock Text="Monto inicial: "/>
-                <TextBlock Text="{Binding MontoInicial}"/>
+                <TextBlock Text="{Binding MontoInicial, Converter={StaticResource NumeroConverterHelper}}"/>
                 <TextBlock Text="Total Efectivo: "/>
                 <TextBlock Text="{Binding TotalEfectivo, Converter={StaticResource NumeroConverterHelper}}"/>
                     <TextBlock Text="Total Tarjeta: "/>

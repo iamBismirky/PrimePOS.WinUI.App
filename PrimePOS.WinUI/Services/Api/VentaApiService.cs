@@ -26,13 +26,13 @@ public class VentaApiService : BaseApiService
     }
 
     // 🔹 VENTAS POR TURNO
-    public Task<ApiResponse<List<VentaDto>>> ObtenerPorTurnoAsync(int turnoId)
+    public Task<ApiResponse<decimal>> ObtenerTotalVentasPorTurnoAsync(int turnoId)
     {
         var request = new HttpRequestMessage(
             HttpMethod.Get,
-            $"api/venta/por-turno/{turnoId}");
+            $"api/venta/ventas-turno/{turnoId}");
 
-        return SendAsync<List<VentaDto>>(request);
+        return SendAsync<decimal>(request);
     }
 
     // 🔹 VENTAS DEL DÍA

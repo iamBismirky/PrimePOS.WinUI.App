@@ -13,12 +13,14 @@ public partial class LoginViewModel : ObservableObject
     private readonly UsuarioApiService _usuarioApi;
     private readonly AppSesionViewModel _appSesion;
     private readonly NotificationService _notify;
+    private readonly TurnoApiService _turnoApi;
 
-    public LoginViewModel(UsuarioApiService usuarioApi, AppSesionViewModel appSesion, NotificationService notify)
+    public LoginViewModel(UsuarioApiService usuarioApi, AppSesionViewModel appSesion, NotificationService notify, TurnoApiService turnoApi)
     {
         _usuarioApi = usuarioApi;
         _appSesion = appSesion;
         _notify = notify;
+        _turnoApi = turnoApi;
     }
 
     [ObservableProperty]
@@ -58,6 +60,7 @@ public partial class LoginViewModel : ObservableObject
             }
             TokenStorage.SetToken(result.Data!.Token);
             _appSesion.IniciarSesion(result.Data!);
+            await VerificarTurnoAsync();
             _notify.Success("¡Bienvenido " + result.Data!.UsuarioNombre + "!");
             //Navegación
             LoginSuccess?.Invoke();
@@ -70,6 +73,15 @@ public partial class LoginViewModel : ObservableObject
         finally
         {
             IsLoading = false;
+        }
+    }
+    private async Task VerificarTurnoAsync()
+    {
+        var res = await _turnoApi.ObtenerTurnoActivoAsync();
+
+        if (res.Success && res.Data != null)
+        {
+            _appSesion.TurnoActual = res.Data;
         }
     }
 

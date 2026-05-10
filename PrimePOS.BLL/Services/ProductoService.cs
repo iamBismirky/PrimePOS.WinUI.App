@@ -162,7 +162,9 @@ public class ProductoService : IProductoService
             ProductoId = p.ProductoId,
             Codigo = p.Codigo,
             Nombre = p.Nombre,
-            PrecioVenta = p.PrecioVenta
+            PrecioVenta = p.PrecioVenta,
+            Existencia = p.Existencia
+
         }).ToList();
     }
 }

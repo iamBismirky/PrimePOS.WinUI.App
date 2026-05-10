@@ -26,15 +26,15 @@ public partial class ReporVentaViewModel : ObservableObject
     [RelayCommand]
     public async Task CargarVentasPorTurnoAsync()
     {
-        if (_appSesion.TurnoActual == null)
-            return;
-        var ventas = await _ventaService.ObtenerVentasPorTurnoAsync(_appSesion.TurnoActual!.TurnoId);
-        Ventas.Clear();
-        foreach (var venta in ventas)
-        {
-            Ventas.Add(venta);
-        }
-        OnPropertyChanged(nameof(TotalVentas));
+        //if (_appSesion.TurnoActual == null)
+        //    return;
+        //var ventas = await _ventaService.ObtenerVentasPorTurnoAsync(_appSesion.TurnoActual!.TurnoId);
+        //Ventas.Clear();
+        //foreach (var venta in ventas)
+        //{
+        //    Ventas.Add(venta);
+        //}
+        //OnPropertyChanged(nameof(TotalVentas));
     }
     [RelayCommand]
     public async Task CargarVentasDiaAsync()

@@ -48,7 +48,7 @@ public class VentaRepository : IVentaRepository
     public async Task<List<Venta>> ObtenerPorTurnoAsync(int turnoId)
     {
         return await _context.Ventas
-            .Where(v => v.TurnoId == turnoId && v.Estado)
+            .Where(v => v.TurnoId == turnoId && v.Estado == true)
             .ToListAsync();
     }
 
@@ -57,5 +57,11 @@ public class VentaRepository : IVentaRepository
         return await _context.Ventas
             .Where(v => v.FechaRegistro.Date == fecha.Date && v.Estado)
             .ToListAsync();
+    }
+    public async Task<decimal> ObtenerTotalVentasPorTurnoAsync(int turnoId)
+    {
+        return await _context.Ventas
+            .Where(x => x.TurnoId == turnoId)
+            .SumAsync(x => x.Total);
     }
 }
