@@ -46,5 +46,12 @@ namespace PrimePOS.WinUI.Pages
                 vm.DesactivarCommand.Execute(producto);
             }
         }
+        private void VerEtiqueta_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ProductoViewModel vm && sender is Button btn && btn.DataContext is ProductoDto producto)
+            {
+                vm.VerEtiquetaCommand.Execute(producto);
+            }
+        }
     }
 }

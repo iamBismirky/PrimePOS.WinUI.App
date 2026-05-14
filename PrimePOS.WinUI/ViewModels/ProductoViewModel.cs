@@ -18,12 +18,14 @@ public partial class ProductoViewModel : ObservableObject
     private readonly ProductoApiService _apiProducto;
     private readonly CategoriaApiService _apiCategoria;
     private readonly NotificationService _notify;
+    private readonly PdfViewService _pdfService;
 
-    public ProductoViewModel(ProductoApiService apiProducto, CategoriaApiService apiCategoria, NotificationService notify)
+    public ProductoViewModel(ProductoApiService apiProducto, CategoriaApiService apiCategoria, NotificationService notify, PdfViewService pdfService)
     {
         _apiProducto = apiProducto;
         _apiCategoria = apiCategoria;
         _notify = notify;
+        _pdfService = pdfService;
     }
 
 
@@ -355,5 +357,16 @@ public partial class ProductoViewModel : ObservableObject
     {
         IsOverlayVisible = false;
         Limpiar();
+    }
+    [RelayCommand]
+    public async Task VerEtiquetaAsync(
+    ProductoDto producto)
+    {
+        ProductoSeleccionado = producto;
+        var pdf =
+            await _apiProducto
+                .ObtenerEtiquetaAsync(producto.ProductoId);
+        System.Diagnostics.Debug.WriteLine(pdf);
+        await _pdfService.MostrarPdfAsync(pdf);
     }
 }

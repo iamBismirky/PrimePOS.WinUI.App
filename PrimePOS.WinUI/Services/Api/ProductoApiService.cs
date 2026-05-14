@@ -61,4 +61,15 @@ public class ProductoApiService : BaseApiService
 
         return SendAsync<List<ProductoDto>>(request);
     }
+    public Task<byte[]> ObtenerEtiquetaAsync(
+    int productoId)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"api/productos/{productoId}/etiqueta"
+        );
+
+        return SendFileAsync(request);
+    }
+
 }

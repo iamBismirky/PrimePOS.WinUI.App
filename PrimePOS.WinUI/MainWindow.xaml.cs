@@ -7,6 +7,7 @@ using PrimePOS.WinUI.Pages;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.ViewModels;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Windows.Graphics;
 using WinRT.Interop;
@@ -154,6 +155,32 @@ public sealed partial class MainWindow : Window
 
         // 🔥 Mover ventana
         appWindow.Move(new PointInt32(x, y));
+    }
+    public async Task MostrarPdfAsync(byte[] pdfBytes)
+    {
+        string tempFile =
+            Path.Combine(
+                Path.GetTempPath(),
+                $"{Guid.NewGuid()}.pdf");
+
+        await File.WriteAllBytesAsync(
+            tempFile,
+            pdfBytes);
+
+        await PdfWebView.EnsureCoreWebView2Async();
+
+        PdfWebView.CoreWebView2.Navigate(
+            new Uri(tempFile).AbsoluteUri);
+
+        PdfOverlay.Visibility =
+            Visibility.Visible;
+    }
+    private void CerrarPdf_Click(
+    object sender,
+    RoutedEventArgs e)
+    {
+        PdfOverlay.Visibility =
+            Visibility.Collapsed;
     }
 
 

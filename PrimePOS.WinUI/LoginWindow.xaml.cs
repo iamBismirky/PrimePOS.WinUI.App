@@ -70,7 +70,7 @@ public sealed partial class LoginWindow : Window
     private void OnLoginExitoso()
     {
 
-        var main = new MainWindow();
+        var main = App.AppServices.GetRequiredService<MainWindow>();
         main.Activate();
 
         this.Close();

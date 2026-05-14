@@ -109,6 +109,10 @@
                                                         Tag="{Binding}">
                                                     <SymbolIcon Symbol="Edit"/>
                                                 </Button>
+                                                <Button Click="VerEtiqueta_Click"
+                                                        Tag="{Binding}">
+                                                    <SymbolIcon Symbol="View"/>
+                                                </Button>
 
                                                 <!-- DESACTIVAR -->
                                                 <Button Click="Desactivar_Click"
@@ -210,6 +214,10 @@
                                 HorizontalAlignment="Right"
                                 Spacing="10">
                         
+                        <Button Command="{Binding VerEtiquetaCommand}"
+                                Background="Yellow">
+                            <TextBlock Text="Cancelar"/>
+                        </Button>
                         <Button Command="{Binding CerrarOverlayCommand}"
                                 Background="Red">
                             <TextBlock Text="Cancelar"/>

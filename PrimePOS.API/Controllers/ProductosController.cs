@@ -10,10 +10,12 @@ namespace PrimePOS.API.Controllers;
 public class ProductosController : ControllerBase
 {
     private readonly IProductoService _service;
+    private readonly IEtiquetaService _etiquetaService;
 
-    public ProductosController(IProductoService service)
+    public ProductosController(IProductoService service, IEtiquetaService barcodeService)
     {
         _service = service;
+        _etiquetaService = barcodeService;
     }
 
     [HttpGet]
@@ -98,5 +100,17 @@ public class ProductosController : ControllerBase
             Data = data
         });
 
+    }
+    [HttpGet("{id}/etiqueta")]
+    public async Task<IActionResult> ObtenerEtiquetaAsync(int id)
+    {
+        var pdf =
+            await _etiquetaService
+                .GenerarEtiquetaProductoAsync(id);
+
+        return File(
+            pdf,
+            "application/pdf",
+            $"Etiqueta-{id}.pdf");
     }
 }

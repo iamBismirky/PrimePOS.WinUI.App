@@ -180,6 +180,50 @@
                                  Title="Mensaje"
                                  Message=""/>
                     </Grid>
+                    
+                    <!-- PDF OVERLAY -->
+                    <Grid x:Name="PdfOverlay"
+                          Visibility="Collapsed"
+                          Background="#80000000">
+
+                        <Border Width="1000"
+                                Height="750"
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                CornerRadius="12"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+
+                            <Grid>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="50"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- HEADER -->
+                                <Grid Grid.Row="0"
+                                      Padding="10">
+
+                                    <TextBlock Text="Vista previa PDF"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center"/>
+
+                                    <Button Content="X"
+                                            
+                                            HorizontalAlignment="Right"
+                                            Click="CerrarPdf_Click"/>
+                                </Grid>
+
+                                <!-- WEBVIEW -->
+                                <WebView2 x:Name="PdfWebView"
+                                                   Grid.Row="1"/>
+
+                            </Grid>
+
+                        </Border>
+
+                    </Grid>
 
                 </Grid>
 

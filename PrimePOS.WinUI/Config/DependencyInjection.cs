@@ -49,6 +49,7 @@ public static class DependencyInjection
 
         //NotificationService
         services.AddSingleton<NotificationService>();
+        services.AddSingleton<PdfViewService>();
         services.AddSingleton<MainWindow>();
 
         return services;

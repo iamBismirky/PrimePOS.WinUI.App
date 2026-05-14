@@ -86,4 +86,31 @@ public class BaseApiService
             };
         }
     }
+    protected async Task<byte[]> SendFileAsync(
+    HttpRequestMessage request)
+    {
+        var token = TokenStorage.GetToken();
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            request.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+        }
+
+        var response = await _http.SendAsync(request);
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            TokenStorage.Clear();
+
+            OnUnauthorized?.Invoke();
+
+            throw new UnauthorizedAccessException(
+                "Sesión expirada");
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsByteArrayAsync();
+    }
 }

@@ -146,7 +146,7 @@ public class ProductoService : IProductoService
 
     private string GenerarCodigoProducto(int productoId)
     {
-        return $"PROD-{productoId:D4}";
+        return $"PROD-{productoId:D6}";
     }
     public async Task<List<ProductoDto>> BuscarProductosAsync(string texto)
     {
