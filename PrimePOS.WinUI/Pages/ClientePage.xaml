@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Loaded="Page_Loaded">
 
-    <Grid x:Name="MainRoot">
+    <Grid x:Name="Root">
 
         <Grid Padding="20" RowSpacing="20">
 
@@ -76,12 +76,13 @@
 
                         <controls:DataGrid ItemsSource="{Binding Clientes}"
                                        AutoGenerateColumns="False"
-                                       IsReadOnly="True">
+                                       IsReadOnly="False">
 
                             <controls:DataGrid.Columns>
 
                                 <controls:DataGridTextColumn Header="Codigo" Binding="{Binding Codigo}"/>
                                 <controls:DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}"/>
+                                <controls:DataGridTextColumn Header="Documento" Binding="{Binding Documento}"/>
                                 <controls:DataGridTextColumn Header="Telefono" Binding="{Binding Telefono}"/>
                                 <controls:DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
                                 <controls:DataGridTextColumn Header="Direccion" Binding="{Binding Direccion}"/>
@@ -97,8 +98,7 @@
                                             <StackPanel Orientation="Horizontal" Spacing="5">
 
                                                 <!-- EDITAR -->
-                                                <Button Click="Editar_Click"
-                                                        Tag="{Binding}">
+                                                <Button Click="Editar_Click">
                                                     <SymbolIcon Symbol="Edit"/>
                                                 </Button>
 
@@ -141,66 +141,7 @@
 
         </Grid>
 
-        <!-- OVERLAY -->
-        <Grid Visibility="{Binding IsOverlayVisible}"
-              Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
-              Opacity="0.8">
-
-            <Border Width="400"
-                    Padding="20"
-                    Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
-                    CornerRadius="12"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-
-                <StackPanel Spacing="10">
-
-                    <TextBlock Text="Caja"
-                               FontSize="18"
-                               FontWeight="SemiBold"/>
-                    
-                    <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
-
-                    <StackPanel Orientation="Horizontal" Spacing="50" HorizontalAlignment="Stretch">
-                        <TextBlock>
-                            <Run Text="Codigo"/>
-                            <Run Text="{Binding Codigo}"/>
-                        </TextBlock>
-                        <TextBlock>
-                            <Run Text="Fecha Registro"/>
-                            <Run Text="{Binding FechaRegistro}"/>
-                            </TextBlock>
-                    </StackPanel>
-
-
-                    <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
-                    <TextBox Header="Nombre" Text="{Binding Nombre, Mode=TwoWay}"/>
-                    <TextBox Header="Telefono" Text="{Binding Telefono, Mode=TwoWay}"/>
-                    <TextBox Header="Email" Text="{Binding Email, Mode=TwoWay}"/>
-                    <TextBox Header="Direccion" Text="{Binding Direccion, Mode=TwoWay}"/>
-                    <ToggleSwitch Header="Estado" IsOn="{Binding Estado, Mode=TwoWay}"/>
-
-                    <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
-
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Right"
-                                Spacing="10">
-
-                        <Button Command="{Binding GuardarCommand}">
-                            <TextBlock Text="Guardar"/>
-                        </Button>
-
-                        <Button Command="{Binding CerrarOverlayCommand}">
-                            <TextBlock Text="Cancelar"/>
-                        </Button>
-
-                    </StackPanel>
-
-                </StackPanel>
-
-            </Border>
-
-        </Grid>
+       
 
     </Grid>
 </Page>

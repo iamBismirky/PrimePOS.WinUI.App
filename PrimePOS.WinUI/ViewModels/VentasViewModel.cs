@@ -1,11 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.Contracts.DTOs.MetodoPago;
 using PrimePOS.Contracts.DTOs.Producto;
 using PrimePOS.Contracts.DTOs.Venta;
 using PrimePOS.Contracts.DTOs.VentaDetalle;
+using PrimePOS.WinUI.Overlays;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
@@ -27,6 +29,7 @@ public partial class VentaViewModel : ObservableObject
     private readonly FacturaApiService _facturaApi;
     private readonly NotificationService _notify;
     private readonly AppSesionViewModel _sesion;
+    private readonly OverlayService _overlayService;
     public AppSesionViewModel AppSesion => _sesion;
 
     public VentaViewModel(
@@ -38,7 +41,8 @@ public partial class VentaViewModel : ObservableObject
         VentaApiService ventaApi,
         FacturaApiService facturaApi,
         NotificationService notify,
-        AppSesionViewModel sesion)
+        AppSesionViewModel sesion,
+        OverlayService overlay)
     {
         _productoApi = productoApi;
         _clienteApi = clienteApi;
@@ -49,6 +53,7 @@ public partial class VentaViewModel : ObservableObject
         _facturaApi = facturaApi;
         _notify = notify;
         _sesion = sesion;
+        _overlayService = overlay;
     }
 
     // =========================
@@ -445,5 +450,13 @@ public partial class VentaViewModel : ObservableObject
             _notify.Error(ex.Message);
             return null;
         }
+    }
+    [RelayCommand]
+    public async Task NuevoClienteAsync()
+    {
+        var vm = App.AppServices.GetRequiredService<ClienteOverlayViewModel>();
+
+        var overlay = new ClienteOverlay(vm);
+        _overlayService.Show(overlay);
     }
 }

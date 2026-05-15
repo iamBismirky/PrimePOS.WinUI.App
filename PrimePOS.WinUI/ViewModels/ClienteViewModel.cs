@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.Contracts.DTOs.Rol;
+using PrimePOS.WinUI.Overlays;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
@@ -15,13 +17,15 @@ namespace PrimePOS.WinUI.ViewModels;
 
 public partial class ClienteViewModel : ObservableObject
 {
-    private readonly ClienteApiService _apiCategoria;
+    private readonly ClienteApiService _apiCliente;
     private readonly NotificationService _notify;
+    private readonly OverlayService _overlayService;
 
-    public ClienteViewModel(ClienteApiService apiCategoria, NotificationService notify)
+    public ClienteViewModel(ClienteApiService apiCategoria, NotificationService notify, OverlayService overlay)
     {
-        _apiCategoria = apiCategoria;
+        _apiCliente = apiCategoria;
         _notify = notify;
+        _overlayService = overlay;
     }
 
 
@@ -29,28 +33,12 @@ public partial class ClienteViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<ClienteDto> clientes = new();
     [ObservableProperty] private ObservableCollection<RolDto> roles = new();
     [ObservableProperty] private ClienteDto? clienteSeleccionado;
-    [ObservableProperty] private string codigo = "";
-    [ObservableProperty] private string nombre = "";
-    [ObservableProperty] private string documento = "";
-    [ObservableProperty] private string telefono = "";
-    [ObservableProperty] private string email = "";
-    [ObservableProperty] private string direccion = "";
-    [ObservableProperty] private DateTime fechaRegistro = DateTime.Today;
-    [ObservableProperty] private bool estado = true;
     [ObservableProperty] private string buscar = "";
     [ObservableProperty] private bool isLoading;
-    [ObservableProperty] private bool isOverlayVisible;
 
 
     private List<ClienteDto> _cache = new();
 
-    public Visibility OverlayVisibility =>
-        IsOverlayVisible ? Visibility.Visible : Visibility.Collapsed;
-
-    partial void OnIsOverlayVisibleChanged(bool value)
-    {
-        OnPropertyChanged(nameof(OverlayVisibility));
-    }
 
     public Visibility LoadingVisibility =>
         IsLoading ? Visibility.Visible : Visibility.Collapsed;
@@ -67,7 +55,7 @@ public partial class ClienteViewModel : ObservableObject
         {
             IsLoading = true;
 
-            var res = await _apiCategoria.ObtenerClientesAsync();
+            var res = await _apiCliente.ObtenerClientesAsync();
 
             if (!res.Success)
             {
@@ -89,101 +77,55 @@ public partial class ClienteViewModel : ObservableObject
     }
 
 
-    [RelayCommand]
-    public async Task GuardarAsync()
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(Nombre))
-            {
-                _notify.Warning("El nombre es obligatorio");
-                return;
-            }
-
-
-            if (ClienteSeleccionado == null)
-            {
-
-
-                var res = await _apiCategoria.CrearClienteAsync(new ClienteDto
-                {
-                    Codigo = Codigo.Trim(),
-                    Nombre = Nombre.Trim(),
-                    Documento = Documento.Trim(),
-                    Telefono = Telefono.Trim(),
-                    Email = Email.Trim(),
-                    Direccion = Direccion.Trim(),
-                    Estado = Estado,
-                    FechaRegistro = DateTime.Now
-                });
-
-                if (!res.Success)
-                {
-                    _notify.Error(res.Message ?? "Error al crear cliente");
-                    return;
-                }
-
-                _notify.Success(res.Message ?? "Cliente creado correctamente");
-            }
-            else
-            {
-                ClienteSeleccionado.Codigo = Codigo.Trim();
-                ClienteSeleccionado.Nombre = Nombre.Trim();
-                ClienteSeleccionado.Documento = Documento.Trim();
-                ClienteSeleccionado.Telefono = Telefono.Trim();
-                ClienteSeleccionado.Email = Email.Trim();
-                ClienteSeleccionado.Estado = Estado;
-                ClienteSeleccionado.FechaRegistro = FechaRegistro;
-
-                var res = await _apiCategoria.ActualizarClienteAsync(
-                    ClienteSeleccionado.ClienteId,
-                    ClienteSeleccionado);
-                if (!res.Success)
-                {
-                    _notify.Error(res.Message ?? "Error al actualizar cliente");
-                    return;
-                }
-
-                _notify.Success(res.Message ?? "Cliente actualizado correctamente");
-            }
-
-            await CargarClientesAsync();
-            Limpiar();
-            CerrarOverlay();
-        }
-        catch (Exception ex)
-        {
-            _notify.Error(ex.Message);
-        }
-    }
 
     [RelayCommand]
     public async Task EditarAsync(ClienteDto cliente)
     {
-        ClienteSeleccionado = cliente;
-        Codigo = cliente.Codigo;
-        Nombre = cliente.Nombre;
-        Estado = cliente.Estado;
-        Telefono = cliente.Telefono;
-        Email = cliente.Email;
-        Direccion = cliente.Direccion;
-        FechaRegistro = cliente.FechaRegistro;
-        AbrirOverlay();
+        var vm = App.AppServices.GetRequiredService<ClienteOverlayViewModel>();
+
+        vm.InitEditar(cliente, async () =>
+        { await CargarClientesAsync(); });
+
+        var overlay = new ClienteOverlay(vm);
+        _overlayService.Show(overlay);
+
     }
 
     [RelayCommand]
     public async Task DesactivarAsync(ClienteDto cliente)
     {
-        var res = await _apiCategoria.DesactivarClienteAsync(cliente.ClienteId);
+        var vm = App.AppServices
+        .GetRequiredService<DialogViewModel>();
 
-        if (!res.Success)
-        {
-            _notify.Error(res.Message ?? "No se pudo desactivar");
-            return;
-        }
+        vm.Initialize(
+            "Eliminar cliente",
+            $"¿Seguro que deseas eliminar a {cliente.Nombre}?",
+            async () =>
+            {
+                var res = await _apiCliente
+                    .DesactivarClienteAsync(cliente.ClienteId);
 
-        _notify.Success(res.Message ?? "Cliente desactivado");
-        await CargarClientesAsync();
+                if (res.Success)
+                {
+                    _notify.Success("Cliente eliminado");
+
+                    await CargarClientesAsync();
+                }
+                else
+                {
+                    _notify.Error(res.Message);
+                }
+
+                _overlayService.Close();
+
+            },
+         _overlayService.Close);
+
+
+        var view = new DialogOverlay(vm);
+
+        _overlayService.Show(view);
+
     }
 
     [RelayCommand]
@@ -205,34 +147,12 @@ public partial class ClienteViewModel : ObservableObject
     [RelayCommand]
     public async Task NuevoAsync()
     {
-        Limpiar();
-        AbrirOverlay();
+        var vm = App.AppServices.GetRequiredService<ClienteOverlayViewModel>();
+        vm.InitNuevo(async () => { await CargarClientesAsync(); });
+        var overlay = new ClienteOverlay(vm);
+        _overlayService.Show(overlay);
+
     }
 
-    [RelayCommand]
-    public void Limpiar()
-    {
-        Codigo = "";
-        Nombre = "";
-        Documento = "";
-        Telefono = "";
-        Email = "";
-        Direccion = "";
-        FechaRegistro = DateTime.Now;
-        Estado = true;
-        ClienteSeleccionado = null;
-    }
 
-    [RelayCommand]
-    public void AbrirOverlay()
-    {
-        IsOverlayVisible = true;
-    }
-
-    [RelayCommand]
-    public void CerrarOverlay()
-    {
-        IsOverlayVisible = false;
-        Limpiar();
-    }
 }

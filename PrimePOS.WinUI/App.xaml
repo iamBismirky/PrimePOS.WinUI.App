@@ -18,6 +18,7 @@
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
             <helpers:NumeroConverterHelper x:Key="NumeroConverterHelper"/>
             <helpers:DecimalToDoubleConverter x:Key="DecimalToDouble"/>
+            <helpers:DateFormatConverter x:Key="DateFormatConverter"/>
             <!-- Formatter global -->
             <globalization:DecimalFormatter 
             x:Key="DecimalFormatter"

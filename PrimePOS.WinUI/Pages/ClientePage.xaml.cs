@@ -34,10 +34,15 @@ namespace PrimePOS.WinUI.Pages
         }
         private async void Editar_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ClienteViewModel vm && sender is Button btn && btn.DataContext is ClienteDto cliente)
-            {
-                vm.EditarCommand.Execute(cliente);
-            }
+            var cliente = (sender as FrameworkElement)?.DataContext as ClienteDto;
+
+            if (cliente == null)
+                return;
+
+            var vm = (ClienteViewModel)DataContext;
+            await vm.EditarAsync(cliente);
+
+
         }
         private void Desactivar_Click(object sender, RoutedEventArgs e)
         {

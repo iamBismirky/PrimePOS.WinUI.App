@@ -3,6 +3,7 @@ using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using PrimePOS.WinUI.Pages;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.ViewModels;
@@ -20,6 +21,7 @@ public sealed partial class MainWindow : Window
 {
     public AppSesionViewModel _sesion;
     public NotificationService _notify;
+    public OverlayService _overlayService;
     public MainWindow()
     {
         InitializeComponent();
@@ -29,6 +31,8 @@ public sealed partial class MainWindow : Window
 
         _sesion = App.AppServices.GetRequiredService<AppSesionViewModel>();
         _notify = App.AppServices.GetRequiredService<NotificationService>();
+        _overlayService = App.AppServices.GetRequiredService<OverlayService>();
+
         RootGrid.DataContext = _sesion;
         SetWindowSizeAndCenter(1600, 900);
 
@@ -40,6 +44,7 @@ public sealed partial class MainWindow : Window
 
         KeyboardService.Attach((UIElement)Content);
 
+        _overlayService.Initialize(OverlayContainer, OverlayContent);
 
     }
     private void TitleBar_BackRequested(TitleBar sender, object args)
@@ -183,6 +188,17 @@ public sealed partial class MainWindow : Window
             Visibility.Collapsed;
     }
 
+    private void OverlayContainer_Tapped(object sender, TappedRoutedEventArgs e)
+    {
+        _overlayService.Close();
+    }
+    private void OverlayContent_Tapped(object sender, TappedRoutedEventArgs e)
+    {
+        e.Handled = true;
+    }
 
+    private void PdfOverlay_Tapped(object sender, TappedRoutedEventArgs e)
+    {
 
+    }
 }

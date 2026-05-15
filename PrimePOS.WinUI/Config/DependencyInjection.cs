@@ -44,13 +44,16 @@ public static class DependencyInjection
         services.AddScoped<CerrarTurnoViewModel>();
         services.AddScoped<ReporVentaViewModel>();
         services.AddScoped<DashboardViewModel>();
+        services.AddScoped<ClienteOverlayViewModel>();
+        services.AddScoped<DialogViewModel>();
 
 
 
-        //NotificationService
+        //Services
         services.AddSingleton<NotificationService>();
         services.AddSingleton<PdfViewService>();
         services.AddSingleton<MainWindow>();
+        services.AddSingleton<OverlayService>();
 
         return services;
     }

@@ -126,9 +126,19 @@
                                     </DataTemplate>
                                 </AutoSuggestBox.ItemTemplate>
                             </AutoSuggestBox>
-                        </controls:WrapPanel>
-                        
-                        <Border Grid.Column="1"
+                            
+                                <Button Grid.Column="0"
+                                        Command="{Binding NuevoClienteCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="10"/>
+                                    </StackPanel>
+                                </Button>
+                            
+                            </controls:WrapPanel>
+                            
+
+                            
+                            <Border Grid.Column="1"
                                 BorderThickness="1"
                                 BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                                 CornerRadius="10"
