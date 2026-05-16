@@ -15,7 +15,7 @@
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <helpers:NumeroConverterHelper x:Key="NumeroConverterHelper"/>
             <helpers:DecimalToDoubleConverter x:Key="DecimalToDouble"/>
             <helpers:DateFormatConverter x:Key="DateFormatConverter"/>

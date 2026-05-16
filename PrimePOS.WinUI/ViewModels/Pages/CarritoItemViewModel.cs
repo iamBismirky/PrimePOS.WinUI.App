@@ -1,0 +1,34 @@
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace PrimePOS.WinUI.ViewModels.Pages;
+
+public class CarritoItemViewModel : INotifyPropertyChanged
+{
+    public int ProductoId { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string Codigo { get; set; } = string.Empty;
+
+    private int _cantidad;
+    public int Cantidad
+    {
+        get => _cantidad;
+        set
+        {
+            _cantidad = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(Total));
+        }
+    }
+
+    public decimal Precio { get; set; }
+
+    public decimal Total => Cantidad * Precio;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string name = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+}

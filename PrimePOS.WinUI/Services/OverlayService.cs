@@ -1,6 +1,9 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PrimePOS.WinUI.ViewModels;
+using PrimePOS.WinUI.Views.Overlays;
 using System;
+using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.Services;
 
@@ -39,5 +42,29 @@ public class OverlayService
         _container.Visibility = Visibility.Collapsed;
 
         IsOpen = false;
+    }
+    public async Task<bool> ConfirmAsync(string title, string message)
+    {
+        var vm = new DialogViewModel(title, message);
+
+        var overlay = new DialogOverlay(vm);
+
+        Show(overlay);
+
+        var result = await vm.WaitTask;
+
+        Close();
+
+        return result;
+    }
+    public async Task<bool> ShowClienteAsync(ClienteOverlay overlay, ClienteOverlayViewModel vm)
+    {
+        Show(overlay);
+
+        var result = await vm.WaitTask;
+
+        Close();
+
+        return result;
     }
 }

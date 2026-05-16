@@ -18,7 +18,7 @@
 	  
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Overlays\ClienteOverlay.xaml" />
+    <None Remove="Views\Overlays\ClienteOverlay.xaml" />
   </ItemGroup>
 	
 
@@ -68,14 +68,7 @@
     <ProjectReference Include="..\PrimePOS.Contracts\PrimePOS.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Overlays\DialogOverlay.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Overlays\ClienteOverlay.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Folder Include="Views\" />
   </ItemGroup>
   
   <!--

@@ -39,7 +39,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasKey("CajaId");
 
-                    b.ToTable("Cajas");
+                    b.ToTable("Cajas", (string)null);
 
                     b.HasData(
                         new
@@ -69,7 +69,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasKey("CategoriaId");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("Categorias", (string)null);
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Cliente", b =>
@@ -112,7 +112,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasKey("ClienteId");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Clientes", (string)null);
 
                     b.HasData(
                         new
@@ -195,7 +195,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasIndex("VentaId");
 
-                    b.ToTable("Facturas");
+                    b.ToTable("Facturas", (string)null);
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.FacturaDetalle", b =>
@@ -231,7 +231,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasIndex("ProductoId");
 
-                    b.ToTable("FacturasDetalle");
+                    b.ToTable("FacturasDetalle", (string)null);
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.MetodoPago", b =>
@@ -251,7 +251,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasKey("MetodoPagoId");
 
-                    b.ToTable("MetodoPagos");
+                    b.ToTable("MetodoPagos", (string)null);
 
                     b.HasData(
                         new
@@ -323,7 +323,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.ToTable("Productos");
+                    b.ToTable("Productos", (string)null);
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Rol", b =>
@@ -343,7 +343,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasKey("RolId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -419,7 +419,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Turnos");
+                    b.ToTable("Turnos", (string)null);
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Usuario", b =>
@@ -463,7 +463,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasIndex("RolId");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Venta", b =>
@@ -532,7 +532,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Ventas");
+                    b.ToTable("Ventas", (string)null);
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.VentaDetalle", b =>
@@ -578,7 +578,7 @@ namespace PrimePOS.DAL.Migrations
 
                     b.HasIndex("VentaId");
 
-                    b.ToTable("VentasDetalle");
+                    b.ToTable("VentasDetalle", (string)null);
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Factura", b =>

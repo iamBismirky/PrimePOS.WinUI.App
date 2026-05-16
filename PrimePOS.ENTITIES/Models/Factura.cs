@@ -14,6 +14,8 @@ namespace PrimePOS.ENTITIES.Models
         public int VentaId { get; set; }
         public Venta? Venta { get; set; }
 
+
+
         public int UsuarioId { get; set; }
         public Usuario? Usuario { get; set; }
         public string? UsuarioNombre { get; set; }

@@ -1,0 +1,108 @@
+<Page
+    x:Class="PrimePOS.WinUI.Views.Pages.PerfilPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+
+        <!-- CONTENEDOR CENTRADO -->
+        <Grid HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              MaxWidth="420"
+              Width="800">
+
+            <Border Padding="25"
+                    CornerRadius="16"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+
+                <StackPanel Spacing="20">
+
+                    <!-- HEADER -->
+                    <StackPanel Spacing="6" HorizontalAlignment="Center">
+                        <TextBlock Text="Mi Perfil"
+                                   FontSize="24"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock Text="Gestiona tu cuenta"
+                                   Opacity="0.6"
+                                   FontSize="13"/>
+                    </StackPanel>
+
+                    <!-- AVATAR -->
+                    <Grid Width="80" Height="80"
+                          HorizontalAlignment="Center"
+                          CornerRadius="40"
+                          Background="{ThemeResource AccentFillColorDefaultBrush}">
+
+                        <FontIcon Glyph="&#xE77B;"
+                                  FontSize="36"
+                                  Foreground="White"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- INFO -->
+                    <StackPanel Spacing="10">
+
+                        <StackPanel>
+                            <TextBlock Text="Usuario" Opacity="0.6"/>
+                            <TextBlock Text="{Binding UsuarioNombre, Mode=OneWay}"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="Rol" Opacity="0.6"/>
+                            <TextBlock Text="{Binding UsuarioRol, Mode=OneWay}"
+                                       FontSize="15"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Nombre Usuario" Opacity="0.6"/>
+                            <TextBlock Text="{Binding Username, Mode=OneWay}"
+               FontSize="15"/>
+                        </StackPanel>
+
+                    </StackPanel>
+
+                    <!-- DIVIDER -->
+                    <Rectangle Height="1"
+                               Fill="{ThemeResource DividerStrokeColorDefaultBrush}"
+                               Opacity="0.5"/>
+
+                    <!-- CAMBIAR CONTRASEÑA -->
+                    <StackPanel Spacing="12">
+
+                        <TextBlock Text="Cambiar contraseña"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"/>
+
+                        <PasswordBox Password="{Binding PasswordActual, Mode=TwoWay}"
+                                     PasswordChanged="Actual_PasswordChanged"
+                                     PlaceholderText="Contraseña actual"
+                                     PasswordChar="#"/>
+
+                        <PasswordBox Password="{Binding PasswordNueva, Mode=TwoWay}"
+                                     PasswordChanged="Nueva_PasswordChanged"
+                                     PlaceholderText="Nueva contraseña"
+                                     PasswordChar="#"/>
+
+                        <PasswordBox Password="{Binding Confirmar, Mode=TwoWay}"
+                                     PasswordChanged="Confirmar_PasswordChanged"
+                                     PlaceholderText="Confirmar contraseña"
+                                     PasswordChar="#"/>
+                        <Grid>
+                            <Button Content="Actualizar contraseña"
+                                    Command="{Binding CambiarPasswordCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    Style="{ThemeResource AccentButtonStyle}"/>
+                        </Grid>
+                    </StackPanel>
+
+                </StackPanel>
+
+            </Border>
+        </Grid>
+
+    </Grid>
+</Page>

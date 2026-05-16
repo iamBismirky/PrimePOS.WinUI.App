@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.BLL.Reportes;
 using PrimePOS.Contracts.DTOs.Factura;
@@ -28,14 +29,13 @@ namespace PrimePOS.BLL.Services
             var venta = await _ventaRepository.ObtenerPorId(ventaId);
 
             if (venta == null)
-                throw new Exception("Venta no encontrada");
+                throw new BusinessException("Venta no encontrada", 404);
 
             var factura = new Factura
             {
                 Detalles = new List<FacturaDetalle>(),
                 Fecha = DateTime.Now,
                 VentaId = venta.VentaId,
-
                 ClienteId = venta.ClienteId,
                 ClienteNombre = venta.ClienteNombre,
                 UsuarioId = venta.UsuarioId,
@@ -56,7 +56,7 @@ namespace PrimePOS.BLL.Services
                 factura.Detalles.Add(new FacturaDetalle
                 {
                     ProductoId = item.ProductoId,
-                    ProductoNombre = item.ProductoNombre,
+                    ProductoNombre = item.Producto?.Nombre ?? "",
                     Cantidad = item.Cantidad,
                     Precio = item.PrecioUnitario,
                     Total = item.Total

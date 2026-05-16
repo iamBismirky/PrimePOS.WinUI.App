@@ -2,8 +2,6 @@
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
-
-
 namespace PrimePOS.BLL.Reportes;
 
 public class Factura80mmDocument : IDocument
@@ -21,52 +19,141 @@ public class Factura80mmDocument : IDocument
     {
         container.Page(page =>
         {
-            page.Size(width: 200, height: 2000);
-            page.Margin(5); // Márgenes pequeños para térmica
-            page.DefaultTextStyle(x => x.FontSize(10));
+            page.ContinuousSize(80, Unit.Millimetre);
+            page.Margin(5);
 
-            page.Content().Column(stack =>
+            page.DefaultTextStyle(x =>
+                x.FontSize(9));
+
+            page.Content().Column(column =>
             {
-                // Encabezado
-                stack.Item().Text("PRIME POS").Bold().AlignCenter();
-                stack.Item().Text("Dirección de la tienda").AlignCenter();
-                stack.Item().Text("Tel: 123-456-7890").AlignCenter();
-                stack.Item().LineHorizontal(1);
+                column.Spacing(4);
 
-                // Info venta
-                stack.Item().Text($"Fecha: {_factura.Fecha:dd/MM/yyyy HH:mm}");
-                stack.Item().Text($"Turno: {_factura.Turno}   Cajero: {_factura.UsuarioNombre}");
-                stack.Item().Text($"Cliente: {_factura.ClienteNombre}");
-                stack.Item().LineHorizontal(1);
+                // HEADER
+                column.Item()
+                    .AlignCenter()
+                    .Text("PRIMEPOS")
+                    .Bold()
+                    .FontSize(16);
 
-                // Items
-                stack.Item().Text("Producto           Cant  Total").SemiBold();
-                stack.Item().LineHorizontal(1);
+                column.Item()
+                    .AlignCenter()
+                    .Text("Dirección de la tienda");
 
+                column.Item()
+                    .AlignCenter()
+                    .Text("RNC");
+
+                column.Item()
+                    .AlignCenter()
+                    .Text("Tel: 123-456-7890");
+
+                column.Item()
+                    .PaddingVertical(3)
+                    .LineHorizontal(1);
+
+                // INFO FACTURA
+                column.Item().Text($"Fecha: {_factura.Fecha:dd/MM/yyyy HH:mm}");
+
+                column.Item().Text(
+                    $"Turno: {_factura.Turno} | Cajero: {_factura.UsuarioNombre}");
+
+                column.Item().Text(
+                    $"Cliente: {_factura.ClienteNombre}");
+
+                column.Item()
+                    .PaddingVertical(3)
+                    .LineHorizontal(1);
+
+                // ENCABEZADO PRODUCTOS
+                column.Item().Row(row =>
+                {
+                    row.RelativeItem()
+                        .Text("Producto")
+                        .SemiBold();
+
+                    row.ConstantItem(35)
+                        .AlignCenter()
+                        .Text("Cant")
+                        .SemiBold();
+
+                    row.ConstantItem(50)
+                        .AlignRight()
+                        .Text("Total")
+                        .SemiBold();
+                });
+
+                column.Item().LineHorizontal(1);
+
+                // PRODUCTOS
                 foreach (var item in _factura.Detalles)
                 {
-                    var nombre = item.Nombre.Length > 16 ? item.Nombre.Substring(0, 16) : item.Nombre.PadRight(16);
-                    var cantidad = item.Cantidad.ToString().PadLeft(4);
-                    var total = item.Total.ToString("0.00").PadLeft(6);
+                    column.Item().Row(row =>
+                    {
+                        row.RelativeItem()
+                            .Text(item.Nombre);
 
-                    stack.Item().Text($"{nombre}{cantidad}{total}");
+                        row.ConstantItem(35)
+                            .AlignCenter()
+                            .Text(item.Cantidad.ToString());
+
+                        row.ConstantItem(50)
+                            .AlignRight()
+                            .Text(item.Total.ToString("N2"));
+                    });
                 }
 
-                stack.Item().LineHorizontal(1);
+                column.Item()
+                    .PaddingVertical(3)
+                    .LineHorizontal(1);
 
-                // Totales
-                stack.Item().Text($"Subtotal: {_factura.Subtotal:0.00}");
-                stack.Item().Text($"Impuesto (18%): {_factura.Impuesto:0.00}");
-                stack.Item().Text($"Total: {_factura.Total:0.00}");
-                stack.Item().Text($"Efectivo: {_factura.Efectivo:0.00}");
-                stack.Item().Text($"Cambio: {_factura.Cambio:0.00}");
-                stack.Item().LineHorizontal(1);
+                // TOTALES
+                AgregarTotal(column, "Subtotal", _factura.Subtotal);
+                AgregarTotal(column, "ITBIS", _factura.Impuesto);
 
-                // Mensaje final
-                stack.Item().Text("¡Gracias por su compra!").AlignCenter();
+                column.Item().Row(row =>
+                {
+                    row.RelativeItem()
+                        .Text("TOTAL")
+                        .Bold()
+                        .FontSize(12);
+
+                    row.ConstantItem(70)
+                        .AlignRight()
+                        .Text(_factura.Total.ToString("N2"))
+                        .Bold()
+                        .FontSize(12);
+                });
+
+                column.Item().Text($"Efectivo: {_factura.Efectivo:N2}");
+                column.Item().Text($"Cambio: {_factura.Cambio:N2}");
+
+                column.Item()
+                    .PaddingVertical(3)
+                    .LineHorizontal(1);
+
+                // FOOTER
+                column.Item()
+                    .AlignCenter()
+                    .Text("¡Gracias por su compra!")
+                    .Italic();
             });
         });
     }
+
+    private void AgregarTotal(
+        ColumnDescriptor column,
+        string label,
+        decimal value)
+    {
+        column.Item().Row(row =>
+        {
+            row.RelativeItem()
+                .Text(label);
+
+            row.ConstantItem(70)
+                .AlignRight()
+                .Text(value.ToString("N2"));
+        });
+    }
 }
-
-

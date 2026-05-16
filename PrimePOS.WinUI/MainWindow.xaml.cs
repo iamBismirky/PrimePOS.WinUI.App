@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using PrimePOS.WinUI.Pages;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.ViewModels;
+using PrimePOS.WinUI.Views.Pages;
 using System;
 using System.IO;
 using System.Threading.Tasks;

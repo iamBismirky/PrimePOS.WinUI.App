@@ -166,35 +166,35 @@
             </NavigationView.Content>
 
         </NavigationView>
+        
         <Grid Grid.Row="1">
             <!-- GENERIC OVERLAY -->
             <Grid x:Name="OverlayContainer"
-      Opacity="0.8"
-      Visibility="Collapsed"
-      Tapped="OverlayContainer_Tapped">
+                  Visibility="Collapsed"
+                  Tapped="OverlayContainer_Tapped">
 
                 <Grid Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
-          Opacity="0.8"/>
+                      Opacity="0.8"/>
 
                 <ContentControl x:Name="OverlayContent"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Tapped="OverlayContent_Tapped"/>
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Tapped="OverlayContent_Tapped"/>
             </Grid>
 
             <!-- PDF OVERLAY -->
             <Grid x:Name="PdfOverlay"
-      Visibility="Collapsed"
-      Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
-      Opacity="0.8"
-      Tapped="PdfOverlay_Tapped">
+                  Visibility="Collapsed"
+                  Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+                  Opacity="0.8"
+                  Tapped="PdfOverlay_Tapped">
 
                 <Border Width="1000"
-            Height="750"
-            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-            CornerRadius="12"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
+                        Height="750"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        CornerRadius="12"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
 
                     <Grid>
 
@@ -205,22 +205,21 @@
 
                         <!-- HEADER -->
                         <Grid Grid.Row="0"
-                  Padding="10">
+                              Padding="10">
 
                             <TextBlock Text="Vista previa PDF"
-                           FontSize="16"
-                           FontWeight="SemiBold"
-                           VerticalAlignment="Center"/>
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center"/>
 
                             <Button Content="X"
-                        
-                        HorizontalAlignment="Right"
-                        Click="CerrarPdf_Click"/>
+                                    HorizontalAlignment="Right"
+                                    Click="CerrarPdf_Click"/>
                         </Grid>
 
                         <!-- WEBVIEW -->
                         <WebView2 x:Name="PdfWebView"
-                               Grid.Row="1"/>
+                                  Grid.Row="1"/>
 
                     </Grid>
 
@@ -230,17 +229,17 @@
 
             <!-- INFOBAR OVERLAY -->
             <Grid VerticalAlignment="Top"
-      HorizontalAlignment="Center"
-      Margin="0,15,0,0"
-      Width="500">
+                  HorizontalAlignment="Center"
+                  Margin="0,15,0,0"
+                  Width="500">
 
                 <InfoBar x:Name="GlobalInfoBar"
-             IsOpen="False"
-             VerticalAlignment="Top"
-             HorizontalAlignment="Stretch"
-             Severity="Informational"
-             Title="Mensaje"
-             Message=""/>
+                         IsOpen="False"
+                         VerticalAlignment="Top"
+                         HorizontalAlignment="Stretch"
+                         Severity="Informational"
+                         Title="Mensaje"
+                         Message=""/>
             </Grid>
         </Grid>
     </Grid>
