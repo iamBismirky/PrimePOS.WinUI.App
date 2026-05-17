@@ -7,7 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
-    Loaded="Page_Loaded">
+    Loaded="Page_Loaded"
+    x:Name="Root">
 
     <Grid x:Name="MainRoot">
 
@@ -136,48 +137,7 @@
 
         </Grid>
 
-        <!-- OVERLAY -->
-        <Grid Visibility="{Binding IsOverlayVisible}"
-              Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
-              Opacity="0.8">
-
-            <Border Width="400"
-                    Padding="20"
-                    Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
-                    CornerRadius="12"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-
-                <StackPanel Spacing="10">
-
-                    <TextBlock Text="Caja"
-                               FontSize="18"
-                               FontWeight="SemiBold"/>
-
-                    <TextBox Header="Nombre"
-                             Text="{Binding Nombre, Mode=TwoWay}"/>
-                    <ToggleSwitch Header="Estado"
-                                  IsOn="{Binding Estado, Mode=TwoWay}"/>
-
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Right"
-                                Spacing="10">
-
-                        <Button Command="{Binding GuardarCommand}">
-                            <TextBlock Text="Guardar"/>
-                        </Button>
-
-                        <Button Command="{Binding CerrarOverlayCommand}">
-                            <TextBlock Text="Cancelar"/>
-                        </Button>
-
-                    </StackPanel>
-
-                </StackPanel>
-
-            </Border>
-
-        </Grid>
+        
 
     </Grid>
 </Page>

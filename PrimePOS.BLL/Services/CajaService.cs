@@ -49,7 +49,7 @@ namespace PrimePOS.BLL.Services
 
             var existeCaja = await _cajaRepository.ObtenerPorNombreAsync(nombre);
 
-            if (existeCaja != null)
+            if (existeCaja?.Nombre == dto.Nombre)
                 throw new BusinessException("Ya existe una caja con este nombre.", 400);
 
             var caja = new Caja
@@ -68,7 +68,7 @@ namespace PrimePOS.BLL.Services
 
             var existeCaja = await _cajaRepository.ObtenerPorNombreAsync(nombre);
 
-            if (existeCaja != null && existeCaja.CajaId != dto.CajaId)
+            if (existeCaja?.Nombre == dto.Nombre && existeCaja.CajaId != dto.CajaId)
                 throw new BusinessException("Ya existe una caja con este nombre.", 400);
 
             var caja = await _cajaRepository.ObtenerCajaPorIdAsync(dto.CajaId)

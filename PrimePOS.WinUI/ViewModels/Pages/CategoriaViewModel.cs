@@ -1,11 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml;
 using PrimePOS.Contracts.DTOs.Categoria;
-using PrimePOS.WinUI.Helpers;
-using PrimePOS.WinUI.Models;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
+using PrimePOS.WinUI.ViewModels.Overlays;
+using PrimePOS.WinUI.Views.Overlays;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,35 +17,19 @@ public partial class CategoriaViewModel : ObservableObject
 {
     private readonly CategoriaApiService _api;
     private readonly NotificationService _notify;
-    [ObservableProperty]
-    private ObservableCollection<GlyphItem> glyphs = [];
+    private readonly OverlayService _overlayService;
 
-    [ObservableProperty]
-    private GlyphItem? glyphSeleccionado;
 
-    public CategoriaViewModel(CategoriaApiService api, NotificationService notify)
+    public CategoriaViewModel(CategoriaApiService api, NotificationService notify, OverlayService overlayService)
     {
         _api = api;
         _notify = notify;
-        Glyphs = new ObservableCollection<GlyphItem>(
-            GlyphCatalog.Todos);
+        _overlayService = overlayService;
     }
 
-    // =========================
-    // PROPIEDADES
-    // =========================
 
     [ObservableProperty]
     private ObservableCollection<CategoriaDto> categorias = new();
-
-    [ObservableProperty]
-    private CategoriaDto? categoriaSeleccionada;
-
-    [ObservableProperty]
-    private string nombre = "";
-
-    [ObservableProperty]
-    private bool estado = true;
 
     [ObservableProperty]
     private string buscar = "";
@@ -54,30 +37,8 @@ public partial class CategoriaViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading;
 
-    [ObservableProperty]
-    private bool isOverlayVisible;
-
-    // cache para filtros
     private List<CategoriaDto> _cache = new();
 
-    // =========================
-    // VISIBILIDAD (SIN CONVERTER)
-    // =========================
-    public Visibility OverlayVisibility =>
-        IsOverlayVisible ? Visibility.Visible : Visibility.Collapsed;
-
-    partial void OnIsOverlayVisibleChanged(bool value)
-    {
-        OnPropertyChanged(nameof(OverlayVisibility));
-    }
-
-    public Visibility LoadingVisibility =>
-        IsLoading ? Visibility.Visible : Visibility.Collapsed;
-
-    partial void OnIsLoadingChanged(bool value)
-    {
-        OnPropertyChanged(nameof(LoadingVisibility));
-    }
 
     [RelayCommand]
     public async Task CargarAsync()
@@ -107,88 +68,56 @@ public partial class CategoriaViewModel : ObservableObject
         }
     }
 
+
+
     [RelayCommand]
-    public async Task GuardarAsync()
+    public async Task EditarAsync(CategoriaDto categoria)
     {
-        try
+        var vm = new CategoriaOverlayViewModel(
+            _api,
+            _notify,
+            categoria);
+
+        var overlay = new CategoriaOverlay(vm);
+
+        var actualizado =
+            await _overlayService
+                .ShowCategoriaAsync(
+                    overlay,
+                    vm);
+
+        if (actualizado)
         {
-            if (string.IsNullOrWhiteSpace(Nombre))
-            {
-                _notify.Warning("El nombre es obligatorio");
-                return;
-            }
-
-
-            if (CategoriaSeleccionada == null)
-            {
-
-
-                var res = await _api.CrearCategoriaAsync(new CategoriaDto
-                {
-                    Nombre = Nombre.Trim(),
-                    Estado = Estado
-                });
-
-                if (!res.Success)
-                {
-                    _notify.Error(res.Message ?? "Error al crear caja");
-                    return;
-                }
-
-                _notify.Success(res.Message ?? "Caja creada correctamente");
-            }
-            else
-            {
-                CategoriaSeleccionada.Nombre = Nombre.Trim();
-                CategoriaSeleccionada.Estado = Estado;
-
-                var res = await _api.ActualizarCategoriaAsync(
-                    CategoriaSeleccionada.CategoriaId,
-                    CategoriaSeleccionada);
-
-                if (!res.Success)
-                {
-                    _notify.Error(res.Message ?? "Error al actualizar categoria");
-                    return;
-                }
-
-                _notify.Success(res.Message ?? "Categoria actualizada correctamente");
-            }
-
             await CargarAsync();
-            Limpiar();
-            CerrarOverlay();
         }
-        catch (Exception ex)
-        {
-            _notify.Error(ex.Message);
-        }
-    }
-
-    [RelayCommand]
-    public void Editar(CategoriaDto categoria)
-    {
-        CategoriaSeleccionada = categoria;
-
-        Nombre = categoria.Nombre;
-        Estado = categoria.Estado;
-
-
-        AbrirOverlay();
     }
 
     [RelayCommand]
     public async Task DesactivarAsync(CategoriaDto categoria)
     {
-        var res = await _api.DesactivarCategoriaAsync(categoria.CategoriaId);
+        var confirmado =
+            await _overlayService
+                .ConfirmAsync(
+                    "Desactivar categoría",
+                    $"¿Desea desactivar {categoria.Nombre}?");
+
+        if (!confirmado)
+            return;
+
+        var res =
+            await _api.DesactivarCategoriaAsync(categoria.CategoriaId);
 
         if (!res.Success)
         {
-            _notify.Error(res.Message ?? "No se pudo desactivar");
+            _notify.Error(
+                res.Message ?? "No se pudo desactivar");
+
             return;
         }
 
-        _notify.Success(res.Message ?? "Categoria desactivada");
+        _notify.Success(
+            res.Message ?? "Categoría desactivada");
+
         await CargarAsync();
     }
 
@@ -209,30 +138,25 @@ public partial class CategoriaViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void Nuevo()
+    public async Task NuevoAsync()
     {
-        Limpiar();
-        AbrirOverlay();
+        var vm = new CategoriaOverlayViewModel(
+            _api,
+            _notify);
+
+        var overlay = new CategoriaOverlay(vm);
+
+        var creado =
+            await _overlayService
+                .ShowCategoriaAsync(
+                    overlay,
+                    vm);
+
+        if (creado)
+        {
+            await CargarAsync();
+        }
     }
 
-    [RelayCommand]
-    public void Limpiar()
-    {
-        Nombre = "";
-        Estado = true;
-        CategoriaSeleccionada = null;
-    }
 
-    [RelayCommand]
-    public void AbrirOverlay()
-    {
-        IsOverlayVisible = true;
-    }
-
-    [RelayCommand]
-    public void CerrarOverlay()
-    {
-        IsOverlayVisible = false;
-        Limpiar();
-    }
 }

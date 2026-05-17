@@ -18,7 +18,11 @@
 	  
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Views\Overlays\CategoriaOverlay.xaml" />
     <None Remove="Views\Overlays\ClienteOverlay.xaml" />
+    <None Remove="Views\Overlays\ProductoOverlay.xaml" />
+    <None Remove="Views\Overlays\RolOverlay.xaml" />
+    <None Remove="Views\Overlays\UsuarioOverlay.xaml" />
   </ItemGroup>
 	
 
@@ -68,7 +72,29 @@
     <ProjectReference Include="..\PrimePOS.Contracts\PrimePOS.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\" />
+    <Page Update="Views\Overlays\UsuarioOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Overlays\ProductoOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Overlays\RolOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Overlays\CategoriaOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Overlays\CajaOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   
   <!--

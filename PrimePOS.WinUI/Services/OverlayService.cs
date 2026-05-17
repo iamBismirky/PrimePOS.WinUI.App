@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PrimePOS.WinUI.ViewModels;
+using PrimePOS.WinUI.ViewModels.Overlays;
 using PrimePOS.WinUI.Views.Overlays;
 using System;
 using System.Threading.Tasks;
@@ -58,6 +59,60 @@ public class OverlayService
         return result;
     }
     public async Task<bool> ShowClienteAsync(ClienteOverlay overlay, ClienteOverlayViewModel vm)
+    {
+        Show(overlay);
+
+        var result = await vm.WaitTask;
+
+        Close();
+
+        return result;
+    }
+
+    public async Task<bool> ShowCajaAsync(CajaOverlay overlay, CajaOverlayViewModel vm)
+    {
+        Show(overlay);
+
+        var result = await vm.WaitTask;
+
+        Close();
+
+        return result;
+    }
+
+    internal async Task<bool> ShowCategoriaAsync(CategoriaOverlay overlay, CategoriaOverlayViewModel vm)
+    {
+        Show(overlay);
+
+        var result = await vm.WaitTask;
+
+        Close();
+
+        return result;
+    }
+
+    public async Task<bool> ShowRolAsync(RolOverlay overlay, RolOverlayViewModel vm)
+    {
+        Show(overlay);
+
+        var result = await vm.WaitTask;
+
+        Close();
+
+        return result;
+    }
+
+    public async Task<bool> ShowUsuarioAsync(UsuarioOverlay overlay, UsuarioOverlayViewModel vm)
+    {
+        Show(overlay);
+
+        var result = await vm.WaitTask;
+
+        Close();
+
+        return result;
+    }
+    public async Task<bool> ShowProductoAsync(ProductoOverlay overlay, ProductoOverlayViewModel vm)
     {
         Show(overlay);
 

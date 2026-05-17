@@ -1,10 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml;
 using PrimePOS.Contracts.DTOs.Categoria;
 using PrimePOS.Contracts.DTOs.Producto;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
+using PrimePOS.WinUI.ViewModels.Overlays;
+using PrimePOS.WinUI.Views.Overlays;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,13 +19,19 @@ public partial class ProductoViewModel : ObservableObject
     private readonly ProductoApiService _apiProducto;
     private readonly CategoriaApiService _apiCategoria;
     private readonly NotificationService _notify;
+    private readonly OverlayService _overlayService;
     private readonly PdfViewService _pdfService;
 
-    public ProductoViewModel(ProductoApiService apiProducto, CategoriaApiService apiCategoria, NotificationService notify, PdfViewService pdfService)
+    public ProductoViewModel(ProductoApiService apiProducto,
+        CategoriaApiService apiCategoria,
+        NotificationService notify,
+        OverlayService overlayService,
+        PdfViewService pdfService)
     {
         _apiProducto = apiProducto;
         _apiCategoria = apiCategoria;
         _notify = notify;
+        _overlayService = overlayService;
         _pdfService = pdfService;
     }
 
@@ -34,64 +41,10 @@ public partial class ProductoViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<CategoriaDto> categorias = new();
     [ObservableProperty] private ProductoDto? productoSeleccionado;
     [ObservableProperty] private CategoriaDto? categoriaSeleccionada;
-    [ObservableProperty] private string codigo = "";
-    [ObservableProperty] private string codigoBarra = "";
-    [ObservableProperty] private string nombre = "";
-    [ObservableProperty] private string descripcion = "";
-    [ObservableProperty] private string categoriaNombre = "";
-    [ObservableProperty] private decimal precioCompra;
-    [ObservableProperty] private decimal precioVenta;
-    [ObservableProperty] private int existencia;
-    [ObservableProperty] private bool estado = true;
-    [ObservableProperty] private DateTime fechaRegistro = DateTime.Today;
     [ObservableProperty] private string buscar = "";
     [ObservableProperty] private bool isLoading;
-    [ObservableProperty] private bool isOverlayVisible;
-    [ObservableProperty] private bool esEdicion;
     private List<ProductoDto> _cache = new();
 
-    public Visibility OverlayVisibility =>
-        IsOverlayVisible ? Visibility.Visible : Visibility.Collapsed;
-
-    partial void OnIsOverlayVisibleChanged(bool value)
-    {
-        OnPropertyChanged(nameof(OverlayVisibility));
-    }
-
-    public Visibility LoadingVisibility =>
-        IsLoading ? Visibility.Visible : Visibility.Collapsed;
-
-    partial void OnIsLoadingChanged(bool value)
-    {
-        OnPropertyChanged(nameof(LoadingVisibility));
-    }
-    public double PrecioCompraUI
-    {
-        get => (double)PrecioCompra;
-        set => PrecioCompra = (decimal)value;
-    }
-    partial void OnPrecioCompraChanged(decimal value)
-    {
-        OnPropertyChanged(nameof(PrecioCompraUI));
-    }
-    public double PrecioVentaUI
-    {
-        get => (double)PrecioVenta;
-        set => PrecioVenta = (decimal)value;
-    }
-    partial void OnPrecioVentaChanged(decimal value)
-    {
-        OnPropertyChanged(nameof(PrecioVentaUI));
-    }
-    public double ExistenciaUI
-    {
-        get => (double)Existencia;
-        set => Existencia = (int)value;
-    }
-    partial void OnExistenciaChanged(int value)
-    {
-        OnPropertyChanged(nameof(ExistenciaUI));
-    }
 
     [RelayCommand]
     public async Task CargarProductosAsync()
@@ -149,136 +102,28 @@ public partial class ProductoViewModel : ObservableObject
     }
 
 
-
-    [RelayCommand]
-    public async Task GuardarAsync()
-    {
-        try
-        {
-            IsLoading = true;
-
-            if (string.IsNullOrWhiteSpace(Nombre))
-            {
-                _notify.Warning("El nombre es obligatorio");
-                return;
-            }
-            if (CategoriaSeleccionada == null)
-            {
-                _notify.Warning("Debe seleccionar una categoria");
-                return;
-            }
-            if (PrecioCompra <= 0)
-            {
-                _notify.Warning("El precio de compra debe ser mayor a cero");
-                return;
-            }
-            if (PrecioVenta <= 0)
-            {
-                _notify.Warning("El precio de venta debe ser mayor a cero");
-                return;
-            }
-            if (PrecioCompra <= PrecioVenta)
-            {
-                _notify.Warning("Precio de compra no puede ser igual o menor que precio venta");
-            }
-            if (Existencia < 0)
-            {
-                _notify.Warning("La existencia no puede ser negativa");
-                return;
-            }
-
-
-            if (EsEdicion)
-            {
-
-                var dto = new ActualizarProductoDto
-                {
-                    ProductoId = ProductoSeleccionado!.ProductoId,
-                    CodigoBarra = CodigoBarra.Trim(),
-                    Nombre = Nombre.Trim(),
-                    Descripcion = Descripcion.Trim(),
-                    CategoriaId = CategoriaSeleccionada!.CategoriaId,
-                    PrecioCompra = PrecioCompra,
-                    PrecioVenta = PrecioVenta,
-                    Existencia = Existencia,
-                    Estado = Estado,
-                };
-
-                var res = await _apiProducto.ActualizarProductoAsync(ProductoSeleccionado.ProductoId, dto);
-                if (!res.Success)
-                {
-                    _notify.Error(res.Message);
-                    return;
-                }
-
-                _notify.Success(res.Message);
-
-            }
-            else
-            {
-                var dto = new CrearProductoDto
-                {
-
-                    CodigoBarra = CodigoBarra.Trim(),
-                    Nombre = Nombre.Trim(),
-                    Descripcion = Descripcion.Trim(),
-                    CategoriaId = CategoriaSeleccionada!.CategoriaId,
-                    PrecioCompra = PrecioCompra,
-                    PrecioVenta = PrecioVenta,
-                    Existencia = Existencia,
-                    Estado = Estado,
-                    FechaRegistro = DateTime.Now
-                };
-
-                var res = await _apiProducto.CrearProductoAsync(dto);
-
-                if (!res.Success)
-                {
-                    _notify.Error(res.Message);
-                    return;
-                }
-
-                _notify.Success(res.Message);
-
-            }
-
-            await CargarProductosAsync();
-            Limpiar();
-            CerrarOverlay();
-        }
-        catch (Exception ex)
-        {
-            _notify.Error(ex.Message);
-        }
-        finally
-        {
-            IsLoading = false;
-        }
-    }
-
     [RelayCommand]
     public async Task EditarAsync(ProductoDto producto)
     {
-        EsEdicion = true;
-        ProductoSeleccionado = producto;
-        await CargarCategoriasAsync();
-
-        Codigo = producto.Codigo;
-        CodigoBarra = producto.CodigoBarra;
-        Nombre = producto.Nombre;
-        Descripcion = producto.Descripcion;
-        CategoriaSeleccionada = Categorias.FirstOrDefault(c => c.CategoriaId == producto.CategoriaId);
-        PrecioCompra = producto.PrecioCompra;
-        PrecioVenta = producto.PrecioVenta;
-        Existencia = producto.Existencia;
-        Estado = producto.Estado;
-        FechaRegistro = producto.FechaRegistro;
-        AbrirOverlay();
+        var vm = new ProductoOverlayViewModel(_apiProducto, _apiCategoria, _notify, producto);
+        await vm.InicializarAsync();
+        var overlay = new ProductoOverlay(vm);
+        var actualizado = await _overlayService.ShowProductoAsync(overlay, vm);
+        if (actualizado)
+        {
+            await CargarProductosAsync();
+        }
     }
 
     [RelayCommand]
     public async Task DesactivarAsync(ProductoDto producto)
     {
+        var confirmar = await _overlayService.ConfirmAsync("Confirmar desactivación",
+            $"¿Está seguro de desactivar {producto.Nombre}?");
+
+        if (!confirmar)
+            return;
+
         var res = await _apiProducto.DesactivarProductoAsync(producto.ProductoId);
 
         if (!res.Success)
@@ -314,59 +159,23 @@ public partial class ProductoViewModel : ObservableObject
     [RelayCommand]
     public async Task NuevoAsync()
     {
-        try
+        var vm = new ProductoOverlayViewModel(_apiProducto, _apiCategoria, _notify);
+        await vm.InicializarAsync();
+        var overlay = new ProductoOverlay(vm);
+        var creado = await _overlayService.ShowProductoAsync(overlay, vm);
+        if (creado)
         {
-            IsLoading = true;
-            Limpiar();
-            await CargarCategoriasAsync();
-            AbrirOverlay();
+            await CargarProductosAsync();
         }
-        catch (Exception ex)
-        {
-            _notify.Error(ex.Message);
-        }
-        finally { IsLoading = false; }
+
     }
 
-    [RelayCommand]
-    public void Limpiar()
-    {
-        Codigo = "";
-        CodigoBarra = "";
-        Nombre = "";
-        Descripcion = "";
-        CategoriaNombre = "";
-        PrecioCompra = 0;
-        PrecioVenta = 0;
-        Existencia = 0;
-        FechaRegistro = DateTime.Now;
-        Estado = true;
-        ProductoSeleccionado = null;
-        CategoriaSeleccionada = null;
-        EsEdicion = false;
-    }
 
     [RelayCommand]
-    public void AbrirOverlay()
-    {
-        IsOverlayVisible = true;
-    }
-
-    [RelayCommand]
-    public void CerrarOverlay()
-    {
-        IsOverlayVisible = false;
-        Limpiar();
-    }
-    [RelayCommand]
-    public async Task VerEtiquetaAsync(
-    ProductoDto producto)
+    public async Task VerEtiquetaAsync(ProductoDto producto)
     {
         ProductoSeleccionado = producto;
-        var pdf =
-            await _apiProducto
-                .ObtenerEtiquetaAsync(producto.ProductoId);
-        System.Diagnostics.Debug.WriteLine(pdf);
+        var pdf = await _apiProducto.ObtenerEtiquetaAsync(producto.ProductoId);
         await _pdfService.MostrarPdfAsync(pdf);
     }
 }

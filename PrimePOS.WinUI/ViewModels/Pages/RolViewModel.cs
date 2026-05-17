@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml;
 using PrimePOS.Contracts.DTOs.Rol;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
+using PrimePOS.WinUI.ViewModels.Overlays;
+using PrimePOS.WinUI.Views.Overlays;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,16 +17,15 @@ public partial class RolViewModel : ObservableObject
 {
     private readonly RolApiService _api;
     private readonly NotificationService _notify;
+    private readonly OverlayService _overlayService;
 
-    public RolViewModel(RolApiService api, NotificationService notify)
+    public RolViewModel(RolApiService api, NotificationService notify, OverlayService overlayService)
     {
         _api = api;
         _notify = notify;
+        _overlayService = overlayService;
     }
 
-    // =========================
-    // PROPIEDADES
-    // =========================
 
     [ObservableProperty]
     private ObservableCollection<RolDto> roles = new();
@@ -33,11 +33,6 @@ public partial class RolViewModel : ObservableObject
     [ObservableProperty]
     private RolDto? rolSeleccionado;
 
-    [ObservableProperty]
-    private string nombre = "";
-
-    [ObservableProperty]
-    private bool estado = true;
 
     [ObservableProperty]
     private string buscar = "";
@@ -45,30 +40,9 @@ public partial class RolViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading;
 
-    [ObservableProperty]
-    private bool isOverlayVisible;
-
-    // cache para filtros
     private List<RolDto> _cache = new();
 
-    // =========================
-    // VISIBILIDAD (SIN CONVERTER)
-    // =========================
-    public Visibility OverlayVisibility =>
-        IsOverlayVisible ? Visibility.Visible : Visibility.Collapsed;
 
-    partial void OnIsOverlayVisibleChanged(bool value)
-    {
-        OnPropertyChanged(nameof(OverlayVisibility));
-    }
-
-    public Visibility LoadingVisibility =>
-        IsLoading ? Visibility.Visible : Visibility.Collapsed;
-
-    partial void OnIsLoadingChanged(bool value)
-    {
-        OnPropertyChanged(nameof(LoadingVisibility));
-    }
 
     [RelayCommand]
     public async Task CargarAsync()
@@ -98,76 +72,38 @@ public partial class RolViewModel : ObservableObject
         }
     }
 
+
+
+
     [RelayCommand]
-    public async Task GuardarAsync()
+    public async Task EditarAsync(RolDto rol)
     {
-        try
+        var vm = new RolOverlayViewModel(
+            _api,
+            _notify,
+            rol);
+
+        var overlay = new RolOverlay(vm);
+
+        var actualizado = await _overlayService.ShowRolAsync(overlay, vm);
+
+        if (actualizado)
         {
-            if (string.IsNullOrWhiteSpace(Nombre))
-            {
-                _notify.Warning("El nombre es obligatorio");
-                return;
-            }
-
-
-            if (RolSeleccionado == null)
-            {
-
-
-                var res = await _api.CrearRolAsync(new RolDto
-                {
-                    Nombre = Nombre.Trim(),
-                    Estado = Estado
-                });
-
-                if (!res.Success)
-                {
-                    _notify.Error(res.Message ?? "Error al crear caja");
-                    return;
-                }
-
-                _notify.Success(res.Message ?? "Caja creada correctamente");
-            }
-            else
-            {
-                RolSeleccionado.Nombre = Nombre.Trim();
-                RolSeleccionado.Estado = Estado;
-
-                var res = await _api.ActualizarRolAsync(
-                    RolSeleccionado.RolId,
-                    RolSeleccionado);
-
-                if (!res.Success)
-                {
-                    _notify.Error(res.Message ?? "Error al actualizar rol");
-                    return;
-                }
-
-                _notify.Success(res.Message ?? "Rol actualizado correctamente");
-            }
-
             await CargarAsync();
-            Limpiar();
-            CerrarOverlay();
-        }
-        catch (Exception ex)
-        {
-            _notify.Error(ex.Message);
         }
     }
 
-    [RelayCommand]
-    public void Editar(RolDto rol)
-    {
-        RolSeleccionado = rol;
-        Nombre = rol.Nombre;
-        Estado = rol.Estado;
-        AbrirOverlay();
-    }
 
     [RelayCommand]
     public async Task DesactivarAsync(RolDto rol)
     {
+        var confirmado = await _overlayService.ConfirmAsync(
+            "Desactivar rol",
+            $"¿Estás seguro de que deseas desactivar este rol {rol.Nombre}?");
+
+        if (!confirmado)
+            return;
+
         var res = await _api.DesactivarRolAsync(rol.RolId);
 
         if (!res.Success)
@@ -197,29 +133,19 @@ public partial class RolViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void Nuevo()
+    public async Task NuevoAsync()
     {
-        Limpiar();
-        AbrirOverlay();
+        var vm = new RolOverlayViewModel(
+            _api,
+            _notify);
+        var overlay = new RolOverlay(vm);
+        var creado = await _overlayService.ShowRolAsync(overlay, vm);
+        if (creado)
+        {
+            await CargarAsync();
+        }
+
     }
 
-    [RelayCommand]
-    public void Limpiar()
-    {
-        Nombre = "";
-        RolSeleccionado = null;
-    }
 
-    [RelayCommand]
-    public void AbrirOverlay()
-    {
-        IsOverlayVisible = true;
-    }
-
-    [RelayCommand]
-    public void CerrarOverlay()
-    {
-        IsOverlayVisible = false;
-        Limpiar();
-    }
 }
