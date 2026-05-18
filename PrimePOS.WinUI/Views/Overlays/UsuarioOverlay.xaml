@@ -39,18 +39,14 @@
 
                 <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
                 <TextBox Header="Nombre" 
-                      Text="{Binding Nombre, Mode=TwoWay}"
-                      IsEnabled="{Binding EsEdicion}"/>
+                      Text="{Binding Nombre, Mode=TwoWay}"/>
                 <TextBox Header="Apellidos" 
-                      Text="{Binding Apellidos, Mode=TwoWay}"
-                      IsEnabled="{Binding EsEdicion}"/>
+                      Text="{Binding Apellidos, Mode=TwoWay}"/>
                 <TextBox Header="Username" 
-                      Text="{Binding Username, Mode=TwoWay}"
-                      IsEnabled="{Binding EsEdicion}"/>
+                      Text="{Binding Username, Mode=TwoWay}"/>
                 <PasswordBox Header="Password" 
                           Password="{Binding Password, Mode=TwoWay}"
-                          PasswordChar="#"
-                          IsEnabled="{Binding EsEdicion}"/>
+                          PasswordChar="#"/>
                 <ComboBox Header="Rol" 
                        DisplayMemberPath="Nombre"
                        PlaceholderText="Seleccione un rol"

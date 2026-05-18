@@ -82,7 +82,7 @@ public partial class RolViewModel : ObservableObject
             _api,
             _notify,
             rol);
-
+        await vm.InicializarAsync();
         var overlay = new RolOverlay(vm);
 
         var actualizado = await _overlayService.ShowRolAsync(overlay, vm);
@@ -138,6 +138,7 @@ public partial class RolViewModel : ObservableObject
         var vm = new RolOverlayViewModel(
             _api,
             _notify);
+        await vm.InicializarAsync();
         var overlay = new RolOverlay(vm);
         var creado = await _overlayService.ShowRolAsync(overlay, vm);
         if (creado)

@@ -16,7 +16,8 @@ public partial class AbrirTurnoViewModel : ObservableObject
     private readonly TurnoApiService _turnoApi;
     private readonly NotificationService _notify;
     private readonly AppSesionViewModel _sesion;
-
+    private TaskCompletionSource<bool> _tcs = new();
+    public Task<bool> WaitTask => _tcs.Task;
     public AbrirTurnoViewModel(
         CajaApiService cajaApi,
         TurnoApiService turnoApi,
@@ -29,18 +30,18 @@ public partial class AbrirTurnoViewModel : ObservableObject
         _sesion = sesion;
     }
 
-    // 🔹 PROPIEDADES
+
     [ObservableProperty] private ObservableCollection<CajaDto> cajas = new();
     [ObservableProperty] private CajaDto? cajaSeleccionada;
     [ObservableProperty] private decimal montoInicial;
     [ObservableProperty] private string turnoTexto = "";
 
-    public event Action? OnCerrar;
-    public Action? OnTurnoAbierto;
+
 
     // 🔹 INIT
     public async Task InicializarAsync()
     {
+        _tcs = new TaskCompletionSource<bool>();
         var res = await _cajaApi.ObtenerCajasAsync();
 
         if (!res.Success || res.Data == null)
@@ -56,7 +57,7 @@ public partial class AbrirTurnoViewModel : ObservableObject
         TurnoTexto = $"Turno: {DateTime.Today:dd/MM/yyyy} - T{numero.Data}";
     }
 
-    // 🔹 ABRIR
+
     [RelayCommand]
     private async Task AbrirAsync()
     {
@@ -85,13 +86,15 @@ public partial class AbrirTurnoViewModel : ObservableObject
         _sesion.AbrirTurno(res.Data);
 
         _notify.Success("Turno abierto");
-        OnTurnoAbierto?.Invoke();
+        _tcs.TrySetResult(true);
+
     }
 
-    // 🔹 CANCELAR
+
     [RelayCommand]
     private void Cancelar()
     {
-        OnCerrar?.Invoke();
+        _tcs.TrySetResult(false);
+
     }
 }

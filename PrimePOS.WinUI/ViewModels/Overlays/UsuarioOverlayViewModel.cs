@@ -17,7 +17,7 @@ public partial class UsuarioOverlayViewModel : ObservableObject
     private readonly RolApiService _apiRol;
     private readonly NotificationService _notify;
 
-    private readonly TaskCompletionSource<bool> _tcs = new();
+    private TaskCompletionSource<bool> _tcs = new();
 
     public Task<bool> WaitTask => _tcs.Task;
 
@@ -71,11 +71,12 @@ public partial class UsuarioOverlayViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading;
     [ObservableProperty]
-    private bool esEdicion;
+    private bool esEdicion = false;
 
 
     public async Task InicializarAsync()
     {
+        _tcs = new TaskCompletionSource<bool>();
         await CargarRolesAsync();
 
         if (Usuario != null)

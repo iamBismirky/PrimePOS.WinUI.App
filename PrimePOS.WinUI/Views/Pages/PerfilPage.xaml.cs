@@ -14,7 +14,7 @@ public sealed partial class PerfilPage : Page
     public PerfilPage()
     {
         InitializeComponent();
-        ViewModel = App.AppServices.GetRequiredService<PerfilViewModel>();
+        ViewModel = App.Services.GetRequiredService<PerfilViewModel>();
         DataContext = ViewModel;
     }
 

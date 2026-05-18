@@ -14,7 +14,7 @@ namespace PrimePOS.WinUI.Views.Pages
         public CategoriaPage()
         {
             InitializeComponent();
-            ViewModel = App.AppServices.GetRequiredService<CategoriaViewModel>();
+            ViewModel = App.Services.GetRequiredService<CategoriaViewModel>();
             DataContext = ViewModel;
 
         }

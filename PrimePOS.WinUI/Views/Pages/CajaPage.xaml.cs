@@ -14,7 +14,7 @@ namespace PrimePOS.WinUI.Views.Pages
         public CajaPage()
         {
             InitializeComponent();
-            ViewModel = App.AppServices.GetRequiredService<CajaViewModel>();
+            ViewModel = App.Services.GetRequiredService<CajaViewModel>();
 
             this.DataContext = ViewModel;
 

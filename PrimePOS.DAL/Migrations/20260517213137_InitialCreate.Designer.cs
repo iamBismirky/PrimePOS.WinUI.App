@@ -12,15 +12,15 @@ using PrimePOS.DAL.Context;
 namespace PrimePOS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260329024253_NewNameVentaDetalle")]
-    partial class NewNameVentaDetalle
+    [Migration("20260517213137_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "10.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -64,55 +64,15 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Glyph")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CategoriaId");
 
                     b.ToTable("Categorias");
-                });
-
-            modelBuilder.Entity("PrimePOS.ENTITIES.Models.CierreTurno", b =>
-                {
-                    b.Property<int>("CierreTurnoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CierreTurnoId"));
-
-                    b.Property<decimal>("Diferencia")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("EfectivoContado")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("FechaCierre")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("MontoInicial")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("TotalEfectivo")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("TotalGeneral")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("TotalTarjeta")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("TotalTransferencia")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("TurnoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CierreTurnoId");
-
-                    b.HasIndex("TurnoId");
-
-                    b.ToTable("CierresTurno");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Cliente", b =>
@@ -172,6 +132,41 @@ namespace PrimePOS.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PrimePOS.ENTITIES.Models.Empresa", b =>
+                {
+                    b.Property<int>("EmpresaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmpresaId"));
+
+                    b.Property<bool>("Activa")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RNC")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EmpresaId");
+
+                    b.ToTable("Empresas");
+                });
+
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Factura", b =>
                 {
                     b.Property<int>("FacturaId")
@@ -180,8 +175,24 @@ namespace PrimePOS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FacturaId"));
 
+                    b.Property<decimal>("Cambio")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClienteNombre")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Descuento")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Efectivo")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
@@ -190,7 +201,6 @@ namespace PrimePOS.DAL.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("MetodoPago")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Numero")
@@ -203,10 +213,20 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioNombre")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("VentaId")
                         .HasColumnType("int");
 
                     b.HasKey("FacturaId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.HasIndex("VentaId");
 
@@ -224,15 +244,28 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("FacturaId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Precio")
+                    b.Property<decimal>("Itbis")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ProductoNombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
@@ -240,6 +273,8 @@ namespace PrimePOS.DAL.Migrations
                     b.HasKey("FacturaDetalleId");
 
                     b.HasIndex("FacturaId");
+
+                    b.HasIndex("ProductoId");
 
                     b.ToTable("FacturasDetalle");
                 });
@@ -292,6 +327,9 @@ namespace PrimePOS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductoId"));
 
+                    b.Property<bool>("AplicaItbis")
+                        .HasColumnType("bit");
+
                     b.Property<int>("CategoriaId")
                         .HasColumnType("int");
 
@@ -319,14 +357,26 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("ItbisPorcentaje")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("PorcentajeGanancia")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("PrecioCompra")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<bool>("PrecioManual")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("PrecioVenta")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PrecioVentaManual")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("ProductoId");
@@ -359,20 +409,14 @@ namespace PrimePOS.DAL.Migrations
                         new
                         {
                             RolId = 1,
-                            Estado = false,
+                            Estado = true,
                             Nombre = "Desarrollador"
                         },
                         new
                         {
                             RolId = 2,
-                            Estado = false,
+                            Estado = true,
                             Nombre = "Administrador"
-                        },
-                        new
-                        {
-                            RolId = 3,
-                            Estado = false,
-                            Nombre = "Cajero"
                         });
                 });
 
@@ -386,6 +430,12 @@ namespace PrimePOS.DAL.Migrations
 
                     b.Property<int>("CajaId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Diferencia")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("EfectivoContado")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("EstaAbierto")
                         .HasColumnType("bit");
@@ -407,6 +457,18 @@ namespace PrimePOS.DAL.Migrations
 
                     b.Property<int>("NumeroTurno")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("TotalEfectivo")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalGeneral")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalTarjeta")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalTransferencia")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
@@ -472,10 +534,20 @@ namespace PrimePOS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VentaId"));
 
+                    b.Property<decimal>("Cambio")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ClienteNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Descuento")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Efectivo")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("Estado")
@@ -506,6 +578,10 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UsuarioNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("VentaId");
 
                     b.HasIndex("ClienteId");
@@ -534,7 +610,7 @@ namespace PrimePOS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Impuesto")
+                    b.Property<decimal>("Itbis")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PrecioUnitario")
@@ -542,6 +618,10 @@ namespace PrimePOS.DAL.Migrations
 
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProductoNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(18,2)");
@@ -561,24 +641,29 @@ namespace PrimePOS.DAL.Migrations
                     b.ToTable("VentasDetalle");
                 });
 
-            modelBuilder.Entity("PrimePOS.ENTITIES.Models.CierreTurno", b =>
-                {
-                    b.HasOne("PrimePOS.ENTITIES.Models.Turno", "Turno")
-                        .WithMany("CierresTurno")
-                        .HasForeignKey("TurnoId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Turno");
-                });
-
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Factura", b =>
                 {
+                    b.HasOne("PrimePOS.ENTITIES.Models.Cliente", "Cliente")
+                        .WithMany("Facturas")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PrimePOS.ENTITIES.Models.Usuario", "Usuario")
+                        .WithMany("Facturas")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("PrimePOS.ENTITIES.Models.Venta", "Venta")
                         .WithMany()
                         .HasForeignKey("VentaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Usuario");
 
                     b.Navigation("Venta");
                 });
@@ -586,12 +671,20 @@ namespace PrimePOS.DAL.Migrations
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.FacturaDetalle", b =>
                 {
                     b.HasOne("PrimePOS.ENTITIES.Models.Factura", "Factura")
-                        .WithMany("FacturasDetalle")
+                        .WithMany("Detalles")
                         .HasForeignKey("FacturaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PrimePOS.ENTITIES.Models.Producto", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Factura");
+
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Producto", b =>
@@ -696,12 +789,14 @@ namespace PrimePOS.DAL.Migrations
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Cliente", b =>
                 {
+                    b.Navigation("Facturas");
+
                     b.Navigation("Ventas");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Factura", b =>
                 {
-                    b.Navigation("FacturasDetalle");
+                    b.Navigation("Detalles");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Producto", b =>
@@ -716,13 +811,13 @@ namespace PrimePOS.DAL.Migrations
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Turno", b =>
                 {
-                    b.Navigation("CierresTurno");
-
                     b.Navigation("Ventas");
                 });
 
             modelBuilder.Entity("PrimePOS.ENTITIES.Models.Usuario", b =>
                 {
+                    b.Navigation("Facturas");
+
                     b.Navigation("Turnos");
 
                     b.Navigation("Ventas");

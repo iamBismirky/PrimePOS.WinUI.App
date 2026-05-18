@@ -20,7 +20,7 @@ namespace PrimePOS.WinUI
 
 
         public static ElementTheme TemaActual = ElementTheme.Dark;
-        public static IServiceProvider AppServices { get; private set; } = null!;
+        public static IServiceProvider Services { get; private set; } = null!;
 
 
         public App()
@@ -34,7 +34,7 @@ namespace PrimePOS.WinUI
             //  Aquí inyectas TODO
             serviceCollection.AddApplicationServices();
 
-            AppServices = serviceCollection.BuildServiceProvider();
+            Services = serviceCollection.BuildServiceProvider();
 
             QuestPDF.Settings.License = LicenseType.Community;
 
@@ -46,7 +46,7 @@ namespace PrimePOS.WinUI
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             _window = new LoginWindow();
-            //_window = App.AppServices.GetRequiredService<MainWindow>();
+            //_window = App.Services.GetRequiredService<MainWindow>();
             _window.Activate();
         }
         public static void CambiarVentana(

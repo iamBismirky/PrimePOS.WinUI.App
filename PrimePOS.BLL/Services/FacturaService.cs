@@ -58,7 +58,7 @@ namespace PrimePOS.BLL.Services
                     ProductoId = item.ProductoId,
                     ProductoNombre = item.Producto?.Nombre ?? "",
                     Cantidad = item.Cantidad,
-                    Precio = item.PrecioUnitario,
+                    PrecioUnitario = item.PrecioUnitario,
                     Total = item.Total
                 });
             }
@@ -126,7 +126,7 @@ namespace PrimePOS.BLL.Services
                 {
                     Nombre = d.ProductoNombre,
                     Cantidad = d.Cantidad,
-                    Precio = d.Precio,
+                    Precio = d.PrecioUnitario,
                     Total = d.Total
 
                 }).ToList()

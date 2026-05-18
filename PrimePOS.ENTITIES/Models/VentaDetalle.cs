@@ -11,15 +11,13 @@ public class VentaDetalle
 
     public int VentaId { get; set; }
     public Venta? Venta { get; set; }
-
     public int ProductoId { get; set; }
     public Producto? Producto { get; set; }
     public string ProductoNombre { get; set; } = "";
-
-    public string Codigo { get; set; } = string.Empty;
+    public string Codigo { get; set; } = "";
     public int Cantidad { get; set; }
     public decimal PrecioUnitario { get; set; }
-    public decimal Impuesto { get; set; }
+    public decimal Itbis { get; set; }
     public decimal Subtotal { get; set; }
     public decimal Total { get; set; }
 }

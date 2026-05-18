@@ -1,4 +1,5 @@
-﻿using PrimePOS.BLL.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
+using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.BLL.Validators;
 using PrimePOS.Contracts.DTOs.Producto;
@@ -24,7 +25,7 @@ public class ProductoService : IProductoService
             .ExisteCodigoONombreAsync(dto.CodigoBarra.Trim(), dto.Nombre.Trim());
 
         if (existe)
-            throw new BusinessException("Ya existe un producto con ese nombre o código de barras.", 400);
+            throw new BusinessException("Ya existe un producto con ese nombre o código de barras.", StatusCodes.Status409Conflict);
 
         var producto = new Producto
         {
@@ -34,10 +35,16 @@ public class ProductoService : IProductoService
             CategoriaId = dto.CategoriaId,
             PrecioCompra = dto.PrecioCompra,
             PrecioVenta = dto.PrecioVenta,
+            PorcentajeGanancia = dto.PorcentajeGanancia,
+            AplicaItbis = dto.AplicaItbis,
+            ItbisPorcentaje = dto.ItbisPorcentaje,
+            Itbis = dto.ItbisMonto,
             Existencia = dto.Existencia,
             Estado = dto.Estado,
             FechaRegistro = DateTime.Now,
         };
+
+        RecalcularPrecios(producto);
 
         _productoRepository.Crear(producto);
         await _productoRepository.GuardarCambiosAsync();
@@ -55,7 +62,7 @@ public class ProductoService : IProductoService
         var producto = await _productoRepository.ObtenerPorIdAsync(dto.ProductoId);
 
         if (producto == null)
-            throw new BusinessException("El producto no existe.", 404);
+            throw new BusinessException("El producto no existe.", StatusCodes.Status404NotFound);
 
         producto.CodigoBarra = dto.CodigoBarra;
         producto.Nombre = dto.Nombre;
@@ -63,8 +70,14 @@ public class ProductoService : IProductoService
         producto.CategoriaId = dto.CategoriaId;
         producto.PrecioCompra = dto.PrecioCompra;
         producto.PrecioVenta = dto.PrecioVenta;
+        producto.PorcentajeGanancia = dto.PorcentajeGanancia;
+        producto.AplicaItbis = dto.AplicaItbis;
+        producto.ItbisPorcentaje = dto.ItbisPorcentaje;
+        producto.Itbis = dto.ItbisMonto;
         producto.Existencia = dto.Existencia;
         producto.Estado = dto.Estado;
+
+        RecalcularPrecios(producto);
 
         _productoRepository.Actualizar(producto);
         await _productoRepository.GuardarCambiosAsync();
@@ -104,7 +117,7 @@ public class ProductoService : IProductoService
         var producto = await _productoRepository.ObtenerPorIdAsync(id);
 
         if (producto == null)
-            throw new BusinessException("El producto no existe.", 404);
+            throw new BusinessException("El producto no existe.", StatusCodes.Status404NotFound);
 
         return new ProductoDto
         {
@@ -141,6 +154,7 @@ public class ProductoService : IProductoService
             Existencia = p.Existencia,
             Estado = p.Estado,
             FechaRegistro = p.FechaRegistro,
+            Itbis = p.Itbis
         }).ToList();
     }
 
@@ -155,7 +169,7 @@ public class ProductoService : IProductoService
 
         var productos = await _productoRepository.BuscarAsync(texto);
         if (productos == null)
-            throw new BusinessException("Producto no encontrado.", 404);
+            throw new BusinessException("Producto no encontrado.", StatusCodes.Status404NotFound);
 
         return productos.Select(p => new ProductoDto
         {
@@ -163,8 +177,26 @@ public class ProductoService : IProductoService
             Codigo = p.Codigo,
             Nombre = p.Nombre,
             PrecioVenta = p.PrecioVenta,
+            Itbis = p.Itbis,
             Existencia = p.Existencia
 
         }).ToList();
+    }
+
+    private void RecalcularPrecios(Producto producto)
+    {
+        var compra = producto.PrecioCompra;
+        var ganancia = producto.PorcentajeGanancia;
+        var itbisPorcentaje = producto.ItbisPorcentaje;
+        var aplicaItbis = producto.AplicaItbis;
+
+        var basePrice = compra + (compra * ganancia / 100m);
+
+        var itbis = aplicaItbis
+            ? basePrice * (itbisPorcentaje / 100m)
+            : 0m;
+
+        producto.PrecioVenta = basePrice + itbis;
+        producto.Itbis = itbis;
     }
 }

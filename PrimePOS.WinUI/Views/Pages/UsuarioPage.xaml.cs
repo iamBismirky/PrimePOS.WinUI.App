@@ -16,7 +16,7 @@ namespace PrimePOS.WinUI.Views.Pages
         {
             InitializeComponent();
 
-            ViewModel = App.AppServices.GetRequiredService<UsuarioViewModel>();
+            ViewModel = App.Services.GetRequiredService<UsuarioViewModel>();
             DataContext = ViewModel;
         }
         private async void Page_Loaded(object sender, RoutedEventArgs e)

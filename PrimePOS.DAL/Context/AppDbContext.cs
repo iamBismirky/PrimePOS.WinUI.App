@@ -21,6 +21,7 @@ namespace PrimePOS.DAL.Context
         public DbSet<VentaDetalle> VentasDetalle { get; set; }
         public DbSet<Factura> Facturas { get; set; }
         public DbSet<FacturaDetalle> FacturasDetalle { get; set; }
+        public DbSet<Empresa> Empresas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -132,6 +133,7 @@ namespace PrimePOS.DAL.Context
                 new Cliente { ClienteId = 1, Codigo = "CLIENT-0001", Nombre = "Consumidor Final", Estado = true }
 
              );
+
 
         }
 

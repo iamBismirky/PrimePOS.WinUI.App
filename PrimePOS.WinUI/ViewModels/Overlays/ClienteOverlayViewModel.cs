@@ -13,7 +13,7 @@ public partial class ClienteOverlayViewModel : ObservableObject
     private readonly ClienteApiService _api;
     private readonly NotificationService _notify;
 
-    private readonly TaskCompletionSource<bool> _tcs = new();
+    private TaskCompletionSource<bool> _tcs = new();
 
     public Task<bool> WaitTask => _tcs.Task;
 
@@ -52,6 +52,10 @@ public partial class ClienteOverlayViewModel : ObservableObject
     [ObservableProperty] private DateTime fechaRegistro = DateTime.Today;
     [ObservableProperty] private bool isLoading = false;
 
+    public async Task InicializarAsync()
+    {
+        _tcs = new TaskCompletionSource<bool>();
+    }
     [RelayCommand]
     private async Task GuardarAsync()
     {

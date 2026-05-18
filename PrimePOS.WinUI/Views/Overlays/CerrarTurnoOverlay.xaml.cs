@@ -7,10 +7,11 @@ namespace PrimePOS.WinUI.Views.Overlays;
 public sealed partial class CerrarTurnoOverlay : UserControl
 {
 
-    public CerrarTurnoOverlay()
+    public CerrarTurnoOverlay(CerrarTurnoViewModel vm)
     {
 
         this.InitializeComponent();
+        DataContext = vm;
     }
 
     private void txtEfectivo_LostFocus(object sender, RoutedEventArgs e)

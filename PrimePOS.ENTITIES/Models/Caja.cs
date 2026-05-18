@@ -8,8 +8,6 @@ public class Caja
 {
     [Key]
     public int CajaId { get; set; }
-
-    public string Nombre { get; set; } = string.Empty;
-
+    public string Nombre { get; set; } = "";
     public bool Estado { get; set; }
 }

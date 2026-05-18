@@ -33,7 +33,8 @@ namespace PrimePOS.DAL.Migrations
                 {
                     CategoriaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Glyph = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -59,6 +60,24 @@ namespace PrimePOS.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clientes", x => x.ClienteId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Empresas",
+                columns: table => new
+                {
+                    EmpresaId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RNC = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Activa = table.Column<bool>(type: "bit", nullable: false),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Empresas", x => x.EmpresaId);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,7 +120,12 @@ namespace PrimePOS.DAL.Migrations
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoriaId = table.Column<int>(type: "int", nullable: false),
                     PrecioCompra = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PorcentajeGanancia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrecioManual = table.Column<bool>(type: "bit", nullable: false),
+                    PrecioVentaManual = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PrecioVenta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AplicaItbis = table.Column<bool>(type: "bit", nullable: false),
+                    ItbisPorcentaje = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Existencia = table.Column<int>(type: "int", nullable: false),
                     ExistenciaMinimo = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false),
@@ -155,6 +179,12 @@ namespace PrimePOS.DAL.Migrations
                     FechaApertura = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaOperacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MontoInicial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalEfectivo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalTarjeta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalTransferencia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalGeneral = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    EfectivoContado = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Diferencia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     MontoCierre = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     FechaCierre = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EstaAbierto = table.Column<bool>(type: "bit", nullable: false)
@@ -182,7 +212,9 @@ namespace PrimePOS.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    UsuarioNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ClienteId = table.Column<int>(type: "int", nullable: false),
+                    ClienteNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MetodoPagoId = table.Column<int>(type: "int", nullable: false),
                     TurnoId = table.Column<int>(type: "int", nullable: false),
                     NumeroComprobante = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -190,6 +222,8 @@ namespace PrimePOS.DAL.Migrations
                     Impuesto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Descuento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Efectivo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Cambio = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -218,33 +252,112 @@ namespace PrimePOS.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DetallesVenta",
+                name: "Facturas",
                 columns: table => new
                 {
-                    DetalleVentaId = table.Column<int>(type: "int", nullable: false)
+                    FacturaId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Numero = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    VentaId = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    UsuarioNombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    ClienteNombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Descuento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Impuesto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Efectivo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Cambio = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MetodoPago = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Facturas", x => x.FacturaId);
+                    table.ForeignKey(
+                        name: "FK_Facturas_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Facturas_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "UsuarioId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Facturas_Ventas_VentaId",
+                        column: x => x.VentaId,
+                        principalTable: "Ventas",
+                        principalColumn: "VentaId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VentasDetalle",
+                columns: table => new
+                {
+                    VentaDetalleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     VentaId = table.Column<int>(type: "int", nullable: false),
                     ProductoId = table.Column<int>(type: "int", nullable: false),
+                    ProductoNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Cantidad = table.Column<int>(type: "int", nullable: false),
                     PrecioUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Impuesto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Itbis = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DetallesVenta", x => x.DetalleVentaId);
+                    table.PrimaryKey("PK_VentasDetalle", x => x.VentaDetalleId);
                     table.ForeignKey(
-                        name: "FK_DetallesVenta_Productos_ProductoId",
+                        name: "FK_VentasDetalle_Productos_ProductoId",
                         column: x => x.ProductoId,
                         principalTable: "Productos",
                         principalColumn: "ProductoId");
                     table.ForeignKey(
-                        name: "FK_DetallesVenta_Ventas_VentaId",
+                        name: "FK_VentasDetalle_Ventas_VentaId",
                         column: x => x.VentaId,
                         principalTable: "Ventas",
                         principalColumn: "VentaId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FacturasDetalle",
+                columns: table => new
+                {
+                    FacturaDetalleId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FacturaId = table.Column<int>(type: "int", nullable: false),
+                    ProductoId = table.Column<int>(type: "int", nullable: false),
+                    ProductoNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    PrecioUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Itbis = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FacturasDetalle", x => x.FacturaDetalleId);
+                    table.ForeignKey(
+                        name: "FK_FacturasDetalle_Facturas_FacturaId",
+                        column: x => x.FacturaId,
+                        principalTable: "Facturas",
+                        principalColumn: "FacturaId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FacturasDetalle_Productos_ProductoId",
+                        column: x => x.ProductoId,
+                        principalTable: "Productos",
+                        principalColumn: "ProductoId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -272,20 +385,34 @@ namespace PrimePOS.DAL.Migrations
                 columns: new[] { "RolId", "Estado", "Nombre" },
                 values: new object[,]
                 {
-                    { 1, false, "Desarrollador" },
-                    { 2, false, "Administrador" },
-                    { 3, false, "Cajero" }
+                    { 1, true, "Desarrollador" },
+                    { 2, true, "Administrador" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_DetallesVenta_ProductoId",
-                table: "DetallesVenta",
-                column: "ProductoId");
+                name: "IX_Facturas_ClienteId",
+                table: "Facturas",
+                column: "ClienteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DetallesVenta_VentaId",
-                table: "DetallesVenta",
+                name: "IX_Facturas_UsuarioId",
+                table: "Facturas",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Facturas_VentaId",
+                table: "Facturas",
                 column: "VentaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FacturasDetalle_FacturaId",
+                table: "FacturasDetalle",
+                column: "FacturaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FacturasDetalle_ProductoId",
+                table: "FacturasDetalle",
+                column: "ProductoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Productos_CategoriaId",
@@ -326,13 +453,32 @@ namespace PrimePOS.DAL.Migrations
                 name: "IX_Ventas_UsuarioId",
                 table: "Ventas",
                 column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VentasDetalle_ProductoId",
+                table: "VentasDetalle",
+                column: "ProductoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VentasDetalle_VentaId",
+                table: "VentasDetalle",
+                column: "VentaId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DetallesVenta");
+                name: "Empresas");
+
+            migrationBuilder.DropTable(
+                name: "FacturasDetalle");
+
+            migrationBuilder.DropTable(
+                name: "VentasDetalle");
+
+            migrationBuilder.DropTable(
+                name: "Facturas");
 
             migrationBuilder.DropTable(
                 name: "Productos");

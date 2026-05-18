@@ -6,7 +6,6 @@ namespace PrimePOS.ENTITIES.Models
     [Table("FacturasDetalle")]
     public class FacturaDetalle
     {
-
         [Key]
         public int FacturaDetalleId { get; set; }
 
@@ -15,11 +14,18 @@ namespace PrimePOS.ENTITIES.Models
 
         public int ProductoId { get; set; }
         public Producto? Producto { get; set; }
-        public string ProductoNombre { get; set; } = string.Empty;
 
-        public decimal Precio { get; set; }
+        public string ProductoNombre { get; set; } = "";
+        public string Codigo { get; set; } = "";
+
         public int Cantidad { get; set; }
-        public decimal Total { get; set; }
 
+        public decimal PrecioUnitario { get; set; }
+
+        public decimal Itbis { get; set; }
+
+        public decimal Subtotal { get; set; }
+
+        public decimal Total { get; set; }
     }
 }

@@ -122,4 +122,37 @@ public class OverlayService
 
         return result;
     }
+
+    public async Task<bool> ShowTurnoAsync(AbrirTurnoOverlay overlay, AbrirTurnoViewModel vm)
+    {
+        Show(overlay);
+
+        var result = await vm.WaitTask;
+
+        Close();
+
+        return result;
+    }
+
+    public async Task<bool> ShowCerrarTurnoAsync(CerrarTurnoOverlay overlay, CerrarTurnoViewModel vm)
+    {
+        Show(overlay);
+
+        var result = await vm.WaitTask;
+
+        Close();
+
+        return result;
+    }
+
+    public async Task<bool> ShowCobrarAsync(CobrarOverlay overlay, CobrarViewModel vm)
+    {
+        Show(overlay);
+
+        var result = await vm.WaitTask;
+
+        Close();
+
+        return result;
+    }
 }

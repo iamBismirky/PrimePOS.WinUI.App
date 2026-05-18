@@ -19,6 +19,8 @@
             <helpers:NumeroConverterHelper x:Key="NumeroConverterHelper"/>
             <helpers:DecimalToDoubleConverter x:Key="DecimalToDouble"/>
             <helpers:DateFormatConverter x:Key="DateFormatConverter"/>
+            <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+            <helpers:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
             <!-- Formatter global -->
             <globalization:DecimalFormatter 
             x:Key="DecimalFormatter"

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.Contracts.DTOs.Caja;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
@@ -90,9 +91,8 @@ public partial class CajaViewModel : ObservableObject
     [RelayCommand]
     public async Task NuevoAsync()
     {
-        var vm = new CajaOverlayViewModel(
-        _api,
-        _notify);
+        var vm = App.Services.GetService<CajaOverlayViewModel>();
+        await vm.InicializarAsync();
 
         var overlay = new CajaOverlay(vm);
 
@@ -121,7 +121,7 @@ public partial class CajaViewModel : ObservableObject
             _notify,
             caja);
 
-
+        await vm.InicializarAsync();
         var overlay = new CajaOverlay(vm);
 
         var actualizado = await _overlayService.ShowCajaAsync(overlay, vm);

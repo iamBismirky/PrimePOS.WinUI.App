@@ -25,8 +25,8 @@ public sealed partial class LoginWindow : Window
         ConfigurarVentana();
         ConfigurarUI();
 
-        _viewModel = App.AppServices.GetRequiredService<LoginViewModel>();
-        _notify = App.AppServices.GetRequiredService<NotificationService>();
+        _viewModel = App.Services.GetRequiredService<LoginViewModel>();
+        _notify = App.Services.GetRequiredService<NotificationService>();
 
         RootGrid.DataContext = _viewModel;
         _viewModel.LoginSuccess += OnLoginExitoso;
@@ -70,7 +70,7 @@ public sealed partial class LoginWindow : Window
     private void OnLoginExitoso()
     {
 
-        var main = App.AppServices.GetRequiredService<MainWindow>();
+        var main = App.Services.GetRequiredService<MainWindow>();
         main.Activate();
 
         this.Close();

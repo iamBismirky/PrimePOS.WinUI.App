@@ -13,7 +13,7 @@ namespace PrimePOS.WinUI.Pages
         public CerrarSesionDialog()
         {
             this.InitializeComponent();
-            ViewModel = App.AppServices.GetRequiredService<AppSesionViewModel>();
+            ViewModel = App.Services.GetRequiredService<AppSesionViewModel>();
         }
 
 

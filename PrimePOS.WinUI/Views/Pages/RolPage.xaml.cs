@@ -14,7 +14,7 @@ namespace PrimePOS.WinUI.Views.Pages
         public RolPage()
         {
             InitializeComponent();
-            ViewModel = App.AppServices.GetRequiredService<RolViewModel>();
+            ViewModel = App.Services.GetRequiredService<RolViewModel>();
             DataContext = ViewModel;
 
         }

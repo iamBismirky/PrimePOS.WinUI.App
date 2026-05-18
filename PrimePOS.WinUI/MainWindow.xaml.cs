@@ -30,9 +30,9 @@ public sealed partial class MainWindow : Window
         RootGrid.RequestedTheme = App.TemaActual;
         this.ExtendsContentIntoTitleBar = true;
 
-        _sesion = App.AppServices.GetRequiredService<AppSesionViewModel>();
-        _notify = App.AppServices.GetRequiredService<NotificationService>();
-        _overlayService = App.AppServices.GetRequiredService<OverlayService>();
+        _sesion = App.Services.GetRequiredService<AppSesionViewModel>();
+        _notify = App.Services.GetRequiredService<NotificationService>();
+        _overlayService = App.Services.GetRequiredService<OverlayService>();
 
         RootGrid.DataContext = _sesion;
         SetWindowSizeAndCenter(1600, 900);

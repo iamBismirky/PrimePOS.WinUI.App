@@ -6,7 +6,7 @@ namespace PrimePOS.WinUI.ViewModels;
 
 public partial class DialogViewModel : ObservableObject
 {
-    private readonly TaskCompletionSource<bool> _tcs = new();
+    private TaskCompletionSource<bool> _tcs = new();
 
     [ObservableProperty]
     private string title = string.Empty;

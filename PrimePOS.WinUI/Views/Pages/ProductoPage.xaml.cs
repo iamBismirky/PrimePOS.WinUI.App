@@ -14,7 +14,7 @@ namespace PrimePOS.WinUI.Views.Pages
         public ProductoPage()
         {
             InitializeComponent();
-            ViewModel = App.AppServices.GetRequiredService<ProductoViewModel>();
+            ViewModel = App.Services.GetRequiredService<ProductoViewModel>();
 
             this.DataContext = ViewModel;
 

@@ -19,8 +19,15 @@
                            FontSize="22"
                            FontWeight="Bold" />
                 <StackPanel Orientation="Vertical" Spacing="10">
+                    <TextBlock Text="Cliente" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Venta.ClienteNombre}" FontSize="18" FontWeight="SemiBold"/>
+                    <TextBlock Text="Metodo Pago" FontSize="18" FontWeight="Bold"/>
+
+                    <ComboBox ItemsSource="{Binding MetodosPago}"
+                              SelectedItem="{Binding MetodoPagoSeleccionado}"
+                              DisplayMemberPath="Nombre"/>
                     <TextBlock Text="Total" FontSize="18" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding Total, Converter={StaticResource NumeroConverterHelper}}" 
+                    <TextBlock Text="{Binding Venta.Total, Converter={StaticResource NumeroConverterHelper}}" 
                                FontSize="18" 
                                FontWeight="SemiBold"/>
                     

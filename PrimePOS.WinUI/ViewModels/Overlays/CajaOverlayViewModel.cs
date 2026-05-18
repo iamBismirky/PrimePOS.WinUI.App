@@ -13,7 +13,7 @@ public partial class CajaOverlayViewModel : ObservableObject
     private readonly CajaApiService _api;
     private readonly NotificationService _notify;
 
-    private readonly TaskCompletionSource<bool> _tcs = new();
+    private TaskCompletionSource<bool> _tcs = new();
 
     public Task<bool> WaitTask => _tcs.Task;
 
@@ -44,6 +44,12 @@ public partial class CajaOverlayViewModel : ObservableObject
 
     [ObservableProperty]
     private bool isLoading;
+
+
+    public async Task InicializarAsync()
+    {
+        _tcs = new TaskCompletionSource<bool>();
+    }
 
     [RelayCommand]
     private async Task GuardarAsync()

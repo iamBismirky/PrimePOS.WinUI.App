@@ -77,7 +77,7 @@ public partial class CategoriaViewModel : ObservableObject
             _api,
             _notify,
             categoria);
-
+        await vm.InicializarAsync();
         var overlay = new CategoriaOverlay(vm);
 
         var actualizado =
@@ -143,7 +143,7 @@ public partial class CategoriaViewModel : ObservableObject
         var vm = new CategoriaOverlayViewModel(
             _api,
             _notify);
-
+        await vm.InicializarAsync();
         var overlay = new CategoriaOverlay(vm);
 
         var creado =

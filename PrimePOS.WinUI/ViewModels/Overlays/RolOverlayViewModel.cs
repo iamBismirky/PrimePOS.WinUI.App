@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Rol;
-using PrimePOS.ENTITIES.Models;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
@@ -14,7 +13,7 @@ public partial class RolOverlayViewModel : ObservableObject
     private readonly RolApiService _api;
     private readonly NotificationService _notify;
 
-    private readonly TaskCompletionSource<bool> _tcs = new();
+    private TaskCompletionSource<bool> _tcs = new();
 
     public Task<bool> WaitTask => _tcs.Task;
 
@@ -47,6 +46,11 @@ public partial class RolOverlayViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading = false;
 
+
+    public async Task InicializarAsync()
+    {
+        _tcs = new TaskCompletionSource<bool>();
+    }
     [RelayCommand]
     private async Task GuardarAsync()
     {

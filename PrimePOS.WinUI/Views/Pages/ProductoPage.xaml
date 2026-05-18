@@ -56,11 +56,11 @@
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="20"/>
                         <TextBlock Text="Nuevo"/>
-                        <ProgressRing 
+                        <!--<ProgressRing 
                                       Width="20"
                                       Height="20"
                                       IsActive="{Binding IsLoading}"
-                                      Visibility="{Binding IsLoading}"/>
+                                      Visibility="{Binding IsLoading}"/>-->
                     </StackPanel>
                 </Button>
 
@@ -111,7 +111,7 @@
                                                 </Button>
                                                 <Button Click="VerEtiqueta_Click"
                                                         Tag="{Binding}">
-                                                    <SymbolIcon Symbol="View"/>
+                                                    <SymbolIcon Symbol="Tag"/>
                                                 </Button>
 
                                                 <!-- DESACTIVAR -->

@@ -85,7 +85,7 @@ public partial class ClienteViewModel : ObservableObject
     public async Task NuevoAsync()
     {
         var vm = new ClienteOverlayViewModel(_apiCliente, _notify);
-
+        await vm.InicializarAsync();
         var overlay = new ClienteOverlay(vm);
         await _overlayService.ShowClienteAsync(overlay, vm);
 
@@ -95,7 +95,7 @@ public partial class ClienteViewModel : ObservableObject
     public async Task EditarAsync(ClienteDto cliente)
     {
         var vm = new ClienteOverlayViewModel(_apiCliente, _notify, cliente);
-
+        await vm.InicializarAsync();
         var overlay = new ClienteOverlay(vm);
 
         var actualizado = await _overlayService

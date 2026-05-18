@@ -6,11 +6,10 @@ namespace PrimePOS.WinUI.Views.Overlays;
 public sealed partial class AbrirTurnoOverlay : UserControl
 {
 
-    public AbrirTurnoOverlay()
+    public AbrirTurnoOverlay(AbrirTurnoViewModel vm)
     {
-
         InitializeComponent();
-
+        DataContext = vm;
     }
 
 }

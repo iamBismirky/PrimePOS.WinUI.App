@@ -13,7 +13,8 @@ public partial class CerrarTurnoViewModel : ObservableObject
     private readonly TurnoApiService _turnoApi;
     private readonly NotificationService _notify;
     private readonly AppSesionViewModel _sesion;
-
+    private TaskCompletionSource<bool> _tcs = new();
+    public Task<bool> WaitTask => _tcs.Task;
     public CerrarTurnoViewModel(
         TurnoApiService turnoApi,
         NotificationService notify,
@@ -24,13 +25,14 @@ public partial class CerrarTurnoViewModel : ObservableObject
         _sesion = sesion;
     }
 
-    // 🔹 DATOS
+
     [ObservableProperty] private decimal montoInicial;
     [ObservableProperty] private decimal totalEfectivo;
     [ObservableProperty] private decimal totalTarjeta;
     [ObservableProperty] private decimal totalTransferencia;
     [ObservableProperty] private string? efectivoTexto;
     [ObservableProperty] private decimal efectivoContado;
+    [ObservableProperty] private bool isLoading;
 
     public decimal Diferencia =>
         EfectivoContado - (MontoInicial + TotalEfectivo);
@@ -46,12 +48,16 @@ public partial class CerrarTurnoViewModel : ObservableObject
 
     }
 
-    public event Action? OnCerrar;
 
     // 🔹 INIT
     public async Task InicializarAsync()
     {
-        var turnoId = _sesion.TurnoActual!.TurnoId;
+        _tcs = new TaskCompletionSource<bool>();
+
+        if (_sesion.TurnoActual == null)
+            return;
+
+        var turnoId = _sesion.TurnoActual.TurnoId;
 
         var res = await _turnoApi.ObtenerResumenAsync(turnoId);
 
@@ -71,36 +77,49 @@ public partial class CerrarTurnoViewModel : ObservableObject
     [RelayCommand]
     private async Task CerrarAsync()
     {
-        var dto = new CierreTurnoDto
+        try
         {
-            TurnoId = _sesion.TurnoActual!.TurnoId,
-            MontoInicial = MontoInicial,
-            TotalEfectivo = TotalEfectivo,
-            TotalTarjeta = TotalTarjeta,
-            TotalTransferencia = TotalTransferencia,
-            EfectivoContado = EfectivoContado
-        };
+            IsLoading = true;
+            var dto = new CierreTurnoDto
+            {
+                TurnoId = _sesion.TurnoActual!.TurnoId,
+                MontoInicial = MontoInicial,
+                TotalEfectivo = TotalEfectivo,
+                TotalTarjeta = TotalTarjeta,
+                TotalTransferencia = TotalTransferencia,
+                EfectivoContado = EfectivoContado
+            };
 
-        var res = await _turnoApi.CerrarTurnoAsync(dto);
+            var res = await _turnoApi.CerrarTurnoAsync(dto);
 
-        if (!res.Success)
+            if (!res.Success)
+            {
+                _notify.Error(res.Message);
+                return;
+            }
+
+            _sesion.CerrarTurno();
+
+            _notify.Success("Turno cerrado correctamente");
+
+            _tcs.TrySetResult(false);
+        }
+        catch (Exception ex)
         {
-            _notify.Error(res.Message);
-            return;
+            _notify.Error("Error al cerrar el turno: " + ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
         }
 
-        _sesion.CerrarTurno();
-
-        _notify.Success("Turno cerrado correctamente");
-
-        OnCerrar?.Invoke();
     }
 
     // 🔹 CANCELAR
     [RelayCommand]
     private void Cancelar()
     {
-        OnCerrar?.Invoke();
+        _tcs.TrySetResult(false);
     }
     public void FormatearEfectivo()
     {

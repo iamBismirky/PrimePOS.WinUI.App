@@ -11,6 +11,5 @@ public class Categoria
     public string? Nombre { get; set; }
     public string? Glyph { get; set; }
     public bool Estado { get; set; }
-
     public ICollection<Producto>? Productos { get; set; }
 }
