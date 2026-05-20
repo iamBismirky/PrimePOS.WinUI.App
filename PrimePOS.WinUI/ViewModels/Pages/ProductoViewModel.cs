@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.Contracts.DTOs.Categoria;
 using PrimePOS.Contracts.DTOs.Producto;
 using PrimePOS.WinUI.Services;
@@ -108,7 +109,10 @@ public partial class ProductoViewModel : ObservableObject
         var vm = new ProductoOverlayViewModel(_apiProducto, _apiCategoria, _notify, producto);
         await vm.InicializarAsync();
         var overlay = new ProductoOverlay(vm);
-        var actualizado = await _overlayService.ShowProductoAsync(overlay, vm);
+        var actualizado = await _overlayService.ShowAsync(overlay, vm);
+        if (!actualizado)
+            return;
+
         if (actualizado)
         {
             await CargarProductosAsync();
@@ -159,10 +163,12 @@ public partial class ProductoViewModel : ObservableObject
     [RelayCommand]
     public async Task NuevoAsync()
     {
-        var vm = new ProductoOverlayViewModel(_apiProducto, _apiCategoria, _notify);
+        var vm = App.Services.GetRequiredService<ProductoOverlayViewModel>();
         await vm.InicializarAsync();
         var overlay = new ProductoOverlay(vm);
-        var creado = await _overlayService.ShowProductoAsync(overlay, vm);
+        var creado = await _overlayService.ShowAsync(overlay, vm);
+        if (!creado)
+            return;
         if (creado)
         {
             await CargarProductosAsync();
@@ -176,6 +182,6 @@ public partial class ProductoViewModel : ObservableObject
     {
         ProductoSeleccionado = producto;
         var pdf = await _apiProducto.ObtenerEtiquetaAsync(producto.ProductoId);
-        await _pdfService.MostrarPdfAsync(pdf);
+        await _pdfService.MostrarEtiquetaPdfAsync(pdf);
     }
 }

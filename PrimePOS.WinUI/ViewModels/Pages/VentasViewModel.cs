@@ -63,34 +63,19 @@ public partial class VentaViewModel : ObservableObject
 
     [ObservableProperty] private ObservableCollection<CarritoViewModel> carrito = new();
 
-    [ObservableProperty] private decimal descuentoPorcentaje;
-    [ObservableProperty] private decimal descuentoSeleccionado;
     [ObservableProperty] public bool isLoading;
 
-
+    private ClienteDto? _consumidorFinal;
 
     public decimal Subtotal => Carrito.Sum(x => x.Subtotal);
     public decimal Impuesto => Carrito.Sum(x => x.Itbis);
-    public decimal DescuentoMonto => Subtotal * (DescuentoPorcentaje / 100m);
-    public decimal SubtotalConDescuento => Subtotal - DescuentoMonto;
-    public decimal Total => Subtotal + Impuesto - DescuentoMonto;
-    public ObservableCollection<Decimal> Descuentos { get; } = new()
-    { 0,5,10,15,20,25,30};
-    partial void OnDescuentoSeleccionadoChanged(decimal value)
-    {
-        DescuentoPorcentaje = value;
-        NotificarTotales();
-    }
-    partial void OnDescuentoPorcentajeChanged(decimal value)
-    {
-        NotificarTotales();
-    }
+    public decimal Total => Subtotal + Impuesto;
+
+
 
     private void NotificarTotales()
     {
         OnPropertyChanged(nameof(Subtotal));
-        OnPropertyChanged(nameof(DescuentoMonto));
-        OnPropertyChanged(nameof(SubtotalConDescuento));
         OnPropertyChanged(nameof(Impuesto));
         OnPropertyChanged(nameof(Total));
     }
@@ -126,12 +111,17 @@ public partial class VentaViewModel : ObservableObject
 
     private async Task CargarConsumidorFinalAsync()
     {
+
+
+
         var res = await _clienteApi.ObtenerClientePorIdAsync(1);
 
         if (res.Success && res.Data != null)
         {
+            _consumidorFinal = res.Data;
             ClienteSeleccionado = res.Data;
         }
+
     }
 
 
@@ -246,11 +236,13 @@ public partial class VentaViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Limpiar()
+    private async Task LimpiarAsync()
     {
         Carrito.Clear();
-        DescuentoPorcentaje = 0;
         NotificarTotales();
+        ClienteSeleccionado = _consumidorFinal;
+        TextoProducto = "";
+        TextoCliente = "";
     }
 
 
@@ -273,7 +265,9 @@ public partial class VentaViewModel : ObservableObject
         var vm = App.Services.GetRequiredService<AbrirTurnoViewModel>();
         await vm.InicializarAsync();
         var overlay = new AbrirTurnoOverlay(vm);
-        var confirm = await _overlayService.ShowTurnoAsync(overlay, vm);
+        var result = await _overlayService.ShowAsync(overlay, vm);
+        if (!result)
+            return;
 
 
     }
@@ -299,7 +293,6 @@ public partial class VentaViewModel : ObservableObject
             TurnoId = _sesion.TurnoActual!.TurnoId,
             Subtotal = Subtotal,
             Impuesto = Impuesto,
-            Descuento = DescuentoMonto,
             Total = Total,
             Items = Carrito.Select(x => new VentaDetalleDto
             {
@@ -313,7 +306,16 @@ public partial class VentaViewModel : ObservableObject
         var vm = App.Services.GetRequiredService<CobrarViewModel>();
         await vm.InicializarAsync(dto);
         var overlay = new CobrarOverlay(vm);
-        var result = await _overlayService.ShowCobrarAsync(overlay, vm);
+        var result = await _overlayService.ShowAsync(overlay, vm);
+        if (!result)
+            return;
+
+        if (result)
+        {
+            Carrito.Clear();
+            NotificarTotales();
+
+        }
 
 
 
@@ -330,69 +332,14 @@ public partial class VentaViewModel : ObservableObject
         var vm = App.Services.GetRequiredService<CerrarTurnoViewModel>();
         await vm.InicializarAsync();
         var overlay = new CerrarTurnoOverlay(vm);
-        var result = await _overlayService.ShowCerrarTurnoAsync(overlay, vm);
+        var result = await _overlayService.ShowAsync(overlay, vm);
+        if (!result)
+            return;
     }
 
 
 
-    //public async Task<ApiResponse<VentaResponseDto>?> FacturarDesdeCobroAsync(decimal efectivo)
-    //{
-    //    try
-    //    {
-    //        if (MetodoPagoSeleccionado == null)
-    //        {
-    //            _notify.Warning("Seleccione un método de pago");
-    //            return null;
-    //        }
 
-    //        if (ClienteSeleccionado == null)
-    //        {
-    //            _notify.Warning("Seleccione un cliente");
-    //            return null;
-    //        }
-
-    //        var dto = new CrearVentaDto
-    //        {
-    //            ClienteId = ClienteSeleccionado.ClienteId,
-    //            ClienteNombre = ClienteSeleccionado.Nombre,
-    //            MetodoPagoId = MetodoPagoSeleccionado.MetodoPagoId,
-    //            TurnoId = _sesion.TurnoActual!.TurnoId,
-
-    //            Subtotal = Subtotal,
-    //            Impuesto = Impuesto,
-    //            Descuento = DescuentoMonto,
-    //            Total = Total,
-    //            Efectivo = efectivo,
-
-    //            Items = Carrito.Select(x => new VentaDetalleDto
-    //            {
-    //                Codigo = x.Codigo,
-    //                ProductoId = x.ProductoId,
-    //                Cantidad = x.Cantidad,
-    //                PrecioUnitario = x.Precio,
-    //                Total = x.Total
-    //            }).ToList()
-    //        };
-
-    //        var result = await _ventaApi.CrearVentaAsync(dto);
-
-    //        if (!result.Success)
-    //        {
-    //            _notify.Error(result.Message);
-    //            return result;
-    //        }
-
-    //        _notify.Success("Venta realizada correctamente");
-    //        Limpiar();
-
-    //        return result;
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _notify.Error(ex.Message);
-    //        return null;
-    //    }
-    //}
     [RelayCommand]
     public async Task NuevoClienteAsync()
     {
@@ -401,6 +348,8 @@ public partial class VentaViewModel : ObservableObject
          _notify);
 
         var overlay = new ClienteOverlay(vm);
-        await _overlayService.ShowClienteAsync(overlay, vm);
+        var result = await _overlayService.ShowAsync(overlay, vm);
+        if (!result)
+            return;
     }
 }

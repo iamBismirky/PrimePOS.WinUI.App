@@ -1,38 +1,39 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PrimePOS.WinUI.Contracts;
 using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.ViewModels;
 
-public partial class DialogViewModel : ObservableObject
+public partial class DialogViewModel : ObservableObject, IOverlayViewModel
 {
-    private TaskCompletionSource<bool> _tcs = new();
+    private readonly TaskCompletionSource<bool> _tcs = new();
 
-    [ObservableProperty]
-    private string title = string.Empty;
+    public string Title { get; }
+    public string Message { get; }
 
-    [ObservableProperty]
-    private string message = string.Empty;
+    public Task<bool> WaitTask => _tcs.Task;
 
-    public DialogViewModel(
-        string title,
-        string message)
+    public DialogViewModel(string title, string message)
     {
         Title = title;
         Message = message;
     }
 
     [RelayCommand]
-    private void Confirm()
+    private void Confirmar()
     {
-        _tcs.TrySetResult(true);
+        Close(true);
     }
 
     [RelayCommand]
-    private void Cancel()
+    private void Cancelar()
     {
-        _tcs.TrySetResult(false);
+        Close(false);
     }
 
-    public Task<bool> WaitTask => _tcs.Task;
+    public void Close(bool result)
+    {
+        _tcs.TrySetResult(result);
+    }
 }

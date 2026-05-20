@@ -162,31 +162,10 @@ public sealed partial class MainWindow : Window
         // 🔥 Mover ventana
         appWindow.Move(new PointInt32(x, y));
     }
-    public async Task MostrarPdfAsync(byte[] pdfBytes)
+    private void CerrarPdf_Click(object sender, RoutedEventArgs e)
     {
-        string tempFile =
-            Path.Combine(
-                Path.GetTempPath(),
-                $"{Guid.NewGuid()}.pdf");
-
-        await File.WriteAllBytesAsync(
-            tempFile,
-            pdfBytes);
-
-        await PdfWebView.EnsureCoreWebView2Async();
-
-        PdfWebView.CoreWebView2.Navigate(
-            new Uri(tempFile).AbsoluteUri);
-
-        PdfOverlay.Visibility =
-            Visibility.Visible;
-    }
-    private void CerrarPdf_Click(
-    object sender,
-    RoutedEventArgs e)
-    {
-        PdfOverlay.Visibility =
-            Visibility.Collapsed;
+        PdfOverlay.Visibility = Visibility.Collapsed;
+        PdfWebView.Source = null;
     }
 
     private void OverlayContainer_Tapped(object sender, TappedRoutedEventArgs e)
@@ -200,6 +179,29 @@ public sealed partial class MainWindow : Window
 
     private void PdfOverlay_Tapped(object sender, TappedRoutedEventArgs e)
     {
+        e.Handled = true;
+    }
+    public void ShowPdf(string url)
+    {
+        PdfOverlay.Visibility = Visibility.Visible;
+        PdfWebView.Source = new Uri(url);
+    }
 
+    public async void ShowPdfBytes(byte[] pdfBytes)
+    {
+        PdfOverlay.Visibility = Visibility.Visible;
+        var filePath = Path.Combine(
+        Path.GetTempPath(),
+        $"{Guid.NewGuid()}.pdf");
+
+        await File.WriteAllBytesAsync(filePath, pdfBytes);
+
+        PdfWebView.Source = new Uri(filePath);
+    }
+
+    public void HidePdf()
+    {
+        PdfOverlay.Visibility = Visibility.Collapsed;
+        PdfWebView.Source = null;
     }
 }

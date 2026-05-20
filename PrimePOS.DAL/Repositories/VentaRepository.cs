@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PrimePOS.Contracts.Enums;
 using PrimePOS.DAL.Context;
 using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
@@ -22,7 +23,7 @@ public class VentaRepository : IVentaRepository
     }
     public void Anular(Venta venta)
     {
-        venta.Estado = false;
+        venta.EstadoVenta = EstadoVenta.Anulada;
         _context.Update(venta);
     }
     public async Task<Venta?> ObtenerPorId(int id)
@@ -48,20 +49,20 @@ public class VentaRepository : IVentaRepository
     public async Task<List<Venta>> ObtenerPorTurnoAsync(int turnoId)
     {
         return await _context.Ventas
-            .Where(v => v.TurnoId == turnoId && v.Estado == true)
+            .Where(v => v.TurnoId == turnoId && v.EstadoVenta == EstadoVenta.Completada)
             .ToListAsync();
     }
 
     public async Task<List<Venta>> ObtenerPorFechaAsync(DateTime fecha)
     {
         return await _context.Ventas
-            .Where(v => v.FechaRegistro.Date == fecha.Date && v.Estado)
+            .Where(v => v.FechaRegistro.Date == fecha.Date && v.EstadoVenta == EstadoVenta.Completada)
             .ToListAsync();
     }
     public async Task<decimal> ObtenerTotalVentasPorTurnoAsync(int turnoId)
     {
         return await _context.Ventas
-            .Where(x => x.TurnoId == turnoId)
+            .Where(x => x.TurnoId == turnoId && x.EstadoVenta == EstadoVenta.Completada)
             .SumAsync(x => x.Total);
     }
 }

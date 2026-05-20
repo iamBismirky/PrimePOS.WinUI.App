@@ -1,208 +1,190 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
     x:Class="PrimePOS.WinUI.Views.Overlays.ProductoOverlay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Grid Width="800">
+    <Grid>
 
         <Border
+            Width="900"
             Padding="20"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
-            CornerRadius="12">
+            CornerRadius="16"
+            Background="{ThemeResource SolidBackgroundFillColorBase}">
 
-            <Grid ColumnSpacing="20" RowSpacing="10">
-
-                <!--  3 COLUMNAS  -->
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <Grid RowSpacing="16">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!--  ================= HEADER =================  -->
-                <StackPanel
-                    Grid.Row="0"
-                    Grid.ColumnSpan="3"
-                    Spacing="5">
+                <!-- ================= HEADER ================= -->
+                <StackPanel Grid.Row="0" Spacing="4">
 
-                    <TextBlock
-                        FontSize="20"
-                        FontWeight="SemiBold"
-                        Text="Producto" />
+                    <TextBlock Text="Producto"
+                               FontSize="20"
+                               FontWeight="SemiBold"/>
 
-                    <Line
-                        Stretch="Fill"
-                        Stroke="Gray"
-                        StrokeThickness="1"
-                        X1="0"
-                        X2="1" />
+                    <TextBlock Text="Gestión de información, precios e impuestos"
+                               Opacity="0.6"/>
+
+                    <Border Height="1"
+                            Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                            Opacity="0.4"/>
                 </StackPanel>
 
-                <!--  ================= COLUMNA 1: DATOS =================  -->
-                <StackPanel
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Spacing="10">
-                    <TextBlock FontWeight="SemiBold" Text="Codigo" />
-                    <TextBlock FontWeight="SemiBold" Text="{Binding Codigo}" />
-                    <TextBlock FontWeight="SemiBold" Text="Fecha Registro" />
-                    <TextBlock Text="{Binding FechaRegistro, Converter={StaticResource DateFormatConverter}}" />
-                    <TextBox Header="Nombre" Text="{Binding Nombre, Mode=TwoWay}" />
+                <!-- ================= BODY ================= -->
+                <Grid Grid.Row="1" ColumnSpacing="16">
 
-                    <TextBox Header="Descripción" Text="{Binding Descripcion, Mode=TwoWay}" />
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <TextBox Header="Código Barras" Text="{Binding CodigoBarra, Mode=TwoWay}" />
+                    <!-- ===== DATOS ===== -->
+                    <Border Padding="14"
+                            CornerRadius="12"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
 
-                    <ComboBox
-                        DisplayMemberPath="Nombre"
-                        Header="Categoría"
-                        ItemsSource="{Binding Categorias}"
-                        PlaceholderText="Seleccione una Categoria"
-                        SelectedItem="{Binding CategoriaSeleccionada, Mode=TwoWay}" />
+                        <StackPanel Spacing="10">
 
-                </StackPanel>
+                            <TextBlock Text="Información"
+                                       FontWeight="SemiBold"
+                                       Opacity="0.7"/>
 
-                <!--  ================= COLUMNA 2: PRECIOS BASE =================  -->
-                <StackPanel
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Spacing="10">
+                            <TextBox Header="Nombre"
+                                     Text="{Binding Nombre, Mode=TwoWay}"/>
 
-                    <NumberBox
-                        Header="Precio Compra"
-                        NumberFormatter="{StaticResource DecimalFormatter}"
-                        ValueChanged="NumberBox_ValueChanged"
-                        Value="{Binding PrecioCompra, Mode=TwoWay, Converter={StaticResource DecimalToDouble}}" />
+                            <TextBox Header="Descripción"
+                                     Text="{Binding Descripcion, Mode=TwoWay}"/>
 
-                    <NumberBox Header="Existencia" Value="{Binding Existencia, Mode=TwoWay, Converter={StaticResource IntToDoubleConverter}}" />
+                            <TextBox Header="Código de barras"
+                                     Text="{Binding CodigoBarra, Mode=TwoWay}"/>
 
-                    <ToggleSwitch Header="Estado" IsOn="{Binding Estado, Mode=TwoWay}" />
+                            <ComboBox Header="Categoría"
+                                      ItemsSource="{Binding Categorias}"
+                                      DisplayMemberPath="Nombre"
+                                      SelectedItem="{Binding CategoriaSeleccionada}"/>
 
-                    <ToggleSwitch Header="Precio Automatico" IsOn="{Binding PrecioAutomatico, Mode=TwoWay}" />
+                        </StackPanel>
+                    </Border>
 
-                    <NumberBox
-                        Header="Porcentaje Ganancia (%)"
-                        IsEnabled="{Binding PrecioAutomatico, Converter={StaticResource InverseBooleanConverter}}"
-                        Value="{Binding PorcentajeGanancia, Mode=TwoWay, Converter={StaticResource DecimalToDouble}}" />
+                    <!-- ===== CONFIG ===== -->
+                    <Border Grid.Column="1"
+                            Padding="14"
+                            CornerRadius="12"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
 
-                </StackPanel>
+                        <StackPanel Spacing="10">
 
-                <!--  ================= COLUMNA 3: PRICING + ITBIS =================  -->
-                <StackPanel
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    Spacing="10">
+                            <TextBlock Text="Configuración"
+                                       FontWeight="SemiBold"
+                                       Opacity="0.7"/>
 
+                            <TextBox Header="Precio compra"
+                                     Text="{Binding PrecioCompra, Mode=TwoWay,
+                                     Converter={StaticResource DecimalToStringConverter},
+                                     UpdateSourceTrigger=PropertyChanged}"/>
 
+                            <NumberBox Header="Existencia"
+                                       Value="{Binding Existencia, Mode=TwoWay}"/>
 
-                    <ToggleSwitch Header="Aplica ITBIS" IsOn="{Binding AplicaItbis, Mode=TwoWay}" />
+                            <ToggleSwitch Header="Activo"
+                                          IsOn="{Binding Estado, Mode=TwoWay}"/>
 
-                    <!--  PREVIEW  -->
-                    <Border
-                        Padding="10"
-                        Background="#222"
-                        CornerRadius="8">
+                            <ToggleSwitch Header="Precio automático"
+                                          IsOn="{Binding PrecioAutomatico, Mode=TwoWay}"/>
 
-                        <StackPanel Spacing="5">
+                            <TextBox Header="Ganancia %"
+                                     IsEnabled="{Binding PrecioAutomatico, Converter={StaticResource InverseBooleanConverter}}"
+                                     Text="{Binding PorcentajeGanancia, Mode=TwoWay,
+                                     UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <TextBlock
-                                FontWeight="SemiBold"
-                                Foreground="White"
-                                Text="Preview" />
-                            <StackPanel>
-                                <TextBlock
-                                    FontSize="16"
-                                    Foreground="White"
-                                    Text="Precio" />
-                                <TextBlock Foreground="White" Text="{Binding PrecioBase, Converter={StaticResource NumeroConverterHelper}}" />
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock
-                                    FontSize="16"
-                                    Foreground="White"
-                                    Text="ITBIS" />
+                        </StackPanel>
+                    </Border>
 
-                                <TextBlock Foreground="White" Text="{Binding Itbis, Converter={StaticResource NumeroConverterHelper}}" />
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock
-                                    FontSize="20"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    Text="Precio Final" />
+                    <!-- ===== PREVIEW ===== -->
+                    <Border Grid.Column="2"
+                            Padding="16"
+                            CornerRadius="12"
+                            Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
 
-                                <TextBlock
-                                    FontSize="28"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    Text="{Binding PrecioFinal, Converter={StaticResource NumeroConverterHelper}}" />
-                            </StackPanel>
-                            <Line
-                                Stroke="Gray"
-                                StrokeThickness="1"
-                                X1="0"
-                                X2="300"
-                                Y1="0"
-                                Y2="0" />
-                            <StackPanel>
-                                <TextBlock
-                                    FontSize="16"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    Text="Ganancia" />
+                        <StackPanel Spacing="12">
 
-                                <TextBlock
-                                    FontSize="14"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    Text="{Binding Ganancia, Converter={StaticResource NumeroConverterHelper}}" />
-                            </StackPanel>
+                            <TextBlock Text="Resumen de precios"
+                                       FontWeight="SemiBold"
+                                       Opacity="0.7"/>
 
+                            <Border Padding="12"
+                                    CornerRadius="10"
+                                    Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}">
+
+                                <StackPanel Spacing="8">
+
+                                    <TextBlock Text="Precio base"/>
+                                    <TextBlock Text="{Binding PrecioBase,
+                                        Converter={StaticResource NumeroConverterHelper}}"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"/>
+
+                                    <TextBlock Text="ITBIS"/>
+                                    <TextBlock Text="{Binding Itbis,
+                                        Converter={StaticResource NumeroConverterHelper}}"/>
+
+                                    <Border Height="1"
+                                            Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                            Opacity="0.4"/>
+
+                                    <TextBlock Text="Precio final"
+                                               FontSize="14"
+                                               Opacity="0.7"/>
+
+                                    <TextBlock Text="{Binding PrecioFinal,
+                                        Converter={StaticResource NumeroConverterHelper}}"
+                                               FontSize="26"
+                                               FontWeight="Bold"/>
+
+                                    <TextBlock Text="Ganancia"
+                                               Opacity="0.7"/>
+
+                                    <TextBlock Text="{Binding Ganancia,
+                                        Converter={StaticResource NumeroConverterHelper}}"
+                                               FontWeight="SemiBold"/>
+
+                                </StackPanel>
+
+                            </Border>
 
                         </StackPanel>
 
                     </Border>
 
-                </StackPanel>
+                </Grid>
 
-                <!--  ================= BOTONES =================  -->
-                <StackPanel
-                    Grid.Row="2"
-                    Grid.ColumnSpan="3"
-                    Margin="0,15,0,0"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal"
-                    Spacing="10">
+                <!-- ================= ACTIONS ================= -->
+                <StackPanel Grid.Row="2"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Spacing="10">
 
-                    <Button Background="Red" Command="{Binding CancelarCommand}">
-                        <TextBlock Text="Cancelar" />
-                    </Button>
+                    <Button Content="Cancelar"
+                            Command="{Binding CancelarCommand}"
+                            Style="{ThemeResource ButtonRevealStyle}"/>
 
-                    <Button
-                        Background="#FF2D89EF"
-                        Command="{Binding GuardarCommand}"
-                        Foreground="White">
-
+                    <Button>
                         <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF78C;" />
-                            <TextBlock Text="Guardar" />
-                            <ProgressRing
-                                Width="18"
-                                Height="18"
-                                IsActive="{Binding IsLoading}"
-                                Visibility="{Binding IsLoading}" />
+
+                            <FontIcon Glyph="&#xF78C;"/>
+
+                            <TextBlock Text="Guardar"/>
+
+                            <ProgressRing Width="18"
+                                          Height="18"
+                                          IsActive="{Binding IsLoading}"
+                                          Visibility="{Binding IsLoading}"/>
+
                         </StackPanel>
 
                     </Button>
@@ -210,6 +192,7 @@
                 </StackPanel>
 
             </Grid>
+
         </Border>
 
     </Grid>

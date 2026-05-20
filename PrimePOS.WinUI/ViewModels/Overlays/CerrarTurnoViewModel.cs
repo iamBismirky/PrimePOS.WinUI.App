@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Turno;
+using PrimePOS.WinUI.Contracts;
 using PrimePOS.WinUI.Helpers;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
@@ -8,12 +9,12 @@ using PrimePOS.WinUI.ViewModels;
 using System;
 using System.Threading.Tasks;
 
-public partial class CerrarTurnoViewModel : ObservableObject
+public partial class CerrarTurnoViewModel : ObservableObject, IOverlayViewModel
 {
     private readonly TurnoApiService _turnoApi;
     private readonly NotificationService _notify;
     private readonly AppSesionViewModel _sesion;
-    private TaskCompletionSource<bool> _tcs = new();
+    private readonly TaskCompletionSource<bool> _tcs = new();
     public Task<bool> WaitTask => _tcs.Task;
     public CerrarTurnoViewModel(
         TurnoApiService turnoApi,
@@ -52,7 +53,7 @@ public partial class CerrarTurnoViewModel : ObservableObject
     // 🔹 INIT
     public async Task InicializarAsync()
     {
-        _tcs = new TaskCompletionSource<bool>();
+
 
         if (_sesion.TurnoActual == null)
             return;
@@ -102,7 +103,7 @@ public partial class CerrarTurnoViewModel : ObservableObject
 
             _notify.Success("Turno cerrado correctamente");
 
-            _tcs.TrySetResult(false);
+            Close(true);
         }
         catch (Exception ex)
         {
@@ -119,7 +120,11 @@ public partial class CerrarTurnoViewModel : ObservableObject
     [RelayCommand]
     private void Cancelar()
     {
-        _tcs.TrySetResult(false);
+        Close(false);
+    }
+    public void Close(bool result = false)
+    {
+        _tcs.TrySetResult(result);
     }
     public void FormatearEfectivo()
     {

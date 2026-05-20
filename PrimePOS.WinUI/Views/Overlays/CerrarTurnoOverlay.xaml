@@ -5,45 +5,242 @@
 
     <Grid>
 
-        <Border Width="400"
-                Padding="20"
-                Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
-                CornerRadius="12"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+        <Border
+            Width="850"
+            MaxHeight="700"
+            Padding="25"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource SolidBackgroundFillColorBase}"
+            CornerRadius="18">
 
-            <StackPanel Spacing="10">
+            <Grid ColumnSpacing="25">
 
-                <TextBlock Text="Cerrar Turno"
-                           FontSize="22"
-                           FontWeight="Bold"/>
-                <TextBlock Text="Monto inicial: "/>
-                <TextBlock Text="{Binding MontoInicial, Converter={StaticResource NumeroConverterHelper}}"/>
-                <TextBlock Text="Total Efectivo: "/>
-                <TextBlock Text="{Binding TotalEfectivo, Converter={StaticResource NumeroConverterHelper}}"/>
-                    <TextBlock Text="Total Tarjeta: "/>
-                        
-                <TextBlock Text="{Binding TotalTarjeta, Converter={StaticResource NumeroConverterHelper }}"/>
-                    <TextBlock Text="Total Transferencia: "/>
-                        
-                <TextBlock Text="{Binding TotalTransferencia, Converter={StaticResource NumeroConverterHelper}}"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
 
-                <TextBox x:Name="txtEfectivo" 
-                         Header="Efectivo contado"
-                         LostFocus="txtEfectivo_LostFocus"
-                         Text="{Binding EfectivoTexto, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <!--  =================================  -->
+                <!--  IZQUIERDA  -->
+                <!--  =================================  -->
 
-                <TextBlock Text="{Binding Diferencia, Converter={StaticResource NumeroConverterHelper}}"
-                           Foreground="Red"/>
+                <StackPanel Grid.Column="0" Spacing="20">
 
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button Content="Cancelar"
-                            Command="{Binding CancelarCommand}" />
-                    <Button Content="Cerrar Turno"
-                            Command="{Binding CerrarCommand}" />
+                    <!--  HEADER  -->
+                    <StackPanel>
+
+                        <TextBlock
+                            FontSize="30"
+                            FontWeight="Bold"
+                            Text="Cerrar Turno" />
+
+                        <TextBlock Opacity="0.7" Text="Resumen del turno actual" />
+
+                    </StackPanel>
+
+                    <!--  RESUMEN  -->
+                    <Border
+                        Padding="20"
+                        Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                        CornerRadius="16">
+
+                        <StackPanel Spacing="18">
+
+                            <!--  MONTO INICIAL  -->
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock FontSize="18" Text="Monto inicial" />
+
+                                <TextBlock
+                                    Grid.Column="1"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding MontoInicial, Converter={StaticResource NumeroConverterHelper}}" />
+
+                            </Grid>
+
+                            <!--  EFECTIVO  -->
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock FontSize="18" Text="Ventas efectivo" />
+
+                                <TextBlock
+                                    Grid.Column="1"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding TotalEfectivo, Converter={StaticResource NumeroConverterHelper}}" />
+
+                            </Grid>
+
+                            <!--  TARJETA  -->
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock FontSize="18" Text="Ventas tarjeta" />
+
+                                <TextBlock
+                                    Grid.Column="1"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding TotalTarjeta, Converter={StaticResource NumeroConverterHelper}}" />
+
+                            </Grid>
+
+                            <!--  TRANSFERENCIA  -->
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock FontSize="18" Text="Transferencias" />
+
+                                <TextBlock
+                                    Grid.Column="1"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding TotalTransferencia, Converter={StaticResource NumeroConverterHelper}}" />
+
+                            </Grid>
+
+                        </StackPanel>
+
+                    </Border>
+
+                    <!--  EFECTIVO CONTADO  -->
+                    <Border
+                        Padding="20"
+                        Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                        CornerRadius="16">
+
+                        <StackPanel Spacing="12">
+
+                            <TextBlock
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Opacity="0.7"
+                                Text="Efectivo contado" />
+
+                            <TextBox
+                                x:Name="txtEfectivo"
+                                FontSize="28"
+                                FontWeight="Bold"
+                                LostFocus="txtEfectivo_LostFocus"
+                                Text="{Binding EfectivoTexto, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        </StackPanel>
+
+                    </Border>
+
                 </StackPanel>
 
-            </StackPanel>
+                <!--  =================================  -->
+                <!--  DERECHA  -->
+                <!--  =================================  -->
+
+                <Border
+                    Grid.Column="1"
+                    Padding="25"
+                    Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                    CornerRadius="18">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--  RESUMEN FINAL  -->
+                        <StackPanel
+                            Grid.Row="0"
+                            VerticalAlignment="Center"
+                            Spacing="20">
+
+                            <TextBlock
+                                FontSize="26"
+                                FontWeight="Bold"
+                                Text="Resultado" />
+
+                            <!--  DIFERENCIA  -->
+                            <StackPanel>
+
+                                <TextBlock
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Opacity="0.7"
+                                    Text="Diferencia" />
+
+                                <TextBlock
+                                    FontSize="42"
+                                    FontWeight="Bold"
+                                    Foreground="IndianRed"
+                                    Text="{Binding Diferencia, Converter={StaticResource NumeroConverterHelper}}" />
+
+                            </StackPanel>
+
+                            <!--  MENSAJE  -->
+                            <Border
+                                Padding="15"
+                                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                CornerRadius="12">
+
+                                <TextBlock
+                                    Opacity="0.8"
+                                    Text="Verifique el efectivo contado antes de cerrar el turno."
+                                    TextWrapping="Wrap" />
+
+                            </Border>
+
+                        </StackPanel>
+
+                        <!--  BOTONES  -->
+                        <StackPanel Grid.Row="1" Spacing="12">
+
+                            <Button
+                                Height="50"
+                                Background="#FF2D89EF"
+                                Command="{Binding CerrarCommand}"
+                                Foreground="White">
+
+                                <TextBlock
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Text="Cerrar Turno" />
+
+                            </Button>
+
+                            <Button
+                                Height="45"
+                                Command="{Binding CancelarCommand}"
+                                Content="Cancelar" />
+
+                        </StackPanel>
+
+                    </Grid>
+
+                </Border>
+
+            </Grid>
+
         </Border>
+
     </Grid>
+
 </UserControl>

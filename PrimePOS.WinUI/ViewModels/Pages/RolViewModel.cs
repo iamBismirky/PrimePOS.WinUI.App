@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.Contracts.DTOs.Rol;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
@@ -82,10 +83,11 @@ public partial class RolViewModel : ObservableObject
             _api,
             _notify,
             rol);
-        await vm.InicializarAsync();
         var overlay = new RolOverlay(vm);
 
-        var actualizado = await _overlayService.ShowRolAsync(overlay, vm);
+        var actualizado = await _overlayService.ShowAsync(overlay, vm);
+        if (!actualizado)
+            return;
 
         if (actualizado)
         {
@@ -135,12 +137,11 @@ public partial class RolViewModel : ObservableObject
     [RelayCommand]
     public async Task NuevoAsync()
     {
-        var vm = new RolOverlayViewModel(
-            _api,
-            _notify);
-        await vm.InicializarAsync();
+        var vm = App.Services.GetRequiredService<RolOverlayViewModel>();
         var overlay = new RolOverlay(vm);
-        var creado = await _overlayService.ShowRolAsync(overlay, vm);
+        var creado = await _overlayService.ShowAsync(overlay, vm);
+        if (!creado)
+            return;
         if (creado)
         {
             await CargarAsync();

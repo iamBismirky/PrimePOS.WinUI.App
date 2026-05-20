@@ -5,45 +5,127 @@
 
     <Grid>
 
-        <Border Width="400"
-                Padding="20"
-                Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
-                CornerRadius="12"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+        <Border
+            Width="550"
+            Padding="25"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource SolidBackgroundFillColorBase}"
+            CornerRadius="18">
 
-            <StackPanel Spacing="10">
+            <Grid RowSpacing="20">
 
-                <TextBlock Text="Abrir Turno"
-                           FontSize="22"
-                           FontWeight="Bold"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <TextBlock Text="Caja" FontSize="18" FontWeight="SemiBold"/>
-                    <ComboBox 
+                <!--  ================= HEADER =================  -->
+                <StackPanel Grid.Row="0" Spacing="4">
+
+                    <TextBlock
+                        FontSize="30"
+                        FontWeight="Bold"
+                        Text="Abrir Turno" />
+
+                    <TextBlock Opacity="0.6" Text="Configura la caja y el monto inicial" />
+
+                </StackPanel>
+
+                <!--  ================= CAJA =================  -->
+                <Border
+                    Grid.Row="1"
+                    Padding="15"
+                    Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                    CornerRadius="14">
+
+                    <StackPanel Spacing="10">
+
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Opacity="0.7"
+                            Text="Caja" />
+
+                        <ComboBox
+                            DisplayMemberPath="Nombre"
                             ItemsSource="{Binding Cajas}"
-                            SelectedItem="{Binding CajaSeleccionada}"
-                            DisplayMemberPath="Nombre"/>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Spacing="10">
-                    <TextBlock Text="{Binding TurnoTexto}" FontSize="18" FontWeight="SemiBold"/>
+                            SelectedItem="{Binding CajaSeleccionada}" />
 
-                    <NumberBox Header="Monto Inicial"
-                               Value="{Binding MontoInicial, Mode=TwoWay, Converter={StaticResource DecimalToDouble}}"
-                               NumberFormatter="{StaticResource DecimalFormatter}"/>
-                </StackPanel>
-                
+                    </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button Content="Cancelar"
-                            Command="{Binding CancelarCommand}"
-                            Style="{StaticResource SubtleButtonStyle}"/>
-                    <Button Content="Abrir"
-                            Command="{Binding AbrirCommand}"
-                            Style="{StaticResource AccentButtonStyle}"/>
+                </Border>
+
+                <!--  ================= TURNO INFO =================  -->
+                <Border
+                    Grid.Row="2"
+                    Padding="15"
+                    Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                    CornerRadius="14">
+
+                    <StackPanel Spacing="10">
+
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Opacity="0.7"
+                            Text="Información del turno" />
+
+                        <TextBlock
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Text="{Binding TurnoTexto}" />
+
+                    </StackPanel>
+
+                </Border>
+
+                <!--  ================= MONTO =================  -->
+                <Border
+                    Grid.Row="3"
+                    Padding="15"
+                    Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                    CornerRadius="14">
+
+                    <StackPanel Spacing="10">
+
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Opacity="0.7"
+                            Text="Monto inicial" />
+
+                        <NumberBox NumberFormatter="{StaticResource DecimalFormatter}" Value="{Binding MontoInicial, Mode=TwoWay, Converter={StaticResource DecimalToDouble}}" />
+
+                    </StackPanel>
+
+                </Border>
+
+                <!--  ================= BOTONES =================  -->
+                <StackPanel
+                    Grid.Row="5"
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Spacing="12">
+
+                    <Button
+                        Padding="25,10"
+                        Command="{Binding CancelarCommand}"
+                        Content="Cancelar"
+                        Style="{StaticResource SubtleButtonStyle}" />
+
+                    <Button
+                        Padding="25,10"
+                        Command="{Binding AbrirCommand}"
+                        Content="Abrir Turno"
+                        Style="{StaticResource AccentButtonStyle}" />
+
                 </StackPanel>
 
-            </StackPanel>
+            </Grid>
+
         </Border>
+
     </Grid>
 </UserControl>

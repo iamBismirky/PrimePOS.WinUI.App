@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Rol;
 using PrimePOS.Contracts.DTOs.Usuario;
+using PrimePOS.WinUI.Contracts;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
@@ -11,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.ViewModels.Overlays;
 
-public partial class UsuarioOverlayViewModel : ObservableObject
+public partial class UsuarioOverlayViewModel : ObservableObject, IOverlayViewModel
 {
     private readonly UsuarioApiService _apiUsuario;
     private readonly RolApiService _apiRol;
     private readonly NotificationService _notify;
 
-    private TaskCompletionSource<bool> _tcs = new();
+    private readonly TaskCompletionSource<bool> _tcs = new();
 
     public Task<bool> WaitTask => _tcs.Task;
 
@@ -76,7 +77,7 @@ public partial class UsuarioOverlayViewModel : ObservableObject
 
     public async Task InicializarAsync()
     {
-        _tcs = new TaskCompletionSource<bool>();
+
         await CargarRolesAsync();
 
         if (Usuario != null)
@@ -251,7 +252,7 @@ public partial class UsuarioOverlayViewModel : ObservableObject
 
             Limpiar();
 
-            _tcs.TrySetResult(true);
+            Close(true);
         }
         catch (Exception ex)
         {
@@ -269,9 +270,12 @@ public partial class UsuarioOverlayViewModel : ObservableObject
     {
         Limpiar();
 
-        _tcs.TrySetResult(false);
+        Close(false);
     }
-
+    public void Close(bool result = false)
+    {
+        _tcs.TrySetResult(result);
+    }
 
     private void Limpiar()
     {

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Caja;
 using PrimePOS.Contracts.DTOs.Turno;
+using PrimePOS.WinUI.Contracts;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using PrimePOS.WinUI.ViewModels;
@@ -10,13 +11,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-public partial class AbrirTurnoViewModel : ObservableObject
+public partial class AbrirTurnoViewModel : ObservableObject, IOverlayViewModel
 {
     private readonly CajaApiService _cajaApi;
     private readonly TurnoApiService _turnoApi;
     private readonly NotificationService _notify;
     private readonly AppSesionViewModel _sesion;
-    private TaskCompletionSource<bool> _tcs = new();
+    private readonly TaskCompletionSource<bool> _tcs = new();
     public Task<bool> WaitTask => _tcs.Task;
     public AbrirTurnoViewModel(
         CajaApiService cajaApi,
@@ -41,7 +42,7 @@ public partial class AbrirTurnoViewModel : ObservableObject
     // 🔹 INIT
     public async Task InicializarAsync()
     {
-        _tcs = new TaskCompletionSource<bool>();
+
         var res = await _cajaApi.ObtenerCajasAsync();
 
         if (!res.Success || res.Data == null)
@@ -86,7 +87,7 @@ public partial class AbrirTurnoViewModel : ObservableObject
         _sesion.AbrirTurno(res.Data);
 
         _notify.Success("Turno abierto");
-        _tcs.TrySetResult(true);
+        Close(true);
 
     }
 
@@ -94,7 +95,11 @@ public partial class AbrirTurnoViewModel : ObservableObject
     [RelayCommand]
     private void Cancelar()
     {
-        _tcs.TrySetResult(false);
+        Close(false);
 
+    }
+    public void Close(bool result)
+    {
+        _tcs.TrySetResult(result);
     }
 }

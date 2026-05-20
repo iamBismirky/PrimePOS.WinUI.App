@@ -177,6 +177,7 @@ public class ProductoService : IProductoService
             Codigo = p.Codigo,
             Nombre = p.Nombre,
             PrecioVenta = p.PrecioVenta,
+            AplicaItbis = p.AplicaItbis,
             Itbis = p.Itbis,
             Existencia = p.Existencia
 

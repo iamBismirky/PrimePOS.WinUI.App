@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.Contracts.DTOs.Rol;
 using PrimePOS.Contracts.DTOs.Usuario;
 using PrimePOS.WinUI.Services;
@@ -104,7 +105,9 @@ public partial class UsuarioViewModel : ObservableObject
         var vm = new UsuarioOverlayViewModel(_apiUsuario, _apiRol, _notify, usuario);
         await vm.InicializarAsync();
         var overlay = new UsuarioOverlay(vm);
-        var actualizado = await _overlayService.ShowUsuarioAsync(overlay, vm);
+        var actualizado = await _overlayService.ShowAsync(overlay, vm);
+        if (!actualizado)
+            return;
         if (actualizado)
         {
             await CargarUsuariosAsync();
@@ -156,10 +159,11 @@ public partial class UsuarioViewModel : ObservableObject
     [RelayCommand]
     public async Task NuevoAsync()
     {
-        var vm = new UsuarioOverlayViewModel(_apiUsuario, _apiRol, _notify);
-        await vm.InicializarAsync();
+        var vm = App.Services.GetRequiredService<UsuarioOverlayViewModel>();
         var overlay = new UsuarioOverlay(vm);
-        var creado = await _overlayService.ShowUsuarioAsync(overlay, vm);
+        var creado = await _overlayService.ShowAsync(overlay, vm);
+        if (!creado)
+            return;
         if (creado)
         {
             await CargarUsuariosAsync();

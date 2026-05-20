@@ -47,7 +47,7 @@ namespace PrimePOS.BLL.Services
                 Total = venta.Total,
 
                 MetodoPago = venta.MetodoPago?.Nombre ?? "",
-                Efectivo = venta.Efectivo,
+                Efectivo = venta.MontoPagado,
                 Cambio = venta.Cambio
             };
 

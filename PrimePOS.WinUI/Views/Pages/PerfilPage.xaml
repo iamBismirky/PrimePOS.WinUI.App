@@ -4,105 +4,124 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Padding="30">
 
-        <!-- CONTENEDOR CENTRADO -->
-        <Grid HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              MaxWidth="420"
-              Width="800">
+        <Border
+            MaxWidth="700"
+            Padding="25"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            CornerRadius="18">
 
-            <Border Padding="25"
-                    CornerRadius="16"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+            <Grid ColumnSpacing="25">
 
-                <StackPanel Spacing="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
 
-                    <!-- HEADER -->
-                    <StackPanel Spacing="6" HorizontalAlignment="Center">
-                        <TextBlock Text="Mi Perfil"
-                                   FontSize="24"
-                                   FontWeight="SemiBold"/>
+                <!--  ================= LEFT: PERFIL =================  -->
+                <StackPanel Spacing="15">
 
-                        <TextBlock Text="Gestiona tu cuenta"
-                                   Opacity="0.6"
-                                   FontSize="13"/>
-                    </StackPanel>
+                    <!--  AVATAR  -->
+                    <Grid
+                        Width="100"
+                        Height="100"
+                        HorizontalAlignment="Left">
 
-                    <!-- AVATAR -->
-                    <Grid Width="80" Height="80"
-                          HorizontalAlignment="Center"
-                          CornerRadius="40"
-                          Background="{ThemeResource AccentFillColorDefaultBrush}">
+                        <Ellipse Fill="{ThemeResource AccentFillColorDefaultBrush}" />
 
-                        <FontIcon Glyph="&#xE77B;"
-                                  FontSize="36"
-                                  Foreground="White"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
+                        <FontIcon
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="42"
+                            Foreground="White"
+                            Glyph="&#xE77B;" />
                     </Grid>
 
-                    <!-- INFO -->
+                    <!--  INFO  -->
+                    <TextBlock
+                        FontSize="26"
+                        FontWeight="Bold"
+                        Text="Mi Perfil" />
+
+                    <TextBlock Opacity="0.6" Text="Información de la cuenta" />
+
                     <StackPanel Spacing="10">
 
                         <StackPanel>
-                            <TextBlock Text="Usuario" Opacity="0.6"/>
-                            <TextBlock Text="{Binding UsuarioNombre, Mode=OneWay}"
-                                       FontSize="18"
-                                       FontWeight="SemiBold"/>
+                            <TextBlock Opacity="0.6" Text="Usuario" />
+                            <TextBlock
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Text="{Binding UsuarioNombre}" />
                         </StackPanel>
 
                         <StackPanel>
-                            <TextBlock Text="Rol" Opacity="0.6"/>
-                            <TextBlock Text="{Binding UsuarioRol, Mode=OneWay}"
-                                       FontSize="15"/>
+                            <TextBlock Opacity="0.6" Text="Rol" />
+                            <TextBlock Text="{Binding UsuarioRol}" />
                         </StackPanel>
+
                         <StackPanel>
-                            <TextBlock Text="Nombre Usuario" Opacity="0.6"/>
-                            <TextBlock Text="{Binding Username, Mode=OneWay}"
-               FontSize="15"/>
+                            <TextBlock Opacity="0.6" Text="Username" />
+                            <TextBlock Text="{Binding Username}" />
                         </StackPanel>
 
-                    </StackPanel>
-
-                    <!-- DIVIDER -->
-                    <Rectangle Height="1"
-                               Fill="{ThemeResource DividerStrokeColorDefaultBrush}"
-                               Opacity="0.5"/>
-
-                    <!-- CAMBIAR CONTRASEÑA -->
-                    <StackPanel Spacing="12">
-
-                        <TextBlock Text="Cambiar contraseña"
-                                   FontSize="16"
-                                   FontWeight="SemiBold"/>
-
-                        <PasswordBox Password="{Binding PasswordActual, Mode=TwoWay}"
-                                     PasswordChanged="Actual_PasswordChanged"
-                                     PlaceholderText="Contraseña actual"
-                                     PasswordChar="#"/>
-
-                        <PasswordBox Password="{Binding PasswordNueva, Mode=TwoWay}"
-                                     PasswordChanged="Nueva_PasswordChanged"
-                                     PlaceholderText="Nueva contraseña"
-                                     PasswordChar="#"/>
-
-                        <PasswordBox Password="{Binding Confirmar, Mode=TwoWay}"
-                                     PasswordChanged="Confirmar_PasswordChanged"
-                                     PlaceholderText="Confirmar contraseña"
-                                     PasswordChar="#"/>
-                        <Grid>
-                            <Button Content="Actualizar contraseña"
-                                    Command="{Binding CambiarPasswordCommand}"
-                                    HorizontalAlignment="Stretch"
-                                    Style="{ThemeResource AccentButtonStyle}"/>
-                        </Grid>
                     </StackPanel>
 
                 </StackPanel>
 
-            </Border>
-        </Grid>
+                <!--  ================= RIGHT: SEGURIDAD =================  -->
+                <StackPanel Grid.Column="1" Spacing="15">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="SemiBold"
+                        Text="Seguridad" />
+
+                    <TextBlock Opacity="0.6" Text="Cambiar contraseña" />
+
+                    <!--  CARD PASSWORD  -->
+                    <Border
+                        Padding="15"
+                        Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                        CornerRadius="12">
+
+                        <StackPanel Spacing="12">
+
+                            <PasswordBox
+                                Password="{Binding PasswordActual, Mode=TwoWay}"
+                                PasswordChanged="Actual_PasswordChanged"
+                                PlaceholderText="Contraseña actual" />
+
+                            <PasswordBox
+                                Password="{Binding PasswordNueva, Mode=TwoWay}"
+                                PasswordChanged="Nueva_PasswordChanged"
+                                PlaceholderText="Nueva contraseña" />
+
+                            <PasswordBox
+                                Password="{Binding Confirmar, Mode=TwoWay}"
+                                PasswordChanged="Confirmar_PasswordChanged"
+                                PlaceholderText="Confirmar contraseña" />
+
+                        </StackPanel>
+
+                    </Border>
+
+                    <!--  BOTÓN  -->
+                    <Button
+                        Height="45"
+                        Command="{Binding CambiarPasswordCommand}"
+                        Content="Actualizar contraseña"
+                        Style="{ThemeResource AccentButtonStyle}" />
+
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
 
     </Grid>
+
 </Page>

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Cliente;
+using PrimePOS.WinUI.Contracts;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
@@ -8,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.ViewModels;
 
-public partial class ClienteOverlayViewModel : ObservableObject
+public partial class ClienteOverlayViewModel : ObservableObject, IOverlayViewModel
 {
     private readonly ClienteApiService _api;
     private readonly NotificationService _notify;
 
-    private TaskCompletionSource<bool> _tcs = new();
+    private readonly TaskCompletionSource<bool> _tcs = new();
 
     public Task<bool> WaitTask => _tcs.Task;
 
@@ -52,10 +53,7 @@ public partial class ClienteOverlayViewModel : ObservableObject
     [ObservableProperty] private DateTime fechaRegistro = DateTime.Today;
     [ObservableProperty] private bool isLoading = false;
 
-    public async Task InicializarAsync()
-    {
-        _tcs = new TaskCompletionSource<bool>();
-    }
+
     [RelayCommand]
     private async Task GuardarAsync()
     {
@@ -114,7 +112,7 @@ public partial class ClienteOverlayViewModel : ObservableObject
 
             Limpiar();
 
-            _tcs.TrySetResult(true);
+            Close(true);
         }
         catch (Exception ex)
         {
@@ -132,9 +130,12 @@ public partial class ClienteOverlayViewModel : ObservableObject
     {
         Limpiar();
 
-        _tcs.TrySetResult(false);
+        Close(false);
     }
-
+    public void Close(bool result = false)
+    {
+        _tcs.TrySetResult(result);
+    }
     private void Limpiar()
     {
         Cliente = null;

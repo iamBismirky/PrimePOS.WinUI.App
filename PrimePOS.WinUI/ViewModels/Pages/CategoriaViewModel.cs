@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.Contracts.DTOs.Categoria;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
@@ -73,19 +74,13 @@ public partial class CategoriaViewModel : ObservableObject
     [RelayCommand]
     public async Task EditarAsync(CategoriaDto categoria)
     {
-        var vm = new CategoriaOverlayViewModel(
-            _api,
-            _notify,
-            categoria);
-        await vm.InicializarAsync();
+        var vm = new CategoriaOverlayViewModel(_api, _notify, categoria);
+
         var overlay = new CategoriaOverlay(vm);
 
-        var actualizado =
-            await _overlayService
-                .ShowCategoriaAsync(
-                    overlay,
-                    vm);
-
+        var actualizado = await _overlayService.ShowAsync(overlay, vm);
+        if (!actualizado)
+            return;
         if (actualizado)
         {
             await CargarAsync();
@@ -140,17 +135,12 @@ public partial class CategoriaViewModel : ObservableObject
     [RelayCommand]
     public async Task NuevoAsync()
     {
-        var vm = new CategoriaOverlayViewModel(
-            _api,
-            _notify);
-        await vm.InicializarAsync();
+        var vm = App.Services.GetRequiredService<CategoriaOverlayViewModel>();
         var overlay = new CategoriaOverlay(vm);
 
-        var creado =
-            await _overlayService
-                .ShowCategoriaAsync(
-                    overlay,
-                    vm);
+        var creado = await _overlayService.ShowAsync(overlay, vm);
+        if (!creado)
+            return;
 
         if (creado)
         {

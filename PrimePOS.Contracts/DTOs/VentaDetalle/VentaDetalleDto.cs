@@ -12,7 +12,8 @@
         public string Codigo { get; set; } = string.Empty;
         public int Cantidad { get; set; }
         public decimal PrecioUnitario { get; set; }
-        public decimal Impuesto { get; set; }
+        public bool AplicaItbis { get; set; }
+        public decimal Itbis { get; set; }
         public decimal Subtotal { get; set; }
         public decimal Total { get; set; }
     }

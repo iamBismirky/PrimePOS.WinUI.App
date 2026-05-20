@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Categoria;
 using PrimePOS.Contracts.DTOs.Producto;
+using PrimePOS.WinUI.Contracts;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
@@ -11,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.ViewModels.Overlays;
 
-public partial class ProductoOverlayViewModel : ObservableObject
+public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewModel
 {
     private readonly ProductoApiService _apiProducto;
     private readonly CategoriaApiService _apiCategoria;
     private readonly NotificationService _notify;
 
-    private TaskCompletionSource<bool> _tcs = new();
+    private readonly TaskCompletionSource<bool> _tcs = new();
     public Task<bool> WaitTask => _tcs.Task;
 
     public ProductoOverlayViewModel(
@@ -64,24 +65,53 @@ public partial class ProductoOverlayViewModel : ObservableObject
     [ObservableProperty] private bool isLoading;
     [ObservableProperty] private bool precioAutomatico = true;
 
+
+    [ObservableProperty] private decimal precioBase;
+
+    [ObservableProperty] private decimal itbis;
+
+    [ObservableProperty] private decimal precioFinal;
+    [ObservableProperty] private decimal ganancia;
+
+
     private const decimal ITBIS_GLOBAL = 18;
 
 
-    public decimal PrecioBase =>
-        PrecioCompra + (PrecioCompra * PorcentajeGanancia / 100);
 
-    public decimal Itbis =>
-        AplicaItbis ? PrecioBase * (ITBIS_GLOBAL / 100) : 0;
+    partial void OnPrecioCompraChanged(decimal value)
+    => RecalcularPrecios();
 
-    public decimal PrecioFinal => PrecioBase + Itbis;
-    public decimal Ganancia => PrecioCompra * (PorcentajeGanancia / 100);
-    private void NotificarGanancia()
+    partial void OnPorcentajeGananciaChanged(decimal value)
+        => RecalcularPrecios();
+
+    partial void OnAplicaItbisChanged(bool value)
+        => RecalcularPrecios();
+
+    partial void OnPrecioAutomaticoChanged(bool value)
     {
-        OnPropertyChanged(nameof(Ganancia));
+        if (value)
+        {
+            PorcentajeGanancia = 35;
+            return;
+        }
+        RecalcularPrecios();
     }
+    private void RecalcularPrecios()
+    {
+        PrecioBase = PrecioCompra + (PrecioCompra * PorcentajeGanancia / 100);
+
+        Itbis = AplicaItbis
+            ? PrecioBase * (ITBIS_GLOBAL / 100)
+            : 0;
+
+        PrecioFinal = PrecioBase + Itbis;
+
+        Ganancia = PrecioCompra * (PorcentajeGanancia / 100);
+    }
+
     public async Task InicializarAsync()
     {
-        _tcs = new TaskCompletionSource<bool>();
+
         await CargarCategoriasAsync();
 
         if (Producto != null)
@@ -102,36 +132,7 @@ public partial class ProductoOverlayViewModel : ObservableObject
     }
 
 
-    partial void OnPrecioAutomaticoChanged(bool value)
-    {
-        if (value)
-        {
-            PorcentajeGanancia = 35;
-            return;
-        }
-        NotificarPrecios();
-    }
-    partial void OnPrecioCompraChanged(decimal value) => NotificarPrecios();
-    partial void OnPorcentajeGananciaChanged(decimal value)
-    {
-        if (PrecioAutomatico)
-        {
-            PorcentajeGanancia = 35;
-            OnPropertyChanged(nameof(PorcentajeGanancia));
 
-        }
-        NotificarPrecios();
-
-    }
-    partial void OnAplicaItbisChanged(bool value) => NotificarPrecios();
-
-    public void NotificarPrecios()
-    {
-        OnPropertyChanged(nameof(PrecioBase));
-        OnPropertyChanged(nameof(Itbis));
-        OnPropertyChanged(nameof(PrecioFinal));
-        OnPropertyChanged(nameof(Ganancia));
-    }
 
 
     [RelayCommand]
@@ -251,7 +252,7 @@ public partial class ProductoOverlayViewModel : ObservableObject
             }
 
             Limpiar();
-            _tcs.TrySetResult(true);
+            Close(true);
         }
         catch (Exception ex)
         {
@@ -268,9 +269,12 @@ public partial class ProductoOverlayViewModel : ObservableObject
     private void Cancelar()
     {
         Limpiar();
-        _tcs.TrySetResult(false);
+        Close(false);
     }
-
+    public void Close(bool result)
+    {
+        _tcs.TrySetResult(result);
+    }
 
     private void Limpiar()
     {

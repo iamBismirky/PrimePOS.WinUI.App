@@ -528,6 +528,12 @@ namespace PrimePOS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VentaId"));
 
+                    b.Property<decimal>("BalancePendiente")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CajaId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Cambio")
                         .HasColumnType("decimal(18,2)");
 
@@ -541,11 +547,11 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<decimal>("Descuento")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Efectivo")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("EstadoPago")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("Estado")
-                        .HasColumnType("bit");
+                    b.Property<int>("EstadoVenta")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("datetime2");
@@ -556,12 +562,18 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("MetodoPagoId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("MontoPagado")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("NumeroComprobante")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TipoVenta")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
@@ -596,6 +608,9 @@ namespace PrimePOS.DAL.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VentaDetalleId"));
+
+                    b.Property<bool>("AplicaItbis")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");

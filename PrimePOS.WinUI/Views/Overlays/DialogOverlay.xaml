@@ -1,40 +1,77 @@
-<?xml version="1.0" encoding="utf-8"?>
-<UserControl   
+<UserControl
     x:Class="PrimePOS.WinUI.Views.Overlays.DialogOverlay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:PrimePOS.WinUI.Views.Overlays"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    
+    <Grid>
 
-        <Border Width="400"
+
+        <!--  DIALOG  -->
+        <Border
+            Width="420"
             Padding="20"
-            CornerRadius="12"
-               Background="{ThemeResource SolidBackgroundFillColorBase}">
-            
-            <StackPanel Spacing="15">
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource SolidBackgroundFillColorBase}"
+            CornerRadius="16">
 
-                <TextBlock Text="{Binding Title}"
-                       FontSize="18"
-                       FontWeight="Bold"/>
+            <StackPanel Spacing="16">
 
-                <TextBlock Text="{Binding Message}"
-                       TextWrapping="Wrap"/>
+                <!--  ICON + TITLE  -->
+                <StackPanel Orientation="Horizontal" Spacing="10">
 
-                <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Spacing="10">
+                    <Grid Width="36" Height="36">
+                        <Ellipse Fill="#FFE81123" Opacity="0.15" />
+                        <FontIcon
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="18"
+                            Foreground="#FFE81123"
+                            Glyph="&#xE7BA;" />
+                    </Grid>
 
-                    <Button Content="Cancelar"
-                        Command="{Binding CancelCommand}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Text="{Binding Title}" />
+                </StackPanel>
 
-                    <Button Content="Eliminar"
-                        Background="Red"
-                        Foreground="White"
-                        Command="{Binding ConfirmCommand}" />
+                <!--  MESSAGE  -->
+                <TextBlock
+                    FontSize="14"
+                    Opacity="0.75"
+                    Text="{Binding Message}"
+                    TextWrapping="Wrap" />
+
+                <!--  DIVIDER  -->
+                <Border
+                    Height="1"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    Opacity="0.4" />
+
+                <!--  ACTIONS  -->
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Spacing="10">
+
+                    <Button
+                        Command="{Binding CancelarCommand}"
+                        Content="Cancelar"
+                        Style="{ThemeResource ButtonRevealStyle}" />
+
+                    <Button Command="{Binding ConfirmarCommand}" Content="Eliminar">
+
+                        <Button.Background>
+                            <SolidColorBrush Color="#E81123" />
+                        </Button.Background>
+
+                        <Button.Foreground>
+                            <SolidColorBrush Color="White" />
+                        </Button.Foreground>
+
+                    </Button>
 
                 </StackPanel>
 
@@ -42,5 +79,6 @@
 
         </Border>
 
-    
+    </Grid>
+
 </UserControl>

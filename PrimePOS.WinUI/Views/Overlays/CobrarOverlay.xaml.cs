@@ -23,10 +23,10 @@ public sealed partial class CobrarOverlay : UserControl
 
     private void txtEfectivo_LostFocus(object sender, RoutedEventArgs e)
     {
-        if (DataContext is CobrarViewModel vm)
-        {
-            vm.FormatearEfectivo();
-        }
+        //if (DataContext is CobrarViewModel vm)
+        //{
+        //    vm.FormatearEfectivo();
+        //}
     }
 
 

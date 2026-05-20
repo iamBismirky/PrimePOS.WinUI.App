@@ -6,70 +6,334 @@
 
     <Grid>
 
-        <Border Width="350"
-                Padding="20"
-                Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
-                CornerRadius="12"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+        <Border
+            Width="950"
+            MaxHeight="700"
+            Padding="25"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource SolidBackgroundFillColorBase}"
+            CornerRadius="18">
 
-            <StackPanel Spacing="10">
+            <Grid ColumnSpacing="25">
 
-                <TextBlock Text="Cobrar"
-                           FontSize="22"
-                           FontWeight="Bold" />
-                <StackPanel Orientation="Vertical" Spacing="10">
-                    <TextBlock Text="Cliente" FontSize="18" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding Venta.ClienteNombre}" FontSize="18" FontWeight="SemiBold"/>
-                    <TextBlock Text="Metodo Pago" FontSize="18" FontWeight="Bold"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1.3*" />
+                </Grid.ColumnDefinitions>
 
-                    <ComboBox ItemsSource="{Binding MetodosPago}"
-                              SelectedItem="{Binding MetodoPagoSeleccionado}"
-                              DisplayMemberPath="Nombre"/>
-                    <TextBlock Text="Total" FontSize="18" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding Venta.Total, Converter={StaticResource NumeroConverterHelper}}" 
-                               FontSize="18" 
-                               FontWeight="SemiBold"/>
-                    
+                <!--  IZQUIERDA  -->
+                <StackPanel Grid.Column="0" Spacing="20">
 
-                </StackPanel>
+                    <!--  HEADER  -->
+                    <StackPanel>
+                        <TextBlock
+                            FontSize="30"
+                            FontWeight="Bold"
+                            Text="Cobrar Venta" />
 
-                <StackPanel Orientation="Vertical" Spacing="10">
-                    <TextBlock Text="Efectivo" FontSize="18" FontWeight="Bold"/>
-                    <TextBox x:Name="txtEfectivo"
-                            Text="{Binding EfectivoTexto, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            LostFocus="txtEfectivo_LostFocus"
-                             FontSize="18"/>
-                </StackPanel>
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="Faltante" FontSize="18" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding Cambio, Converter={StaticResource NumeroConverterHelper}}"
-                               FontSize="18"/>
-                </StackPanel>
+                        <TextBlock Opacity="0.7" Text="Resumen de la venta" />
+                    </StackPanel>
 
-                
+                    <!--  CLIENTE  -->
+                    <Border
+                        Padding="18"
+                        Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                        CornerRadius="14">
 
-                <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Grid ColumnSpacing="20">
 
-                    <Button Content="Cancelar"
-                            Command="{Binding CancelarCommand}" />
-                    <Grid>
-                        <Button Content="Confirmar"
-                                Command="{Binding ConfirmarCommand}" />
-                        <ProgressRing
-                            IsActive="{Binding IsLoading}"
-                            Width="30"
-                            Height="30"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Spacing="8">
+
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Opacity="0.7"
+                                    Text="Cliente" />
+
+                                <TextBlock
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Text="{Binding Venta.ClienteNombre}" />
+
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Spacing="8">
+
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Opacity="0.7"
+                                    Text="Método Pago" />
+
+                                <ComboBox
+                                    DisplayMemberPath="Nombre"
+                                    ItemsSource="{Binding MetodosPago}"
+                                    SelectedItem="{Binding MetodoPagoSeleccionado, Mode=TwoWay}" />
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </Border>
+
+                    <!--  TIPO VENTA + DESCUENTO  -->
+                    <Grid ColumnSpacing="15">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border
+                            Padding="18"
+                            Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                            CornerRadius="14">
+
+                            <StackPanel Spacing="10">
+
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Opacity="0.7"
+                                    Text="Tipo Venta" />
+
+                                <ComboBox ItemsSource="{Binding TiposVenta}" SelectedItem="{Binding TipoVenta, Mode=TwoWay}" />
+
+                            </StackPanel>
+
+                        </Border>
+
+                        <Border
+                            Grid.Column="1"
+                            Padding="18"
+                            Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                            CornerRadius="14">
+
+                            <StackPanel Spacing="10">
+
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Opacity="0.7"
+                                    Text="Descuento" />
+
+                                <ComboBox ItemsSource="{Binding Descuentos}" SelectedItem="{Binding DescuentoSeleccionado, Mode=TwoWay}" />
+
+                            </StackPanel>
+
+                        </Border>
+
                     </Grid>
-                    
-                    
 
+                    <!--  EFECTIVO  -->
+                    <Border
+                        Padding="18"
+                        Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                        CornerRadius="14">
+
+                        <StackPanel Spacing="10">
+
+                            <TextBlock
+                                FontWeight="SemiBold"
+                                Opacity="0.7"
+                                Text="Monto recibido" />
+
+                            <TextBox
+                                x:Name="txtEfectivo"
+                                FontSize="28"
+                                FontWeight="Bold"
+                                LostFocus="txtEfectivo_LostFocus"
+                                Text="{Binding MontoRecibido, Mode=TwoWay, Converter={StaticResource DecimalToStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
+
+                        </StackPanel>
+
+                    </Border>
+
+                    <!--  BOTONES  -->
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Spacing="12">
+
+                        <Button Command="{Binding CancelarCommand}" Content="Cancelar" />
+
+                        <Grid>
+
+                            <Button
+                                Width="140"
+                                Height="45"
+                                Command="{Binding ConfirmarCommand}"
+                                Content="Confirmar" />
+
+                            <ProgressRing
+                                Width="28"
+                                Height="28"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsActive="{Binding IsLoading}" />
+
+                        </Grid>
+
+                    </StackPanel>
 
                 </StackPanel>
 
-            </StackPanel>
+                <!--  DERECHA  -->
+                <Border
+                    Grid.Column="1"
+                    Padding="25"
+                    Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                    CornerRadius="18">
+
+                    <StackPanel VerticalAlignment="Stretch" Spacing="18">
+
+                        <TextBlock
+                            FontSize="24"
+                            FontWeight="Bold"
+                            Text="Resumen" />
+
+                        <!--  SUBTOTAL  -->
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock FontSize="18" Text="Subtotal" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Text="{Binding Subtotal, Converter={StaticResource NumeroConverterHelper}}" />
+
+                        </Grid>
+
+                        <!--  ITBIS  -->
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock FontSize="18" Text="ITBIS" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Text="{Binding Impuesto, Converter={StaticResource NumeroConverterHelper}}" />
+
+                        </Grid>
+
+                        <!--  DESCUENTO  -->
+                        <Grid Visibility="{Binding TieneDescuento, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock FontSize="18" Text="Descuento" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Foreground="IndianRed"
+                                Text="{Binding Descuento, Converter={StaticResource NumeroConverterHelper}}" />
+
+                        </Grid>
+
+                        <Rectangle
+                            Height="1"
+                            Margin="0,5"
+                            Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" />
+
+                        <!--  TOTAL ORIGINAL  -->
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            FontSize="22"
+                            Foreground="Gray"
+                            Text="{Binding TotalOriginal, Converter={StaticResource NumeroConverterHelper}}"
+                            TextDecorations="Strikethrough"
+                            Visibility="{Binding TieneDescuento, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                        <!--  TOTAL  -->
+                        <StackPanel>
+
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Opacity="0.7"
+                                Text="TOTAL" />
+
+                            <TextBlock
+                                FontSize="42"
+                                FontWeight="Bold"
+                                Text="{Binding Total, Converter={StaticResource NumeroConverterHelper}}" />
+
+                        </StackPanel>
+
+                        <Rectangle
+                            Height="1"
+                            Margin="0,5"
+                            Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" />
+
+                        <!--  CAMBIO  -->
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                FontSize="20"
+                                FontWeight="SemiBold"
+                                Text="Cambio" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="22"
+                                FontWeight="Bold"
+                                Text="{Binding Cambio, Converter={StaticResource NumeroConverterHelper}}" />
+
+                        </Grid>
+
+                        <!--  FALTANTE  -->
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                FontSize="20"
+                                FontWeight="SemiBold"
+                                Text="Faltante" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="22"
+                                FontWeight="Bold"
+                                Text="{Binding Faltante, Converter={StaticResource NumeroConverterHelper}}" />
+
+                        </Grid>
+
+                    </StackPanel>
+
+                </Border>
+
+            </Grid>
+
         </Border>
+
     </Grid>
+
 </UserControl>

@@ -92,12 +92,12 @@ public partial class CajaViewModel : ObservableObject
     public async Task NuevoAsync()
     {
         var vm = App.Services.GetService<CajaOverlayViewModel>();
-        await vm.InicializarAsync();
 
         var overlay = new CajaOverlay(vm);
 
-        var creado = await _overlayService.ShowCajaAsync(overlay, vm);
-
+        var creado = await _overlayService.ShowAsync(overlay, vm);
+        if (!creado)
+            return;
         if (creado)
         {
             await CargarAsync();
@@ -116,15 +116,16 @@ public partial class CajaViewModel : ObservableObject
             return;
         }
 
-        var vm = new CajaOverlayViewModel(
-            _api,
-            _notify,
-            caja);
+        var vm = new CajaOverlayViewModel(_api, _notify, caja)
+        {
+            Caja = caja
+        };
 
-        await vm.InicializarAsync();
         var overlay = new CajaOverlay(vm);
 
-        var actualizado = await _overlayService.ShowCajaAsync(overlay, vm);
+        var actualizado = await _overlayService.ShowAsync(overlay, vm);
+        if (!actualizado)
+            return;
 
         if (actualizado)
         {

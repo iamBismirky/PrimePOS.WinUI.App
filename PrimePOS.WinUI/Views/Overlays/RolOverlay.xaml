@@ -1,67 +1,123 @@
-<?xml version="1.0" encoding="utf-8"?>
 <UserControl
     x:Class="PrimePOS.WinUI.Views.Overlays.RolOverlay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:PrimePOS.WinUI.Views.Overlays"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-   
     <Grid>
 
-        <Border Width="400"
-             Padding="20"
-             Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
-             CornerRadius="12"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center">
+        <Border
+            Width="450"
+            Padding="25"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource SolidBackgroundFillColorBase}"
+            CornerRadius="16">
 
-            <StackPanel Spacing="10">
+            <Grid RowSpacing="15">
 
-                <TextBlock Text="Rol"
-                        FontSize="18"
-                        FontWeight="SemiBold"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
+                <!--  ================= HEADER =================  -->
+                <StackPanel Spacing="4">
 
-                <TextBox Header="Nombre"
-                      Text="{Binding Nombre, Mode=TwoWay}"/>
-                <ToggleSwitch Header="Estado"
-                           IsOn="{Binding Estado, Mode=TwoWay}"/>
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Rol del sistema" />
 
-                <Line X1="0" X2="1" Stretch="Fill" Stroke="Gray" StrokeThickness="1"/>
-
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right"
-                            Spacing="10">
-
-                    <Button Command="{Binding CancelarCommand}"
-                            Background="Red">
-                        <TextBlock Text="Cancelar"/>
-                    </Button>
-
-                    <Grid>
-                        <Button Command="{Binding GuardarCommand}"
-                                Background="#FF2D89EF"
-                                Content="Guardar"/>
-
-                        <ProgressRing IsActive="{Binding IsLoading}"
-                                      Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
-                                      Width="20"
-                                      Height="20"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-                    </Grid>
-
-
+                    <TextBlock Opacity="0.6" Text="Control de permisos y acceso" />
 
                 </StackPanel>
 
-            </StackPanel>
+                <!--  ================= FORM =================  -->
+                <StackPanel Grid.Row="1" Spacing="12">
+
+                    <!--  NAME  -->
+                    <Border
+                        Padding="12"
+                        Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                        CornerRadius="10">
+
+                        <TextBox Header="Nombre del rol" Text="{Binding Nombre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </Border>
+
+                    <!--  STATE  -->
+                    <Border
+                        Padding="12"
+                        Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                        CornerRadius="10">
+
+                        <ToggleSwitch Header="Rol activo" IsOn="{Binding Estado, Mode=TwoWay}" />
+                    </Border>
+
+                </StackPanel>
+
+                <!--  ================= ACTIONS =================  -->
+                <Border
+                    Grid.Row="2"
+                    Padding="5"
+                    Background="Transparent">
+
+                    <Grid ColumnSpacing="10">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  CANCELAR  -->
+                        <Button
+                            Grid.Column="0"
+                            Height="40"
+                            Background="#C42B1C"
+                            Command="{Binding CancelarCommand}"
+                            Foreground="White">
+
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE711;" />
+                                <TextBlock Text="Cancelar" />
+                            </StackPanel>
+
+                        </Button>
+
+                        <!--  GUARDAR  -->
+                        <Grid Grid.Column="1">
+
+                            <Button
+                                Height="40"
+                                HorizontalAlignment="Right"
+                                Background="#2D89EF"
+                                Command="{Binding GuardarCommand}"
+                                Foreground="White">
+
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE74E;" />
+                                    <TextBlock Text="Guardar" />
+                                </StackPanel>
+
+                            </Button>
+
+                            <ProgressRing
+                                Width="22"
+                                Height="22"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsActive="{Binding IsLoading}" />
+
+                        </Grid>
+
+                    </Grid>
+
+                </Border>
+
+            </Grid>
 
         </Border>
 
     </Grid>
+
 </UserControl>

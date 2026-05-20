@@ -1,433 +1,434 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="PrimePOS.WinUI.Views.Pages.VentasPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:helpers="using:PrimePOS.WinUI.Helpers"
-    xmlns:local="using:PrimePOS.WinUI.Views.Pages"
-    xmlns:local1="using:PrimePOS.WinUI.ViewModels"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     x:Name="RootPage"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid x:Name="RootGrid">
+    <Grid Padding="20">
 
-        <Border x:Name="panelVentas" Visibility="Visible">
-            <Grid Padding="20" RowSpacing="15">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="1.2*" />
+        </Grid.ColumnDefinitions>
 
-                <!--  Header  -->
+        <!--  =========================  -->
+        <!--  IZQUIERDA  -->
+        <!--  =========================  -->
 
-                <StackPanel Grid.Row="0">
+        <Grid Grid.Column="0" RowSpacing="15">
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-                    <TextBlock
-                        HorizontalAlignment="Left"
-                        FontSize="28"
-                        FontWeight="Bold"
-                        Text="Ventas" />
+            <!--  HEADER  -->
+            <StackPanel Grid.Row="0">
 
-                </StackPanel>
-                <!--  Buscador de producto  -->
-                <Grid Grid.Row="1" ColumnSpacing="20">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
+                <TextBlock
+                    FontSize="32"
+                    FontWeight="Bold"
+                    Text="Ventas" />
 
-                    <Border
-                        Grid.Column="0"
-                        Padding="15"
-                        BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                        BorderThickness="1"
-                        CornerRadius="10">
+                <TextBlock Opacity="0.7" Text="Punto de venta" />
 
-                        <controls:WrapPanel Orientation="Vertical" VerticalSpacing="15">
+            </StackPanel>
 
-                            <TextBlock
-                                FontFamily="Segoe UI"
-                                FontWeight="Bold"
-                                Text="Buscar producto" />
-                            <AutoSuggestBox
-                                x:Name="txtBuscarProducto"
-                                Grid.Column="0"
-                                Width="300"
-                                ItemsSource="{Binding Productos}"
-                                PlaceholderText="Buscar producto por código o nombre..."
-                                QueryIcon="Find"
-                                QuerySubmitted="txtBuscarProducto_QuerySubmitted"
-                                Text="{Binding TextoProducto, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                TextChanged="txtBuscarProducto_TextChanged"
-                                UpdateTextOnSelect="False">
+            <!--  BUSQUEDA  -->
+            <Grid Grid.Row="1" ColumnSpacing="15">
 
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
 
-                                <AutoSuggestBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Spacing="10">
-                                            <TextBlock FontWeight="SemiBold" Text="{Binding Codigo}" />
-                                            <TextBlock Text="{Binding Nombre}" />
-                                            <TextBlock>
-                                                <Run Text="{Binding PrecioVenta, Converter={StaticResource NumeroConverterHelper}}" />
-                                            </TextBlock>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </AutoSuggestBox.ItemTemplate>
-                            </AutoSuggestBox>
+                <!--  PRODUCTOS  -->
+                <Border
+                    Grid.Column="0"
+                    Padding="18"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="16">
 
-                        </controls:WrapPanel>
-                    </Border>
+                    <StackPanel Spacing="12">
 
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Opacity="0.7"
+                            Text="Buscar producto" />
 
-                    <!--  Cliente  -->
-                    <Border
-                        Grid.Column="1"
-                        Width="600"
-                        Padding="15"
-                        BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                        BorderThickness="1"
-                        CornerRadius="10">
+                        <AutoSuggestBox
+                            x:Name="txtBuscarProducto"
+                            ItemsSource="{Binding Productos}"
+                            PlaceholderText="Código o nombre..."
+                            QueryIcon="Find"
+                            QuerySubmitted="txtBuscarProducto_QuerySubmitted"
+                            Text="{Binding TextoProducto, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            TextChanged="txtBuscarProducto_TextChanged"
+                            UpdateTextOnSelect="False">
+
+                            <AutoSuggestBox.ItemTemplate>
+                                <DataTemplate>
+
+                                    <Grid ColumnSpacing="15">
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding Codigo}" />
+
+                                        <TextBlock Grid.Column="1" Text="{Binding Nombre}" />
+
+                                        <TextBlock Grid.Column="2" Text="{Binding PrecioVenta, Converter={StaticResource NumeroConverterHelper}}" />
+
+                                    </Grid>
+
+                                </DataTemplate>
+                            </AutoSuggestBox.ItemTemplate>
+
+                        </AutoSuggestBox>
+
+                    </StackPanel>
+
+                </Border>
+
+                <!--  CLIENTE  -->
+                <Border
+                    Grid.Column="1"
+                    Padding="18"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="16">
+
+                    <StackPanel Spacing="12">
+
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Opacity="0.7"
+                            Text="Cliente" />
+
+                        <AutoSuggestBox
+                            x:Name="txtBuscarCliente"
+                            ItemsSource="{Binding Clientes}"
+                            PlaceholderText="Buscar cliente..."
+                            QueryIcon="Find"
+                            QuerySubmitted="txtBuscarCliente_QuerySubmitted"
+                            SuggestionChosen="txtBuscarCliente_SuggestionChosen"
+                            Text="{Binding TextoCliente, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            TextChanged="txtBuscarCliente_TextChanged"
+                            UpdateTextOnSelect="False">
+
+                            <AutoSuggestBox.ItemTemplate>
+                                <DataTemplate>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+
+                                        <TextBlock FontWeight="SemiBold" Text="{Binding Codigo}" />
+
+                                        <TextBlock Text="{Binding Nombre}" />
+
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </AutoSuggestBox.ItemTemplate>
+
+                        </AutoSuggestBox>
 
                         <Grid ColumnSpacing="10">
+
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <controls:WrapPanel
-                                Grid.Column="0"
-                                Orientation="Vertical"
-                                VerticalSpacing="15">
+                            <StackPanel Grid.Column="0" Spacing="4">
 
-                                <TextBlock
-                                    FontFamily="Segoe UI"
-                                    FontWeight="Bold"
-                                    Text="Cliente" />
+                                <TextBlock>
+                                    <Run Text="Cliente: " />
+                                    <Run Text="{Binding ClienteSeleccionado.Nombre}" />
+                                </TextBlock>
 
-                                <AutoSuggestBox
-                                    x:Name="txtBuscarCliente"
-                                    Grid.Column="0"
-                                    Width="300"
-                                    ItemsSource="{Binding Clientes}"
-                                    PlaceholderText="Buscar cliente por codigo o nombre"
-                                    QueryIcon="Find"
-                                    QuerySubmitted="txtBuscarCliente_QuerySubmitted"
-                                    SuggestionChosen="txtBuscarCliente_SuggestionChosen"
-                                    Text="{Binding TextoCliente, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    TextChanged="txtBuscarCliente_TextChanged"
-                                    UpdateTextOnSelect="False">
+                                <TextBlock>
+                                    <Run Text="Documento: " />
+                                    <Run Text="{Binding ClienteSeleccionado.Documento}" />
+                                </TextBlock>
 
+                            </StackPanel>
 
-                                    <AutoSuggestBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                                <TextBlock FontWeight="SemiBold" Text="{Binding Codigo}" />
-                                                <TextBlock Text="{Binding Nombre}" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </AutoSuggestBox.ItemTemplate>
-                                </AutoSuggestBox>
-
-                                <Button Grid.Column="0" Command="{Binding NuevoClienteCommand}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon
-                                            FontFamily="Segoe Fluent Icons"
-                                            FontSize="10"
-                                            Glyph="&#xE710;" />
-                                    </StackPanel>
-                                </Button>
-
-                            </controls:WrapPanel>
-
-
-
-                            <Border
+                            <Button
                                 Grid.Column="1"
-                                Width="250"
-                                Padding="15"
-                                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                                BorderThickness="1"
-                                CornerRadius="10">
-                                <controls:WrapPanel Orientation="Vertical">
-                                    <TextBlock>
-                                        <Run Text="Cliente: " />
-                                        <Run Text="{Binding ClienteSeleccionado.Codigo}" />
-                                    </TextBlock>
-                                    <TextBlock>
-                                        <Run Text="Nombre: " />
-                                        <Run Text="{Binding ClienteSeleccionado.Nombre}" />
-                                    </TextBlock>
-                                    <TextBlock>
-                                        <Run Text="Documento: " />
-                                        <Run Text="{Binding ClienteSeleccionado.Documento}" />
-                                    </TextBlock>
-                                </controls:WrapPanel>
-                            </Border>
+                                Width="40"
+                                Height="40"
+                                Command="{Binding NuevoClienteCommand}">
+
+                                <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE710;" />
+
+                            </Button>
 
                         </Grid>
-                    </Border>
 
-                    <!--  Caja  -->
-                    <Border
-                        Grid.Column="3"
-                        Width="300"
-                        Padding="15"
-                        BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                        BorderThickness="1"
-                        CornerRadius="10">
+                    </StackPanel>
 
-                        <controls:WrapPanel Orientation="Vertical">
-                            <TextBlock>
-                                <Run
-                                    FontFamily="Segoe UI"
-                                    FontWeight="Bold"
-                                    Text="Usuario" />
-                                <Run Text="{Binding AppSesion.UsuarioActual.UsuarioNombre, Mode=OneWay}" />
-                            </TextBlock>
-                            <TextBlock>
-                                <Run
-                                    FontFamily="Segoe UI"
-                                    FontWeight="Bold"
-                                    Text="Rol" />
-                                <Run Text="{Binding AppSesion.UsuarioActual.RolNombre, Mode=OneWay}" />
-                            </TextBlock>
-                            <TextBlock>
-                                <Run
-                                    FontFamily="Segoe UI"
-                                    FontWeight="Bold"
-                                    Text="Caja" />
-                                <Run Text="{Binding AppSesion.TurnoActual.CajaNombre, Mode=OneWay}" />
-                            </TextBlock>
-                            <TextBlock>
-                                <Run
-                                    FontFamily="Segoe UI"
-                                    FontWeight="Bold"
-                                    Text="Turno" />
-                                <Run Text="{Binding AppSesion.TurnoActual.NumeroTurno, Mode=OneWay}" />
-                            </TextBlock>
-                            <TextBlock>
-                                <Run
-                                    FontFamily="Segoe UI"
-                                    FontWeight="Bold"
-                                    Text="Fecha Apertura" />
-                                <Run Text="{Binding AppSesion.TurnoActual.FechaApertura, Mode=OneWay}" />
-                            </TextBlock>
-
-                        </controls:WrapPanel>
-                    </Border>
-
-                </Grid>
-
-
-                <!--  DataGrid como carrito  -->
-                <Border Grid.Row="2">
-
-                    <controls:DataGrid
-                        x:Name="dgCarrito"
-                        Grid.Row="2"
-                        Width="auto"
-                        AutoGenerateColumns="False"
-                        ColumnHeaderHeight="40"
-                        FontSize="14"
-                        IsReadOnly="True"
-                        ItemsSource="{Binding Carrito, Mode=OneWay}"
-                        RowHeight="40"
-                        SelectionMode="Single">
-
-                        <controls:DataGrid.Columns>
-                            <controls:DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding Codigo}"
-                                Header="Codigo" />
-                            <controls:DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding Nombre}"
-                                Header="Nombre" />
-                            <controls:DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding Precio, Converter={StaticResource NumeroConverterHelper}}"
-                                Header="Precio" />
-                            <controls:DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding ItbisUnitario, Converter={StaticResource NumeroConverterHelper}}"
-                                Header="Itbis" />
-                            <controls:DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding Cantidad}"
-                                Header="Cantidad" />
-                            <controls:DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding Total, Converter={StaticResource NumeroConverterHelper}}"
-                                Header="Total" />
-
-                            <controls:DataGridTemplateColumn Width="*">
-                                <controls:DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Button
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Background="Red"
-                                                Click="Eliminar_Click"
-                                                Foreground="White">
-                                                <FontIcon Glyph="&#xE74D;" />
-                                            </Button>
-                                        </Grid>
-                                    </DataTemplate>
-                                </controls:DataGridTemplateColumn.CellTemplate>
-                            </controls:DataGridTemplateColumn>
-                        </controls:DataGrid.Columns>
-
-                    </controls:DataGrid>
                 </Border>
-                <!--  4️⃣ Totales y botones  -->
-                <Border Grid.Row="3">
-                    <Grid Grid.Row="3" ColumnSpacing="20">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="2*" />
-                        </Grid.ColumnDefinitions>
 
-                        <!--  Card totales  -->
-                        <Border
-                            Grid.Column="0"
-                            Padding="15"
-                            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                            BorderThickness="1"
-                            CornerRadius="10">
-                            <StackPanel
-                                Grid.Column="0"
-                                HorizontalAlignment="Left"
-                                Spacing="5">
+            </Grid>
 
-                                <TextBlock>
-                                    <Run
-                                        FontSize="20"
-                                        FontWeight="SemiBold"
-                                        Text="SubTotal: " />
-                                    <Run
-                                        FontSize="20"
-                                        FontWeight="SemiBold"
-                                        Text="{Binding SubtotalConDescuento, Converter={StaticResource NumeroConverterHelper}}" />
-                                </TextBlock>
+            <!--  CARRITO  -->
+            <Border
+                Grid.Row="2"
+                Padding="10"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="16">
 
-                                <TextBlock>
-                                    <Run
-                                        FontSize="20"
-                                        FontWeight="SemiBold"
-                                        Text="Impuesto: " />
-                                    <Run
-                                        FontSize="20"
-                                        FontWeight="SemiBold"
-                                        Text="{Binding Impuesto, Converter={StaticResource NumeroConverterHelper}}" />
+                <controls:DataGrid
+                    x:Name="dgCarrito"
+                    AutoGenerateColumns="False"
+                    ColumnHeaderHeight="45"
+                    FontSize="14"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding Carrito}"
+                    RowHeight="45"
+                    SelectionMode="Single">
 
-                                </TextBlock>
+                    <controls:DataGrid.Columns>
 
-                                <TextBlock>
-                                    <Run
-                                        FontSize="20"
-                                        FontWeight="SemiBold"
-                                        Text="Descuento: " />
-                                    <Run
-                                        FontSize="20"
-                                        FontWeight="SemiBold"
-                                        Text="{Binding DescuentoMonto, Converter={StaticResource NumeroConverterHelper}}" />
-                                </TextBlock>
+                        <controls:DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Codigo}"
+                            Header="Código" />
 
+                        <controls:DataGridTextColumn
+                            Width="2*"
+                            Binding="{Binding Nombre}"
+                            Header="Producto" />
 
-                                <TextBlock>
-                                    <Run
-                                        FontSize="24"
-                                        FontWeight="Bold"
-                                        Text="Total: " />
-                                    <Run
-                                        FontSize="24"
-                                        FontWeight="SemiBold"
-                                        Text="{Binding Total, Converter={StaticResource NumeroConverterHelper}}" />
-                                </TextBlock>
+                        <controls:DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Cantidad}"
+                            Header="Cant." />
 
+                        <controls:DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Precio, Converter={StaticResource NumeroConverterHelper}}"
+                            Header="Precio" />
 
-                            </StackPanel>
-                        </Border>
+                        <controls:DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Total, Converter={StaticResource NumeroConverterHelper}}"
+                            Header="Total" />
 
-                        <!--  Card aplicar descuento  -->
-                        <Border
-                            Grid.Column="1"
-                            Padding="15"
-                            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                            BorderThickness="1"
-                            CornerRadius="10">
-                            <StackPanel Orientation="Horizontal" Spacing="15">
-                                <TextBlock
-                                    FontFamily="Segoe UI"
-                                    FontWeight="Bold"
-                                    Text="Aplicar Descuento" />
-                                <ComboBox
-                                    x:Name="cmbDescuento"
-                                    Width="100"
-                                    ItemsSource="{Binding Descuentos}"
-                                    SelectedItem="{Binding DescuentoSeleccionado, Mode=TwoWay}"
-                                    Text="{Binding DescuentoPorcentaje, Mode=TwoWay}" />
-                            </StackPanel>
-                        </Border>
+                        <controls:DataGridTemplateColumn Width="90">
 
-                        <!--  Botones de acción  -->
-                        <Border
-                            Grid.Column="2"
-                            Padding="15"
-                            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                            BorderThickness="1"
-                            CornerRadius="10">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Orientation="Vertical"
-                                    Spacing="10">
-                                    <Button Command="{Binding AbrirTurnoCommand}" Content="Abrir Turno" />
-                                    <Button Command="{Binding CerrarTurnoCommand}" Content="Cerrar Turno" />
-                                    <Button Command="{Binding LimpiarCommand}" Content="Limpiar Pantalla" />
+                            <controls:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
 
-                                </StackPanel>
-                                <StackPanel
-                                    Grid.Column="1"
-                                    Orientation="Vertical"
-                                    Spacing="10">
                                     <Button
-                                        Background="#FF2D89EF"
-                                        Command="{Binding CobrarCommand}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Background="IndianRed"
+                                        Click="Eliminar_Click"
                                         Foreground="White">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="Cobrar" />
-                                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7BF;" />
-                                        </StackPanel>
+
+                                        <FontIcon Glyph="&#xE74D;" />
 
                                     </Button>
 
-                                </StackPanel>
+                                </DataTemplate>
+                            </controls:DataGridTemplateColumn.CellTemplate>
 
+                        </controls:DataGridTemplateColumn>
 
-                            </Grid>
-                        </Border>
+                    </controls:DataGrid.Columns>
+
+                </controls:DataGrid>
+
+            </Border>
+
+        </Grid>
+
+        <!--  =========================  -->
+        <!--  DERECHA  -->
+        <!--  =========================  -->
+
+        <Border
+            Grid.Column="1"
+            Margin="20,0,0,0"
+            Padding="20"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            CornerRadius="18">
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  INFO  -->
+                <StackPanel Grid.Row="0" Spacing="15">
+
+                    <TextBlock
+                        FontSize="26"
+                        FontWeight="Bold"
+                        Text="Resumen" />
+
+                    <Border
+                        Padding="15"
+                        Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                        CornerRadius="12">
+
+                        <StackPanel Spacing="8">
+
+                            <TextBlock>
+                                <Run FontWeight="SemiBold" Text="Usuario: " />
+
+                                <Run Text="{Binding AppSesion.UsuarioActual.UsuarioNombre}" />
+                            </TextBlock>
+
+                            <TextBlock>
+                                <Run FontWeight="SemiBold" Text="Caja: " />
+
+                                <Run Text="{Binding AppSesion.TurnoActual.CajaNombre}" />
+                            </TextBlock>
+
+                            <TextBlock>
+                                <Run FontWeight="SemiBold" Text="Turno: " />
+
+                                <Run Text="{Binding AppSesion.TurnoActual.NumeroTurno}" />
+                            </TextBlock>
+
+                        </StackPanel>
+
+                    </Border>
+
+                </StackPanel>
+
+                <!--  TOTALES  -->
+                <StackPanel
+                    Grid.Row="1"
+                    VerticalAlignment="Center"
+                    Spacing="18">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock FontSize="18" Text="Subtotal" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Text="{Binding Subtotal, Converter={StaticResource NumeroConverterHelper}}" />
+
                     </Grid>
-                </Border>
 
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock FontSize="18" Text="ITBIS" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Text="{Binding Impuesto, Converter={StaticResource NumeroConverterHelper}}" />
+
+                    </Grid>
+
+                    <Rectangle
+                        Height="1"
+                        Margin="0,10"
+                        Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" />
+
+                    <StackPanel>
+
+                        <TextBlock
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Opacity="0.7"
+                            Text="TOTAL" />
+
+                        <TextBlock
+                            FontSize="42"
+                            FontWeight="Bold"
+                            Text="{Binding Total, Converter={StaticResource NumeroConverterHelper}}" />
+
+                    </StackPanel>
+
+                </StackPanel>
+
+                <!--  BOTONES  -->
+                <StackPanel Grid.Row="2" Spacing="12">
+
+                    <Button
+                        Height="55"
+                        Background="#FF2D89EF"
+                        Command="{Binding CobrarCommand}"
+                        Foreground="White">
+
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="10">
+
+                            <TextBlock
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Text="Cobrar" />
+
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7BF;" />
+
+                        </StackPanel>
+
+                    </Button>
+
+                    <Grid ColumnSpacing="10">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button
+                            Grid.Column="0"
+                            Command="{Binding LimpiarCommand}"
+                            Content="Limpiar" />
+
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding AbrirTurnoCommand}"
+                            Content="Turno" />
+                        <Button
+                            Grid.Column="2"
+                            Command="{Binding CerrarTurnoCommand}"
+                            Content="Cerrar" />
+
+                    </Grid>
+
+                </StackPanel>
 
             </Grid>
 
         </Border>
+
     </Grid>
+
 </Page>

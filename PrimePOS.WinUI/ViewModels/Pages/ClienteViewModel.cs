@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.Contracts.DTOs.Rol;
 using PrimePOS.WinUI.Services;
@@ -84,10 +85,16 @@ public partial class ClienteViewModel : ObservableObject
     [RelayCommand]
     public async Task NuevoAsync()
     {
-        var vm = new ClienteOverlayViewModel(_apiCliente, _notify);
-        await vm.InicializarAsync();
+        var vm = App.Services.GetRequiredService<ClienteOverlayViewModel>();
         var overlay = new ClienteOverlay(vm);
-        await _overlayService.ShowClienteAsync(overlay, vm);
+        var result = await _overlayService.ShowAsync(overlay, vm);
+        if (!result)
+            return;
+        if (result)
+        {
+            await CargarClientesAsync();
+        }
+
 
     }
 
@@ -95,11 +102,11 @@ public partial class ClienteViewModel : ObservableObject
     public async Task EditarAsync(ClienteDto cliente)
     {
         var vm = new ClienteOverlayViewModel(_apiCliente, _notify, cliente);
-        await vm.InicializarAsync();
         var overlay = new ClienteOverlay(vm);
 
-        var actualizado = await _overlayService
-            .ShowClienteAsync(overlay, vm);
+        var actualizado = await _overlayService.ShowAsync(overlay, vm);
+        if (!actualizado)
+            return;
 
         if (actualizado)
         {

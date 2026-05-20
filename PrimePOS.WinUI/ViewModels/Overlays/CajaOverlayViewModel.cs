@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Caja;
+using PrimePOS.WinUI.Contracts;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
@@ -8,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace PrimePOS.WinUI.ViewModels.Overlays;
 
-public partial class CajaOverlayViewModel : ObservableObject
+public partial class CajaOverlayViewModel : ObservableObject, IOverlayViewModel
 {
     private readonly CajaApiService _api;
     private readonly NotificationService _notify;
 
-    private TaskCompletionSource<bool> _tcs = new();
+    private readonly TaskCompletionSource<bool> _tcs = new();
 
     public Task<bool> WaitTask => _tcs.Task;
 
@@ -48,7 +49,7 @@ public partial class CajaOverlayViewModel : ObservableObject
 
     public async Task InicializarAsync()
     {
-        _tcs = new TaskCompletionSource<bool>();
+
     }
 
     [RelayCommand]
@@ -109,7 +110,7 @@ public partial class CajaOverlayViewModel : ObservableObject
 
             Limpiar();
 
-            _tcs.TrySetResult(true);
+            Close(true);
         }
         catch (Exception ex)
         {
@@ -126,9 +127,13 @@ public partial class CajaOverlayViewModel : ObservableObject
     {
         Limpiar();
 
-        _tcs.TrySetResult(false);
+        Close(false);
     }
-
+    public void Close(bool result)
+    {
+        Limpiar();
+        _tcs.TrySetResult(result);
+    }
     private void Limpiar()
     {
         Caja = null;

@@ -1,6 +1,7 @@
 ﻿using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Venta;
+using PrimePOS.Contracts.Enums;
 using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
@@ -50,11 +51,11 @@ public class VentaService : IVentaService
                 Subtotal = dto.Subtotal,
                 Impuesto = dto.Impuesto,
                 Descuento = dto.Descuento,
-                Efectivo = dto.Efectivo,
+                MontoPagado = dto.MontoPagado,
                 Cambio = dto.Cambio,
                 Total = dto.Total,
 
-                Estado = true,
+                EstadoVenta = EstadoVenta.Completada,
             };
 
             decimal subtotal = 0;
@@ -81,6 +82,7 @@ public class VentaService : IVentaService
                     ProductoId = item.ProductoId,
                     ProductoNombre = item.ProductoNombre,
                     Cantidad = item.Cantidad,
+
                     PrecioUnitario = item.PrecioUnitario,
                     Total = totalItem
                 });
@@ -92,8 +94,8 @@ public class VentaService : IVentaService
             venta.Subtotal = subtotal;
             venta.Impuesto = subtotal * 0.18m;
             venta.Total = venta.Subtotal + venta.Impuesto;
-            venta.Efectivo = venta.Efectivo;
-            venta.Cambio = venta.Efectivo - venta.Total;
+            venta.MontoPagado = venta.MontoPagado;
+            venta.Cambio = venta.MontoPagado - venta.Total;
 
             _ventaRepository.Crear(venta);
             await _ventaRepository.GuardarCambiosAsync();
@@ -138,5 +140,20 @@ public class VentaService : IVentaService
         }).ToList();
     }
 
+    private static void RecalcularTotales(Venta venta)
+    {
+        venta.Subtotal =
+            venta.Detalles.Sum(x => x.Total);
 
+        venta.Impuesto =
+            venta.Subtotal * 0.18m;
+
+        venta.Total =
+            venta.Subtotal +
+            venta.Impuesto -
+            venta.Descuento;
+
+        venta.Cambio =
+            venta.MontoPagado - venta.Total;
+    }
 }

@@ -54,12 +54,14 @@ public class Factura80mmDocument : IDocument
 
                 // INFO FACTURA
                 column.Item().Text($"Fecha: {_factura.Fecha:dd/MM/yyyy HH:mm}");
+                column.Item().Text($"Factura: {_factura.Numero}");
 
-                column.Item().Text(
-                    $"Turno: {_factura.Turno} | Cajero: {_factura.UsuarioNombre}");
+                column.Item().Text($"Turno: {_factura.Turno} | Cajero: {_factura.UsuarioNombre} ");
 
-                column.Item().Text(
-                    $"Cliente: {_factura.ClienteNombre}");
+
+                column.Item().Text($"Metodo Pago: {_factura.MetodoPago}");
+
+                column.Item().Text($"Cliente: {_factura.ClienteNombre}");
 
                 column.Item()
                     .PaddingVertical(3)

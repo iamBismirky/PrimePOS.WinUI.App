@@ -13,11 +13,5 @@ public sealed partial class ProductoOverlay : UserControl
         DataContext = vm;
     }
 
-    private void NumberBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
-    {
-        if (DataContext is ProductoOverlayViewModel vm)
-        {
-            vm.NotificarPrecios();
-        }
-    }
+
 }

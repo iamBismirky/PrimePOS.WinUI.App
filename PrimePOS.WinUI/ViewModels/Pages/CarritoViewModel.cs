@@ -16,13 +16,13 @@ public partial class CarritoViewModel : ObservableObject
     [ObservableProperty]
     private decimal precio;
 
-    // 🔥 ITBIS POR UNIDAD
+
     [ObservableProperty]
     private decimal itbisUnitario;
 
     public decimal Subtotal => Cantidad * Precio;
 
-    // 🔥 ITBIS TOTAL
+
     public decimal Itbis => Cantidad * ItbisUnitario;
 
     public decimal Total => Subtotal + Itbis;

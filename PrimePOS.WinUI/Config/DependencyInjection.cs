@@ -2,6 +2,7 @@
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using PrimePOS.WinUI.ViewModels;
+using PrimePOS.WinUI.ViewModels.Overlays;
 using System;
 
 namespace PrimePOS.WinUI.Config;
@@ -32,21 +33,28 @@ public static class DependencyInjection
         services.AddTransient<LoginViewModel>();
         services.AddSingleton<AppSesionViewModel>();
         services.AddTransient<PerfilViewModel>();
-        services.AddScoped<CajaViewModel>();
-        services.AddScoped<CategoriaViewModel>();
-        services.AddScoped<ClienteViewModel>();
-        services.AddScoped<CajaViewModel>();
-        services.AddScoped<ProductoViewModel>();
-        services.AddScoped<UsuarioViewModel>();
-        services.AddScoped<VentaViewModel>();
-        services.AddScoped<CobrarViewModel>();
-        services.AddScoped<AbrirTurnoViewModel>();
-        services.AddScoped<CerrarTurnoViewModel>();
-        services.AddScoped<ReporVentaViewModel>();
-        services.AddScoped<DashboardViewModel>();
-        services.AddScoped<ClienteOverlayViewModel>();
-        services.AddScoped<DialogViewModel>();
+        services.AddTransient<CajaViewModel>();
+        services.AddTransient<CategoriaViewModel>();
+        services.AddTransient<ClienteViewModel>();
+        services.AddTransient<CajaViewModel>();
+        services.AddTransient<ProductoViewModel>();
+        services.AddTransient<UsuarioViewModel>();
+        services.AddTransient<VentaViewModel>();
+        services.AddTransient<CobrarViewModel>();
+        services.AddTransient<AbrirTurnoViewModel>();
+        services.AddTransient<CerrarTurnoViewModel>();
+        services.AddTransient<ReporVentaViewModel>();
+        services.AddTransient<DashboardViewModel>();
+        services.AddTransient<DialogViewModel>();
 
+        //Overlays
+        services.AddTransient<ClienteOverlayViewModel>();
+        services.AddTransient<UsuarioOverlayViewModel>();
+        services.AddTransient<RolOverlayViewModel>();
+        services.AddTransient<ProductoOverlayViewModel>();
+        services.AddTransient<CategoriaOverlayViewModel>();
+        services.AddTransient<RolOverlayViewModel>();
+        services.AddTransient<CajaOverlayViewModel>();
 
 
         //Services
