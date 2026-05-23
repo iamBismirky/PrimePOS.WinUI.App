@@ -9,6 +9,7 @@
         public int CategoriaId { get; set; }
         public decimal PrecioCompra { get; set; }
         public decimal PrecioVenta { get; set; }
+        public decimal PrecioVentaMayorista { get; set; }
         public decimal PorcentajeGanancia { get; set; }
         public int Existencia { get; set; }
         public bool Estado { get; set; }

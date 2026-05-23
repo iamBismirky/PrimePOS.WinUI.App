@@ -10,7 +10,7 @@
 
         <Border
             Width="850"
-            MaxHeight="700"
+            MaxHeight="800"
             Padding="25"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
@@ -105,6 +105,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -217,8 +218,8 @@
 
                     <!--  ESTADO  -->
                     <Border
-                        Grid.Row="2"
-                        Grid.Column="1"
+                        Grid.Row="4"
+                        Grid.Column="0"
                         Padding="15"
                         Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
                         CornerRadius="12">
@@ -231,6 +232,25 @@
                                 Text="Estado" />
 
                             <ToggleSwitch Header="Cliente activo" IsOn="{Binding Estado, Mode=TwoWay}" />
+
+                        </StackPanel>
+
+                    </Border>
+                    <Border
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Padding="15"
+                        Background="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                        CornerRadius="12">
+
+                        <StackPanel Spacing="15">
+
+
+                            <ComboBox Header="Tipo de Cliente" 
+                                      ItemsSource="{Binding TipoClientes}" 
+                                      SelectedItem="{Binding TipoClienteSeleccionado, Mode=TwoWay}" 
+                                      DisplayMemberPath="Tipo"
+                                      PlaceholderText="Seleccionar tipo de cliente"/>
 
                         </StackPanel>
 
@@ -259,7 +279,7 @@
                         <Button
                             Height="45"
                             Padding="30,0"
-                            Background="#FF2D89EF"
+                            Background="{StaticResource PrimePOSPrimaryBrush}"
                             Command="{Binding GuardarCommand}"
                             Foreground="White">
 

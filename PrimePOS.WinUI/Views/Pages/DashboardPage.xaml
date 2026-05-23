@@ -147,7 +147,7 @@
 
                         <Button Content="Nueva Venta"
                                 Height="45"
-                                Background="#FF2D89EF"
+                                Background="{StaticResource PrimePOSPrimaryBrush}"
                                 Foreground="White"/>
 
                         <Button Content="Productos"

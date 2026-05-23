@@ -29,7 +29,9 @@ public class ClienteRepository : IClienteRepository
     }
     public async Task<List<Cliente>> ObtenerTodosAsync()
     {
-        return await _context.Clientes.ToListAsync();
+        return await _context.Clientes
+            .Include(c => c.TipoCliente)
+            .ToListAsync();
     }
     public async Task<Cliente?> ObtenerPorIdAsync(int id)
     {
@@ -63,6 +65,7 @@ public class ClienteRepository : IClienteRepository
         texto = texto.ToLower();
 
         return await _context.Clientes
+            .Include(c => c.TipoCliente)
             .Where(p =>
                 p.Estado == true &&
                 (

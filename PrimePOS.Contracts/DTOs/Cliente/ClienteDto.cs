@@ -3,9 +3,11 @@
     public class ClienteDto
     {
         public int ClienteId { get; set; }
+        public int TipoClienteId { get; set; }
 
         public string Codigo { get; set; } = string.Empty;
         public string Nombre { get; set; } = string.Empty;
+        public string Tipo { get; set; } = string.Empty;
 
         public string Documento { get; set; } = string.Empty;
 

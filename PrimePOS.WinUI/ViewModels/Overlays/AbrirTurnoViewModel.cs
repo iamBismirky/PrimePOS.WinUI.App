@@ -85,6 +85,7 @@ public partial class AbrirTurnoViewModel : ObservableObject, IOverlayViewModel
 
 
         _sesion.AbrirTurno(res.Data);
+        _sesion.AbrirCaja(CajaSeleccionada);
 
         _notify.Success("Turno abierto");
         Close(true);

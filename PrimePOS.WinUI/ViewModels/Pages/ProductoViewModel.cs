@@ -104,19 +104,25 @@ public partial class ProductoViewModel : ObservableObject
 
 
     [RelayCommand]
-    public async Task EditarAsync(ProductoDto producto)
+    public async Task EditarAsync(ProductoDto productoSeleccionado)
     {
-        var vm = new ProductoOverlayViewModel(_apiProducto, _apiCategoria, _notify, producto);
-        await vm.InicializarAsync();
+        if (productoSeleccionado is null)
+            return;
+
+        var vm = App.Services
+            .GetRequiredService<ProductoOverlayViewModel>();
+
+        await vm.InicializarAsync(productoSeleccionado);
+
         var overlay = new ProductoOverlay(vm);
-        var actualizado = await _overlayService.ShowAsync(overlay, vm);
+
+        var actualizado =
+            await _overlayService.ShowAsync(overlay, vm);
+
         if (!actualizado)
             return;
 
-        if (actualizado)
-        {
-            await CargarProductosAsync();
-        }
+        await CargarProductosAsync();
     }
 
     [RelayCommand]
@@ -164,7 +170,7 @@ public partial class ProductoViewModel : ObservableObject
     public async Task NuevoAsync()
     {
         var vm = App.Services.GetRequiredService<ProductoOverlayViewModel>();
-        await vm.InicializarAsync();
+        await vm.InicializarAsync(null);
         var overlay = new ProductoOverlay(vm);
         var creado = await _overlayService.ShowAsync(overlay, vm);
         if (!creado)

@@ -34,7 +34,8 @@ public class ProductoService : IProductoService
             Descripcion = dto.Descripcion,
             CategoriaId = dto.CategoriaId,
             PrecioCompra = dto.PrecioCompra,
-            PrecioVenta = dto.PrecioVenta,
+            PrecioMinorista = dto.PrecioVenta,
+            PrecioMayorista = dto.PrecioVentaMayorista,
             PorcentajeGanancia = dto.PorcentajeGanancia,
             AplicaItbis = dto.AplicaItbis,
             ItbisPorcentaje = dto.ItbisPorcentaje,
@@ -69,7 +70,8 @@ public class ProductoService : IProductoService
         producto.Descripcion = dto.Descripcion;
         producto.CategoriaId = dto.CategoriaId;
         producto.PrecioCompra = dto.PrecioCompra;
-        producto.PrecioVenta = dto.PrecioVenta;
+        producto.PrecioMinorista = dto.PrecioMinorista;
+        producto.PrecioMayorista = dto.PrecioMayorista;
         producto.PorcentajeGanancia = dto.PorcentajeGanancia;
         producto.AplicaItbis = dto.AplicaItbis;
         producto.ItbisPorcentaje = dto.ItbisPorcentaje;
@@ -129,7 +131,8 @@ public class ProductoService : IProductoService
             CategoriaId = producto.CategoriaId,
             CategoriaNombre = producto.Categoria?.Nombre ?? "",
             PrecioCompra = producto.PrecioCompra,
-            PrecioVenta = producto.PrecioVenta,
+            PrecioMinorista = producto.PrecioMinorista,
+            PrecioMayorista = producto.PrecioMayorista,
             Existencia = producto.Existencia,
             Estado = producto.Estado,
             FechaRegistro = producto.FechaRegistro,
@@ -150,7 +153,8 @@ public class ProductoService : IProductoService
             CategoriaId = p.CategoriaId,
             CategoriaNombre = p.Categoria?.Nombre ?? "",
             PrecioCompra = p.PrecioCompra,
-            PrecioVenta = p.PrecioVenta,
+            PrecioMinorista = p.PrecioMinorista,
+            PrecioMayorista = p.PrecioMayorista,
             Existencia = p.Existencia,
             Estado = p.Estado,
             FechaRegistro = p.FechaRegistro,
@@ -176,10 +180,13 @@ public class ProductoService : IProductoService
             ProductoId = p.ProductoId,
             Codigo = p.Codigo,
             Nombre = p.Nombre,
-            PrecioVenta = p.PrecioVenta,
+            PrecioMinorista = p.PrecioMinorista,
+            PrecioMayorista = p.PrecioMayorista,
             AplicaItbis = p.AplicaItbis,
             Itbis = p.Itbis,
-            Existencia = p.Existencia
+            Existencia = p.Existencia,
+            Estado = p.Estado
+
 
         }).ToList();
     }
@@ -187,17 +194,45 @@ public class ProductoService : IProductoService
     private void RecalcularPrecios(Producto producto)
     {
         var compra = producto.PrecioCompra;
-        var ganancia = producto.PorcentajeGanancia;
-        var itbisPorcentaje = producto.ItbisPorcentaje;
-        var aplicaItbis = producto.AplicaItbis;
 
-        var basePrice = compra + (compra * ganancia / 100m);
+        // =========================
+        // MINORISTA
+        // =========================
 
-        var itbis = aplicaItbis
-            ? basePrice * (itbisPorcentaje / 100m)
-            : 0m;
+        var porcentajeMinorista =
+            producto.PorcentajeGanancia;
 
-        producto.PrecioVenta = basePrice + itbis;
-        producto.Itbis = itbis;
+        var precioBaseMinorista =
+            compra + (compra * porcentajeMinorista / 100m);
+
+        var itbisMinorista =
+            producto.AplicaItbis
+                ? precioBaseMinorista *
+                  (producto.ItbisPorcentaje / 100m)
+                : 0m;
+
+        producto.Itbis = itbisMinorista;
+
+        producto.PrecioMinorista =
+            precioBaseMinorista + itbisMinorista;
+
+        // =========================
+        // MAYORISTA
+        // =========================
+
+        var porcentajeMayorista =
+            porcentajeMinorista / 2m;
+
+        var precioBaseMayorista =
+            compra + (compra * porcentajeMayorista / 100m);
+
+        var itbisMayorista =
+            producto.AplicaItbis
+                ? precioBaseMayorista *
+                  (producto.ItbisPorcentaje / 100m)
+                : 0m;
+
+        producto.PrecioMayorista =
+            precioBaseMayorista + itbisMayorista;
     }
 }

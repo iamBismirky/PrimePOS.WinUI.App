@@ -4,7 +4,7 @@ using PrimePOS.WinUI.ViewModels;
 
 
 
-namespace PrimePOS.WinUI.Pages
+namespace PrimePOS.WinUI.Views.Dialog
 {
 
     public sealed partial class CerrarSesionDialog : ContentDialog

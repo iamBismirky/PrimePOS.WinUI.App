@@ -14,6 +14,7 @@ public class Usuario
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public bool Estado { get; set; }
+    public bool EsSuperAdmin { get; set; }
     public DateTime FechaRegistro { get; set; }
 
     public int RolId { get; set; } //Clave foránea para la relación con la clase Rol

@@ -192,36 +192,63 @@ public partial class VentaViewModel : ObservableObject
     {
         ClienteSeleccionado = cliente;
         TextoCliente = "";
+        Carrito.Clear();
     }
 
 
 
     public async Task AgregarProductoCarritoAsync(ProductoDto dto)
     {
+        var existente =
+            Carrito.FirstOrDefault(p =>
+                p.ProductoId == dto.ProductoId);
 
-        var existente = Carrito.FirstOrDefault(p => p.ProductoId == dto.ProductoId);
         if (dto.Existencia <= 0)
         {
-            _notify.Warning($"No hay stock disponible de {dto.Nombre}");
+            _notify.Warning(
+                $"No hay stock disponible de {dto.Nombre}");
+
             return;
         }
+
         if (dto.Existencia <= 5)
         {
-            _notify.Warning($"Inventario bajo de {dto.Nombre} - Existen {dto.Existencia}");
+            _notify.Warning(
+                $"Inventario bajo de {dto.Nombre} - Existen {dto.Existencia}");
         }
 
+        if (!dto.Estado)
+        {
+            _notify.Warning(
+                $"El producto {dto.Nombre} está inactivo y no se puede vender");
+
+            return;
+        }
+
+
+        decimal precio =
+            ClienteSeleccionado?.TipoClienteId == 1
+                ? dto.PrecioMinorista
+                : dto.PrecioMayorista;
+
+
+
         if (existente != null)
+        {
             existente.Cantidad++;
+        }
         else
+        {
             Carrito.Add(new CarritoViewModel
             {
                 Codigo = dto.Codigo,
                 ProductoId = dto.ProductoId,
                 Nombre = dto.Nombre,
-                Precio = dto.PrecioVenta,
+                Precio = precio,
                 ItbisUnitario = dto.Itbis,
                 Cantidad = 1
             });
+        }
 
         NotificarTotales();
     }
@@ -343,10 +370,8 @@ public partial class VentaViewModel : ObservableObject
     [RelayCommand]
     public async Task NuevoClienteAsync()
     {
-        var vm = new ClienteOverlayViewModel(
-         _clienteApi,
-         _notify);
-
+        var vm = App.Services.GetRequiredService<ClienteOverlayViewModel>();
+        await vm.InicializeAsync(null);
         var overlay = new ClienteOverlay(vm);
         var result = await _overlayService.ShowAsync(overlay, vm);
         if (!result)

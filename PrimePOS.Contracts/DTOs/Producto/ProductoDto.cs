@@ -12,7 +12,8 @@ namespace PrimePOS.Contracts.DTOs.Producto
         public int CategoriaId { get; set; }
         public string CategoriaNombre { get; set; } = "";
         public decimal PrecioCompra { get; set; }
-        public decimal PrecioVenta { get; set; }
+        public decimal PrecioMinorista { get; set; }
+        public decimal PrecioMayorista { get; set; }
         public bool AplicaItbis { get; set; }
         public decimal Itbis { get; set; }
         public int Existencia { get; set; }

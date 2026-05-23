@@ -1,7 +1,6 @@
 ﻿using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Venta;
-using PrimePOS.Contracts.Enums;
 using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models;
 
@@ -45,6 +44,8 @@ public class VentaService : IVentaService
                 ClienteId = dto.ClienteId,
                 ClienteNombre = dto.ClienteNombre,
                 MetodoPagoId = dto.MetodoPagoId,
+                TipoVentaId = dto.TipoVentaId,
+                CajaId = dto.CajaId,
                 FechaRegistro = ahora,
                 Detalles = new List<VentaDetalle>(),
 
@@ -55,7 +56,7 @@ public class VentaService : IVentaService
                 Cambio = dto.Cambio,
                 Total = dto.Total,
 
-                EstadoVenta = EstadoVenta.Completada,
+                EstadoVentaId = 1,
             };
 
             decimal subtotal = 0;

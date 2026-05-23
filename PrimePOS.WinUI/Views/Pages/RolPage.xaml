@@ -46,7 +46,7 @@
                 <Button
                     Grid.Column="1"
                     Padding="25,10"
-                    Background="#2D89EF"
+                    Background="{StaticResource PrimePOSPrimaryBrush}"
                     Command="{Binding NuevoCommand}"
                     Foreground="White">
 
@@ -152,7 +152,7 @@
 
                                         <!--  EDITAR  -->
                                         <Button
-                                            Background="#2D89EF"
+                                            Background="{StaticResource PrimePOSPrimaryBrush}"
                                             Click="Editar_Click"
                                             Tag="{Binding}">
                                             <FontIcon Foreground="White" Glyph="&#xE70F;" />
@@ -160,7 +160,7 @@
 
                                         <!--  DESACTIVAR  -->
                                         <Button
-                                            Background="#C42B1C"
+                                            Background="{StaticResource PrimePOSDangerBrush}"
                                             Click="Desactivar_Click"
                                             Tag="{Binding}">
                                             <FontIcon Foreground="White" Glyph="&#xE74D;" />

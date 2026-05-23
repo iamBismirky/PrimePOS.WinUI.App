@@ -9,7 +9,8 @@
         public string Descripcion { get; set; } = string.Empty;
         public int CategoriaId { get; set; }
         public decimal PrecioCompra { get; set; }
-        public decimal PrecioVenta { get; set; }
+        public decimal PrecioMinorista { get; set; }
+        public decimal PrecioMayorista { get; set; }
         public decimal PorcentajeGanancia { get; set; }
         public bool AplicaItbis { get; set; }
         public decimal ItbisMonto { get; set; }

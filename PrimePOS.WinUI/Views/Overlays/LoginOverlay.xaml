@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<UserControl
+    x:Class="PrimePOS.WinUI.Views.Overlays.LoginOverlay"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+
+    <!--  CENTER CONTENT  -->
+    <Grid Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+          Opacity="0.8">
+
+        <!--  LOGIN CARD  -->
+        <Border
+            Width="420"
+            Padding="40"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource SolidBackgroundFillColorBase}"
+
+            CornerRadius="18">
+
+            <Grid>
+
+                <StackPanel Spacing="18">
+
+
+                    <!--  LOGO  -->
+                    <Image
+                        Width="90"
+                        Height="90"
+                        HorizontalAlignment="Center"
+                        Source="ms-appx:///Assets/PrimePOS.png" />
+
+                    <!--  TITLE  -->
+                    <StackPanel Spacing="4">
+
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontSize="30"
+                            FontWeight="SemiBold"
+                            Text="PrimePOS" />
+
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Opacity="0.7"
+                            Text="Sistema de gestión y ventas" />
+                    </StackPanel>
+
+                    <!--  USERNAME  -->
+                    <TextBox
+                        x:Name="txtUsername"
+                        CharacterCasing="Upper"
+                        Header="Usuario"
+                        KeyDown="Control_KeyDown"
+                        PlaceholderText="Ingrese su usuario"
+                        Text="{Binding Username, Mode=TwoWay}" />
+
+                    <!--  PASSWORD  -->
+                    <PasswordBox
+                        x:Name="pwdPassword"
+                        Header="Contraseña"
+                        KeyDown="Control_KeyDown"
+                        PasswordChanged="pwdPassword_PasswordChanged"
+                        PasswordChar="●"
+                        PlaceholderText="Ingrese su contraseña" />
+
+                    <!--  LOGIN BUTTON  -->
+                    <Grid Margin="0,10,0,0">
+
+                        <Button
+                            x:Name="btnLogin"
+                            Height="45"
+                            Command="{Binding LoginCommand}"
+                            Content="Iniciar Sesión"
+                            FontSize="15"
+                            IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+                            Style="{ThemeResource AccentButtonStyle}" />
+
+                        <ProgressRing
+                            Width="28"
+                            Height="28"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsActive="{Binding IsLoading}" />
+                    </Grid>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+    </Grid>
+
+
+</UserControl>

@@ -18,7 +18,7 @@ public class MetodoPagoController : ControllerBase
         _service = service;
     }
 
-    // 🔹 LISTAR MÉTODOS DE PAGO
+
     [HttpGet]
     public async Task<IActionResult> ObtenerMetodosPagoAsync()
     {

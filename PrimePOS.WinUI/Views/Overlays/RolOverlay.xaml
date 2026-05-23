@@ -73,7 +73,7 @@
                         <Button
                             Grid.Column="0"
                             Height="40"
-                            Background="#C42B1C"
+                            Background="{StaticResource PrimePOSDangerBrush}"
                             Command="{Binding CancelarCommand}"
                             Foreground="White">
 
@@ -90,7 +90,7 @@
                             <Button
                                 Height="40"
                                 HorizontalAlignment="Right"
-                                Background="#2D89EF"
+                                Background="{StaticResource PrimePOSPrimaryBrush}"
                                 Command="{Binding GuardarCommand}"
                                 Foreground="White">
 

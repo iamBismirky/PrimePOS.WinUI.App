@@ -21,12 +21,12 @@
                 <StackPanel Orientation="Horizontal" Spacing="10">
 
                     <Grid Width="36" Height="36">
-                        <Ellipse Fill="#FFE81123" Opacity="0.15" />
+                        <Ellipse Fill="{StaticResource PrimePOSDangerBrush}" Opacity="0.15" />
                         <FontIcon
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             FontSize="18"
-                            Foreground="#FFE81123"
+                            Foreground="{StaticResource PrimePOSDangerBrush}"
                             Glyph="&#xE7BA;" />
                     </Grid>
 
@@ -64,11 +64,11 @@
                     <Button Command="{Binding ConfirmarCommand}" Content="Eliminar">
 
                         <Button.Background>
-                            <SolidColorBrush Color="#E81123" />
+                            <StaticResource ResourceKey="PrimePOSDangerBrush" />
                         </Button.Background>
 
                         <Button.Foreground>
-                            <SolidColorBrush Color="White" />
+                            <StaticResource ResourceKey="PrimePOSOnAccentBrush" />
                         </Button.Foreground>
 
                     </Button>

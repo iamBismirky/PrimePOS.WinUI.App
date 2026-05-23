@@ -57,13 +57,13 @@ namespace PrimePOS.WinUI.ViewModels
         public void AbrirTurno(TurnoDto turno)
         {
             TurnoActual = turno;
-            //OnPropertyChanged(nameof(HayTurnoAbierto));
+            OnPropertyChanged(nameof(HayTurnoAbierto));
         }
 
         public void CerrarTurno()
         {
             TurnoActual = null;
-            //OnPropertyChanged(nameof(HayTurnoAbierto));
+            OnPropertyChanged(nameof(HayTurnoAbierto));
         }
     }
 }

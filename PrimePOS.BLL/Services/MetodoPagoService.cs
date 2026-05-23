@@ -1,4 +1,5 @@
-﻿using PrimePOS.BLL.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
+using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.MetodoPago;
 using PrimePOS.DAL.Interfaces;
@@ -14,11 +15,11 @@ namespace PrimePOS.BLL.Services
             _metodoPagoRepository = metodoPagoRepository;
         }
 
-        //Listar metodos de pagos
+
         public async Task<List<MetodoPagoDto>> ListarMetodosPagosAsync()
         {
             var metodosPago = await _metodoPagoRepository.ListarMetodosPagosAsync();
-            if (metodosPago == null) throw new BusinessException("Error al obtener los métodos de pago", 404);
+            if (metodosPago == null) throw new BusinessException("Error al obtener los métodos de pago", StatusCodes.Status404NotFound);
 
             return metodosPago.Select(m => new MetodoPagoDto
             {

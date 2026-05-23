@@ -1,6 +1,4 @@
-﻿using PrimePOS.Contracts.Enums;
-using PrimePOS.ENTITIES.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrimePOS.ENTITIES.Models;
@@ -12,7 +10,8 @@ public class Venta
     public int VentaId { get; set; }
     public DateTime FechaRegistro { get; set; }
 
-    public TipoVenta TipoVenta { get; set; }
+    public int TipoVentaId { get; set; }
+    public TipoVenta? TipoVenta { get; set; }
     public int UsuarioId { get; set; }
     public Usuario? Usuario { get; set; }
     public string UsuarioNombre { get; set; } = "";
@@ -35,9 +34,8 @@ public class Venta
     public decimal MontoPagado { get; set; }
     public decimal Cambio { get; set; }
     public decimal BalancePendiente { get; set; }
-
-    public EstadoPago EstadoPago { get; set; }
-    public EstadoVenta EstadoVenta { get; set; }
+    public int EstadoVentaId { get; set; }
+    public EstadoVenta? EstadoVenta { get; set; }
     public ICollection<VentaDetalle> Detalles { get; set; } = new List<VentaDetalle>();
 
 }

@@ -1,11 +1,10 @@
-﻿using PrimePOS.ENTITIES.Enums;
-namespace PrimePOS.Contracts.DTOs.Venta
+﻿namespace PrimePOS.Contracts.DTOs.Venta
 {
     public class VentaDto
     {
         public int VentaId { get; set; }
         public DateTime FechaRegistro { get; set; }
-        public TipoVenta TipoVenta { get; set; }
+        public int TipoVentaId { get; set; }
         public int UsuarioId { get; set; }
         public string UsuarioNombre { get; set; } = "";
         public int ClienteId { get; set; }

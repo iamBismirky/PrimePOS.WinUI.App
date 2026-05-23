@@ -9,7 +9,7 @@
     xmlns:helpers="using:PrimePOS.WinUI.Helpers"
     xmlns:local="using:PrimePOS.WinUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="PrimePOS.WinUI"
+    Title="PrimePOS"
     mc:Ignorable="d">
 
     <Window.SystemBackdrop>
@@ -174,18 +174,9 @@
         <Grid Grid.Row="1">
             <!--  GENERIC OVERLAY  -->
             <Grid
-                x:Name="OverlayContainer"
+                x:Name="OverlayHost"
                 Tapped="OverlayContainer_Tapped"
-                Visibility="Collapsed">
-
-                <Grid Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}" Opacity="0.8" />
-
-                <ContentControl
-                    x:Name="OverlayContent"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Tapped="OverlayContent_Tapped" />
-            </Grid>
+                Visibility="Collapsed" />
 
             <!--  PDF OVERLAY  -->
             <Grid x:Name="PdfOverlay" Visibility="Collapsed">

@@ -1,5 +1,4 @@
 ﻿using PrimePOS.Contracts.DTOs.VentaDetalle;
-using PrimePOS.ENTITIES.Enums;
 
 namespace PrimePOS.Contracts.DTOs.Venta
 {
@@ -7,7 +6,7 @@ namespace PrimePOS.Contracts.DTOs.Venta
     {
         public int VentaId { get; set; }
         public DateTime FechaRegistro { get; set; }
-        public TipoVenta TipoVenta { get; set; }
+        public int TipoVentaId { get; set; }
         public int UsuarioId { get; set; }
         public string UsuarioNombre { get; set; } = "";
         public int ClienteId { get; set; }
@@ -15,6 +14,8 @@ namespace PrimePOS.Contracts.DTOs.Venta
         public int MetodoPagoId { get; set; }
         public int TurnoId { get; set; }
         public int NumeroTurno { get; set; }
+        public int CajaId { get; set; }
+
         public string NumeroComprobante { get; set; } = string.Empty;
         public decimal Subtotal { get; set; }
         public decimal Impuesto { get; set; }

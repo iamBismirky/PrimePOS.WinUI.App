@@ -160,6 +160,10 @@
                                     <Run Text="Documento: " />
                                     <Run Text="{Binding ClienteSeleccionado.Documento}" />
                                 </TextBlock>
+                                <TextBlock>
+                                    <Run Text="Tipo: " />
+                                    <Run Text="{Binding ClienteSeleccionado.Tipo}" />
+                                </TextBlock>
 
                             </StackPanel>
 
@@ -379,7 +383,7 @@
 
                     <Button
                         Height="55"
-                        Background="#FF2D89EF"
+                        Background="{StaticResource PrimePOSPrimaryBrush}"
                         Command="{Binding CobrarCommand}"
                         Foreground="White">
 

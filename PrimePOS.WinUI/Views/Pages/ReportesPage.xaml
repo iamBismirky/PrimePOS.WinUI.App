@@ -64,7 +64,7 @@
                                 VerticalAlignment="Bottom">
 
                         <Button Content="Generar"
-                                Background="#FF2D89EF"
+                                Background="{StaticResource PrimePOSPrimaryBrush}"
                                 Foreground="White"
                                 Command="{Binding CargarVentasPorTurnoCommand}"/>
 
@@ -166,12 +166,12 @@
                             Spacing="10">
 
                     <Button Content="Excel"
-                            Background="#FF2D89EF"
+                            Background="{StaticResource PrimePOSPrimaryBrush}"
                             Foreground="White"
                             Click="BtnExportarExcel_Click"/>
 
                     <Button Content="PDF"
-                            Background="#FF1E7145"
+                            Background="{StaticResource PrimePOSSuccessBrush}"
                             Foreground="White"
                             Click="BtnExportarPDF_Click"/>
 

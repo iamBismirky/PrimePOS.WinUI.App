@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using PrimePOS.Contracts.DTOs.Catalog;
 using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.Contracts.DTOs.Rol;
 using PrimePOS.WinUI.Services;
@@ -17,12 +18,14 @@ namespace PrimePOS.WinUI.ViewModels;
 public partial class ClienteViewModel : ObservableObject
 {
     private readonly ClienteApiService _apiCliente;
+    private readonly CatalogApiService _apiCatalog;
     private readonly NotificationService _notify;
     private readonly OverlayService _overlayService;
 
-    public ClienteViewModel(ClienteApiService apiCategoria, NotificationService notify, OverlayService overlay)
+    public ClienteViewModel(ClienteApiService apiCategoria, NotificationService notify, CatalogApiService apiCatalog, OverlayService overlay)
     {
         _apiCliente = apiCategoria;
+        _apiCatalog = apiCatalog;
         _notify = notify;
         _overlayService = overlay;
     }
@@ -30,6 +33,7 @@ public partial class ClienteViewModel : ObservableObject
 
 
     [ObservableProperty] private ObservableCollection<ClienteDto> clientes = new();
+    [ObservableProperty] private ObservableCollection<TipoClienteDto> tiposClientes = new();
     [ObservableProperty] private ObservableCollection<RolDto> roles = new();
     [ObservableProperty] private ClienteDto? clienteSeleccionado;
     [ObservableProperty] private string buscar = "";
@@ -37,6 +41,7 @@ public partial class ClienteViewModel : ObservableObject
 
 
     private List<ClienteDto> _cache = new();
+    private List<TipoClienteDto> _cacheTipoClientes = new();
 
     [RelayCommand]
     public void Filtrar()
@@ -81,11 +86,38 @@ public partial class ClienteViewModel : ObservableObject
             IsLoading = false;
         }
     }
+    public async Task CargarTiposClientesAsync()
+    {
+        try
+        {
+            IsLoading = true;
+
+            var res = await _apiCatalog.ObtenerTodosTipoClientesAsync();
+
+            if (!res.Success)
+            {
+                _notify.Error(res.Message ?? "Error al cargar tipos de clientes");
+                return;
+            }
+
+            _cacheTipoClientes = res.Data ?? new List<TipoClienteDto>();
+            TiposClientes = new ObservableCollection<TipoClienteDto>(res.Data ?? new());
+        }
+        catch (Exception ex)
+        {
+            _notify.Error(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
 
     [RelayCommand]
     public async Task NuevoAsync()
     {
         var vm = App.Services.GetRequiredService<ClienteOverlayViewModel>();
+        await vm.InicializeAsync(null);
         var overlay = new ClienteOverlay(vm);
         var result = await _overlayService.ShowAsync(overlay, vm);
         if (!result)
@@ -101,7 +133,11 @@ public partial class ClienteViewModel : ObservableObject
     [RelayCommand]
     public async Task EditarAsync(ClienteDto cliente)
     {
-        var vm = new ClienteOverlayViewModel(_apiCliente, _notify, cliente);
+        if (cliente is null)
+            return;
+
+        var vm = App.Services.GetRequiredService<ClienteOverlayViewModel>();
+        await vm.InicializeAsync(cliente);
         var overlay = new ClienteOverlay(vm);
 
         var actualizado = await _overlayService.ShowAsync(overlay, vm);

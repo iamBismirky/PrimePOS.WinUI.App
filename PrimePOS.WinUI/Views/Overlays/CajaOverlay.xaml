@@ -107,7 +107,7 @@
 
                         <Button
                             Padding="30,10"
-                            Background="#FF2D89EF"
+                            Background="{StaticResource PrimePOSPrimaryBrush}"
                             Command="{Binding GuardarCommand}"
                             Content="Guardar"
                             Foreground="White" />

@@ -21,7 +21,7 @@ public class ClienteApiService : BaseApiService
         return SendAsync<List<ClienteDto>>(request);
     }
 
-    public Task<ApiResponse<object>> CrearClienteAsync(ClienteDto dto)
+    public Task<ApiResponse<object>> CrearClienteAsync(CrearClienteDto dto)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "api/clientes")
         {
@@ -31,7 +31,7 @@ public class ClienteApiService : BaseApiService
         return SendAsync<object>(request);
     }
 
-    public Task<ApiResponse<object>> ActualizarClienteAsync(int id, ClienteDto dto)
+    public Task<ApiResponse<object>> ActualizarClienteAsync(int id, ActualizarClienteDto dto)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, $"api/clientes/{id}")
         {

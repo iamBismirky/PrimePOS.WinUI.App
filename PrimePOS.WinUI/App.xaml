@@ -28,6 +28,25 @@
                 FractionDigits="2"
                 IsGrouped="True" />
 
+            <!--  PrimePOS — paleta de marca (facturación / POS)  -->
+            <Color x:Key="PrimePOSPrimaryColor">#2D89EF</Color>
+            <Color x:Key="PrimePOSPrimaryDarkColor">#1B6FC7</Color>
+            <Color x:Key="PrimePOSDangerColor">#C42B1C</Color>
+            <Color x:Key="PrimePOSSuccessColor">#1E7145</Color>
+            <Color x:Key="PrimePOSWarningColor">#CA5010</Color>
+            <Color x:Key="PrimePOSOnAccentColor">#FFFFFF</Color>
+
+            <SolidColorBrush x:Key="PrimePOSPrimaryBrush" Color="{StaticResource PrimePOSPrimaryColor}" />
+            <SolidColorBrush x:Key="PrimePOSPrimaryDarkBrush" Color="{StaticResource PrimePOSPrimaryDarkColor}" />
+            <SolidColorBrush x:Key="PrimePOSDangerBrush" Color="{StaticResource PrimePOSDangerColor}" />
+            <SolidColorBrush x:Key="PrimePOSSuccessBrush" Color="{StaticResource PrimePOSSuccessColor}" />
+            <SolidColorBrush x:Key="PrimePOSWarningBrush" Color="{StaticResource PrimePOSWarningColor}" />
+            <SolidColorBrush x:Key="PrimePOSOnAccentBrush" Color="{StaticResource PrimePOSOnAccentColor}" />
+
+            <x:Double x:Key="PrimePOSPageTitleSize">28</x:Double>
+            <x:Double x:Key="PrimePOSSectionTitleSize">18</x:Double>
+            <x:Double x:Key="PrimePOSCardCornerRadius">14</x:Double>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

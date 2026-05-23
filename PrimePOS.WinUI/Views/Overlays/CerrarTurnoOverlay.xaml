@@ -215,7 +215,7 @@
 
                             <Button
                                 Height="50"
-                                Background="#FF2D89EF"
+                                Background="{StaticResource PrimePOSPrimaryBrush}"
                                 Command="{Binding CerrarCommand}"
                                 Foreground="White">
 

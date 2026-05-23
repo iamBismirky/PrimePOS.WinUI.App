@@ -16,7 +16,8 @@ public class Producto
     public Categoria? Categoria { get; set; }
     public decimal PrecioCompra { get; set; }
     public decimal PorcentajeGanancia { get; set; }
-    public decimal PrecioVenta { get; set; }
+    public decimal PrecioMinorista { get; set; }
+    public decimal PrecioMayorista { get; set; }
     public bool AplicaItbis { get; set; }
     public decimal ItbisPorcentaje { get; set; }
     public decimal Itbis { get; set; }

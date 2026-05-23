@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.Contracts.DTOs.Categoria;
 using PrimePOS.Contracts.DTOs.Producto;
 using PrimePOS.WinUI.Contracts;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
+using PrimePOS.WinUI.Views.Overlays;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,6 +19,7 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
     private readonly ProductoApiService _apiProducto;
     private readonly CategoriaApiService _apiCategoria;
     private readonly NotificationService _notify;
+    private readonly OverlayService _overlayService;
 
     private readonly TaskCompletionSource<bool> _tcs = new();
     public Task<bool> WaitTask => _tcs.Task;
@@ -25,12 +28,12 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
         ProductoApiService apiProducto,
         CategoriaApiService apiCategoria,
         NotificationService notify,
-        ProductoDto? producto = null)
+        OverlayService overlay)
     {
         _apiProducto = apiProducto;
         _apiCategoria = apiCategoria;
         _notify = notify;
-        Producto = producto;
+        _overlayService = overlay;
     }
 
 
@@ -43,6 +46,7 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
 
     [ObservableProperty]
     private CategoriaDto? categoriaSeleccionada;
+
 
 
     [ObservableProperty] private string codigo = "--------";
@@ -67,11 +71,15 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
 
 
     [ObservableProperty] private decimal precioBase;
+    [ObservableProperty] private decimal precioBaseMayorista;
 
     [ObservableProperty] private decimal itbis;
 
-    [ObservableProperty] private decimal precioFinal;
+    [ObservableProperty] private decimal precioFinalMinorista;
+    [ObservableProperty] private decimal precioFinalMayorista;
     [ObservableProperty] private decimal ganancia;
+    [ObservableProperty] private decimal gananciaMayorista;
+    [ObservableProperty] private decimal precioMayorista;
 
 
     private const decimal ITBIS_GLOBAL = 18;
@@ -82,52 +90,94 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
     => RecalcularPrecios();
 
     partial void OnPorcentajeGananciaChanged(decimal value)
-        => RecalcularPrecios();
+    {
+        OnPropertyChanged(nameof(PorcentajeMayoristaCalculado));
+        RecalcularPrecios();
+    }
+
 
     partial void OnAplicaItbisChanged(bool value)
         => RecalcularPrecios();
+    public decimal PorcentajeMayoristaCalculado
+    => PorcentajeGanancia / 2;
+
 
     partial void OnPrecioAutomaticoChanged(bool value)
     {
-        if (value)
+        if (value == true)
         {
             PorcentajeGanancia = 35;
-            return;
+            RecalcularPrecios();
         }
         RecalcularPrecios();
+
     }
     private void RecalcularPrecios()
     {
-        PrecioBase = PrecioCompra + (PrecioCompra * PorcentajeGanancia / 100);
+        var compra = PrecioCompra;
 
-        Itbis = AplicaItbis
-            ? PrecioBase * (ITBIS_GLOBAL / 100)
-            : 0;
+        // =========================
+        // MINORISTA
+        // =========================
 
-        PrecioFinal = PrecioBase + Itbis;
+        PrecioBase =
+            compra +
+            (compra * PorcentajeGanancia / 100m);
 
-        Ganancia = PrecioCompra * (PorcentajeGanancia / 100);
+        var itbisMinorista =
+            AplicaItbis
+                ? PrecioBase * (ITBIS_GLOBAL / 100m)
+                : 0m;
+
+        Itbis = itbisMinorista;
+
+        PrecioFinalMinorista =
+            PrecioBase + itbisMinorista;
+
+        Ganancia =
+            PrecioBase - compra;
+
+        // =========================
+        // MAYORISTA
+        // =========================
+
+        PrecioBaseMayorista =
+            compra +
+            (compra * PorcentajeMayoristaCalculado / 100m);
+
+        var itbisMayorista =
+            AplicaItbis
+                ? PrecioBaseMayorista * (ITBIS_GLOBAL / 100m)
+                : 0m;
+
+        PrecioFinalMayorista =
+            PrecioBaseMayorista + itbisMayorista;
+
+        GananciaMayorista =
+            PrecioBaseMayorista - compra;
     }
 
-    public async Task InicializarAsync()
+
+    public async Task InicializarAsync(ProductoDto? producto)
     {
 
         await CargarCategoriasAsync();
 
-        if (Producto != null)
+        if (producto != null)
         {
-            Codigo = Producto.Codigo;
-            CodigoBarra = Producto.CodigoBarra;
-            Nombre = Producto.Nombre;
-            Descripcion = Producto.Descripcion;
+            Producto = producto;
+            Codigo = producto.Codigo;
+            CodigoBarra = producto.CodigoBarra;
+            Nombre = producto.Nombre;
+            Descripcion = producto.Descripcion;
 
-            PrecioCompra = Producto.PrecioCompra;
-            Existencia = Producto.Existencia;
-            Estado = Producto.Estado;
+            PrecioCompra = producto.PrecioCompra;
+            Existencia = producto.Existencia;
+            Estado = producto.Estado;
 
             CategoriaSeleccionada =
                 Categorias.FirstOrDefault(x =>
-                    x.CategoriaId == Producto.CategoriaId);
+                    x.CategoriaId == producto.CategoriaId);
         }
     }
 
@@ -157,7 +207,19 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
             IsLoading = false;
         }
     }
+    [RelayCommand]
+    private async Task NuevaCategoriaAsync()
+    {
+        var vm = App.Services.GetRequiredService<CategoriaOverlayViewModel>();
+        var overlay = new CategoriaOverlay(vm);
 
+        var creado = await _overlayService.ShowAsync(overlay, vm);
+
+        if (creado)
+            await CargarCategoriasAsync();
+
+        return;
+    }
 
     [RelayCommand]
     private async Task GuardarAsync()
@@ -205,7 +267,8 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
                     ItbisPorcentaje = ITBIS_GLOBAL,
                     ItbisMonto = Itbis,
                     PrecioCompra = PrecioCompra,
-                    PrecioVenta = PrecioFinal,
+                    PrecioMinorista = PrecioFinalMinorista,
+                    PrecioMayorista = PrecioFinalMayorista,
                     Existencia = Existencia,
                     Estado = Estado
                 };
@@ -218,7 +281,7 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
                     return;
                 }
 
-                _notify.Success("Producto actualizado");
+                _notify.Success(res.Message);
             }
 
             else
@@ -231,7 +294,9 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
                     CategoriaId = CategoriaSeleccionada.CategoriaId,
                     PorcentajeGanancia = PorcentajeGanancia,
                     PrecioCompra = PrecioCompra,
-                    PrecioVenta = PrecioFinal,
+                    PrecioVenta = PrecioFinalMinorista,
+                    PrecioVentaMayorista = PrecioFinalMayorista,
+
                     AplicaItbis = AplicaItbis,
                     ItbisPorcentaje = ITBIS_GLOBAL,
                     ItbisMonto = Itbis,
@@ -248,7 +313,7 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
                     return;
                 }
 
-                _notify.Success("Producto creado");
+                _notify.Success(res.Message);
             }
 
             Limpiar();

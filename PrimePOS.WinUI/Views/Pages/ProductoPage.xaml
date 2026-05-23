@@ -46,7 +46,7 @@
                 <Button
                     Grid.Column="1"
                     Padding="25,10"
-                    Background="#2D89EF"
+                    Background="{StaticResource PrimePOSPrimaryBrush}"
                     Command="{Binding NuevoCommand}"
                     Foreground="White">
 
@@ -141,17 +141,16 @@
                         <controls:DataGridTextColumn Binding="{Binding Codigo}" Header="Código" />
                         <controls:DataGridTextColumn Binding="{Binding CodigoBarra}" Header="Barra" />
                         <controls:DataGridTextColumn Binding="{Binding Nombre}" Header="Nombre" />
+                        <controls:DataGridTextColumn Binding="{Binding Descripcion}" Header="Descripcion" />
                         <controls:DataGridTextColumn Binding="{Binding CategoriaNombre}" Header="Categoría" />
 
-                        <controls:DataGridTextColumn Binding="{Binding PrecioCompra, Converter={StaticResource NumeroConverterHelper}}" Header="Compra" />
+                        <controls:DataGridTextColumn Binding="{Binding PrecioMinorista, Converter={StaticResource NumeroConverterHelper}}" Header="Minorista" />
 
-                        <controls:DataGridTextColumn Binding="{Binding PrecioVenta, Converter={StaticResource NumeroConverterHelper}}" Header="Venta" />
+                        <controls:DataGridTextColumn Binding="{Binding PrecioMayorista, Converter={StaticResource NumeroConverterHelper}}" Header="Mayorista" />
 
                         <controls:DataGridTextColumn Binding="{Binding Existencia}" Header="Stock" />
 
-                        <controls:DataGridCheckBoxColumn Binding="{Binding Estado}" Header="Activo" />
-
-                        <controls:DataGridTextColumn Binding="{Binding FechaRegistro}" Header="Fecha" />
+                        <controls:DataGridCheckBoxColumn Binding="{Binding Estado}" Header="Activo" Width="100"/>
 
                         <!--  ACCIONES  -->
                         <controls:DataGridTemplateColumn Header="">
@@ -164,7 +163,7 @@
 
                                         <!--  EDITAR  -->
                                         <Button
-                                            Background="#2D89EF"
+                                            Background="{StaticResource PrimePOSPrimaryBrush}"
                                             Click="Editar_Click"
                                             Tag="{Binding}">
                                             <FontIcon Foreground="White" Glyph="&#xE70F;" />
@@ -177,7 +176,7 @@
 
                                         <!--  DESACTIVAR  -->
                                         <Button
-                                            Background="#C42B1C"
+                                            Background="{StaticResource PrimePOSDangerBrush}"
                                             Click="Desactivar_Click"
                                             Tag="{Binding}">
                                             <FontIcon Foreground="White" Glyph="&#xE74D;" />

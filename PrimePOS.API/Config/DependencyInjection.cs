@@ -15,12 +15,12 @@ namespace PrimePOS.API.Config
     {
         public static IServiceCollection AddPrimePOS(this IServiceCollection services, IConfiguration config)
         {
-            // 🔹 DbContext
+            //DbContext
             services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(
                 config.GetConnectionString("DefaultConnection")));
 
-            // 🔹 Repositories
+            //Repositories
             services.AddScoped<IRolRepository, RolRepository>();
             services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             services.AddScoped<ICajaRepository, CajaRepository>();
@@ -33,9 +33,10 @@ namespace PrimePOS.API.Config
             services.AddScoped<ITurnoRepository, TurnoRepository>();
             services.AddScoped<IDetalleRepository, DetalleRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICatalogRepository, CatalogRepository>();
 
 
-            // 🔹 Services
+            //Services
             services.AddScoped<IRolService, RolService>();
             services.AddScoped<ICategoriaService, CategoriaService>();
             services.AddScoped<ICajaService, CajaService>();
@@ -47,13 +48,16 @@ namespace PrimePOS.API.Config
             services.AddScoped<IFacturaService, FacturaService>();
             services.AddScoped<ITurnoService, TurnoService>();
             services.AddScoped<IEtiquetaService, EtiquetaService>();
+            services.AddScoped<ICatalogService, CatalogService>();
 
-            //jwt
+            //JWT
             services.AddSingleton<JwtHelper>();
 
-            // 🔐 AUTH + SWAGGER + EXTRA CONFIG
+            // AUTH + SWAGGER + EXTRA CONFIG
             services.AddJwtAuthentication(config);
             services.AddSwaggerConfig();
+
+
             return services;
         }
     }

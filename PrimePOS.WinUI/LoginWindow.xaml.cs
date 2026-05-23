@@ -17,7 +17,7 @@ namespace PrimePOS.WinUI;
 
 public sealed partial class LoginWindow : Window
 {
-    public LoginViewModel _viewModel;
+    public LoginOverlayViewModel _viewModel;
     public NotificationService _notify;
     public LoginWindow()
     {
@@ -25,11 +25,10 @@ public sealed partial class LoginWindow : Window
         ConfigurarVentana();
         ConfigurarUI();
 
-        _viewModel = App.Services.GetRequiredService<LoginViewModel>();
+        _viewModel = App.Services.GetRequiredService<LoginOverlayViewModel>();
         _notify = App.Services.GetRequiredService<NotificationService>();
 
         RootGrid.DataContext = _viewModel;
-        _viewModel.LoginSuccess += OnLoginExitoso;
 
 
 
@@ -45,23 +44,23 @@ public sealed partial class LoginWindow : Window
 
     private void BtnTema_Click(object sender, RoutedEventArgs e)
     {
-        if (App.TemaActual == ElementTheme.Light)
-        {
-            RootGrid.RequestedTheme = ElementTheme.Dark;
-            iconTema.Glyph = "\uE706"; // luna
-            App.TemaActual = ElementTheme.Dark;
-        }
-        else
-        {
-            RootGrid.RequestedTheme = ElementTheme.Light;
-            iconTema.Glyph = "\uE708"; // sol
-            App.TemaActual = ElementTheme.Light;
-        }
+        //if (App.TemaActual == ElementTheme.Light)
+        //{
+        //    RootGrid.RequestedTheme = ElementTheme.Dark;
+        //    iconTema.Glyph = "\uE706"; // luna
+        //    App.TemaActual = ElementTheme.Dark;
+        //}
+        //else
+        //{
+        //    RootGrid.RequestedTheme = ElementTheme.Light;
+        //    iconTema.Glyph = "\uE708"; // sol
+        //    App.TemaActual = ElementTheme.Light;
+        //}
     }
 
     private void pwdPassword_PasswordChanged(object sender, RoutedEventArgs e)
     {
-        if (RootGrid.DataContext is LoginViewModel vm)
+        if (RootGrid.DataContext is LoginOverlayViewModel vm)
         {
             vm.Password = pwdPassword.Password;
         }

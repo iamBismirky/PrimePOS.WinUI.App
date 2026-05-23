@@ -27,10 +27,11 @@ public static class DependencyInjection
         services.AddScoped<FacturaApiService>();
         services.AddScoped<MetodoPagoApiService>();
         services.AddScoped<VentaApiService>();
+        services.AddScoped<CatalogApiService>();
 
         // ViewModels
         services.AddTransient<RolViewModel>();
-        services.AddTransient<LoginViewModel>();
+        services.AddTransient<LoginOverlayViewModel>();
         services.AddSingleton<AppSesionViewModel>();
         services.AddTransient<PerfilViewModel>();
         services.AddTransient<CajaViewModel>();
@@ -62,6 +63,7 @@ public static class DependencyInjection
         services.AddSingleton<PdfViewService>();
         services.AddSingleton<MainWindow>();
         services.AddSingleton<OverlayService>();
+        services.AddSingleton<AuthOverlayService>();
 
         return services;
     }

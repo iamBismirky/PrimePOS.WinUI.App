@@ -38,7 +38,7 @@ public class EtiquetaProductoDocument : IDocument
                     .Bold();
 
                 column.Item()
-                    .Text($"RD$ {_producto.PrecioVenta:N2}");
+                    .Text($"RD$ {_producto.PrecioMinorista:N2}");
 
                 column.Item()
                     .Image(_barcodeBytes);

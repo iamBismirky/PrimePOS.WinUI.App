@@ -1,4 +1,5 @@
-﻿using PrimePOS.BLL.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
+using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.DAL.Interfaces;
@@ -18,10 +19,10 @@ public class ClienteService : IClienteService
     public async Task CrearClienteAsync(CrearClienteDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Nombre))
-            throw new BusinessException("El nombre del cliente es obligatorio.", 400);
+            throw new BusinessException("El nombre del cliente es obligatorio.", StatusCodes.Status400BadRequest);
 
         if (string.IsNullOrWhiteSpace(dto.Documento))
-            throw new BusinessException("El documento del cliente es obligatorio.", 400);
+            throw new BusinessException("El documento del cliente es obligatorio.", StatusCodes.Status400BadRequest);
 
         var cliente = new Cliente
         {
@@ -32,6 +33,7 @@ public class ClienteService : IClienteService
             Direccion = dto.Direccion,
             Estado = dto.Estado,
             FechaRegistro = DateTime.Now,
+            TipoClienteId = dto.TipoClienteId
         };
 
         _clienteRepository.Crear(cliente);
@@ -46,15 +48,15 @@ public class ClienteService : IClienteService
     public async Task ActualizarClienteAsync(ActualizarClienteDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Nombre))
-            throw new BusinessException("El nombre del cliente es obligatorio.", 400);
+            throw new BusinessException("El nombre del cliente es obligatorio.", StatusCodes.Status400BadRequest);
 
         if (string.IsNullOrWhiteSpace(dto.Documento))
-            throw new BusinessException("El documento del cliente es obligatorio.", 400);
+            throw new BusinessException("El documento del cliente es obligatorio.", StatusCodes.Status400BadRequest);
 
         var cliente = await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
 
         if (cliente == null)
-            throw new BusinessException("Cliente no encontrado.", 404);
+            throw new BusinessException("Cliente no encontrado.", StatusCodes.Status404NotFound);
 
         cliente.Nombre = dto.Nombre;
         cliente.Documento = dto.Documento;
@@ -62,6 +64,7 @@ public class ClienteService : IClienteService
         cliente.Email = dto.Email;
         cliente.Telefono = dto.Telefono;
         cliente.Estado = dto.Estado;
+        cliente.TipoClienteId = dto.TipoClienteId;
 
         _clienteRepository.Actualizar(cliente);
         await _clienteRepository.GuardarCambiosAsync();
@@ -72,7 +75,7 @@ public class ClienteService : IClienteService
         var cliente = await _clienteRepository.ObtenerPorIdAsync(clienteId);
 
         if (cliente == null)
-            throw new BusinessException("Cliente no encontrado.", 404);
+            throw new BusinessException("Cliente no encontrado.", StatusCodes.Status404NotFound);
 
         _clienteRepository.Eliminar(cliente);
         await _clienteRepository.GuardarCambiosAsync();
@@ -83,7 +86,7 @@ public class ClienteService : IClienteService
         var cliente = await _clienteRepository.ObtenerPorIdAsync(clienteId);
 
         if (cliente == null)
-            throw new BusinessException("Cliente no encontrado.", 404);
+            throw new BusinessException("Cliente no encontrado.", StatusCodes.Status404NotFound);
 
         cliente.Estado = false;
 
@@ -105,6 +108,8 @@ public class ClienteService : IClienteService
             Email = c.Email,
             Telefono = c.Telefono,
             Estado = c.Estado,
+            TipoClienteId = c.TipoClienteId,
+            Tipo = c.TipoCliente?.Tipo ?? "",
             FechaRegistro = c.FechaRegistro,
         }).ToList();
     }
@@ -114,7 +119,7 @@ public class ClienteService : IClienteService
         var cliente = await _clienteRepository.ObtenerPorIdAsync(id);
 
         if (cliente == null)
-            throw new BusinessException("Cliente no encontrado.", 404);
+            throw new BusinessException("Cliente no encontrado.", StatusCodes.Status404NotFound);
 
         return new ClienteDto
         {
@@ -127,6 +132,7 @@ public class ClienteService : IClienteService
             Telefono = cliente.Telefono,
             Estado = cliente.Estado,
             FechaRegistro = cliente.FechaRegistro,
+            TipoClienteId = cliente.TipoClienteId
         };
     }
 
@@ -144,13 +150,16 @@ public class ClienteService : IClienteService
 
         var clientes = await _clienteRepository.BuscarAsync(texto);
         if (clientes == null)
-            throw new BusinessException("Cliente no encontrado.", 404);
+            throw new BusinessException("Cliente no encontrado.", StatusCodes.Status404NotFound);
         return clientes.Select(c => new ClienteDto
         {
             ClienteId = c.ClienteId,
             Codigo = c.Codigo,
             Nombre = c.Nombre,
-            Documento = c.Documento
+            Documento = c.Documento,
+            TipoClienteId = c.TipoClienteId,
+            Tipo = c.TipoCliente?.Tipo ?? "",
+
         }).ToList();
     }
 }

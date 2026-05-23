@@ -4,9 +4,9 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using PrimePOS.WinUI.Pages;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.ViewModels;
+using PrimePOS.WinUI.Views.Dialog;
 using PrimePOS.WinUI.Views.Pages;
 using System;
 using System.IO;
@@ -23,29 +23,58 @@ public sealed partial class MainWindow : Window
     public AppSesionViewModel _sesion;
     public NotificationService _notify;
     public OverlayService _overlayService;
+    public LoginOverlayViewModel _loginViewModel;
+    public AuthOverlayService _authService;
     public MainWindow()
     {
         InitializeComponent();
         contentFrame.Navigate(typeof(DashboardPage));
-        RootGrid.RequestedTheme = App.TemaActual;
+
         this.ExtendsContentIntoTitleBar = true;
 
         _sesion = App.Services.GetRequiredService<AppSesionViewModel>();
         _notify = App.Services.GetRequiredService<NotificationService>();
         _overlayService = App.Services.GetRequiredService<OverlayService>();
+        _loginViewModel = App.Services.GetRequiredService<LoginOverlayViewModel>();
+        _authService = App.Services.GetRequiredService<AuthOverlayService>();
 
         RootGrid.DataContext = _sesion;
         SetWindowSizeAndCenter(1600, 900);
 
-
+        this.Activated += MainWindow_Activated;
         _notify.OnNotify += (msg, type) =>
         {
             _ = MostrarNotificacionAsync(msg, type);
         };
 
+
+
+
+    }
+
+    private bool _initialized;
+
+    private async void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
+    {
+        if (_initialized)
+            return;
+
+        _initialized = true;
+
+        _overlayService.Initialize(OverlayHost);
+        //_authService.Initialize(OverlayContainer, OverlayContent);
+
+
         KeyboardService.Attach((UIElement)Content);
 
-        _overlayService.Initialize(OverlayContainer, OverlayContent);
+
+        await MostrarLoginAsync();
+    }
+    private async Task MostrarLoginAsync()
+    {
+        var loginVM = App.Services.GetRequiredService<LoginOverlayViewModel>();
+
+        bool ok = await _overlayService.ShowLoginAsync(loginVM);
 
     }
     private void TitleBar_BackRequested(TitleBar sender, object args)
@@ -120,9 +149,8 @@ public sealed partial class MainWindow : Window
                     if (result == ContentDialogResult.Primary)
                     {
                         _sesion.CerrarSesion();
-                        var login = new LoginWindow();
-                        login.Activate();
-                        this.Close();
+                        contentFrame.Navigate(typeof(DashboardPage));
+                        await MostrarLoginAsync();
                     }
                     sender.SelectedItem = null;
                     sender.SelectedItem = sender.MenuItems[0];
@@ -170,7 +198,7 @@ public sealed partial class MainWindow : Window
 
     private void OverlayContainer_Tapped(object sender, TappedRoutedEventArgs e)
     {
-        _overlayService.Close();
+        //_overlayService.Close();
     }
     private void OverlayContent_Tapped(object sender, TappedRoutedEventArgs e)
     {
