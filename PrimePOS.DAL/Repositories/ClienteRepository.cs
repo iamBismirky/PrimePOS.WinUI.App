@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
 using PrimePOS.DAL.Interfaces;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Clientes;
 
 namespace PrimePOS.DAL.Repositories;
 
@@ -35,7 +35,9 @@ public class ClienteRepository : IClienteRepository
     }
     public async Task<Cliente?> ObtenerPorIdAsync(int id)
     {
-        return await _context.Clientes.FindAsync(id);
+        return await _context.Clientes
+        .Include(x => x.TipoCliente)
+        .FirstOrDefaultAsync(x => x.ClienteId == id);
     }
     public async Task<Cliente?> BuscarPorCodigoONombreAsync(string buscar)
     {
@@ -78,5 +80,6 @@ public class ClienteRepository : IClienteRepository
             .Take(20)
             .ToListAsync();
     }
+
 
 }

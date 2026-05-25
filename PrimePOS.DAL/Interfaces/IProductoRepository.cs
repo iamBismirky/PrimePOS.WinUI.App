@@ -15,6 +15,7 @@ namespace PrimePOS.DAL.Interfaces
         Task<bool> ExisteCodigoONombreAsync(string codigoBarra, string nombre);
         Task GuardarCambiosAsync();
         Task<Producto?> ObtenerPorIdAsync(int id);
+        Task<List<Producto>> ObtenerPorIdsAsync(List<int> ids);
         Task<List<Producto>> ObtenerTodosAsync();
     }
 }

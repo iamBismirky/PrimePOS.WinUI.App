@@ -14,5 +14,6 @@ internal static class ModelBuilderSeedExtensions
         EstadoVentaSeed.Apply(modelBuilder);
         ClienteSeed.Apply(modelBuilder);
         UsuarioSeed.Apply(modelBuilder);
+        TipoPrecioSeed.Apply(modelBuilder);
     }
 }

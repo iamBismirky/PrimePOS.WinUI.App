@@ -9,7 +9,6 @@ using PrimePOS.WinUI.ViewModels;
 using PrimePOS.WinUI.Views.Dialog;
 using PrimePOS.WinUI.Views.Pages;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Windows.Graphics;
 using WinRT.Interop;
@@ -62,7 +61,6 @@ public sealed partial class MainWindow : Window
         _initialized = true;
 
         _overlayService.Initialize(OverlayHost);
-        //_authService.Initialize(OverlayContainer, OverlayContent);
 
 
         KeyboardService.Attach((UIElement)Content);
@@ -190,11 +188,7 @@ public sealed partial class MainWindow : Window
         // 🔥 Mover ventana
         appWindow.Move(new PointInt32(x, y));
     }
-    private void CerrarPdf_Click(object sender, RoutedEventArgs e)
-    {
-        PdfOverlay.Visibility = Visibility.Collapsed;
-        PdfWebView.Source = null;
-    }
+
 
     private void OverlayContainer_Tapped(object sender, TappedRoutedEventArgs e)
     {
@@ -205,31 +199,5 @@ public sealed partial class MainWindow : Window
         e.Handled = true;
     }
 
-    private void PdfOverlay_Tapped(object sender, TappedRoutedEventArgs e)
-    {
-        e.Handled = true;
-    }
-    public void ShowPdf(string url)
-    {
-        PdfOverlay.Visibility = Visibility.Visible;
-        PdfWebView.Source = new Uri(url);
-    }
 
-    public async void ShowPdfBytes(byte[] pdfBytes)
-    {
-        PdfOverlay.Visibility = Visibility.Visible;
-        var filePath = Path.Combine(
-        Path.GetTempPath(),
-        $"{Guid.NewGuid()}.pdf");
-
-        await File.WriteAllBytesAsync(filePath, pdfBytes);
-
-        PdfWebView.Source = new Uri(filePath);
-    }
-
-    public void HidePdf()
-    {
-        PdfOverlay.Visibility = Visibility.Collapsed;
-        PdfWebView.Source = null;
-    }
 }

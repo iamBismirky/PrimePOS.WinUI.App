@@ -89,8 +89,14 @@ public class ProductoRepository : IProductoRepository
     }
     public async Task<int> ObtenerProductosVendidosTurnoAsync(int turnoId)
     {
-        return await _context.VentasDetalle
+        return await _context.VentaDetalles
             .Where(x => x.Venta!.TurnoId == turnoId)
             .SumAsync(x => x.Cantidad);
+    }
+    public async Task<List<Producto>> ObtenerPorIdsAsync(List<int> ids)
+    {
+        return await _context.Productos
+            .Where(x => ids.Contains(x.ProductoId))
+            .ToListAsync();
     }
 }

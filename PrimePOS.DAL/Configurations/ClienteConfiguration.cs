@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Clientes;
 
 namespace PrimePOS.DAL.Configurations;
 
@@ -11,6 +11,7 @@ public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
         builder.HasOne(c => c.TipoCliente)
             .WithMany()
             .HasForeignKey(c => c.TipoClienteId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
+
     }
 }

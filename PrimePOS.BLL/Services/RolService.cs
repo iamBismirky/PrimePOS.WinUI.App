@@ -2,7 +2,7 @@
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Rol;
 using PrimePOS.DAL.Interfaces;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Seguridad;
 
 namespace PrimePOS.BLL.Services;
 

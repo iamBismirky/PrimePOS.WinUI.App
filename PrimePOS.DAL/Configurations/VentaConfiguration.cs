@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Ventas;
 
 namespace PrimePOS.DAL.Configurations;
 
@@ -37,5 +37,10 @@ public class VentaConfiguration : IEntityTypeConfiguration<Venta>
             .WithMany()
             .HasForeignKey(v => v.EstadoVentaId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(v => v.TipoPrecio)
+            .WithMany()
+            .HasForeignKey(v => v.TipoPrecioId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

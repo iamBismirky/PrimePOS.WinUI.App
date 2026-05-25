@@ -10,7 +10,7 @@ namespace PrimePOS.WinUI.Views.Overlays;
 public sealed partial class CobrarOverlay : UserControl
 {
 
-    public CobrarOverlay(CobrarViewModel vm)
+    public CobrarOverlay(CobrarOverlayViewModel vm)
     {
         InitializeComponent();
         DataContext = vm;

@@ -15,13 +15,14 @@ namespace PrimePOS.Contracts.DTOs.Venta
         public int TurnoId { get; set; }
         public int NumeroTurno { get; set; }
         public int CajaId { get; set; }
-
+        public int TipoPrecioId { get; set; }
         public string NumeroComprobante { get; set; } = string.Empty;
         public decimal Subtotal { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Descuento { get; set; }
         public decimal Total { get; set; }
-        public decimal MontoPagado { get; set; }
+        public decimal BalancePendiente { get; set; }
+        public decimal MontoRecibido { get; set; }
         public decimal Cambio { get; set; }
         public bool Estado { get; set; }
         public List<VentaDetalleDto> Items { get; set; } = new();

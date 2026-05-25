@@ -63,7 +63,8 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
     [ObservableProperty] private DateTime fechaRegistro = DateTime.Today;
 
 
-    [ObservableProperty] private decimal porcentajeGanancia = 35;
+    [ObservableProperty] private decimal porcentajeGananciaMinorista = 35;
+    [ObservableProperty] private decimal porcentajeGananciaMayorista = 0;
     [ObservableProperty] private bool aplicaItbis = true;
 
     [ObservableProperty] private bool isLoading;
@@ -89,31 +90,46 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
     partial void OnPrecioCompraChanged(decimal value)
     => RecalcularPrecios();
 
-    partial void OnPorcentajeGananciaChanged(decimal value)
+    partial void OnPorcentajeGananciaMinoristaChanged(decimal value)
     {
-        OnPropertyChanged(nameof(PorcentajeMayoristaCalculado));
+        if (PrecioAutomatico)
+        {
+            PorcentajeGananciaMayorista = value / 2m;
+        }
+
         RecalcularPrecios();
     }
-
-
+    partial void OnPorcentajeGananciaMayoristaChanged(decimal value)
+    {
+        RecalcularPrecios();
+    }
     partial void OnAplicaItbisChanged(bool value)
         => RecalcularPrecios();
     public decimal PorcentajeMayoristaCalculado
-    => PorcentajeGanancia / 2;
+    => PorcentajeGananciaMinorista / 2;
 
 
     partial void OnPrecioAutomaticoChanged(bool value)
     {
-        if (value == true)
+        if (value)
         {
-            PorcentajeGanancia = 35;
-            RecalcularPrecios();
+            AplicarReglasPorcentaje();
         }
+
         RecalcularPrecios();
 
     }
+    private void AplicarReglasPorcentaje()
+    {
+        if (PrecioAutomatico)
+        {
+            PorcentajeGananciaMinorista = 35;
+            PorcentajeGananciaMayorista = PorcentajeGananciaMinorista / 2m;
+        }
+    }
     private void RecalcularPrecios()
     {
+        //AplicarReglasPorcentaje();
         var compra = PrecioCompra;
 
         // =========================
@@ -122,7 +138,7 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
 
         PrecioBase =
             compra +
-            (compra * PorcentajeGanancia / 100m);
+            (compra * PorcentajeGananciaMinorista / 100m);
 
         var itbisMinorista =
             AplicaItbis
@@ -143,7 +159,7 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
 
         PrecioBaseMayorista =
             compra +
-            (compra * PorcentajeMayoristaCalculado / 100m);
+            (compra * PorcentajeGananciaMayorista / 100m);
 
         var itbisMayorista =
             AplicaItbis
@@ -160,11 +176,13 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
 
     public async Task InicializarAsync(ProductoDto? producto)
     {
-
+        AplicarReglasPorcentaje();
         await CargarCategoriasAsync();
+
 
         if (producto != null)
         {
+
             Producto = producto;
             Codigo = producto.Codigo;
             CodigoBarra = producto.CodigoBarra;
@@ -175,9 +193,13 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
             Existencia = producto.Existencia;
             Estado = producto.Estado;
 
+
             CategoriaSeleccionada =
                 Categorias.FirstOrDefault(x =>
                     x.CategoriaId == producto.CategoriaId);
+
+            PorcentajeGananciaMinorista = producto.PorcentajeGananciaMinorista;
+            PorcentajeGananciaMayorista = producto.PorcentajeGananciaMayorista;
         }
     }
 
@@ -262,13 +284,11 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
                     Nombre = Nombre.Trim(),
                     Descripcion = Descripcion.Trim(),
                     CategoriaId = CategoriaSeleccionada.CategoriaId,
-                    PorcentajeGanancia = PorcentajeGanancia,
+                    PrecioCompra = PrecioCompra,
+                    PorcentajeGananciaMinorista = PorcentajeGananciaMinorista,
+                    PorcentajeGananciaMayorista = PorcentajeGananciaMayorista,
                     AplicaItbis = AplicaItbis,
                     ItbisPorcentaje = ITBIS_GLOBAL,
-                    ItbisMonto = Itbis,
-                    PrecioCompra = PrecioCompra,
-                    PrecioMinorista = PrecioFinalMinorista,
-                    PrecioMayorista = PrecioFinalMayorista,
                     Existencia = Existencia,
                     Estado = Estado
                 };
@@ -292,17 +312,13 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
                     Nombre = Nombre.Trim(),
                     Descripcion = Descripcion.Trim(),
                     CategoriaId = CategoriaSeleccionada.CategoriaId,
-                    PorcentajeGanancia = PorcentajeGanancia,
                     PrecioCompra = PrecioCompra,
-                    PrecioVenta = PrecioFinalMinorista,
-                    PrecioVentaMayorista = PrecioFinalMayorista,
-
+                    PorcentajeGananciaMinorista = PorcentajeGananciaMinorista,
+                    PorcentajeGananciaMayorista = PorcentajeGananciaMayorista,
                     AplicaItbis = AplicaItbis,
                     ItbisPorcentaje = ITBIS_GLOBAL,
-                    ItbisMonto = Itbis,
                     Existencia = Existencia,
-                    Estado = Estado,
-                    FechaRegistro = DateTime.Now
+                    Estado = Estado
                 };
 
                 var res = await _apiProducto.CrearProductoAsync(dto);
@@ -354,7 +370,8 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
         Existencia = 0;
         Estado = true;
 
-        PorcentajeGanancia = 35;
+        PorcentajeGananciaMinorista = 35;
+        PorcentajeGananciaMayorista = 0;
         AplicaItbis = true;
 
         CategoriaSeleccionada = null;

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Clientes;
 
 namespace PrimePOS.DAL.Seeds;
 
@@ -16,6 +16,7 @@ internal static class ClienteSeed
                 Documento = "0000000",
                 Estado = true,
                 TipoClienteId = 1,
+                TipoPrecioId = 1,
             });
     }
 }

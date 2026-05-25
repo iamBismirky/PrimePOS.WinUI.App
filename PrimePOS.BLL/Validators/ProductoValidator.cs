@@ -20,7 +20,7 @@ namespace PrimePOS.BLL.Validators
             if (dto.Existencia <= 0)
                 throw new BusinessException("La existencia no puede ser negativa.", StatusCodes.Status400BadRequest);
 
-            if (dto.PorcentajeGanancia < 0)
+            if (dto.PorcentajeGananciaMinorista < 0)
                 throw new BusinessException("El porcentaje de ganancia no puede ser negativo.", StatusCodes.Status400BadRequest);
 
             if (dto.ItbisPorcentaje < 0)
@@ -44,7 +44,7 @@ namespace PrimePOS.BLL.Validators
             if (dto.Existencia <= 0)
                 throw new BusinessException("La existencia no puede ser negativa.", StatusCodes.Status400BadRequest);
 
-            if (dto.PorcentajeGanancia < 0)
+            if (dto.PorcentajeGananciaMinorista < 0)
                 throw new BusinessException("El porcentaje de ganancia no puede ser negativo.", StatusCodes.Status400BadRequest);
 
             if (dto.ItbisPorcentaje < 0)

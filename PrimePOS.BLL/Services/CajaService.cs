@@ -2,7 +2,7 @@
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Caja;
 using PrimePOS.DAL.Interfaces;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Caja;
 
 namespace PrimePOS.BLL.Services
 {

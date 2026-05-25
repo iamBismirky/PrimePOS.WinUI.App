@@ -246,11 +246,12 @@
                         <StackPanel Spacing="15">
 
 
-                            <ComboBox Header="Tipo de Cliente" 
-                                      ItemsSource="{Binding TipoClientes}" 
-                                      SelectedItem="{Binding TipoClienteSeleccionado, Mode=TwoWay}" 
-                                      DisplayMemberPath="Tipo"
-                                      PlaceholderText="Seleccionar tipo de cliente"/>
+                            <ComboBox
+                                DisplayMemberPath="Tipo"
+                                Header="Tipo de Cliente"
+                                ItemsSource="{Binding TipoClientes}"
+                                SelectedIndex="1"
+                                SelectedItem="{Binding TipoClienteSeleccionado, Mode=TwoWay}" />
 
                         </StackPanel>
 

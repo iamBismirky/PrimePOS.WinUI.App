@@ -23,4 +23,8 @@
     <ProjectReference Include="..\PrimePOS.DAL\PrimePOS.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

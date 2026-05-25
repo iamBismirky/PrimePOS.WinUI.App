@@ -26,9 +26,7 @@ public class VentaController : ControllerBase
         var nombre = User.Identity!.Name;
         var ventaResponse = await _service.CrearVentaAsync(userId, nombre!, dto);
 
-        var urlPdf = $"{Request.Scheme}://{Request.Host}/facturas/{ventaResponse.FileName}";
-        ventaResponse.UrlPdf = urlPdf;
-        return Ok(new ApiResponse<VentaResponseDto>
+        return Ok(new ApiResponse<int>
         {
             Success = true,
             Data = ventaResponse,

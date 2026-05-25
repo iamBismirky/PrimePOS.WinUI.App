@@ -98,7 +98,7 @@ public class OverlayService
 
     public async Task<bool> ConfirmAsync(string title, string message)
     {
-        var vm = new DialogViewModel(title, message);
+        var vm = new DialogOverlayViewModel(title, message);
 
         var overlay = new DialogOverlay(vm);
 

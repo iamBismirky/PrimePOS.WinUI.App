@@ -1,4 +1,4 @@
-﻿using PrimePOS.ENTITIES.Models;
+﻿using PrimePOS.ENTITIES.Models.Ventas;
 
 namespace PrimePOS.DAL.Interfaces
 {

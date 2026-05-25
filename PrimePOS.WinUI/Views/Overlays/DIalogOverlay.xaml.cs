@@ -8,7 +8,7 @@ namespace PrimePOS.WinUI.Views.Overlays;
 
 public sealed partial class DialogOverlay : UserControl
 {
-    public DialogOverlay(DialogViewModel vm)
+    public DialogOverlay(DialogOverlayViewModel vm)
     {
         InitializeComponent();
         DataContext = vm;

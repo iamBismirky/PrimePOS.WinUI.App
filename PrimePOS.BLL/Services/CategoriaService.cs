@@ -2,7 +2,7 @@
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Categoria;
 using PrimePOS.DAL.Interfaces;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Inventario;
 
 namespace PrimePOS.BLL.Services;
 

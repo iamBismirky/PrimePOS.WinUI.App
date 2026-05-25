@@ -16,13 +16,14 @@ public static class DependencyInjection
             client.BaseAddress = new Uri("https://localhost:7096/");
         });
         //API Services
+        services.AddHttpClient<BaseApiService>();
+
         services.AddScoped<RolApiService>();
         services.AddScoped<CategoriaApiService>();
         services.AddScoped<CajaApiService>();
         services.AddScoped<ClienteApiService>();
         services.AddScoped<ProductoApiService>();
         services.AddScoped<UsuarioApiService>();
-        services.AddTransient<BaseApiService>();
         services.AddScoped<TurnoApiService>();
         services.AddScoped<FacturaApiService>();
         services.AddScoped<MetodoPagoApiService>();
@@ -30,9 +31,10 @@ public static class DependencyInjection
         services.AddScoped<CatalogApiService>();
 
         // ViewModels
-        services.AddTransient<RolViewModel>();
-        services.AddTransient<LoginOverlayViewModel>();
+
         services.AddSingleton<AppSesionViewModel>();
+
+        services.AddTransient<RolViewModel>();
         services.AddTransient<PerfilViewModel>();
         services.AddTransient<CajaViewModel>();
         services.AddTransient<CategoriaViewModel>();
@@ -41,21 +43,23 @@ public static class DependencyInjection
         services.AddTransient<ProductoViewModel>();
         services.AddTransient<UsuarioViewModel>();
         services.AddTransient<VentaViewModel>();
-        services.AddTransient<CobrarViewModel>();
-        services.AddTransient<AbrirTurnoViewModel>();
-        services.AddTransient<CerrarTurnoViewModel>();
         services.AddTransient<ReporVentaViewModel>();
         services.AddTransient<DashboardViewModel>();
-        services.AddTransient<DialogViewModel>();
 
         //Overlays
         services.AddTransient<ClienteOverlayViewModel>();
         services.AddTransient<UsuarioOverlayViewModel>();
-        services.AddTransient<RolOverlayViewModel>();
         services.AddTransient<ProductoOverlayViewModel>();
         services.AddTransient<CategoriaOverlayViewModel>();
         services.AddTransient<RolOverlayViewModel>();
+        services.AddTransient<LoginOverlayViewModel>();
         services.AddTransient<CajaOverlayViewModel>();
+        services.AddTransient<DialogOverlayViewModel>();
+        services.AddTransient<AbrirTurnoOverlayViewModel>();
+        services.AddTransient<CerrarTurnoOverlayViewModel>();
+        services.AddTransient<CobrarOverlayViewModel>();
+
+
 
 
         //Services

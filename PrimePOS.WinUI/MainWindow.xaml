@@ -178,54 +178,6 @@
                 Tapped="OverlayContainer_Tapped"
                 Visibility="Collapsed" />
 
-            <!--  PDF OVERLAY  -->
-            <Grid x:Name="PdfOverlay" Visibility="Collapsed">
-
-                <!--  FONDO  -->
-                <Grid
-                    Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
-                    Opacity="0.8"
-                    Tapped="PdfOverlay_Tapped" />
-
-                <!--  CONTENIDO  -->
-                <Border
-                    Width="1000"
-                    Height="750"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    CornerRadius="12">
-
-                    <Grid>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="50" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <!--  HEADER  -->
-                        <Grid Grid.Row="0" Padding="10">
-
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                FontWeight="SemiBold"
-                                Text="Vista previa PDF" />
-
-                            <Button
-                                HorizontalAlignment="Right"
-                                Click="CerrarPdf_Click"
-                                Content="X" />
-                        </Grid>
-
-                        <!--  WEBVIEW  -->
-                        <WebView2 x:Name="PdfWebView" Grid.Row="1" />
-
-                    </Grid>
-
-                </Border>
-
-            </Grid>
 
             <!--  INFOBAR OVERLAY  -->
             <Grid

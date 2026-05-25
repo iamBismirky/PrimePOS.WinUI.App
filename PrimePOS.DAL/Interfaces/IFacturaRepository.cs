@@ -1,4 +1,4 @@
-﻿using PrimePOS.ENTITIES.Models;
+﻿using PrimePOS.ENTITIES.Models.Factura;
 
 namespace PrimePOS.DAL.Interfaces
 {

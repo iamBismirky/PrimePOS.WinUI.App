@@ -2,7 +2,6 @@
 {
     public class CrearClienteDto
     {
-
         public string Codigo { get; set; } = string.Empty;
         public int TipoClienteId { get; set; }
         public string Nombre { get; set; } = string.Empty;

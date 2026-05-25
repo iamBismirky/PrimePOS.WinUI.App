@@ -4,7 +4,7 @@ using PrimePOS.BLL.Security;
 using PrimePOS.BLL.Validators;
 using PrimePOS.Contracts.DTOs.Usuario;
 using PrimePOS.DAL.Interfaces;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Seguridad;
 
 namespace PrimePOS.BLL.Services
 {

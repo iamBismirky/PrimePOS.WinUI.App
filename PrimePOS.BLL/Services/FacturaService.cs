@@ -1,11 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.BLL.Reportes;
 using PrimePOS.Contracts.DTOs.Factura;
 using PrimePOS.Contracts.DTOs.FacturaDetalle;
 using PrimePOS.DAL.Interfaces;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Factura;
+using PrimePOS.ENTITIES.Models.Ventas;
 using QuestPDF.Fluent;
 
 namespace PrimePOS.BLL.Services
@@ -15,16 +17,34 @@ namespace PrimePOS.BLL.Services
         private readonly IFacturaRepository _facturaRepository;
         private readonly IVentaRepository _ventaRepository;
         private readonly IConfiguration _config;
+        private readonly IHostEnvironment _env;
 
-        public FacturaService(IFacturaRepository repo, IVentaRepository ventaRepository, IConfiguration config)
+
+        public FacturaService(IFacturaRepository repo,
+            IVentaRepository ventaRepository,
+            IConfiguration config,
+            IHostEnvironment env)
         {
             _facturaRepository = repo;
             _ventaRepository = ventaRepository;
             _config = config;
+            _env = env;
         }
+        public async Task<FacturaGeneradaDto> GenerarFacturaDesdeVenta(int ventaId)
+        {
+            var factura = await CrearFactura(ventaId);
 
+            var facturaDto = MapearFactura(factura);
 
-        public async Task<(Factura factura, string pdfUrl)> GenerarFacturaDesdeVenta(int ventaId)
+            var pdfUrl = await GenerarPdf(facturaDto);
+
+            return new FacturaGeneradaDto
+            {
+                Factura = facturaDto,
+                PdfUrl = pdfUrl
+            };
+        }
+        public async Task<Factura> CrearFactura(int ventaId)
         {
             var venta = await _ventaRepository.ObtenerPorId(ventaId);
 
@@ -33,10 +53,9 @@ namespace PrimePOS.BLL.Services
 
             var factura = new Factura
             {
-                Detalles = new List<FacturaDetalle>(),
                 Fecha = DateTime.Now,
                 VentaId = venta.VentaId,
-                ClienteId = venta.ClienteId,
+                ClienteId = venta.ClienteId ?? 0,
                 ClienteNombre = venta.ClienteNombre,
                 UsuarioId = venta.UsuarioId,
                 UsuarioNombre = venta.UsuarioNombre,
@@ -47,8 +66,10 @@ namespace PrimePOS.BLL.Services
                 Total = venta.Total,
 
                 MetodoPago = venta.MetodoPago?.Nombre ?? "",
-                Efectivo = venta.MontoPagado,
-                Cambio = venta.Cambio
+                Efectivo = venta.MontoRecibido,
+                Cambio = venta.Cambio,
+
+                Detalles = new List<FacturaDetalle>()
             };
 
             foreach (var item in venta.Detalles)
@@ -69,30 +90,27 @@ namespace PrimePOS.BLL.Services
             factura.Numero = $"F-{factura.FacturaId:D6}";
             await _facturaRepository.GuardarCambiosAsync();
 
-            var facturaDto = MapearFactura(factura);
-            // PDF
-            var url = GenerarPdf(facturaDto);
-
-            return (factura, url);
+            return factura;
         }
-        private string GenerarPdf(FacturaDto factura)
+        private async Task<string> GenerarPdf(FacturaDto factura)
         {
-            var baseUrl = _config["App:BaseUrl"]; // ej: https://localhost:5001
-
-            var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "facturas");
+            var folder = Path.Combine(_env.ContentRootPath, "wwwroot", "facturas");
 
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
             var fileName = $"factura-{factura.Numero}.pdf";
+
             var path = Path.Combine(folder, fileName);
 
             var document = new Factura80mmDocument(factura);
+
             document.GeneratePdf(path);
+
+            var baseUrl = _config["App:BaseUrl"];
 
             return $"{baseUrl}/facturas/{fileName}";
         }
-
 
 
         public async Task AnularFactura(int facturaId)

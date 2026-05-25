@@ -18,6 +18,7 @@
 	  
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="PdfWindow.xaml" />
     <None Remove="Views\Overlays\CategoriaOverlay.xaml" />
     <None Remove="Views\Overlays\ClienteOverlay.xaml" />
     <None Remove="Views\Overlays\LoginOverlay.xaml" />
@@ -64,6 +65,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.7" />
     <PackageReference Include="Microsoft.VisualStudio.Utilities" Version="17.14.40264" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3967.48" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1839" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.0.1" />
     <PackageReference Include="QuestPDF" Version="2026.5.0" />
@@ -71,6 +73,11 @@
   <ItemGroup>
     <ProjectReference Include="..\PrimePOS.BLL\PrimePOS.BLL.csproj" />
     <ProjectReference Include="..\PrimePOS.Contracts\PrimePOS.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="PdfWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\Overlays\LoginOverlay.xaml">
@@ -99,6 +106,11 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\Overlays\CajaOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\PDFViewer\PdfOverlay.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

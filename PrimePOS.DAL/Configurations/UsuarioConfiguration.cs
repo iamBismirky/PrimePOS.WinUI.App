@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Seguridad;
 
 namespace PrimePOS.DAL.Configurations;
 

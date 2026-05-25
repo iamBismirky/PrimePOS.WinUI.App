@@ -4,8 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Loaded="Page_Loaded">
 
-    <Grid Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
-          Opacity="0.8">
+    <Grid Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}" Opacity="0.8">
 
         <Border
             Width="950"
@@ -59,8 +58,12 @@
                                 <TextBlock
                                     FontSize="20"
                                     FontWeight="Bold"
-                                    Text="{Binding Venta.ClienteNombre}" />
-                                
+                                    Text="{Binding ClienteSeleccionado.Nombre}" />
+                                <TextBlock
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Text="{Binding ClienteSeleccionado.Tipo}" />
+
 
                             </StackPanel>
 
@@ -102,9 +105,10 @@
                                     Opacity="0.7"
                                     Text="Tipo Venta" />
 
-                                <ComboBox ItemsSource="{Binding TiposVenta}"
-                                          SelectedItem="{Binding TipoVentaSeleccionado, Mode=TwoWay}" 
-                                          DisplayMemberPath="Tipo"/>
+                                <ComboBox
+                                    DisplayMemberPath="Tipo"
+                                    ItemsSource="{Binding TiposVenta}"
+                                    SelectedItem="{Binding TipoVentaSeleccionado, Mode=TwoWay}" />
 
                             </StackPanel>
 

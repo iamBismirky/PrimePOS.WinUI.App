@@ -3,17 +3,19 @@ using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.DAL.Interfaces;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Clientes;
 
 namespace PrimePOS.BLL.Services;
 
 public class ClienteService : IClienteService
 {
     private readonly IClienteRepository _clienteRepository;
+    private readonly ICatalogRepository _catalogRepo;
 
-    public ClienteService(IClienteRepository clienteRepository)
+    public ClienteService(IClienteRepository clienteRepository, ICatalogRepository catalogRepo)
     {
         _clienteRepository = clienteRepository;
+        _catalogRepo = catalogRepo;
     }
 
     public async Task CrearClienteAsync(CrearClienteDto dto)
@@ -24,6 +26,14 @@ public class ClienteService : IClienteService
         if (string.IsNullOrWhiteSpace(dto.Documento))
             throw new BusinessException("El documento del cliente es obligatorio.", StatusCodes.Status400BadRequest);
 
+        if (dto.TipoClienteId <= 0)
+            throw new BusinessException("El tipo de cliente es obligatorio.", StatusCodes.Status400BadRequest);
+
+        var tipoCliente = await _catalogRepo.ObtenerTipoPrecioAsync(dto.TipoClienteId);
+
+        if (tipoCliente == null)
+            throw new BusinessException("Tipo de cliente inválido", StatusCodes.Status400BadRequest);
+
         var cliente = new Cliente
         {
             Nombre = dto.Nombre,
@@ -33,7 +43,9 @@ public class ClienteService : IClienteService
             Direccion = dto.Direccion,
             Estado = dto.Estado,
             FechaRegistro = DateTime.Now,
-            TipoClienteId = dto.TipoClienteId
+            TipoClienteId = dto.TipoClienteId,
+            TipoPrecioId = tipoCliente.TipoPrecioId,
+
         };
 
         _clienteRepository.Crear(cliente);
@@ -58,6 +70,11 @@ public class ClienteService : IClienteService
         if (cliente == null)
             throw new BusinessException("Cliente no encontrado.", StatusCodes.Status404NotFound);
 
+        var tipoCliente = await _catalogRepo.ObtenerTipoPrecioAsync(dto.TipoClienteId);
+
+        if (tipoCliente == null)
+            throw new BusinessException("Tipo de cliente inválido", StatusCodes.Status400BadRequest);
+
         cliente.Nombre = dto.Nombre;
         cliente.Documento = dto.Documento;
         cliente.Direccion = dto.Direccion;
@@ -65,6 +82,7 @@ public class ClienteService : IClienteService
         cliente.Telefono = dto.Telefono;
         cliente.Estado = dto.Estado;
         cliente.TipoClienteId = dto.TipoClienteId;
+        cliente.TipoPrecioId = tipoCliente.TipoPrecioId;
 
         _clienteRepository.Actualizar(cliente);
         await _clienteRepository.GuardarCambiosAsync();
@@ -109,7 +127,8 @@ public class ClienteService : IClienteService
             Telefono = c.Telefono,
             Estado = c.Estado,
             TipoClienteId = c.TipoClienteId,
-            Tipo = c.TipoCliente?.Tipo ?? "",
+            TipoPrecioId = c.TipoPrecioId,
+            Tipo = c.TipoCliente?.Nombre ?? "",
             FechaRegistro = c.FechaRegistro,
         }).ToList();
     }
@@ -132,7 +151,9 @@ public class ClienteService : IClienteService
             Telefono = cliente.Telefono,
             Estado = cliente.Estado,
             FechaRegistro = cliente.FechaRegistro,
-            TipoClienteId = cliente.TipoClienteId
+            TipoClienteId = cliente.TipoClienteId,
+            TipoPrecioId = cliente.TipoPrecioId,
+            Tipo = cliente.TipoCliente?.Nombre ?? "",
         };
     }
 
@@ -158,7 +179,8 @@ public class ClienteService : IClienteService
             Nombre = c.Nombre,
             Documento = c.Documento,
             TipoClienteId = c.TipoClienteId,
-            Tipo = c.TipoCliente?.Tipo ?? "",
+            Tipo = c.TipoCliente?.Nombre ?? "",
+            TipoPrecioId = c.TipoPrecioId,
 
         }).ToList();
     }

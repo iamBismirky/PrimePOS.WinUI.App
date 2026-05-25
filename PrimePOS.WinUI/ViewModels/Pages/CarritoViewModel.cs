@@ -10,6 +10,9 @@ public partial class CarritoViewModel : ObservableObject
 
     public string Codigo { get; set; } = string.Empty;
 
+    public decimal PrecioMinoristaBase { get; set; }
+    public decimal PrecioMayoristaBase { get; set; }
+
     [ObservableProperty]
     private int cantidad;
 
@@ -22,7 +25,7 @@ public partial class CarritoViewModel : ObservableObject
 
     public decimal Subtotal => Cantidad * Precio;
 
-
+    public bool AplicaItbis => ItbisUnitario > 0;
     public decimal Itbis => Cantidad * ItbisUnitario;
 
     public decimal Total => Subtotal + Itbis;
@@ -42,7 +45,7 @@ public partial class CarritoViewModel : ObservableObject
         NotificarTotales();
     }
 
-    private void NotificarTotales()
+    public void NotificarTotales()
     {
         OnPropertyChanged(nameof(Subtotal));
         OnPropertyChanged(nameof(Itbis));

@@ -1,13 +1,15 @@
 ﻿using PrimePOS.Contracts.DTOs.Factura;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Factura;
 
 namespace PrimePOS.BLL.Interfaces
 {
     public interface IFacturaService
     {
-        Task<(Factura factura, string pdfUrl)> GenerarFacturaDesdeVenta(int ventaId);
+
 
         Task AnularFactura(int facturaId);
         FacturaDto MapearFactura(Factura factura);
+        Task<Factura> CrearFactura(int ventaId);
+        Task<FacturaGeneradaDto> GenerarFacturaDesdeVenta(int ventaId);
     }
 }

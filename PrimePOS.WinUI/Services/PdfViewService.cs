@@ -4,29 +4,22 @@ namespace PrimePOS.WinUI.Services
 {
     public class PdfViewService
     {
-
-        private readonly MainWindow _mainWindow;
-
-        public PdfViewService(MainWindow mainWindow)
+        public async Task MostrarFacturaAsync(string url)
         {
-            _mainWindow = mainWindow;
+            var window = new PdfWindow();
+
+            await window.LoadUrlAsync(url);
+
+            window.Activate();
         }
 
-        public Task MostrarFacturaAsync(string url)
+        public async Task MostrarEtiquetaPdfAsync(byte[] pdfBytes)
         {
-            _mainWindow.ShowPdf(url);
-            return Task.CompletedTask;
-        }
+            var window = new PdfWindow();
 
-        public Task MostrarEtiquetaPdfAsync(byte[] pdfBytes)
-        {
-            _mainWindow.ShowPdfBytes(pdfBytes);
-            return Task.CompletedTask;
-        }
+            await window.LoadBytesAsync(pdfBytes);
 
-        public void Cerrar()
-        {
-            _mainWindow.HidePdf();
+            window.Activate();
         }
     }
 }

@@ -13,13 +13,13 @@ public class FacturaApiService : BaseApiService
     }
 
     // 🔹 GENERAR FACTURA
-    public Task<ApiResponse<FacturaDto>> GenerarFacturaAsync(int ventaId)
+    public Task<ApiResponse<FacturaGeneradaDto>> GenerarFacturaAsync(int ventaId)
     {
         var request = new HttpRequestMessage(
             HttpMethod.Post,
             $"api/factura/generar/{ventaId}");
 
-        return SendAsync<FacturaDto>(request);
+        return SendAsync<FacturaGeneradaDto>(request);
     }
 
     // 🔹 ANULAR FACTURA

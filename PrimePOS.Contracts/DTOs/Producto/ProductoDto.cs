@@ -1,6 +1,4 @@
-﻿using PrimePOS.Contracts.DTOs.Categoria;
-
-namespace PrimePOS.Contracts.DTOs.Producto
+﻿namespace PrimePOS.Contracts.DTOs.Producto
 {
     public class ProductoDto
     {
@@ -14,12 +12,15 @@ namespace PrimePOS.Contracts.DTOs.Producto
         public decimal PrecioCompra { get; set; }
         public decimal PrecioMinorista { get; set; }
         public decimal PrecioMayorista { get; set; }
+        public decimal PorcentajeGananciaMinorista { get; set; }
+        public decimal PorcentajeGananciaMayorista { get; set; }
         public bool AplicaItbis { get; set; }
-        public decimal Itbis { get; set; }
+        public decimal ItbisPorcentaje { get; set; }
+        public decimal ItbisMinorista { get; set; }
+        public decimal ItbisMayorista { get; set; }
         public int Existencia { get; set; }
         public int ExistenciaMinimo { get; set; }
         public bool Estado { get; set; }
         public DateTime FechaRegistro { get; set; }
-        public CategoriaDto? Categoria { get; set; }
     }
 }

@@ -24,7 +24,7 @@ namespace PrimePOS.BLL.Services
             return tipos.Select(m => new TipoClienteDto
             {
                 TipoClienteId = m.TipoClienteId,
-                Tipo = m.Tipo,
+                Tipo = m.Nombre,
 
             }).ToList();
         }
@@ -37,7 +37,7 @@ namespace PrimePOS.BLL.Services
             return tipos.Select(m => new TipoVentaDto
             {
                 TipoVentaId = m.TipoVentaId,
-                Tipo = m.Tipo,
+                Tipo = m.Nombre,
 
             }).ToList();
         }

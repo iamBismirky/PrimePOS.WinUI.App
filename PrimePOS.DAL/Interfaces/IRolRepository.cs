@@ -1,4 +1,4 @@
-﻿using PrimePOS.ENTITIES.Models;
+﻿using PrimePOS.ENTITIES.Models.Seguridad;
 
 namespace PrimePOS.DAL.Interfaces
 {

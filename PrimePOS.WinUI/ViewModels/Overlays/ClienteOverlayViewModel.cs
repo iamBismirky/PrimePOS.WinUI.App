@@ -115,7 +115,7 @@ public partial class ClienteOverlayViewModel : ObservableObject, IOverlayViewMod
                     Telefono = Telefono,
                     Direccion = Direccion,
                     Estado = Estado,
-                    TipoClienteId = TipoClienteSeleccionado?.TipoClienteId ?? 0
+                    TipoClienteId = TipoClienteSeleccionado!.TipoClienteId
 
                 });
 
@@ -141,7 +141,7 @@ public partial class ClienteOverlayViewModel : ObservableObject, IOverlayViewMod
                     Telefono = Telefono,
                     Direccion = Direccion,
                     Estado = Estado,
-                    TipoClienteId = TipoClienteSeleccionado?.TipoClienteId ?? 0
+                    TipoClienteId = TipoClienteSeleccionado!.TipoClienteId
                 };
                 Cliente.Nombre = Nombre;
                 Cliente.Documento = Documento;
@@ -149,7 +149,7 @@ public partial class ClienteOverlayViewModel : ObservableObject, IOverlayViewMod
                 Cliente.Telefono = Telefono;
                 Cliente.Direccion = Direccion;
                 Cliente.Estado = Estado;
-                Cliente.TipoClienteId = TipoClienteSeleccionado?.TipoClienteId ?? 0;
+                Cliente.TipoClienteId = TipoClienteSeleccionado!.TipoClienteId;
 
                 var result = await _api.ActualizarClienteAsync(Cliente.ClienteId, dto);
 

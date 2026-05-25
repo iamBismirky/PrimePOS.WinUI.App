@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.Contracts.DTOs.Producto;
 using PrimePOS.Contracts.DTOs.Venta;
-using PrimePOS.Contracts.DTOs.VentaDetalle;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using PrimePOS.WinUI.ViewModels.Pages;
@@ -23,10 +22,11 @@ public partial class VentaViewModel : ObservableObject
     private readonly ClienteApiService _clienteApi;
     private readonly TurnoApiService _turnoApi;
     private readonly VentaApiService _ventaApi;
-    private readonly FacturaApiService _facturaApi;
+    private readonly FacturaApiService _apiFactura;
     private readonly NotificationService _notify;
     private readonly AppSesionViewModel _sesion;
     private readonly OverlayService _overlayService;
+    private readonly PdfViewService _pdfService;
     public AppSesionViewModel AppSesion => _sesion;
 
     public VentaViewModel(
@@ -39,16 +39,18 @@ public partial class VentaViewModel : ObservableObject
         FacturaApiService facturaApi,
         NotificationService notify,
         AppSesionViewModel sesion,
-        OverlayService overlay)
+        OverlayService overlay,
+        PdfViewService pdfService)
     {
         _productoApi = productoApi;
         _clienteApi = clienteApi;
         _turnoApi = turnoApi;
         _ventaApi = ventaApi;
-        _facturaApi = facturaApi;
+        _apiFactura = facturaApi;
         _notify = notify;
         _sesion = sesion;
         _overlayService = overlay;
+        _pdfService = pdfService;
     }
 
 
@@ -66,11 +68,11 @@ public partial class VentaViewModel : ObservableObject
     [ObservableProperty] public bool isLoading;
 
     private ClienteDto? _consumidorFinal;
-
     public decimal Subtotal => Carrito.Sum(x => x.Subtotal);
     public decimal Impuesto => Carrito.Sum(x => x.Itbis);
     public decimal Total => Subtotal + Impuesto;
 
+    public int? TipoPrecioId { get; set; }
 
 
     private void NotificarTotales()
@@ -106,8 +108,6 @@ public partial class VentaViewModel : ObservableObject
             await AbrirTurnoAsync();
         }
     }
-
-
 
     private async Task CargarConsumidorFinalAsync()
     {
@@ -170,7 +170,94 @@ public partial class VentaViewModel : ObservableObject
         Productos.Clear();
     }
 
+    public async Task AgregarProductoCarritoAsync(ProductoDto dto)
+    {
+        var existente =
+            Carrito.FirstOrDefault(p =>
+                p.ProductoId == dto.ProductoId);
 
+        if (dto.Existencia <= 0)
+        {
+            _notify.Warning($"No hay stock disponible de {dto.Nombre}");
+            return;
+        }
+
+        if (dto.Existencia <= 5)
+        {
+            _notify.Warning($"Inventario bajo de {dto.Nombre} - Existen {dto.Existencia}");
+        }
+
+        if (!dto.Estado)
+        {
+            _notify.Warning($"El producto {dto.Nombre} está inactivo y no se puede vender");
+            return;
+        }
+
+        decimal precio = ObtenerPrecio(dto);
+        decimal itbisUnitario = ObtenerItbis(dto);
+
+        if (existente != null)
+        {
+            existente.Cantidad++;
+        }
+        else
+        {
+            Carrito.Add(new CarritoViewModel
+            {
+                Codigo = dto.Codigo,
+                ProductoId = dto.ProductoId,
+                Nombre = dto.Nombre,
+                Cantidad = 1,
+
+                PrecioMinoristaBase = dto.PrecioMinorista,
+                PrecioMayoristaBase = dto.PrecioMayorista,
+
+                Precio = ClienteSeleccionado?.TipoPrecioId == 2
+                                ? dto.PrecioMayorista
+                                : dto.PrecioMinorista,
+
+                ItbisUnitario = dto.ItbisMinorista
+            });
+        }
+
+        NotificarTotales();
+    }
+    private decimal ObtenerPrecio(ProductoDto dto)
+    {
+        return ClienteSeleccionado?.TipoPrecioId == 2
+            ? dto.PrecioMayorista
+            : dto.PrecioMinorista;
+    }
+    private decimal ObtenerItbis(ProductoDto dto)
+    {
+        return ClienteSeleccionado?.TipoPrecioId == 2
+            ? dto.ItbisMayorista
+            : dto.ItbisMinorista;
+    }
+    [RelayCommand]
+    public void EliminarProducto(CarritoViewModel item)
+    {
+        if (item == null) return;
+
+        Carrito.Remove(item);
+        NotificarTotales();
+    }
+    private void AplicarTipoPrecioAlCarrito()
+    {
+        if (ClienteSeleccionado == null)
+            return;
+
+        foreach (var item in Carrito)
+        {
+            item.Precio = ClienteSeleccionado.TipoPrecioId == 2
+                ? item.PrecioMayoristaBase
+                : item.PrecioMinoristaBase;
+
+            item.NotificarTotales();
+        }
+
+        NotificarTotales();
+    }
 
     [RelayCommand]
     public async Task BuscarClientesAsync()
@@ -192,75 +279,25 @@ public partial class VentaViewModel : ObservableObject
     {
         ClienteSeleccionado = cliente;
         TextoCliente = "";
-        Carrito.Clear();
+
+        AplicarTipoPrecioAlCarrito();
+        _notify.Warning($"Tipo de venta {ClienteSeleccionado.Tipo}");
     }
-
-
-
-    public async Task AgregarProductoCarritoAsync(ProductoDto dto)
-    {
-        var existente =
-            Carrito.FirstOrDefault(p =>
-                p.ProductoId == dto.ProductoId);
-
-        if (dto.Existencia <= 0)
-        {
-            _notify.Warning(
-                $"No hay stock disponible de {dto.Nombre}");
-
-            return;
-        }
-
-        if (dto.Existencia <= 5)
-        {
-            _notify.Warning(
-                $"Inventario bajo de {dto.Nombre} - Existen {dto.Existencia}");
-        }
-
-        if (!dto.Estado)
-        {
-            _notify.Warning(
-                $"El producto {dto.Nombre} está inactivo y no se puede vender");
-
-            return;
-        }
-
-
-        decimal precio =
-            ClienteSeleccionado?.TipoClienteId == 1
-                ? dto.PrecioMinorista
-                : dto.PrecioMayorista;
-
-
-
-        if (existente != null)
-        {
-            existente.Cantidad++;
-        }
-        else
-        {
-            Carrito.Add(new CarritoViewModel
-            {
-                Codigo = dto.Codigo,
-                ProductoId = dto.ProductoId,
-                Nombre = dto.Nombre,
-                Precio = precio,
-                ItbisUnitario = dto.Itbis,
-                Cantidad = 1
-            });
-        }
-
-        NotificarTotales();
-    }
-
     [RelayCommand]
-    public void EliminarProducto(CarritoViewModel item)
+    public async Task NuevoClienteAsync()
     {
-        if (item == null) return;
-
-        Carrito.Remove(item);
-        NotificarTotales();
+        var vm = App.Services.GetRequiredService<ClienteOverlayViewModel>();
+        await vm.InicializeAsync(null);
+        var overlay = new ClienteOverlay(vm);
+        var result = await _overlayService.ShowAsync(overlay, vm);
+        if (!result)
+            return;
     }
+
+
+
+
+
 
     [RelayCommand]
     private async Task LimpiarAsync()
@@ -289,13 +326,14 @@ public partial class VentaViewModel : ObservableObject
                 "Debe abrir un turno para continuar");
         }
 
-        var vm = App.Services.GetRequiredService<AbrirTurnoViewModel>();
+        var vm = App.Services.GetRequiredService<AbrirTurnoOverlayViewModel>();
         await vm.InicializarAsync();
         var overlay = new AbrirTurnoOverlay(vm);
         var result = await _overlayService.ShowAsync(overlay, vm);
         if (!result)
             return;
 
+        await CargarConsumidorFinalAsync();
 
     }
     [RelayCommand]
@@ -313,24 +351,25 @@ public partial class VentaViewModel : ObservableObject
             return;
         }
 
-        var dto = new CrearVentaDto
+        var dto = new CobroVentaDto
         {
-            ClienteId = ClienteSeleccionado!.ClienteId,
-            ClienteNombre = ClienteSeleccionado.Nombre,
-            TurnoId = _sesion.TurnoActual!.TurnoId,
+            Cliente = ClienteSeleccionado,
             Subtotal = Subtotal,
             Impuesto = Impuesto,
             Total = Total,
-            Items = Carrito.Select(x => new VentaDetalleDto
+            Items = Carrito.Select(x => new CarritoItemDto
             {
-                Codigo = x.Codigo,
                 ProductoId = x.ProductoId,
+                Nombre = x.Nombre,
+                Codigo = x.Codigo,
                 Cantidad = x.Cantidad,
-                PrecioUnitario = x.Precio,
-                Total = x.Total
-            }).ToList()
+                Precio = x.Precio,
+                ItbisUnitario = x.ItbisUnitario,
+
+            })
+        .ToList()
         };
-        var vm = App.Services.GetRequiredService<CobrarViewModel>();
+        var vm = App.Services.GetRequiredService<CobrarOverlayViewModel>();
         await vm.InicializarAsync(dto);
         var overlay = new CobrarOverlay(vm);
         var result = await _overlayService.ShowAsync(overlay, vm);
@@ -340,7 +379,16 @@ public partial class VentaViewModel : ObservableObject
         if (result)
         {
             Carrito.Clear();
+            ClienteSeleccionado = _consumidorFinal;
             NotificarTotales();
+
+            var facturaResult =
+                    await _apiFactura.GenerarFacturaAsync(vm.VentaIdGenerada);
+
+            if (facturaResult.Success)
+            {
+                await _pdfService.MostrarFacturaAsync(facturaResult.Data.PdfUrl);
+            }
 
         }
 
@@ -356,7 +404,7 @@ public partial class VentaViewModel : ObservableObject
                 "Debe abrir un turno para continuar");
             return;
         }
-        var vm = App.Services.GetRequiredService<CerrarTurnoViewModel>();
+        var vm = App.Services.GetRequiredService<CerrarTurnoOverlayViewModel>();
         await vm.InicializarAsync();
         var overlay = new CerrarTurnoOverlay(vm);
         var result = await _overlayService.ShowAsync(overlay, vm);
@@ -367,14 +415,7 @@ public partial class VentaViewModel : ObservableObject
 
 
 
-    [RelayCommand]
-    public async Task NuevoClienteAsync()
-    {
-        var vm = App.Services.GetRequiredService<ClienteOverlayViewModel>();
-        await vm.InicializeAsync(null);
-        var overlay = new ClienteOverlay(vm);
-        var result = await _overlayService.ShowAsync(overlay, vm);
-        if (!result)
-            return;
-    }
+
+
+
 }

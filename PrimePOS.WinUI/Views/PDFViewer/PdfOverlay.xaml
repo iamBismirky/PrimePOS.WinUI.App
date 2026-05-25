@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="PrimePOS.WinUI.Views.PDFViewer.PdfOverlay"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:PrimePOS.WinUI.Views.PDFViewer"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!--  PDF OVERLAY  -->
+    <Grid>
+
+        <!--  FONDO  -->
+        <Grid
+            Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+            Opacity="0.8" />
+
+        <!--  CONTENIDO  -->
+        <Border
+            Width="1000"
+            Height="750"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            CornerRadius="12">
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--  HEADER  -->
+                <Grid Grid.Row="0" Padding="10">
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="Vista previa PDF" />
+
+                    <Button Command="{Binding CerrarCommand}"
+                        HorizontalAlignment="Right"
+                        
+                        Content="X" />
+                </Grid>
+
+                <!--  WEBVIEW  -->
+                <WebView2 x:Name="PdfViewer" Grid.Row="1" />
+
+            </Grid>
+
+        </Border>
+
+    </Grid>
+
+</UserControl>

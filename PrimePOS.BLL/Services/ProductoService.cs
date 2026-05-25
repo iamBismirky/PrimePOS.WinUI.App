@@ -34,18 +34,16 @@ public class ProductoService : IProductoService
             Descripcion = dto.Descripcion,
             CategoriaId = dto.CategoriaId,
             PrecioCompra = dto.PrecioCompra,
-            PrecioMinorista = dto.PrecioVenta,
-            PrecioMayorista = dto.PrecioVentaMayorista,
-            PorcentajeGanancia = dto.PorcentajeGanancia,
+            PorcentajeGananciaMinorista = dto.PorcentajeGananciaMinorista,
+            PorcentajeGananciaMayorista = dto.PorcentajeGananciaMayorista,
             AplicaItbis = dto.AplicaItbis,
             ItbisPorcentaje = dto.ItbisPorcentaje,
-            Itbis = dto.ItbisMonto,
             Existencia = dto.Existencia,
             Estado = dto.Estado,
             FechaRegistro = DateTime.Now,
         };
 
-        RecalcularPrecios(producto);
+        RecalcularPrecios(producto, dto.ItbisPorcentaje);
 
         _productoRepository.Crear(producto);
         await _productoRepository.GuardarCambiosAsync();
@@ -70,16 +68,14 @@ public class ProductoService : IProductoService
         producto.Descripcion = dto.Descripcion;
         producto.CategoriaId = dto.CategoriaId;
         producto.PrecioCompra = dto.PrecioCompra;
-        producto.PrecioMinorista = dto.PrecioMinorista;
-        producto.PrecioMayorista = dto.PrecioMayorista;
-        producto.PorcentajeGanancia = dto.PorcentajeGanancia;
+        producto.PorcentajeGananciaMinorista = dto.PorcentajeGananciaMinorista;
+        producto.PorcentajeGananciaMayorista = dto.PorcentajeGananciaMayorista;
         producto.AplicaItbis = dto.AplicaItbis;
         producto.ItbisPorcentaje = dto.ItbisPorcentaje;
-        producto.Itbis = dto.ItbisMonto;
         producto.Existencia = dto.Existencia;
         producto.Estado = dto.Estado;
 
-        RecalcularPrecios(producto);
+        RecalcularPrecios(producto, dto.ItbisPorcentaje);
 
         _productoRepository.Actualizar(producto);
         await _productoRepository.GuardarCambiosAsync();
@@ -92,7 +88,7 @@ public class ProductoService : IProductoService
         var producto = await _productoRepository.ObtenerPorIdAsync(productoId);
 
         if (producto == null)
-            throw new BusinessException("El producto no existe.", 404);
+            throw new BusinessException("El producto no existe.", StatusCodes.Status404NotFound);
 
         _productoRepository.Eliminar(producto);
         await _productoRepository.GuardarCambiosAsync();
@@ -105,7 +101,7 @@ public class ProductoService : IProductoService
         var producto = await _productoRepository.ObtenerPorIdAsync(productoId);
 
         if (producto == null)
-            throw new BusinessException("El producto no existe.", 404);
+            throw new BusinessException("El producto no existe.", StatusCodes.Status404NotFound);
 
         producto.Estado = false;
 
@@ -133,9 +129,13 @@ public class ProductoService : IProductoService
             PrecioCompra = producto.PrecioCompra,
             PrecioMinorista = producto.PrecioMinorista,
             PrecioMayorista = producto.PrecioMayorista,
+            PorcentajeGananciaMinorista = producto.PorcentajeGananciaMinorista,
+            PorcentajeGananciaMayorista = producto.PorcentajeGananciaMayorista,
             Existencia = producto.Existencia,
             Estado = producto.Estado,
             FechaRegistro = producto.FechaRegistro,
+            ItbisPorcentaje = producto.ItbisPorcentaje,
+            AplicaItbis = producto.AplicaItbis
         };
     }
 
@@ -155,10 +155,13 @@ public class ProductoService : IProductoService
             PrecioCompra = p.PrecioCompra,
             PrecioMinorista = p.PrecioMinorista,
             PrecioMayorista = p.PrecioMayorista,
+            PorcentajeGananciaMinorista = p.PorcentajeGananciaMinorista,
+            PorcentajeGananciaMayorista = p.PorcentajeGananciaMayorista,
             Existencia = p.Existencia,
             Estado = p.Estado,
             FechaRegistro = p.FechaRegistro,
-            Itbis = p.Itbis
+            ItbisPorcentaje = p.ItbisPorcentaje,
+            AplicaItbis = p.AplicaItbis
         }).ToList();
     }
 
@@ -172,46 +175,62 @@ public class ProductoService : IProductoService
             return new List<ProductoDto>();
 
         var productos = await _productoRepository.BuscarAsync(texto);
+
         if (productos == null)
-            throw new BusinessException("Producto no encontrado.", StatusCodes.Status404NotFound);
+            throw new BusinessException(
+                "Producto no encontrado.",
+                StatusCodes.Status404NotFound);
 
-        return productos.Select(p => new ProductoDto
+        return productos.Select(p =>
         {
-            ProductoId = p.ProductoId,
-            Codigo = p.Codigo,
-            Nombre = p.Nombre,
-            PrecioMinorista = p.PrecioMinorista,
-            PrecioMayorista = p.PrecioMayorista,
-            AplicaItbis = p.AplicaItbis,
-            Itbis = p.Itbis,
-            Existencia = p.Existencia,
-            Estado = p.Estado
+            var itbisMinorista =
+                p.AplicaItbis
+                    ? p.PrecioMinorista * (p.ItbisPorcentaje / 100m)
+                    : 0m;
 
+            var itbisMayorista =
+                p.AplicaItbis
+                    ? p.PrecioMayorista * (p.ItbisPorcentaje / 100m)
+                    : 0m;
 
+            return new ProductoDto
+            {
+                ProductoId = p.ProductoId,
+                Codigo = p.Codigo,
+                Nombre = p.Nombre,
+
+                PrecioMinorista = p.PrecioMinorista,
+                PrecioMayorista = p.PrecioMayorista,
+
+                AplicaItbis = p.AplicaItbis,
+                ItbisPorcentaje = p.ItbisPorcentaje,
+
+                ItbisMinorista = itbisMinorista,
+                ItbisMayorista = itbisMayorista,
+
+                Existencia = p.Existencia,
+                Estado = p.Estado
+            };
         }).ToList();
     }
 
-    private void RecalcularPrecios(Producto producto)
+    private void RecalcularPrecios(Producto producto, decimal itbisPorcentaje)
     {
         var compra = producto.PrecioCompra;
+
+        var itbisRate = itbisPorcentaje / 100m;
 
         // =========================
         // MINORISTA
         // =========================
 
-        var porcentajeMinorista =
-            producto.PorcentajeGanancia;
-
         var precioBaseMinorista =
-            compra + (compra * porcentajeMinorista / 100m);
+            compra + (compra * producto.PorcentajeGananciaMinorista / 100m);
 
         var itbisMinorista =
             producto.AplicaItbis
-                ? precioBaseMinorista *
-                  (producto.ItbisPorcentaje / 100m)
+                ? precioBaseMinorista * itbisRate
                 : 0m;
-
-        producto.Itbis = itbisMinorista;
 
         producto.PrecioMinorista =
             precioBaseMinorista + itbisMinorista;
@@ -220,16 +239,12 @@ public class ProductoService : IProductoService
         // MAYORISTA
         // =========================
 
-        var porcentajeMayorista =
-            porcentajeMinorista / 2m;
-
         var precioBaseMayorista =
-            compra + (compra * porcentajeMayorista / 100m);
+            compra + (compra * producto.PorcentajeGananciaMayorista / 100m);
 
         var itbisMayorista =
             producto.AplicaItbis
-                ? precioBaseMayorista *
-                  (producto.ItbisPorcentaje / 100m)
+                ? precioBaseMayorista * itbisRate
                 : 0m;
 
         producto.PrecioMayorista =

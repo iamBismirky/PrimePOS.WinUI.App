@@ -153,7 +153,7 @@
                     <!--  =================================================  -->
                     <!--  ================= CONFIG ========================  -->
                     <!--  =================================================  -->
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1">
+                    <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
 
                         <Border
                             Grid.Column="1"
@@ -181,9 +181,13 @@
                                     Value="{Binding Existencia, Mode=TwoWay}" />
 
                                 <TextBox
-                                    Header="Ganancia %"
+                                    Header="Ganancia Minorista %"
                                     IsEnabled="{Binding PrecioAutomatico, Converter={StaticResource InverseBooleanConverter}}"
-                                    Text="{Binding PorcentajeGanancia, Mode=TwoWay, Converter={StaticResource DecimalToStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                    Text="{Binding PorcentajeGananciaMinorista, Mode=TwoWay, Converter={StaticResource DecimalToStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox
+                                    Header="Ganancia Mayorista %"
+                                    IsEnabled="{Binding PrecioAutomatico, Converter={StaticResource InverseBooleanConverter}}"
+                                    Text="{Binding PorcentajeGananciaMayorista, Mode=TwoWay, Converter={StaticResource DecimalToStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <Border
                                     Padding="10"
@@ -312,7 +316,7 @@
                                     Grid.Column="1"
                                     FontWeight="SemiBold">
 
-                                    <Run Text="{Binding PorcentajeGanancia}" />
+                                    <Run Text="{Binding PorcentajeGananciaMinorista}" />
                                     <Run Text="%" />
 
                                 </TextBlock>
@@ -425,7 +429,7 @@
                                     Grid.Column="1"
                                     FontWeight="SemiBold">
 
-                                    <Run Text="{Binding PorcentajeMayoristaCalculado}" />
+                                    <Run Text="{Binding PorcentajeGananciaMayorista}" />
                                     <Run Text="%" />
 
                                 </TextBlock>

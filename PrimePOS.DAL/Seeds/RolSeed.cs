@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PrimePOS.ENTITIES.Models;
+using PrimePOS.ENTITIES.Models.Seguridad;
 
 namespace PrimePOS.DAL.Seeds;
 

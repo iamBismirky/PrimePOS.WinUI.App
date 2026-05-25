@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.Common;
+using PrimePOS.Contracts.DTOs.Factura;
 
 namespace PrimePOS.API.Controllers;
 
@@ -16,21 +17,20 @@ public class FacturaController : ControllerBase
         _service = service;
     }
 
-    //// 🔹 GENERAR FACTURA DESDE VENTA
-    //[HttpPost("generar/{ventaId}")]
-    //public async Task<IActionResult> GenerarFacturaAsync(int ventaId)
-    //{
-    //    var factura = await _service.GenerarFacturaDesdeVenta(ventaId);
+    // 🔹 GENERAR FACTURA DESDE VENTA
+    [HttpPost("generar/{ventaId}")]
+    public async Task<IActionResult> GenerarFacturaAsync(int ventaId)
+    {
+        var result = await _service.GenerarFacturaDesdeVenta(ventaId);
 
-    //    var dto = _service.MapearFactura(factura);
+        return Ok(new ApiResponse<FacturaGeneradaDto>
+        {
+            Success = true,
+            Message = "Factura generada correctamente",
+            Data = result
 
-    //    return Ok(new ApiResponse<FacturaDto>
-    //    {
-    //        Success = true,
-    //        Data = dto,
-    //        Message = "Factura generada correctamente"
-    //    });
-    //}
+        });
+    }
 
     // 🔹 ANULAR FACTURA
     [HttpPatch("anular/{facturaId}")]
