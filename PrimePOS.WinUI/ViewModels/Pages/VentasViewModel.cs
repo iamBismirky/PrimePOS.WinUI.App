@@ -6,6 +6,7 @@ using PrimePOS.Contracts.DTOs.Producto;
 using PrimePOS.Contracts.DTOs.Venta;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
+using PrimePOS.WinUI.ViewModels.Overlays;
 using PrimePOS.WinUI.ViewModels.Pages;
 using PrimePOS.WinUI.Views.Overlays;
 using System;
@@ -29,18 +30,15 @@ public partial class VentaViewModel : ObservableObject
     private readonly PdfViewService _pdfService;
     public AppSesionViewModel AppSesion => _sesion;
 
-    public VentaViewModel(
-        ProductoApiService productoApi,
-        ClienteApiService clienteApi,
-        MetodoPagoApiService metodoPagoApi,
-        CajaApiService cajaApi,
-        TurnoApiService turnoApi,
-        VentaApiService ventaApi,
-        FacturaApiService facturaApi,
-        NotificationService notify,
-        AppSesionViewModel sesion,
-        OverlayService overlay,
-        PdfViewService pdfService)
+    public VentaViewModel(ProductoApiService productoApi,
+                          ClienteApiService clienteApi,
+                          TurnoApiService turnoApi,
+                          VentaApiService ventaApi,
+                          FacturaApiService facturaApi,
+                          NotificationService notify,
+                          AppSesionViewModel sesion,
+                          OverlayService overlay,
+                          PdfViewService pdfService)
     {
         _productoApi = productoApi;
         _clienteApi = clienteApi;
@@ -57,13 +55,13 @@ public partial class VentaViewModel : ObservableObject
     [ObservableProperty] private string textoProducto = "";
     [ObservableProperty] private string textoCliente = "";
 
-    [ObservableProperty] private ObservableCollection<ProductoDto> productos = new();
-    [ObservableProperty] private ObservableCollection<ClienteDto> clientes = new();
+    [ObservableProperty] private ObservableCollection<ProductoDto> productos = [];
+    [ObservableProperty] private ObservableCollection<ClienteDto> clientes = [];
 
 
     [ObservableProperty] private ClienteDto? clienteSeleccionado;
 
-    [ObservableProperty] private ObservableCollection<CarritoViewModel> carrito = new();
+    [ObservableProperty] private ObservableCollection<CarritoViewModel> carrito = [];
 
     [ObservableProperty] public bool isLoading;
 
@@ -381,14 +379,6 @@ public partial class VentaViewModel : ObservableObject
             Carrito.Clear();
             ClienteSeleccionado = _consumidorFinal;
             NotificarTotales();
-
-            var facturaResult =
-                    await _apiFactura.GenerarFacturaAsync(vm.VentaIdGenerada);
-
-            if (facturaResult.Success)
-            {
-                await _pdfService.MostrarFacturaAsync(facturaResult.Data.PdfUrl);
-            }
 
         }
 

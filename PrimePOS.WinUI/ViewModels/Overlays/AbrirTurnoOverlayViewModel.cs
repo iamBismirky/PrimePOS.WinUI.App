@@ -5,11 +5,13 @@ using PrimePOS.Contracts.DTOs.Turno;
 using PrimePOS.WinUI.Contracts;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
-using PrimePOS.WinUI.ViewModels;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+
+namespace PrimePOS.WinUI.ViewModels.Overlays;
+
 
 public partial class AbrirTurnoOverlayViewModel : ObservableObject, IOverlayViewModel
 {
@@ -32,7 +34,7 @@ public partial class AbrirTurnoOverlayViewModel : ObservableObject, IOverlayView
     }
 
 
-    [ObservableProperty] private ObservableCollection<CajaDto> cajas = new();
+    [ObservableProperty] private ObservableCollection<CajaDto> cajas = [];
     [ObservableProperty] private CajaDto? cajaSeleccionada;
     [ObservableProperty] private decimal montoInicial;
     [ObservableProperty] private string turnoTexto = "";

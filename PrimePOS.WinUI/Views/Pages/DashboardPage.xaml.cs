@@ -25,6 +25,6 @@ public sealed partial class DashboardPage : Page
     {
         base.OnNavigatedTo(e);
 
-        await viewModel.TotalVentasAsync();
+
     }
 }

@@ -44,7 +44,7 @@ public class AuthController : ControllerBase
         {
             Success = true,
             Message = "Usuario autenticado correctamente",
-            Data = result
+            Data = result,
         });
     }
 }

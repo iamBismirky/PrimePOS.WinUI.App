@@ -55,8 +55,9 @@ public class Factura80mmDocument : IDocument
                 // INFO FACTURA
                 column.Item().Text($"Fecha: {_factura.Fecha:dd/MM/yyyy HH:mm}");
                 column.Item().Text($"Factura: {_factura.Numero}");
+                column.Item().Text($"Tipo: {_factura.TipoFactura}");
 
-                column.Item().Text($"Turno: {_factura.Turno} | Cajero: {_factura.UsuarioNombre} ");
+                column.Item().Text($"Turno: {_factura.Turno}        | Cajero: {_factura.UsuarioNombre} ");
 
 
                 column.Item().Text($"Metodo Pago: {_factura.MetodoPago}");
@@ -112,6 +113,7 @@ public class Factura80mmDocument : IDocument
                 // TOTALES
                 AgregarTotal(column, "Subtotal", _factura.Subtotal);
                 AgregarTotal(column, "ITBIS", _factura.Impuesto);
+                AgregarTotal(column, "Descuento", _factura.Descuento);
 
                 column.Item().Row(row =>
                 {
@@ -129,6 +131,7 @@ public class Factura80mmDocument : IDocument
 
                 column.Item().Text($"Efectivo: {_factura.Efectivo:N2}");
                 column.Item().Text($"Cambio: {_factura.Cambio:N2}");
+                column.Item().Text($"Balance Pendiente: {_factura.BalancePendiente:N2}");
 
                 column.Item()
                     .PaddingVertical(3)

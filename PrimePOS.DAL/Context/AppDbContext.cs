@@ -3,7 +3,7 @@ using PrimePOS.DAL.Seeds;
 using PrimePOS.ENTITIES.Models;
 using PrimePOS.ENTITIES.Models.Caja;
 using PrimePOS.ENTITIES.Models.Clientes;
-using PrimePOS.ENTITIES.Models.Factura;
+using PrimePOS.ENTITIES.Models.Facturacion;
 using PrimePOS.ENTITIES.Models.Inventario;
 using PrimePOS.ENTITIES.Models.Seguridad;
 using PrimePOS.ENTITIES.Models.Ventas;

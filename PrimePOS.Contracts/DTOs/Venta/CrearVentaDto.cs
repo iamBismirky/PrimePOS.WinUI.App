@@ -1,6 +1,4 @@
-﻿using PrimePOS.Contracts.DTOs.VentaDetalle;
-
-namespace PrimePOS.Contracts.DTOs.Venta
+﻿namespace PrimePOS.Contracts.DTOs.Venta
 {
     public class CrearVentaDto
     {
@@ -16,7 +14,7 @@ namespace PrimePOS.Contracts.DTOs.Venta
         public int NumeroTurno { get; set; }
         public int CajaId { get; set; }
         public int TipoPrecioId { get; set; }
-        public string NumeroComprobante { get; set; } = string.Empty;
+        public string NumeroComprobante { get; set; } = "";
         public decimal Subtotal { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Descuento { get; set; }

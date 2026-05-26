@@ -1,24 +1,66 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using PrimePOS.WinUI.Models;
 using System;
+using System.Collections.ObjectModel;
 
-namespace PrimePOS.WinUI.Services
+namespace PrimePOS.WinUI.Services;
+
+public class NotificationService
 {
-    public class NotificationService
+    public ObservableCollection<AppNotification>
+        Notifications
+    { get; } = new();
+
+    public event Action<AppNotification>?
+        OnNotification;
+
+    public void Success(string message)
     {
-        public event Action<string, InfoBarSeverity>? OnNotify;
+        Show(
+            "Éxito",
+            message,
+            AppNotificationType.Success);
+    }
 
-        public void Success(string msg, int seconds = 3)
-            => Raise(msg, InfoBarSeverity.Success, seconds);
+    public void Error(string message)
+    {
+        Show(
+            "Error",
+            message,
+            AppNotificationType.Error);
+    }
 
-        public void Error(string msg, int seconds = 3)
-            => Raise(msg, InfoBarSeverity.Error, seconds);
+    public void Warning(string message)
+    {
+        Show(
+            "Advertencia",
+            message,
+            AppNotificationType.Warning);
+    }
 
-        public void Warning(string msg, int seconds = 3)
-            => Raise(msg, InfoBarSeverity.Warning, seconds);
+    public void Info(string message)
+    {
+        Show(
+            "Información",
+            message,
+            AppNotificationType.Info);
+    }
 
-        private void Raise(string msg, InfoBarSeverity severity, int seconds)
+    private void Show(
+        string title,
+        string message,
+        AppNotificationType type)
+    {
+        var notification = new AppNotification
         {
-            OnNotify?.Invoke(msg, severity);
-        }
+            Title = title,
+            Message = message,
+            Type = type
+        };
+
+        // Última notificación arriba
+        Notifications.Insert(0, notification);
+
+        // Evento global
+        OnNotification?.Invoke(notification);
     }
 }

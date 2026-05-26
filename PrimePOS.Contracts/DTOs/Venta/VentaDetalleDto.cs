@@ -1,15 +1,12 @@
-﻿namespace PrimePOS.Contracts.DTOs.VentaDetalle
+﻿namespace PrimePOS.Contracts.DTOs.Venta
 {
     public class VentaDetalleDto
     {
         public int DetalleVentaId { get; set; }
-
         public int VentaId { get; set; }
-
         public int ProductoId { get; set; }
-        public string ProductoNombre { get; set; } = "";
-
-        public string Codigo { get; set; } = string.Empty;
+        public string Nombre { get; set; } = "";
+        public string Codigo { get; set; } = "";
         public int Cantidad { get; set; }
         public decimal PrecioUnitario { get; set; }
         public bool AplicaItbis { get; set; }

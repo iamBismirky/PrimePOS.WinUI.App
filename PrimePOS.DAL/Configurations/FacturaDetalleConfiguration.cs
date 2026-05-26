@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PrimePOS.ENTITIES.Models.Ventas;
+using PrimePOS.ENTITIES.Models.Facturacion;
 
 namespace PrimePOS.DAL.Configurations;
 

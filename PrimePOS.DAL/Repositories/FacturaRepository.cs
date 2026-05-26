@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimePOS.DAL.Context;
 using PrimePOS.DAL.Interfaces;
-using PrimePOS.ENTITIES.Models.Factura;
+using PrimePOS.ENTITIES.Models.Facturacion;
 
 namespace PrimePOS.DAL.Repositories
 {

@@ -1,4 +1,5 @@
-﻿using PrimePOS.ENTITIES.Models.Ventas;
+﻿using PrimePOS.ENTITIES.Models.Facturacion;
+using PrimePOS.ENTITIES.Models.Ventas;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

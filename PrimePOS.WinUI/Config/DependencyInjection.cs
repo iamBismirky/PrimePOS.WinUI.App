@@ -44,7 +44,7 @@ public static class DependencyInjection
         services.AddTransient<UsuarioViewModel>();
         services.AddTransient<VentaViewModel>();
         services.AddTransient<ReporVentaViewModel>();
-        services.AddTransient<DashboardViewModel>();
+        services.AddSingleton<DashboardViewModel>();
 
         //Overlays
         services.AddTransient<ClienteOverlayViewModel>();

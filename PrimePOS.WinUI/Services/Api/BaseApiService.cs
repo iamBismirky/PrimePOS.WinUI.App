@@ -14,6 +14,7 @@ public class BaseApiService
     protected readonly HttpClient _http;
 
     public static Action? OnUnauthorized;
+
     public BaseApiService(HttpClient http)
     {
         _http = http;
@@ -27,19 +28,20 @@ public class BaseApiService
 
             if (!string.IsNullOrWhiteSpace(token))
             {
-                request.Headers.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
             var response = await _http.SendAsync(request);
 
-            // 🔐 SOLO manejar 401 (infraestructura)
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            var isLoginRequest = request.RequestUri?.AbsolutePath.Contains("auth/login", StringComparison.OrdinalIgnoreCase) == true;
+
+            // SOLO manejar expiración de sesión
+            if (response.StatusCode == HttpStatusCode.Unauthorized && !isLoginRequest)
             {
                 TokenStorage.Clear();
+
                 OnUnauthorized?.Invoke();
 
-                // ⚠️ Aquí SÍ creas uno porque el backend no lo manejó
                 return new ApiResponse<T>
                 {
                     Success = false,
@@ -49,20 +51,18 @@ public class BaseApiService
 
             var content = await response.Content.ReadAsStringAsync();
 
-            // ⚠️ Si el backend respondió → usarlo SIEMPRE
+            // Usar SIEMPRE respuesta real del backend
             if (!string.IsNullOrWhiteSpace(content))
             {
-                var result = JsonSerializer.Deserialize<ApiResponse<T>>(content,
-                    new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
+                var result = JsonSerializer.Deserialize<ApiResponse<T>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
 
                 if (result != null)
-                    return result; // 🔥 ESTE es el mensaje real del BLL
+                    return result;
             }
 
-            // ⚠️ SOLO si el backend NO respondió correctamente
             return new ApiResponse<T>
             {
                 Success = false,
@@ -86,8 +86,8 @@ public class BaseApiService
             };
         }
     }
-    protected async Task<byte[]> SendFileAsync(
-    HttpRequestMessage request)
+
+    protected async Task<byte[]> SendFileAsync(HttpRequestMessage request)
     {
         var token = TokenStorage.GetToken();
 
@@ -99,14 +99,14 @@ public class BaseApiService
 
         var response = await _http.SendAsync(request);
 
+        //  Archivos/PDFs siempre requieren sesión válida
         if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
             TokenStorage.Clear();
 
             OnUnauthorized?.Invoke();
 
-            throw new UnauthorizedAccessException(
-                "Sesión expirada");
+            throw new UnauthorizedAccessException("Sesión expirada");
         }
 
         response.EnsureSuccessStatusCode();

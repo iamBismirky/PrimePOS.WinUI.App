@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrimePOS.DAL.Context;
 
@@ -11,9 +12,11 @@ using PrimePOS.DAL.Context;
 namespace PrimePOS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260526001118_UpdateTableFactura")]
+    partial class UpdateTableFactura
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,9 +227,6 @@ namespace PrimePOS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FacturaId"));
 
-                    b.Property<decimal>("BalancePendiente")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<decimal>("Cambio")
                         .HasColumnType("decimal(18,2)");
 
@@ -255,9 +255,6 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<string>("MetodoPago")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MetodoPagoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Numero")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -268,10 +265,6 @@ namespace PrimePOS.DAL.Migrations
 
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("TipoFactura")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
@@ -306,9 +299,6 @@ namespace PrimePOS.DAL.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FacturaDetalleId"));
-
-                    b.Property<bool>("AplicaItbis")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");

@@ -29,7 +29,7 @@ public partial class CajaViewModel : ObservableObject
 
 
     [ObservableProperty]
-    private ObservableCollection<CajaDto> cajas = new();
+    private ObservableCollection<CajaDto> cajas = [];
 
     [ObservableProperty]
     private CajaDto? cajaSeleccionada;
@@ -40,7 +40,7 @@ public partial class CajaViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading;
 
-    private List<CajaDto> _cache = new();
+    private List<CajaDto> _cache = [];
 
 
 
@@ -75,8 +75,8 @@ public partial class CajaViewModel : ObservableObject
                 return;
             }
 
-            _cache = res.Data ?? new List<CajaDto>();
-            Cajas = new ObservableCollection<CajaDto>(res.Data ?? new());
+            _cache = res.Data ?? [];
+            Cajas = new ObservableCollection<CajaDto>(res.Data ?? []);
         }
         catch (Exception ex)
         {
@@ -91,7 +91,7 @@ public partial class CajaViewModel : ObservableObject
     [RelayCommand]
     public async Task NuevoAsync()
     {
-        var vm = App.Services.GetService<CajaOverlayViewModel>();
+        var vm = App.Services.GetRequiredService<CajaOverlayViewModel>();
 
         var overlay = new CajaOverlay(vm);
 

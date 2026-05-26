@@ -4,7 +4,6 @@ using PrimePOS.Contracts.DTOs.Catalog;
 using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.Contracts.DTOs.MetodoPago;
 using PrimePOS.Contracts.DTOs.Venta;
-using PrimePOS.Contracts.DTOs.VentaDetalle;
 using PrimePOS.WinUI.Contracts;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
@@ -29,7 +28,7 @@ public partial class CobrarOverlayViewModel : ObservableObject, IOverlayViewMode
     private readonly CatalogApiService _apiCatalog;
 
 
-    private TaskCompletionSource<bool> _tcs = new();
+    private readonly TaskCompletionSource<bool> _tcs = new();
     public Task<bool> WaitTask => _tcs.Task;
 
     public CobrarOverlayViewModel(VentaApiService apiVenta,
@@ -51,8 +50,8 @@ public partial class CobrarOverlayViewModel : ObservableObject, IOverlayViewMode
         _apiCatalog = apiCatalog;
     }
 
-    [ObservableProperty] private ObservableCollection<MetodoPagoDto> metodosPago = new();
-    [ObservableProperty] private ObservableCollection<TipoVentaDto> tiposVenta = new();
+    [ObservableProperty] private ObservableCollection<MetodoPagoDto> metodosPago = [];
+    [ObservableProperty] private ObservableCollection<TipoVentaDto> tiposVenta = [];
     [ObservableProperty] private MetodoPagoDto? metodoPagoSeleccionado;
     [ObservableProperty] private TipoVentaDto? tipoVentaSeleccionado;
     [ObservableProperty] private ClienteDto? clienteSeleccionado;
@@ -67,11 +66,9 @@ public partial class CobrarOverlayViewModel : ObservableObject, IOverlayViewMode
     [ObservableProperty] private decimal totalOriginal;
 
     public CobroVentaDto CobroVenta { get; set; } = null!;
-    public int VentaIdGenerada { get; private set; }
 
 
-    public ObservableCollection<Decimal> Descuentos { get; } = new()
-    { 0,5,10,15,20,25,30};
+    public ObservableCollection<Decimal> Descuentos { get; } = [0, 5, 10, 15, 20, 25, 30];
 
 
     public decimal Cambio => MontoRecibido > Total ? MontoRecibido - Total : 0;
@@ -135,7 +132,13 @@ public partial class CobrarOverlayViewModel : ObservableObject, IOverlayViewMode
 
             _notify.Success(result.Message);
 
-            VentaIdGenerada = result.Data;
+
+            var facturaResult = await _apiFactura.GenerarFacturaAsync(result.Data);
+
+            if (!string.IsNullOrWhiteSpace(facturaResult.Data?.PdfUrl))
+            {
+                await _pdfService.MostrarFacturaAsync(facturaResult.Data.PdfUrl);
+            }
 
             Close(true);
 
@@ -178,7 +181,7 @@ public partial class CobrarOverlayViewModel : ObservableObject, IOverlayViewMode
             Items = CobroVenta.Items.Select(x => new VentaDetalleDto
             {
                 ProductoId = x.ProductoId,
-                ProductoNombre = x.Nombre,
+                Nombre = x.Nombre,
                 Codigo = x.Codigo,
                 Cantidad = x.Cantidad,
                 PrecioUnitario = x.Precio

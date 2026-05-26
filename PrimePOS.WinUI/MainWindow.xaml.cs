@@ -4,6 +4,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using PrimePOS.WinUI.Models;
 using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.ViewModels;
 using PrimePOS.WinUI.Views.Dialog;
@@ -19,14 +20,18 @@ namespace PrimePOS.WinUI;
 
 public sealed partial class MainWindow : Window
 {
-    public AppSesionViewModel _sesion;
-    public NotificationService _notify;
-    public OverlayService _overlayService;
-    public LoginOverlayViewModel _loginViewModel;
-    public AuthOverlayService _authService;
+    private readonly AppSesionViewModel _sesion;
+    private readonly NotificationService _notify;
+    private readonly OverlayService _overlayService;
+    private readonly AuthOverlayService _authService;
+    private readonly DashboardViewModel _dashboardViewModel;
+
+    private bool _initialized;
+
     public MainWindow()
     {
         InitializeComponent();
+
         contentFrame.Navigate(typeof(DashboardPage));
 
         this.ExtendsContentIntoTitleBar = true;
@@ -34,24 +39,25 @@ public sealed partial class MainWindow : Window
         _sesion = App.Services.GetRequiredService<AppSesionViewModel>();
         _notify = App.Services.GetRequiredService<NotificationService>();
         _overlayService = App.Services.GetRequiredService<OverlayService>();
-        _loginViewModel = App.Services.GetRequiredService<LoginOverlayViewModel>();
         _authService = App.Services.GetRequiredService<AuthOverlayService>();
+        _dashboardViewModel = App.Services.GetRequiredService<DashboardViewModel>();
+
 
         RootGrid.DataContext = _sesion;
+
         SetWindowSizeAndCenter(1600, 900);
 
         this.Activated += MainWindow_Activated;
-        _notify.OnNotify += (msg, type) =>
+
+
+        _notify.OnNotification += notification =>
         {
-            _ = MostrarNotificacionAsync(msg, type);
+            _ = MostrarNotificacionAsync(notification);
         };
-
-
 
 
     }
 
-    private bool _initialized;
 
     private async void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
     {
@@ -68,12 +74,57 @@ public sealed partial class MainWindow : Window
 
         await MostrarLoginAsync();
     }
+    private async Task MostrarNotificacionAsync(
+    AppNotification notification)
+    {
+        GlobalInfoBar.Title =
+            notification.Title;
+
+        GlobalInfoBar.Message =
+            notification.Message;
+
+        GlobalInfoBar.Severity =
+            ConvertirSeverity(notification.Type);
+
+        GlobalInfoBar.IsOpen = true;
+
+        await Task.Delay(3000);
+
+        GlobalInfoBar.IsOpen = false;
+    }
+    private static InfoBarSeverity ConvertirSeverity(
+    AppNotificationType type)
+    {
+        return type switch
+        {
+            AppNotificationType.Success =>
+                InfoBarSeverity.Success,
+
+            AppNotificationType.Error =>
+                InfoBarSeverity.Error,
+
+            AppNotificationType.Warning =>
+                InfoBarSeverity.Warning,
+
+            _ =>
+                InfoBarSeverity.Informational
+        };
+    }
     private async Task MostrarLoginAsync()
     {
-        var loginVM = App.Services.GetRequiredService<LoginOverlayViewModel>();
+        var loginVM =
+            App.Services
+                .GetRequiredService<LoginOverlayViewModel>();
 
-        bool ok = await _overlayService.ShowLoginAsync(loginVM);
+        bool ok =
+            await _overlayService
+                .ShowLoginAsync(loginVM);
 
+        if (ok)
+        {
+            await _dashboardViewModel
+                .InicializarAsync();
+        }
     }
     private void TitleBar_BackRequested(TitleBar sender, object args)
     {
@@ -98,13 +149,7 @@ public sealed partial class MainWindow : Window
             App.TemaActual = ElementTheme.Light;
         }
     }
-    private void SetThemeForWindow(Window window, ElementTheme theme)
-    {
-        if (window.Content is FrameworkElement root)
-        {
-            root.RequestedTheme = theme;
-        }
-    }
+
     private void TitleBar_PaneToggleRequested(TitleBar sender, object args)
     {
         navView.IsPaneOpen = !navView.IsPaneOpen;
@@ -148,6 +193,7 @@ public sealed partial class MainWindow : Window
                     {
                         _sesion.CerrarSesion();
                         contentFrame.Navigate(typeof(DashboardPage));
+                        _dashboardViewModel.Limpiar();
                         await MostrarLoginAsync();
                     }
                     sender.SelectedItem = null;
@@ -158,16 +204,7 @@ public sealed partial class MainWindow : Window
             }
         }
     }
-    private async Task MostrarNotificacionAsync(string msg, InfoBarSeverity type)
-    {
-        GlobalInfoBar.Message = msg;
-        GlobalInfoBar.Severity = type;
-        GlobalInfoBar.IsOpen = true;
 
-        await Task.Delay(5000);
-
-        GlobalInfoBar.IsOpen = false;
-    }
     private void SetWindowSizeAndCenter(int width, int height)
     {
         var hwnd = WindowNative.GetWindowHandle(this);
@@ -194,10 +231,7 @@ public sealed partial class MainWindow : Window
     {
         //_overlayService.Close();
     }
-    private void OverlayContent_Tapped(object sender, TappedRoutedEventArgs e)
-    {
-        e.Handled = true;
-    }
+
 
 
 }

@@ -1,4 +1,5 @@
-﻿using PrimePOS.BLL.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
+using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.BLL.Security;
 using PrimePOS.BLL.Validators;
@@ -179,18 +180,18 @@ namespace PrimePOS.BLL.Services
         {
             if (string.IsNullOrWhiteSpace(dto.Username) ||
                 string.IsNullOrWhiteSpace(dto.Password))
-                throw new BusinessException("Usuario y contraseña obligatorios.", 400);
+                throw new BusinessException("Usuario y contraseña obligatorios.", StatusCodes.Status400BadRequest);
 
             var usuario = await _usuarioRepository.ObtenerPorUsernameAsync(dto.Username);
 
             if (usuario == null)
-                throw new BusinessException("Usuario o contraseña incorrectos.", 401);
+                throw new BusinessException("Usuario o contraseña incorrectos.", StatusCodes.Status401Unauthorized);
 
             if (!usuario.Estado)
-                throw new BusinessException("Usuario inactivo.", 403);
+                throw new BusinessException("Usuario inactivo.", StatusCodes.Status403Forbidden);
 
             if (!PasswordService.Verify(dto.Password, usuario.Password))
-                throw new BusinessException("Usuario o contraseña incorrectos.", 401);
+                throw new BusinessException("Usuario o contraseña incorrectos.", StatusCodes.Status401Unauthorized);
 
 
 

@@ -30,7 +30,7 @@ public partial class CategoriaViewModel : ObservableObject
 
 
     [ObservableProperty]
-    private ObservableCollection<CategoriaDto> categorias = new();
+    private ObservableCollection<CategoriaDto> categorias = [];
 
     [ObservableProperty]
     private string buscar = "";
@@ -38,7 +38,7 @@ public partial class CategoriaViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading;
 
-    private List<CategoriaDto> _cache = new();
+    private List<CategoriaDto> _cache = [];
 
 
     [RelayCommand]
@@ -56,8 +56,8 @@ public partial class CategoriaViewModel : ObservableObject
                 return;
             }
 
-            _cache = res.Data ?? new List<CategoriaDto>();
-            Categorias = new ObservableCollection<CategoriaDto>(res.Data ?? new());
+            _cache = res.Data ?? [];
+            Categorias = new ObservableCollection<CategoriaDto>(res.Data ?? []);
         }
         catch (Exception ex)
         {

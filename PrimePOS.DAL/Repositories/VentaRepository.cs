@@ -12,6 +12,7 @@ public class VentaRepository : IVentaRepository
     {
         _context = context;
     }
+
     public void Crear(Venta venta)
     {
         _context.Add(venta);

@@ -74,7 +74,6 @@ public partial class LoginOverlayViewModel : ObservableObject, IOverlayViewModel
 
             TokenStorage.SetToken(result.Data!.Token);
             _appSesion.IniciarSesion(result.Data!);
-
             await VerificarTurnoAsync();
 
             _notify.Success($"¡Bienvenido {result.Data!.UsuarioNombre}!");
