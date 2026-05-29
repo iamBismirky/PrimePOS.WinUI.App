@@ -49,6 +49,9 @@ namespace PrimePOS.API.Config
             services.AddScoped<ITurnoService, TurnoService>();
             services.AddScoped<IEtiquetaService, EtiquetaService>();
             services.AddScoped<ICatalogService, CatalogService>();
+            services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IPdfService, PdfService>();
 
             //JWT
             services.AddSingleton<JwtHelper>();

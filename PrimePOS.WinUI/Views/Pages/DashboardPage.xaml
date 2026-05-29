@@ -44,11 +44,30 @@
                         <TextBlock
                             FontSize="22"
                             FontWeight="Bold"
-                            Text="{Binding TotalVentasTexto}" />
+                            Text="{Binding TotalVentas, Converter={StaticResource DecimalToStringConverter}}" />
                         <TextBlock
                             FontSize="11"
                             Opacity="0.6"
                             Text="Ingresos del día" />
+                    </StackPanel>
+                </Border>
+                <Border
+                    Width="220"
+                    Height="120"
+                    Padding="15"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="14">
+
+                    <StackPanel Spacing="8">
+                        <TextBlock FontWeight="SemiBold" Text="Ventas Hoy" />
+                        <TextBlock
+                            FontSize="22"
+                            FontWeight="Bold"
+                            Text="{Binding VentasCount, Converter={StaticResource IntToStringConverter}}" />
+                        <TextBlock
+                            FontSize="11"
+                            Opacity="0.6"
+                            Text="Registradas" />
                     </StackPanel>
                 </Border>
 
@@ -64,7 +83,7 @@
                         <TextBlock
                             FontSize="22"
                             FontWeight="Bold"
-                            Text="{Binding TotalProductos}" />
+                            Text="{Binding TotalProductos, Converter={StaticResource IntToStringConverter}}" />
                         <TextBlock
                             FontSize="11"
                             Opacity="0.6"
@@ -83,7 +102,7 @@
                         <TextBlock
                             FontSize="22"
                             FontWeight="Bold"
-                            Text="{Binding TotalClientes}" />
+                            Text="{Binding TotalClientes, Converter={StaticResource IntToStringConverter}}" />
                         <TextBlock
                             FontSize="11"
                             Opacity="0.6"
@@ -95,19 +114,19 @@
                     Width="220"
                     Height="120"
                     Padding="15"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    Background="#E74C3C"
                     CornerRadius="14">
 
                     <StackPanel Spacing="8">
-                        <TextBlock FontWeight="SemiBold" Text="Facturas" />
+                        <TextBlock FontWeight="SemiBold" Text="Productos Agotados" />
                         <TextBlock
                             FontSize="22"
                             FontWeight="Bold"
-                            Text="{Binding TotalFacturas}" />
+                            Text="{Binding TotalAgotados, Converter={StaticResource IntToStringConverter}}" />
                         <TextBlock
                             FontSize="11"
                             Opacity="0.6"
-                            Text="Emitidas hoy" />
+                            Text="Inventario" />
                     </StackPanel>
                 </Border>
             </controls:WrapPanel>

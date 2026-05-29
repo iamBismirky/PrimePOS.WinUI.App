@@ -4,5 +4,7 @@
     {
         public FacturaDto? Factura { get; set; }
         public string? PdfUrl { get; set; }
+        public string? FileName { get; set; }
+
     }
 }

@@ -88,7 +88,7 @@
 
                                         <TextBlock Grid.Column="1" Text="{Binding Nombre}" />
 
-                                        <TextBlock Grid.Column="2" Text="{Binding PrecioVenta, Converter={StaticResource NumeroConverterHelper}}" />
+                                        <TextBlock Grid.Column="2" Text="{Binding PrecioFinal, Converter={StaticResource NumeroConverterHelper}}" />
 
                                     </Grid>
 
@@ -162,7 +162,7 @@
                                 </TextBlock>
                                 <TextBlock>
                                     <Run Text="Tipo: " />
-                                    <Run Text="{Binding ClienteSeleccionado.Tipo}" />
+                                    <Run Text="{Binding ClienteSeleccionado.TipoNombre}" />
                                 </TextBlock>
 
                             </StackPanel>
@@ -192,70 +192,153 @@
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="16">
 
-                <controls:DataGrid
-                    x:Name="dgCarrito"
-                    AutoGenerateColumns="False"
-                    ColumnHeaderHeight="45"
-                    FontSize="14"
-                    IsReadOnly="True"
-                    ItemsSource="{Binding Carrito}"
-                    RowHeight="45"
-                    SelectionMode="Single">
+                <Grid RowDefinitions="Auto,*">
 
-                    <controls:DataGrid.Columns>
+                    <!--  HEADER  -->
+                    <Grid
+                        Grid.Row="0"
+                        Padding="10,0,10,10"
+                        ColumnDefinitions="100,2*,80,100,100,100,90">
 
-                        <controls:DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Codigo}"
-                            Header="Código" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Código" />
 
-                        <controls:DataGridTextColumn
-                            Width="2*"
-                            Binding="{Binding Nombre}"
-                            Header="Producto" />
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Producto" />
 
-                        <controls:DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Cantidad}"
-                            Header="Cant." />
+                        <TextBlock
+                            Grid.Column="2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Cant." />
 
-                        <controls:DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Precio, Converter={StaticResource NumeroConverterHelper}}"
-                            Header="Precio" />
+                        <TextBlock
+                            Grid.Column="3"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Precio" />
 
-                        <controls:DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Total, Converter={StaticResource NumeroConverterHelper}}"
-                            Header="Total" />
+                        <TextBlock
+                            Grid.Column="4"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="ITBIS" />
 
-                        <controls:DataGridTemplateColumn Width="90">
+                        <TextBlock
+                            Grid.Column="5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Total" />
 
-                            <controls:DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
+                        <TextBlock
+                            Grid.Column="6"
+                            FontWeight="SemiBold"
+                            Text="" />
 
-                                    <Button
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Background="IndianRed"
-                                        Click="Eliminar_Click"
-                                        Foreground="White">
+                    </Grid>
 
-                                        <FontIcon Glyph="&#xE74D;" />
+                    <!--  LIST  -->
+                    <ListView
+                        x:Name="lvCarrito"
+                        Grid.Row="1"
+                        IsItemClickEnabled="False"
+                        ItemsSource="{Binding Carrito}"
+                        SelectionMode="None">
 
-                                    </Button>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0,0,0,6" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
 
-                                </DataTemplate>
-                            </controls:DataGridTemplateColumn.CellTemplate>
+                        <ListView.ItemTemplate>
 
-                        </controls:DataGridTemplateColumn>
+                            <DataTemplate>
 
-                    </controls:DataGrid.Columns>
+                                <Border
+                                    Padding="10"
+                                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    CornerRadius="10">
 
-                </controls:DataGrid>
+                                    <Grid VerticalAlignment="Center" ColumnDefinitions="100,2*,80,100,100,100,90">
+
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Codigo}" />
+
+                                        <StackPanel
+                                            Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            Orientation="Vertical">
+
+                                            <TextBlock
+                                                FontWeight="SemiBold"
+                                                Text="{Binding Nombre}"
+                                                TextTrimming="CharacterEllipsis" />
+
+                                            <TextBlock
+                                                MaxHeight="32"
+                                                FontSize="11"
+                                                Opacity="0.6"
+                                                Text="{Binding Descripcion}"
+                                                TextWrapping="Wrap" />
+
+                                        </StackPanel>
+
+                                        <TextBlock
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Cantidad}" />
+
+                                        <TextBlock
+                                            Grid.Column="3"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Precio, Converter={StaticResource DecimalToStringConverter}}" />
+
+                                        <TextBlock
+                                            Grid.Column="4"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Itbis, Converter={StaticResource DecimalToStringConverter}}" />
+
+                                        <TextBlock
+                                            Grid.Column="5"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Total, Converter={StaticResource DecimalToStringConverter}}" />
+
+                                        <Button
+                                            Grid.Column="6"
+                                            Width="50"
+                                            Height="35"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Background="IndianRed"
+                                            Click="Eliminar_Click"
+                                            Foreground="White">
+
+                                            <FontIcon Glyph="&#xE74D;" />
+
+                                        </Button>
+
+                                    </Grid>
+
+                                </Border>
+
+                            </DataTemplate>
+
+                        </ListView.ItemTemplate>
+
+                    </ListView>
+
+                </Grid>
 
             </Border>
-
         </Grid>
 
         <!--  =========================  -->

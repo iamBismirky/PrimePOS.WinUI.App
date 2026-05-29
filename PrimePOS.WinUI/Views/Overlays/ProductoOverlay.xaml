@@ -247,7 +247,7 @@
 
                                 <StackPanel Spacing="6">
 
-                                    <TextBlock Opacity="0.7" Text="Precio final" />
+                                    <TextBlock Opacity="0.7" Text="Precio Minorista" />
 
                                     <TextBlock
                                         FontSize="32"
@@ -346,7 +346,7 @@
                                 <TextBlock
                                     FontSize="18"
                                     FontWeight="SemiBold"
-                                    Text="Precio Final" />
+                                    Text="Precio Mayorista" />
 
                             </StackPanel>
 

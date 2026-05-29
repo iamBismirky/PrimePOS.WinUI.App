@@ -14,9 +14,9 @@ namespace PrimePOS.DAL.Repositories
             _context = context;
         }
 
-        public async Task CrearAsync(Factura factura)
+        public void Crear(Factura factura)
         {
-            await _context.Facturas.AddAsync(factura);
+            _context.Facturas.Add(factura);
         }
 
         public async Task<Factura?> ObtenerPorIdAsync(int id)

@@ -80,6 +80,15 @@ public class ClienteRepository : IClienteRepository
             .Take(20)
             .ToListAsync();
     }
-
-
+    public async Task<int> CountAsync()
+    {
+        return await _context.Clientes.CountAsync();
+    }
+    public async Task<Cliente?> CargarConsumidorFinalAsync()
+    {
+        return await _context.Clientes
+            .Include(c => c.TipoCliente)
+            .Where(c => c.ClienteId == 1)
+            .FirstOrDefaultAsync();
+    }
 }

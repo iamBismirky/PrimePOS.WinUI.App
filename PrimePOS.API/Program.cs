@@ -14,6 +14,7 @@ public class Program
 
         // 🔧 SERVICES (todo centralizado aquí)
         builder.Services.AddPrimePOS(builder.Configuration);
+        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddControllers();
 

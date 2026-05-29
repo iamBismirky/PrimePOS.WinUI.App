@@ -1,5 +1,6 @@
 ﻿using PrimePOS.Contracts.DTOs.Factura;
 using PrimePOS.ENTITIES.Models.Facturacion;
+using PrimePOS.ENTITIES.Models.Ventas;
 
 namespace PrimePOS.BLL.Interfaces
 {
@@ -9,7 +10,6 @@ namespace PrimePOS.BLL.Interfaces
 
         Task AnularFactura(int facturaId);
         FacturaDto MapearFactura(Factura factura);
-        Task<Factura> CrearFactura(int ventaId);
-        Task<FacturaGeneradaDto> GenerarFacturaDesdeVenta(int ventaId);
+        Task<Factura> CrearFactura(Venta venta);
     }
 }

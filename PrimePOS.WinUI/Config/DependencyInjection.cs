@@ -29,6 +29,7 @@ public static class DependencyInjection
         services.AddScoped<MetodoPagoApiService>();
         services.AddScoped<VentaApiService>();
         services.AddScoped<CatalogApiService>();
+        services.AddScoped<DashboardApiService>();
 
         // ViewModels
 

@@ -16,19 +16,47 @@ namespace PrimePOS.DAL.UnitOfWork
 
         public async Task BeginTransactionAsync()
         {
-            _transaction = await _context.Database.BeginTransactionAsync();
+            _transaction =
+                await _context.Database.BeginTransactionAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
 
         public async Task CommitAsync()
         {
-            if (_transaction != null)
-                await _transaction.CommitAsync();
+            try
+            {
+                if (_transaction != null)
+                    await _transaction.CommitAsync();
+            }
+            finally
+            {
+                if (_transaction != null)
+                {
+                    await _transaction.DisposeAsync();
+                    _transaction = null;
+                }
+            }
         }
 
         public async Task RollbackAsync()
         {
-            if (_transaction != null)
-                await _transaction.RollbackAsync();
+            try
+            {
+                if (_transaction != null)
+                    await _transaction.RollbackAsync();
+            }
+            finally
+            {
+                if (_transaction != null)
+                {
+                    await _transaction.DisposeAsync();
+                    _transaction = null;
+                }
+            }
         }
     }
 }

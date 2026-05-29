@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrimePOS.Contracts.DTOs.Catalog;
-using PrimePOS.Contracts.DTOs.Cliente;
 using PrimePOS.Contracts.DTOs.MetodoPago;
 using PrimePOS.Contracts.DTOs.Venta;
 using PrimePOS.WinUI.Contracts;
@@ -9,7 +8,6 @@ using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -50,11 +48,11 @@ public partial class CobrarOverlayViewModel : ObservableObject, IOverlayViewMode
         _apiCatalog = apiCatalog;
     }
 
-    [ObservableProperty] private ObservableCollection<MetodoPagoDto> metodosPago = [];
-    [ObservableProperty] private ObservableCollection<TipoVentaDto> tiposVenta = [];
+    [ObservableProperty] private ObservableCollection<MetodoPagoDto> metodosPago = new();
+    [ObservableProperty] private ObservableCollection<TipoVentaDto> tiposVenta = new();
     [ObservableProperty] private MetodoPagoDto? metodoPagoSeleccionado;
     [ObservableProperty] private TipoVentaDto? tipoVentaSeleccionado;
-    [ObservableProperty] private ClienteDto? clienteSeleccionado;
+    [ObservableProperty] private ClienteVentaDto? clienteSeleccionado;
     [ObservableProperty] private bool isLoading;
     [ObservableProperty] private decimal total;
     [ObservableProperty] private decimal subtotal;
@@ -121,28 +119,22 @@ public partial class CobrarOverlayViewModel : ObservableObject, IOverlayViewMode
 
             var dto = BuildCrearVentaDto();
 
-            Debug.WriteLine("ANTES API");
+
             var result = await _apiVenta.CrearVentaAsync(dto);
-            Debug.WriteLine("DESPUÉS API");
+
             if (!result.Success)
             {
                 _notify.Error(result.Message);
                 return;
             }
 
-            _notify.Success(result.Message);
 
 
-            var facturaResult = await _apiFactura.GenerarFacturaAsync(result.Data);
+            _notify.Success($"{result.Data?.NumeroFactura} realizada correctamente");
+            _pdfService.MostrarFacturaAsync(result.Data.PdfUrl);
 
-            if (!string.IsNullOrWhiteSpace(facturaResult.Data?.PdfUrl))
-            {
-                await _pdfService.MostrarFacturaAsync(facturaResult.Data.PdfUrl);
-            }
 
             Close(true);
-
-
 
 
 

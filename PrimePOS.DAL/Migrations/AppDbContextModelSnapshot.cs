@@ -262,9 +262,8 @@ namespace PrimePOS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NumeroTurno")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NumeroTurno")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(18,2)");
@@ -762,6 +761,10 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("CajaId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CajaNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Cambio")
                         .HasColumnType("decimal(18,2)");
 
@@ -778,6 +781,10 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("EstadoVentaId")
                         .HasColumnType("int");
 
+                    b.Property<string>("EstadoVentaNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("datetime2");
 
@@ -787,6 +794,10 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("MetodoPagoId")
                         .HasColumnType("int");
 
+                    b.Property<string>("MetodoPagoNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("MontoRecibido")
                         .HasColumnType("decimal(18,2)");
 
@@ -794,14 +805,25 @@ namespace PrimePOS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("NumeroTurno")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("TipoPrecioId")
                         .HasColumnType("int");
 
+                    b.Property<string>("TipoPrecioNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("TipoVentaId")
                         .HasColumnType("int");
+
+                    b.Property<string>("TipoVentaNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");

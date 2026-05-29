@@ -11,11 +11,11 @@ namespace PrimePOS.API.Controllers;
 [Route("api/[controller]")]
 public class VentaController : ControllerBase
 {
-    private readonly IVentaService _service;
+    private readonly IVentaService _ventaService;
 
     public VentaController(IVentaService service)
     {
-        _service = service;
+        _ventaService = service;
     }
 
     // 🔹 CREAR VENTA
@@ -24,9 +24,9 @@ public class VentaController : ControllerBase
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var nombre = User.Identity!.Name;
-        var ventaResponse = await _service.CrearVentaAsync(userId, nombre!, dto);
+        var ventaResponse = await _ventaService.CrearVentaAsync(userId, nombre!, dto);
 
-        return Ok(new ApiResponse<int>
+        return Ok(new ApiResponse<VentaConFacturaDto>
         {
             Success = true,
             Data = ventaResponse,
@@ -38,7 +38,7 @@ public class VentaController : ControllerBase
     [HttpGet("ventas-turno/{turnoId}")]
     public async Task<IActionResult> ObtenerPorTurnoAsync(int turnoId)
     {
-        var ventas = await _service.ObtenerVentasPorTurnoAsync(turnoId);
+        var ventas = await _ventaService.ObtenerVentasPorTurnoAsync(turnoId);
 
         return Ok(new ApiResponse<decimal>
         {
@@ -51,12 +51,51 @@ public class VentaController : ControllerBase
     [HttpGet("hoy")]
     public async Task<IActionResult> ObtenerVentasHoyAsync()
     {
-        var ventas = await _service.ObtenerVentasDelDiaAsync();
+        var ventas = await _ventaService.ObtenerVentasDelDiaAsync();
 
         return Ok(new ApiResponse<List<VentaDto>>
         {
             Success = true,
             Data = ventas
+        });
+    }
+
+    [HttpGet("buscar-productos")]
+    public async Task<IActionResult> BuscarProductosAsync(
+    [FromQuery] string texto,
+    [FromQuery] int tipoPrecioId)
+    {
+        var data = await _ventaService.BuscarProductosAsync(
+            texto,
+            tipoPrecioId);
+
+        return Ok(new ApiResponse<List<ProductoVentaDto>>
+        {
+            Success = true,
+            Data = data
+        });
+    }
+    [HttpGet("buscar-clientes")]
+    public async Task<IActionResult> BuscarClientesAsync([FromQuery] string texto)
+    {
+        var data = await _ventaService.BuscarClientesAsync(
+            texto);
+
+        return Ok(new ApiResponse<List<ClienteVentaDto>>
+        {
+            Success = true,
+            Data = data
+        });
+    }
+    [HttpGet("cargar-consumidor-final")]
+    public async Task<IActionResult> CargarConsumidorFinalAsync()
+    {
+        var data = await _ventaService.CargarConsumidorFinalAsync();
+
+        return Ok(new ApiResponse<ClienteVentaDto>
+        {
+            Success = true,
+            Data = data
         });
     }
 }

@@ -10,6 +10,8 @@ namespace PrimePOS.DAL.Interfaces
         Task<Cliente?> BuscarClientePorNombreAsync(string nombre);
         Task<Cliente?> BuscarPorCodigoONombreAsync(string buscar);
         Task<List<Cliente>> BuscarPorCodigoONombreListAsync(string buscar);
+        Task<Cliente?> CargarConsumidorFinalAsync();
+        Task<int> CountAsync();
         void Crear(Cliente cliente);
         void Eliminar(Cliente cliente);
         Task GuardarCambiosAsync();

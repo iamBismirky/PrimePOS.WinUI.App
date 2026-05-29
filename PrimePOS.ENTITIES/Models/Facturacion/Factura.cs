@@ -20,7 +20,7 @@ namespace PrimePOS.ENTITIES.Models.Facturacion
         public int ClienteId { get; set; }
         public string? ClienteNombre { get; set; }
         public int TurnoId { get; set; }
-        public string NumeroTurno { get; set; } = "";
+        public int NumeroTurno { get; set; }
         public decimal Subtotal { get; set; }
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }

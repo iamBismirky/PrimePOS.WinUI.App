@@ -25,6 +25,9 @@ public sealed partial class DashboardPage : Page
     {
         base.OnNavigatedTo(e);
 
-
+        if (DataContext is DashboardViewModel vm)
+        {
+            await vm.InicializarAsync();
+        }
     }
 }

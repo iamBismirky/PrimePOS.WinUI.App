@@ -1,10 +1,8 @@
-﻿using PrimePOS.Contracts.DTOs.Cliente;
-
-namespace PrimePOS.Contracts.DTOs.Venta
+﻿namespace PrimePOS.Contracts.DTOs.Venta
 {
     public class CobroVentaDto
     {
-        public ClienteDto? Cliente { get; set; }
+        public ClienteVentaDto? Cliente { get; set; }
 
         public decimal Subtotal { get; set; }
 

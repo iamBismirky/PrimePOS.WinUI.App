@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using PrimePOS.BLL.Exceptions;
 using PrimePOS.BLL.Interfaces;
-using PrimePOS.BLL.Reportes;
 using PrimePOS.Contracts.DTOs.Factura;
 using PrimePOS.DAL.Interfaces;
 using PrimePOS.ENTITIES.Models.Facturacion;
-using QuestPDF.Fluent;
+using PrimePOS.ENTITIES.Models.Ventas;
 
 namespace PrimePOS.BLL.Services
 {
@@ -18,6 +18,8 @@ namespace PrimePOS.BLL.Services
         private readonly ICatalogRepository _catalogRepo;
         private readonly IConfiguration _config;
         private readonly IHostEnvironment _env;
+        private readonly IPdfService _pdfService;
+        private readonly IUnitOfWork _unitOfWork;
 
 
         public FacturaService(IFacturaRepository repo,
@@ -25,7 +27,9 @@ namespace PrimePOS.BLL.Services
             IConfiguration config,
             IHostEnvironment env,
             ITurnoRepository turnoRepository,
-            ICatalogRepository catalogRepo)
+            ICatalogRepository catalogRepo,
+            IPdfService pdfService,
+            IUnitOfWork unitOfWork)
         {
             _facturaRepository = repo;
             _ventaRepository = ventaRepository;
@@ -33,52 +37,66 @@ namespace PrimePOS.BLL.Services
             _env = env;
             _turnoRepository = turnoRepository;
             _catalogRepo = catalogRepo;
+            _pdfService = pdfService;
+            _unitOfWork = unitOfWork;
         }
-        public async Task<FacturaGeneradaDto> GenerarFacturaDesdeVenta(int ventaId)
+
+        public async Task<Factura> CrearFactura(Venta venta)
         {
-            var factura = await CrearFactura(ventaId);
-
-            var facturaDto = MapearFactura(factura);
-
-            var pdfUrl = await GenerarPdf(facturaDto);
-
-            return new FacturaGeneradaDto
-            {
-                Factura = facturaDto,
-                PdfUrl = pdfUrl
-            };
-        }
-        public async Task<Factura> CrearFactura(int ventaId)
-        {
-            var venta = await _ventaRepository.ObtenerPorId(ventaId);
-            var turno = await _turnoRepository.ObtenerPorIdAsync(venta!.TurnoId);
-            var metodoPago = await _catalogRepo.ObtenerMetodoPagoAsync(venta.MetodoPagoId);
-            var tipoVenta = await _catalogRepo.ObtenerTipoVentaAsync(venta.TipoVentaId);
-
             if (venta == null)
-                throw new BusinessException("Venta no encontrada", 404);
+                throw new BusinessException(
+                    "Venta no encontrada",
+                    StatusCodes.Status404NotFound);
+
+            var turno =
+                await _turnoRepository.ObtenerPorIdAsync(venta.TurnoId);
+
+            var metodoPago =
+                await _catalogRepo.ObtenerMetodoPagoAsync(
+                    venta.MetodoPagoId);
+
+            var tipoVenta =
+                await _catalogRepo.ObtenerTipoVentaAsync(
+                    venta.TipoVentaId);
+
+            var estadoVenta =
+                await _catalogRepo.ObtenerEstadoVentaAsync(
+                    venta.EstadoVentaId);
 
             var factura = new Factura
             {
                 Fecha = venta.FechaRegistro,
+
                 VentaId = venta.VentaId,
+
+                Numero = $"F-{venta.VentaId:D6}",
+
                 TipoFactura = tipoVenta?.Nombre ?? "",
+
                 ClienteId = venta.ClienteId ?? 0,
                 ClienteNombre = venta.ClienteNombre,
+
                 UsuarioId = venta.UsuarioId,
                 UsuarioNombre = venta.UsuarioNombre,
+
                 TurnoId = venta.TurnoId,
-                NumeroTurno = turno!.NumeroTurno.ToString(),
+                NumeroTurno = turno?.NumeroTurno ?? 0,
+
                 Subtotal = venta.Subtotal,
                 Impuesto = venta.Impuesto,
                 Descuento = venta.Descuento,
                 Total = venta.Total,
+
                 MetodoPagoId = venta.MetodoPagoId,
                 MetodoPago = metodoPago?.Nombre ?? "",
+
                 Efectivo = venta.MontoRecibido,
                 Cambio = venta.Cambio,
-                Estado = venta.EstadoVenta?.Estado ?? "",
+
+                Estado = estadoVenta?.Codigo ?? "",
+
                 BalancePendiente = venta.BalancePendiente,
+
                 Detalles = new List<FacturaDetalle>()
             };
 
@@ -97,33 +115,13 @@ namespace PrimePOS.BLL.Services
                 });
             }
 
-            await _facturaRepository.CrearAsync(factura);
-            await _facturaRepository.GuardarCambiosAsync();
+            _facturaRepository.Crear(factura);
 
-            factura.Numero = $"F-{factura.FacturaId:D6}";
-            await _facturaRepository.GuardarCambiosAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return factura;
         }
-        private async Task<string> GenerarPdf(FacturaDto factura)
-        {
-            var folder = Path.Combine(_env.ContentRootPath, "wwwroot", "facturas");
 
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-
-            var fileName = $"factura-{factura.Numero}.pdf";
-
-            var path = Path.Combine(folder, fileName);
-
-            var document = new Factura80mmDocument(factura);
-
-            document.GeneratePdf(path);
-
-            var baseUrl = _config["App:BaseUrl"];
-
-            return $"{baseUrl}/facturas/{fileName}";
-        }
 
 
         public async Task AnularFactura(int facturaId)
@@ -131,12 +129,13 @@ namespace PrimePOS.BLL.Services
             var factura = await _facturaRepository.ObtenerPorIdAsync(facturaId);
 
             if (factura == null)
-                return;
+                throw new BusinessException("Factura no encontrada", StatusCodes.Status404NotFound);
 
             factura.Estado = "Anulada";
 
             await _facturaRepository.GuardarCambiosAsync();
         }
+
         public FacturaDto MapearFactura(Factura factura)
         {
             return new FacturaDto

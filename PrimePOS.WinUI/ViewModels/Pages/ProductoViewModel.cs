@@ -38,14 +38,23 @@ public partial class ProductoViewModel : ObservableObject
 
 
 
-    [ObservableProperty] private ObservableCollection<ProductoDto> productos = new();
-    [ObservableProperty] private ObservableCollection<CategoriaDto> categorias = new();
-    [ObservableProperty] private ProductoDto? productoSeleccionado;
-    [ObservableProperty] private CategoriaDto? categoriaSeleccionada;
-    [ObservableProperty] private string buscar = "";
-    [ObservableProperty] private bool isLoading;
+    [ObservableProperty]
+    private ObservableCollection<ProductoDto> productos = new();
+    [ObservableProperty]
+    private ObservableCollection<CategoriaDto> categorias = new();
+    [ObservableProperty]
+    private ProductoDto? productoSeleccionado;
+    [ObservableProperty]
+    private CategoriaDto? categoriaSeleccionada;
+    [ObservableProperty]
+    private string buscar = "";
+    [ObservableProperty]
+    private bool isLoading;
     private List<ProductoDto> _cache = new();
-
+    partial void OnBuscarChanged(string value)
+    {
+        Filtrar();
+    }
 
     [RelayCommand]
     public async Task CargarProductosAsync()

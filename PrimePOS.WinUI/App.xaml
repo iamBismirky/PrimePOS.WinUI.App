@@ -22,6 +22,7 @@
             <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <helpers:IntToDoubleConverter x:Key="IntToDoubleConverter" />
             <helpers:DecimalToStringConverter x:Key="DecimalToStringConverter" />
+            <helpers:IntToStringConverter x:Key="IntToStringConverter" />
             <!--  Formatter global  -->
             <globalization:DecimalFormatter
                 x:Key="DecimalFormatter"

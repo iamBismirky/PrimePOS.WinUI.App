@@ -2,8 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using PrimePOS.Contracts.DTOs.Cliente;
-using PrimePOS.Contracts.DTOs.Producto;
+using PrimePOS.Contracts.DTOs.Venta;
 using PrimePOS.WinUI.ViewModels;
 using PrimePOS.WinUI.ViewModels.Pages;
 using System;
@@ -47,7 +46,7 @@ public sealed partial class VentasPage : Page
     AutoSuggestBox sender,
     AutoSuggestBoxQuerySubmittedEventArgs args)
     {
-        if (args.ChosenSuggestion is ProductoDto producto)
+        if (args.ChosenSuggestion is ProductoVentaDto producto)
         {
             await _vm.SeleccionarProductoAsync(producto);
         }
@@ -65,7 +64,7 @@ public sealed partial class VentasPage : Page
     AutoSuggestBox sender,
     AutoSuggestBoxQuerySubmittedEventArgs args)
     {
-        if (args.ChosenSuggestion is ClienteDto cliente)
+        if (args.ChosenSuggestion is ClienteVentaDto cliente)
         {
             _vm.SeleccionarCliente(cliente);
         }
@@ -74,7 +73,7 @@ public sealed partial class VentasPage : Page
     AutoSuggestBox sender,
     AutoSuggestBoxSuggestionChosenEventArgs args)
     {
-        if (args.SelectedItem is ClienteDto cliente)
+        if (args.SelectedItem is ClienteVentaDto cliente)
         {
             _vm.SeleccionarCliente(cliente);
         }

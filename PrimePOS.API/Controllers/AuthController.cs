@@ -9,19 +9,19 @@ using PrimePOS.Contracts.DTOs.Usuario;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IUsuarioService _usuarioService;
+    private readonly IAuthService _authService;
     private readonly JwtHelper _jwtHelper;
 
-    public AuthController(IUsuarioService usuarioService, JwtHelper jwtHelper)
+    public AuthController(IAuthService usuarioService, JwtHelper jwtHelper)
     {
-        _usuarioService = usuarioService;
+        _authService = usuarioService;
         _jwtHelper = jwtHelper;
     }
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
-        var usuario = await _usuarioService.AutenticarUsuarioAsync(dto);
+        var usuario = await _authService.AutenticarUsuarioAsync(dto);
 
         var token = _jwtHelper.GenerarToken(
             usuario.UsuarioId,

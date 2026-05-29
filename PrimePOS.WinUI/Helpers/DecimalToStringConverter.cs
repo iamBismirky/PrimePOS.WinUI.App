@@ -1,32 +1,32 @@
-﻿using Microsoft.UI.Xaml.Data;
-using System;
+﻿using System;
 
 namespace PrimePOS.WinUI.Helpers
 {
 
 
+    using Microsoft.UI.Xaml.Data;
+    using System.Globalization;
+
     public class DecimalToStringConverter : IValueConverter
     {
-        public object Convert(
-            object value,
-            Type targetType,
-            object parameter,
-            string language)
+        private static readonly CultureInfo rdCulture =
+            new CultureInfo("es-DO");
+
+        public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (value is decimal d)
-                return d.ToString("N2");
+            {
+                return d.ToString("C2", rdCulture);
+            }
 
-            return "0.00";
+            return "RD$0.00";
         }
 
-        public object ConvertBack(
-            object value,
-            Type targetType,
-            object parameter,
-            string language)
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            if (decimal.TryParse(
-                value?.ToString(),
+            if (decimal.TryParse(value?.ToString(),
+                NumberStyles.Any,
+                rdCulture,
                 out decimal result))
             {
                 return result;

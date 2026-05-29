@@ -17,6 +17,7 @@ namespace PrimePOS.WinUI
         {
             InitializeComponent();
 
+            this.Closed += OnWindowClosed;
 
         }
 
@@ -39,5 +40,21 @@ namespace PrimePOS.WinUI
 
             PdfViewer.Source = new Uri(filePath);
         }
+        private void OnWindowClosed(object sender, WindowEventArgs args)
+        {
+            //if (PdfViewer != null)
+            //{
+            //    PdfViewer.CoreWebView2?.Stop();
+            //    PdfViewer.CoreWebView2?.Navigate("about:blank");
+
+            //    PdfViewer.Source = null;
+
+            //    PdfViewer.Close();
+
+            //    PdfViewer = null;
+            //}
+        }
+
+
     }
 }

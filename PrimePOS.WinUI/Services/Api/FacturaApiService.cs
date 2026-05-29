@@ -12,7 +12,7 @@ public class FacturaApiService : BaseApiService
     {
     }
 
-    // 🔹 GENERAR FACTURA
+    //GENERAR FACTURA
     public Task<ApiResponse<FacturaGeneradaDto>> GenerarFacturaAsync(int ventaId)
     {
         var request = new HttpRequestMessage(
@@ -22,7 +22,7 @@ public class FacturaApiService : BaseApiService
         return SendAsync<FacturaGeneradaDto>(request);
     }
 
-    // 🔹 ANULAR FACTURA
+    //ANULAR FACTURA
     public Task<ApiResponse<object>> AnularFacturaAsync(int facturaId)
     {
         var request = new HttpRequestMessage(
@@ -30,5 +30,18 @@ public class FacturaApiService : BaseApiService
             $"api/factura/anular/{facturaId}");
 
         return SendAsync<object>(request);
+    }
+    public Task<ApiResponse<byte[]>> DescargarPdfAsync(string fileName)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"api/factura/pdf/{fileName}");
+
+        return SendAsync<byte[]>(request);
+    }
+
+    public string BuildPdfUrl(string fileName)
+    {
+        return $"{_http.BaseAddress}api/factura/pdf/{fileName}";
     }
 }

@@ -144,13 +144,12 @@
                         <controls:DataGridTextColumn Binding="{Binding Descripcion}" Header="Descripcion" />
                         <controls:DataGridTextColumn Binding="{Binding CategoriaNombre}" Header="Categoría" />
 
-                        <controls:DataGridTextColumn Binding="{Binding PrecioMinorista, Converter={StaticResource NumeroConverterHelper}}" Header="Minorista" />
-
-                        <controls:DataGridTextColumn Binding="{Binding PrecioMayorista, Converter={StaticResource NumeroConverterHelper}}" Header="Mayorista" />
-
                         <controls:DataGridTextColumn Binding="{Binding Existencia}" Header="Stock" />
 
-                        <controls:DataGridCheckBoxColumn Binding="{Binding Estado}" Header="Activo" Width="100"/>
+                        <controls:DataGridCheckBoxColumn
+                            Width="100"
+                            Binding="{Binding Estado}"
+                            Header="Activo" />
 
                         <!--  ACCIONES  -->
                         <controls:DataGridTemplateColumn Header="">

@@ -9,6 +9,7 @@ namespace PrimePOS.DAL.Interfaces
         void Crear(Venta venta);
         Task GuardarCambiosAsync();
         List<Venta> ListarVentas();
+        Task<int> ObtenerCantidadVentasPorTurnoAsync(int turnoId);
         Task<List<Venta>> ObtenerPorFechaAsync(DateTime fecha);
         Task<Venta?> ObtenerPorId(int id);
         Task<List<Venta>> ObtenerPorTurnoAsync(int turnoId);

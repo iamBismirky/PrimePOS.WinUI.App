@@ -64,4 +64,10 @@ public class VentaRepository : IVentaRepository
             .Where(x => x.TurnoId == turnoId)
             .SumAsync(x => x.Total);
     }
+    public async Task<int> ObtenerCantidadVentasPorTurnoAsync(int turnoId)
+    {
+        return await _context.Ventas
+            .Where(x => x.TurnoId == turnoId)
+            .CountAsync();
+    }
 }

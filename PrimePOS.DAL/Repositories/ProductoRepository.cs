@@ -99,4 +99,15 @@ public class ProductoRepository : IProductoRepository
             .Where(x => ids.Contains(x.ProductoId))
             .ToListAsync();
     }
+    public async Task<int> CountAsync()
+    {
+        return await _context.Productos.CountAsync();
+    }
+    public async Task<int> CountProductosAgotadoAsync()
+    {
+        return await _context.Productos
+            .Where(p => p.Existencia <= 0)
+            .CountAsync();
+    }
+
 }

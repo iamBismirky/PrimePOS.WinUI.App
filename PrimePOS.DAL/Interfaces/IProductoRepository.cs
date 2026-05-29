@@ -10,6 +10,8 @@ namespace PrimePOS.DAL.Interfaces
         Task<Producto?> BuscarPorCodigoONombreAsync(string buscar);
         Task<List<Producto>> BuscarPorCodigoONombreListAsync(string buscar);
         Task<Producto?> BuscarPorNombreAsync(string nombre);
+        Task<int> CountAsync();
+        Task<int> CountProductosAgotadoAsync();
         void Crear(Producto producto);
         void Eliminar(Producto producto);
         Task<bool> ExisteCodigoONombreAsync(string codigoBarra, string nombre);
