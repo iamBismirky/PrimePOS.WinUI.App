@@ -68,4 +68,19 @@ public class VentaApiService : BaseApiService
             $"api/venta/cargar-consumidor-final");
         return SendAsync<ClienteVentaDto>(request);
     }
+
+    public Task<ApiResponse<List<ProductoVentaDto>>> RecalcularProductosAsync(
+    List<int> productoIds,
+    int tipoPrecioId)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"api/venta/recalcular-productos?" +
+            $"tipoPrecioId={tipoPrecioId}")
+        {
+            Content = JsonContent.Create(productoIds)
+        };
+
+        return SendAsync<List<ProductoVentaDto>>(request);
+    }
 }

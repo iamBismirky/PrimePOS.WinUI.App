@@ -25,6 +25,7 @@
     <None Remove="Views\Overlays\ProductoOverlay.xaml" />
     <None Remove="Views\Overlays\RolOverlay.xaml" />
     <None Remove="Views\Overlays\UsuarioOverlay.xaml" />
+    <None Remove="Views\Pages\FacturasPage.xaml" />
   </ItemGroup>
 	
 
@@ -72,6 +73,11 @@
   <ItemGroup>
     <ProjectReference Include="..\PrimePOS.BLL\PrimePOS.BLL.csproj" />
     <ProjectReference Include="..\PrimePOS.Contracts\PrimePOS.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Pages\FacturasPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="PdfWindow.xaml">

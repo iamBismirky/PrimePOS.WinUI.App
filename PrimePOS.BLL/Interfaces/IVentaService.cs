@@ -12,5 +12,6 @@ namespace PrimePOS.BLL.Interfaces
         Task<VentaConFacturaDto> CrearVentaAsync(int userId, string nombre, CrearVentaDto dto);
         Task<List<VentaDto>> ObtenerVentasDelDiaAsync();
         Task<decimal> ObtenerVentasPorTurnoAsync(int turnoId);
+        Task<List<ProductoVentaDto>> RecalcularProductosAsync(List<int> productosIds, int tipoPrecioId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrimePOS.BLL.Interfaces;
 using PrimePOS.Contracts.Common;
+using PrimePOS.Contracts.DTOs.Factura;
 
 namespace PrimePOS.API.Controllers;
 
@@ -55,5 +56,17 @@ public class FacturaController : ControllerBase
         Response.Headers["Content-Disposition"] = "inline";
 
         return File(bytes, "application/pdf");
+    }
+    [HttpGet("todas")]
+    public async Task<IActionResult> ObtenerTodasAsync()
+    {
+        var facturas = await _service.ObtenerTodosAsync();
+
+        return Ok(new ApiResponse<List<FacturaListadoDto>>
+        {
+            Success = true,
+            Message = "Facturas obtenidas correctamente",
+            Data = facturas
+        });
     }
 }

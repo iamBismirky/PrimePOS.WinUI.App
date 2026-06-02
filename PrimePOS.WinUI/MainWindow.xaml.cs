@@ -169,6 +169,9 @@ public sealed partial class MainWindow : Window
                 case "ventas":
                     contentFrame?.Navigate(typeof(VentasPage));
                     break;
+                case "facturas":
+                    contentFrame?.Navigate(typeof(FacturasPage));
+                    break;
                 case "inventario":
                     contentFrame?.Navigate(typeof(InventarioPage));
                     break;

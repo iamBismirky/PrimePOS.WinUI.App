@@ -1,5 +1,6 @@
 ﻿using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Factura;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -43,5 +44,12 @@ public class FacturaApiService : BaseApiService
     public string BuildPdfUrl(string fileName)
     {
         return $"{_http.BaseAddress}api/factura/pdf/{fileName}";
+    }
+    public Task<ApiResponse<List<FacturaListadoDto>>> ObtenerFacturasAsync()
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"api/factura/todas");
+        return SendAsync<List<FacturaListadoDto>>(request);
     }
 }

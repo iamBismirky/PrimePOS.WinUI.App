@@ -320,10 +320,67 @@ public class VentaService : IVentaService
         venta.EstadoVentaNombre = "Parcial";
     }
 
-    public async Task<List<ProductoVentaDto>> BuscarProductosAsync(string texto, int tipoPrecioId)
+    //public async Task<List<ProductoVentaDto>> BuscarProductosAsync(string texto, int tipoPrecioId)
+    //{
+    //    if (string.IsNullOrWhiteSpace(texto))
+    //        return new List<ProductoVentaDto>();
+
+    //    var productos = await _productoRepository.BuscarAsync(texto);
+
+    //    if (productos == null)
+    //        throw new BusinessException(
+    //            "Producto no encontrado.",
+    //            StatusCodes.Status404NotFound);
+
+    //    var tipoPrecio = await _catalogRepository.ObtenerTipoPrecioAsync(tipoPrecioId);
+
+    //    if (tipoPrecio == null)
+    //    {
+    //        throw new BusinessException(
+    //            "Tipo de precio inválido",
+    //            StatusCodes.Status400BadRequest);
+    //    }
+
+    //    return productos.Select(p =>
+    //    {
+    //        decimal precio =
+    //            tipoPrecioId == 2
+    //                ? p.PrecioMayorista
+    //                : p.PrecioMinorista;
+
+    //        decimal itbis =
+    //            p.AplicaItbis
+    //                ? precio * (p.ItbisPorcentaje / 100m)
+    //                : 0m;
+
+    //        return new ProductoVentaDto
+    //        {
+    //            ProductoId = p.ProductoId,
+    //            Codigo = p.Codigo,
+    //            Nombre = p.Nombre,
+    //            Descripcion = p.Descripcion,
+    //            Precio = precio,
+
+    //            ItbisUnitario = itbis,
+
+    //            PrecioFinal = precio + itbis,
+
+    //            AplicaItbis = p.AplicaItbis,
+
+    //            ItbisPorcentaje = p.ItbisPorcentaje,
+
+    //            Existencia = p.Existencia,
+
+    //            Estado = p.Estado
+    //        };
+    //    }).ToList();
+    //}
+    public async Task<List<ProductoVentaDto>> BuscarProductosAsync(
+    string texto,
+    int tipoPrecioId)
     {
         if (string.IsNullOrWhiteSpace(texto))
-            return new List<ProductoVentaDto>();
+            return [];
 
         var productos = await _productoRepository.BuscarAsync(texto);
 
@@ -332,48 +389,56 @@ public class VentaService : IVentaService
                 "Producto no encontrado.",
                 StatusCodes.Status404NotFound);
 
-        var tipoPrecio = await _catalogRepository.ObtenerTipoPrecioAsync(tipoPrecioId);
+        return productos
+            .Select(p => MapearProductoVentaDto(p, tipoPrecioId))
+            .ToList();
+    }
+    private ProductoVentaDto MapearProductoVentaDto(
+    Producto producto,
+    int tipoPrecioId)
+    {
+        decimal precio =
+            tipoPrecioId == 2
+                ? producto.PrecioMayorista
+                : producto.PrecioMinorista;
 
-        if (tipoPrecio == null)
+        decimal itbis =
+            producto.AplicaItbis
+                ? precio * (producto.ItbisPorcentaje / 100m)
+                : 0m;
+
+        return new ProductoVentaDto
         {
-            throw new BusinessException(
-                "Tipo de precio inválido",
-                StatusCodes.Status400BadRequest);
-        }
+            ProductoId = producto.ProductoId,
+            Codigo = producto.Codigo,
+            Nombre = producto.Nombre,
+            Descripcion = producto.Descripcion,
 
-        return productos.Select(p =>
-        {
-            decimal precio =
-                tipoPrecioId == 2
-                    ? p.PrecioMayorista
-                    : p.PrecioMinorista;
+            Precio = precio,
 
-            decimal itbis =
-                p.AplicaItbis
-                    ? precio * (p.ItbisPorcentaje / 100m)
-                    : 0m;
+            ItbisUnitario = itbis,
 
-            return new ProductoVentaDto
-            {
-                ProductoId = p.ProductoId,
-                Codigo = p.Codigo,
-                Nombre = p.Nombre,
-                Descripcion = p.Descripcion,
-                Precio = precio,
+            PrecioFinal = precio + itbis,
 
-                ItbisUnitario = itbis,
+            AplicaItbis = producto.AplicaItbis,
 
-                PrecioFinal = precio + itbis,
+            ItbisPorcentaje = producto.ItbisPorcentaje,
 
-                AplicaItbis = p.AplicaItbis,
+            Existencia = producto.Existencia,
 
-                ItbisPorcentaje = p.ItbisPorcentaje,
+            Estado = producto.Estado
+        };
+    }
+    public async Task<List<ProductoVentaDto>> RecalcularProductosAsync(
+    List<int> productosIds,
+    int tipoPrecioId)
+    {
+        var productos =
+            await _productoRepository.ObtenerPorIdsAsync(productosIds);
 
-                Existencia = p.Existencia,
-
-                Estado = p.Estado
-            };
-        }).ToList();
+        return productos
+            .Select(p => MapearProductoVentaDto(p, tipoPrecioId))
+            .ToList();
     }
     public async Task<List<ClienteVentaDto>> BuscarClientesAsync(string texto)
     {

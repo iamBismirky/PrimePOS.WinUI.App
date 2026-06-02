@@ -4,10 +4,10 @@ namespace PrimePOS.WinUI.ViewModels.Pages;
 
 public partial class CarritoViewModel : ObservableObject
 {
-
     public int ProductoId { get; set; }
 
     public string Nombre { get; set; } = string.Empty;
+
     public string Descripcion { get; set; } = string.Empty;
 
     public string Codigo { get; set; } = string.Empty;
@@ -31,10 +31,25 @@ public partial class CarritoViewModel : ObservableObject
 
     partial void OnCantidadChanged(int value)
     {
+        ActualizarTotales();
+    }
+
+    partial void OnPrecioChanged(decimal value)
+    {
+        ActualizarTotales();
+    }
+
+    partial void OnItbisUnitarioChanged(decimal value)
+    {
+        ActualizarTotales();
+    }
+
+    private void ActualizarTotales()
+    {
         OnPropertyChanged(nameof(Subtotal));
         OnPropertyChanged(nameof(Itbis));
         OnPropertyChanged(nameof(Total));
     }
-
-
 }
+
+

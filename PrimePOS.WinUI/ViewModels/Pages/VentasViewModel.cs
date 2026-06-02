@@ -104,7 +104,37 @@ public partial class VentaViewModel : ObservableObject
         Total = Subtotal + Impuesto;
     }
 
+    private async Task RecalcularProductosAsync()
+    {
+        var productoIds =
+            Carrito
+            .Select(x => x.ProductoId)
+            .ToList();
 
+        var response =
+            await _apiVenta.RecalcularProductosAsync(
+                productoIds,
+                ClienteSeleccionado!.TipoPrecioId);
+
+        if (!response.Success || response.Data is null)
+            return;
+
+        foreach (var item in Carrito)
+        {
+            var actualizado =
+                response.Data
+                .FirstOrDefault(x => x.ProductoId == item.ProductoId);
+
+            if (actualizado is null)
+                continue;
+
+            item.Precio = actualizado.Precio;
+
+            item.ItbisUnitario = actualizado.ItbisUnitario;
+        }
+
+        NotificarTotales();
+    }
 
     private async Task VerificarTurnoAsync()
     {
@@ -242,10 +272,7 @@ public partial class VentaViewModel : ObservableObject
         Carrito.Remove(item);
         NotificarTotales();
     }
-    private void AplicarTipoPrecioAlCarrito()
-    {
 
-    }
 
     [RelayCommand]
     public async Task BuscarClientesAsync()
@@ -263,13 +290,13 @@ public partial class VentaViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void SeleccionarCliente(ClienteVentaDto cliente)
+    public async Task SeleccionarClienteAsync(ClienteVentaDto cliente)
     {
         ClienteSeleccionado = cliente;
         TextoCliente = "";
 
-        AplicarTipoPrecioAlCarrito();
-        _notify.Info($"Tipo de venta {ClienteSeleccionado.TipoNombre}");
+        await RecalcularProductosAsync();
+        _notify.Info($"Tipo de cliente {ClienteSeleccionado.TipoNombre}" + "- Precios Actualizados");
     }
     [RelayCommand]
     public async Task NuevoClienteAsync()

@@ -98,4 +98,17 @@ public class VentaController : ControllerBase
             Data = data
         });
     }
+    [HttpPost("recalcular-productos")]
+    public async Task<IActionResult> RecalcularProductosAsync([FromBody] List<int> productoIds, [FromQuery] int tipoPrecioId)
+    {
+        var data = await _ventaService.RecalcularProductosAsync(
+            productoIds,
+            tipoPrecioId);
+
+        return Ok(new ApiResponse<List<ProductoVentaDto>>
+        {
+            Success = true,
+            Data = data
+        });
+    }
 }

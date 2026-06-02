@@ -122,6 +122,12 @@
                         <FontIcon Glyph="&#xEC5A;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                
+                <NavigationViewItem Content="Facturas" Tag="facturas">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE773;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
 
                 <NavigationViewItem Content="Inventario" Tag="inventario">
                     <NavigationViewItem.Icon>

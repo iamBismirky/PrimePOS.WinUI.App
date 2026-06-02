@@ -3,6 +3,7 @@ using PrimePOS.WinUI.Services;
 using PrimePOS.WinUI.Services.Api;
 using PrimePOS.WinUI.ViewModels;
 using PrimePOS.WinUI.ViewModels.Overlays;
+using PrimePOS.WinUI.ViewModels.Pages;
 using System;
 
 namespace PrimePOS.WinUI.Config;
@@ -46,6 +47,7 @@ public static class DependencyInjection
         services.AddTransient<VentaViewModel>();
         services.AddTransient<ReporVentaViewModel>();
         services.AddSingleton<DashboardViewModel>();
+        services.AddTransient<FacturaViewModel>();
 
         //Overlays
         services.AddTransient<ClienteOverlayViewModel>();

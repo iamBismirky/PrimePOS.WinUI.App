@@ -166,5 +166,26 @@ namespace PrimePOS.BLL.Services
             };
         }
 
+        public async Task<List<FacturaListadoDto>> ObtenerTodosAsync()
+        {
+            var productos = await _facturaRepository.ObtenerTodosAsync();
+            if (productos == null)
+                throw new BusinessException("No se encontraron facturas", StatusCodes.Status404NotFound);
+
+            return productos.Select(p => new FacturaListadoDto
+            {
+                FacturaId = p.FacturaId,
+                NumeroFactura = p.Numero,
+                ClienteNombre = p.ClienteNombre ?? "",
+                UsuarioNombre = p.UsuarioNombre ?? "",
+                Fecha = p.Fecha,
+                TipoVenta = p.TipoFactura,
+                Estado = p.Estado,
+                Total = p.Total
+            }).ToList();
+        }
     }
+
+
+
 }

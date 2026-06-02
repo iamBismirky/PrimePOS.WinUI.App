@@ -11,5 +11,6 @@ namespace PrimePOS.BLL.Interfaces
         Task AnularFactura(int facturaId);
         FacturaDto MapearFactura(Factura factura);
         Task<Factura> CrearFactura(Venta venta);
+        Task<List<FacturaListadoDto>> ObtenerTodosAsync();
     }
 }

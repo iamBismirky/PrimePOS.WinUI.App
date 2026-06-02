@@ -301,7 +301,7 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
                     return;
                 }
 
-                _notify.Success(res.Message);
+                _notify.Success(res.Message + $" - {Producto.Nombre}");
             }
 
             else
@@ -329,7 +329,7 @@ public partial class ProductoOverlayViewModel : ObservableObject, IOverlayViewMo
                     return;
                 }
 
-                _notify.Success(res.Message);
+                _notify.Success(res.Message + $" - {dto.Nombre}");
             }
 
             Limpiar();

@@ -69,10 +69,8 @@
 
                     <!--  ================= COLUMNS =================  -->
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2.3*" />
+                        <ColumnDefinition Width="400" />
                         <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="2.4*" />
-                        <ColumnDefinition Width="2.4*" />
                     </Grid.ColumnDefinitions>
 
                     <!--  =================================================  -->
@@ -81,6 +79,7 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
 
                         <Border
+                            Width="400"
                             Padding="16"
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             CornerRadius="16">
@@ -125,7 +124,10 @@
                                     PlaceholderText="Código de barras"
                                     Text="{Binding CodigoBarra, Mode=TwoWay}" />
 
-                                <StackPanel Spacing="8">
+                                <StackPanel
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal"
+                                    Spacing="8">
 
                                     <ComboBox
                                         DisplayMemberPath="Nombre"
@@ -135,8 +137,8 @@
                                         SelectedItem="{Binding CategoriaSeleccionada, Mode=TwoWay}" />
 
                                     <Button
-                                        Width="42"
-                                        Height="42"
+                                        Width="40"
+                                        Height="40"
                                         HorizontalAlignment="Left"
                                         Command="{Binding NuevaCategoriaCommand}">
 
@@ -149,296 +151,407 @@
                             </StackPanel>
                         </Border>
                     </ScrollViewer>
+                    <ScrollViewer Grid.Column="1">
 
-                    <!--  =================================================  -->
-                    <!--  ================= CONFIG ========================  -->
-                    <!--  =================================================  -->
-                    <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                        <Grid Grid.Column="1" RowSpacing="18">
 
-                        <Border
-                            Grid.Column="1"
-                            Padding="16"
-                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                            CornerRadius="16">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-                            <StackPanel Spacing="14">
+                            <!--  =================================================  -->
+                            <!--  ================= CONFIGURACION =================  -->
+                            <!--  =================================================  -->
+                            <Border
+                                Grid.Row="0"
+                                Padding="18"
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="18">
 
-                                <TextBlock
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    Text="Configuración" />
+                                <StackPanel Spacing="18">
+
+                                    <StackPanel Spacing="4">
+
+                                        <TextBlock
+                                            FontSize="18"
+                                            FontWeight="SemiBold"
+                                            Text="Configuración" />
+
+                                        <TextBlock Opacity="0.7" Text="Inventario, ganancias y comportamiento del producto" />
+
+                                    </StackPanel>
+
+                                    <Border
+                                        Height="1"
+                                        Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                        Opacity="0.4" />
+
+                                    <Grid ColumnSpacing="16" RowSpacing="16">
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <!--  PRECIO COMPRA  -->
+
+                                        <TextBox
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Header="Precio compra"
+                                            PlaceholderText="0.00"
+                                            Text="{Binding PrecioCompra, Mode=TwoWay, Converter={StaticResource DecimalToStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
+
+                                        <!--  EXISTENCIA  -->
+
+                                        <NumberBox
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            Header="Existencia"
+                                            SpinButtonPlacementMode="Compact"
+                                            Value="{Binding Existencia, Mode=TwoWay}" />
+
+                                        <!--  GANANCIA MINORISTA  -->
+
+                                        <TextBox
+                                            Grid.Row="0"
+                                            Grid.Column="2"
+                                            Header="Ganancia Minorista %"
+                                            IsEnabled="{Binding PrecioAutomatico, Converter={StaticResource InverseBooleanConverter}}"
+                                            PlaceholderText="0"
+                                            Text="{Binding PorcentajeGananciaMinorista, Mode=TwoWay, Converter={StaticResource DecimalToStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
+
+                                        <!--  GANANCIA MAYORISTA  -->
+
+                                        <TextBox
+                                            Grid.Row="0"
+                                            Grid.Column="3"
+                                            Header="Ganancia Mayorista %"
+                                            IsEnabled="{Binding PrecioAutomatico, Converter={StaticResource InverseBooleanConverter}}"
+                                            PlaceholderText="0"
+                                            Text="{Binding PorcentajeGananciaMayorista, Mode=TwoWay, Converter={StaticResource DecimalToStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
+
+                                        <!--  TOGGLES  -->
+
+                                        <Border
+                                            Grid.Row="1"
+                                            Grid.ColumnSpan="4"
+                                            Padding="16"
+                                            Background="{ThemeResource LayerFillColorAltBrush}"
+                                            CornerRadius="14">
+
+                                            <StackPanel Orientation="Horizontal" Spacing="30">
+
+                                                <ToggleSwitch Header="Precio automático" IsOn="{Binding PrecioAutomatico, Mode=TwoWay}" />
+
+                                                <ToggleSwitch Header="Aplicar ITBIS" IsOn="{Binding AplicaItbis, Mode=TwoWay}" />
+
+                                                <ToggleSwitch Header="Producto activo" IsOn="{Binding Estado, Mode=TwoWay}" />
+
+                                            </StackPanel>
+
+                                        </Border>
+
+                                    </Grid>
+
+                                </StackPanel>
+
+                            </Border>
+
+                            <!--  =================================================  -->
+                            <!--  ================= PRECIOS =======================  -->
+                            <!--  =================================================  -->
+
+                            <Grid
+                                Grid.Row="1"
+                                Margin="0,4,0,0"
+                                ColumnSpacing="18">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  =================================================  -->
+                                <!--  ================= MINORISTA =====================  -->
+                                <!--  =================================================  -->
 
                                 <Border
-                                    Height="1"
-                                    Background="{ThemeResource DividerStrokeColorDefaultBrush}"
-                                    Opacity="0.4" />
+                                    Grid.Column="0"
+                                    Padding="22"
+                                    Background="#1E3A5F"
+                                    CornerRadius="18">
 
-                                <TextBox Header="Precio compra" Text="{Binding PrecioCompra, Mode=TwoWay, Converter={StaticResource DecimalToStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                    <StackPanel Spacing="18">
 
-                                <NumberBox
-                                    Header="Existencia"
-                                    SpinButtonPlacementMode="Compact"
-                                    Value="{Binding Existencia, Mode=TwoWay}" />
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
 
-                                <TextBox
-                                    Header="Ganancia Minorista %"
-                                    IsEnabled="{Binding PrecioAutomatico, Converter={StaticResource InverseBooleanConverter}}"
-                                    Text="{Binding PorcentajeGananciaMinorista, Mode=TwoWay, Converter={StaticResource DecimalToStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBox
-                                    Header="Ganancia Mayorista %"
-                                    IsEnabled="{Binding PrecioAutomatico, Converter={StaticResource InverseBooleanConverter}}"
-                                    Text="{Binding PorcentajeGananciaMayorista, Mode=TwoWay, Converter={StaticResource DecimalToStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                            <FontIcon Foreground="White" Glyph="&#xE719;" />
 
-                                <Border
-                                    Padding="10"
-                                    Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
-                                    CornerRadius="12">
+                                            <TextBlock
+                                                FontSize="20"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="Precio Minorista" />
 
-                                    <StackPanel Spacing="10">
-                                        <ToggleSwitch Header="Precio automático" IsOn="{Binding PrecioAutomatico, Mode=TwoWay}" />
+                                        </StackPanel>
 
-                                        <ToggleSwitch Header="Aplicar ITBIS" IsOn="{Binding AplicaItbis, Mode=TwoWay}" />
+                                        <Border
+                                            Height="1"
+                                            Background="White"
+                                            Opacity="0.15" />
 
-                                        <ToggleSwitch Header="Producto activo" IsOn="{Binding Estado, Mode=TwoWay}" />
+                                        <Border
+                                            Padding="18"
+                                            Background="#2A4F7A"
+                                            CornerRadius="16">
 
+                                            <StackPanel Spacing="6">
 
+                                                <TextBlock
+                                                    FontSize="13"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="#90CAF9"
+                                                    Text="PRECIO FINAL" />
+
+                                                <TextBlock
+                                                    Foreground="#D6E4F0"
+                                                    Opacity="0.8"
+                                                    Text="Precio Minorista" />
+
+                                                <TextBlock
+                                                    FontSize="34"
+                                                    FontWeight="Bold"
+                                                    Foreground="White"
+                                                    Text="{Binding PrecioFinalMinorista, Converter={StaticResource NumeroConverterHelper}}" />
+
+                                            </StackPanel>
+
+                                        </Border>
+
+                                        <Grid RowSpacing="14">
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Foreground="#D6E4F0"
+                                                Text="Precio base" />
+
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="{Binding PrecioBase, Converter={StaticResource NumeroConverterHelper}}" />
+
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Foreground="#D6E4F0"
+                                                Text="ITBIS" />
+
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Grid.Column="1"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="{Binding Itbis, Converter={StaticResource NumeroConverterHelper}}" />
+
+                                            <TextBlock
+                                                Grid.Row="2"
+                                                Foreground="#D6E4F0"
+                                                Text="Ganancia" />
+
+                                            <TextBlock
+                                                Grid.Row="2"
+                                                Grid.Column="1"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="{Binding Ganancia, Converter={StaticResource NumeroConverterHelper}}" />
+
+                                            <TextBlock
+                                                Grid.Row="3"
+                                                Foreground="#D6E4F0"
+                                                Text="Porcentaje" />
+
+                                            <TextBlock
+                                                Grid.Row="3"
+                                                Grid.Column="1"
+                                                FontWeight="SemiBold"
+                                                Foreground="White">
+
+                                                <Run Text="{Binding PorcentajeGananciaMinorista}" />
+                                                <Run Text="%" />
+
+                                            </TextBlock>
+
+                                        </Grid>
 
                                     </StackPanel>
 
                                 </Border>
 
-                            </StackPanel>
-                        </Border>
+                                <!--  =================================================  -->
+                                <!--  ================= MAYORISTA =====================  -->
+                                <!--  =================================================  -->
+
+                                <Border
+                                    Grid.Column="1"
+                                    Padding="22"
+                                    Background="#14532D"
+                                    CornerRadius="18">
+
+                                    <StackPanel Spacing="18">
+
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+
+                                            <FontIcon Foreground="White" Glyph="&#xE719;" />
+
+                                            <TextBlock
+                                                FontSize="20"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="Precio Mayorista" />
+
+                                        </StackPanel>
+
+                                        <Border
+                                            Height="1"
+                                            Background="White"
+                                            Opacity="0.15" />
+
+                                        <Border
+                                            Padding="18"
+                                            Background="#1F7A45"
+                                            CornerRadius="16">
+
+                                            <StackPanel Spacing="6">
+
+                                                <TextBlock
+                                                    FontSize="13"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="#A7F3D0"
+                                                    Text="PRECIO FINAL" />
+
+                                                <TextBlock
+                                                    Foreground="#D8F3DC"
+                                                    Opacity="0.8"
+                                                    Text="Precio Mayorista" />
+
+                                                <TextBlock
+                                                    FontSize="34"
+                                                    FontWeight="Bold"
+                                                    Foreground="White"
+                                                    Text="{Binding PrecioFinalMayorista, Converter={StaticResource NumeroConverterHelper}}" />
+
+                                            </StackPanel>
+
+                                        </Border>
+
+                                        <Grid RowSpacing="14">
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Foreground="#D8F3DC"
+                                                Text="Precio base" />
+
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="{Binding PrecioBaseMayorista, Converter={StaticResource NumeroConverterHelper}}" />
+
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Foreground="#D8F3DC"
+                                                Text="ITBIS" />
+
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Grid.Column="1"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="{Binding Itbis, Converter={StaticResource NumeroConverterHelper}}" />
+
+                                            <TextBlock
+                                                Grid.Row="2"
+                                                Foreground="#D8F3DC"
+                                                Text="Ganancia" />
+
+                                            <TextBlock
+                                                Grid.Row="2"
+                                                Grid.Column="1"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="{Binding GananciaMayorista, Converter={StaticResource NumeroConverterHelper}}" />
+
+                                            <TextBlock
+                                                Grid.Row="3"
+                                                Foreground="#D8F3DC"
+                                                Text="Porcentaje" />
+
+                                            <TextBlock
+                                                Grid.Row="3"
+                                                Grid.Column="1"
+                                                FontWeight="SemiBold"
+                                                Foreground="White">
+
+                                                <Run Text="{Binding PorcentajeGananciaMayorista}" />
+                                                <Run Text="%" />
+
+                                            </TextBlock>
+
+                                        </Grid>
+
+                                    </StackPanel>
+
+                                </Border>
+
+                            </Grid>
+
+
+                        </Grid>
                     </ScrollViewer>
 
-                    <!--  =================================================  -->
-                    <!--  ================= MINORISTA =====================  -->
-                    <!--  =================================================  -->
-
-                    <Border
-                        Grid.Column="2"
-                        Padding="18"
-                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        CornerRadius="16">
-
-                        <StackPanel Spacing="16">
-
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-
-                                <FontIcon Glyph="&#xE719;" />
-
-                                <TextBlock
-                                    FontSize="18"
-                                    FontWeight="SemiBold"
-                                    Text="Precio Minorista" />
-
-                            </StackPanel>
-
-                            <Border
-                                Height="1"
-                                Background="{ThemeResource DividerStrokeColorDefaultBrush}"
-                                Opacity="0.4" />
-
-                            <!--  PRECIO  -->
-                            <Border
-                                Padding="14"
-                                Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
-                                CornerRadius="14">
-
-                                <StackPanel Spacing="6">
-
-                                    <TextBlock Opacity="0.7" Text="Precio Minorista" />
-
-                                    <TextBlock
-                                        FontSize="32"
-                                        FontWeight="Bold"
-                                        Text="{Binding PrecioFinalMinorista, Converter={StaticResource NumeroConverterHelper}}" />
-
-                                </StackPanel>
-
-                            </Border>
-
-                            <!--  DETALLES  -->
-                            <Grid RowSpacing="12">
-
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Opacity="0.7"
-                                    Text="Precio base" />
-
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding PrecioBase, Converter={StaticResource NumeroConverterHelper}}" />
-
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Opacity="0.7"
-                                    Text="ITBIS" />
-
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding Itbis, Converter={StaticResource NumeroConverterHelper}}" />
-
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Opacity="0.7"
-                                    Text="Ganancia" />
-
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding Ganancia, Converter={StaticResource NumeroConverterHelper}}" />
-
-                                <TextBlock
-                                    Grid.Row="3"
-                                    Opacity="0.7"
-                                    Text="Porcentaje" />
-
-                                <TextBlock
-                                    Grid.Row="3"
-                                    Grid.Column="1"
-                                    FontWeight="SemiBold">
-
-                                    <Run Text="{Binding PorcentajeGananciaMinorista}" />
-                                    <Run Text="%" />
-
-                                </TextBlock>
-
-                            </Grid>
-
-                        </StackPanel>
-
-                    </Border>
 
                     <!--  =================================================  -->
-                    <!--  ================= MAYORISTA =====================  -->
+                    <!--  ================= CONFIG ========================  -->
                     <!--  =================================================  -->
 
-                    <Border
-                        Grid.Column="3"
-                        Padding="18"
-                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        CornerRadius="16">
 
-                        <StackPanel Spacing="16">
-
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-
-                                <FontIcon Glyph="&#xE719;" />
-
-                                <TextBlock
-                                    FontSize="18"
-                                    FontWeight="SemiBold"
-                                    Text="Precio Mayorista" />
-
-                            </StackPanel>
-
-                            <Border
-                                Height="1"
-                                Background="{ThemeResource DividerStrokeColorDefaultBrush}"
-                                Opacity="0.4" />
-
-                            <!--  PRECIO  -->
-                            <Border
-                                Padding="14"
-                                Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
-                                CornerRadius="14">
-
-                                <StackPanel Spacing="6">
-
-                                    <TextBlock Opacity="0.7" Text="Precio mayorista" />
-
-                                    <TextBlock
-                                        FontSize="32"
-                                        FontWeight="Bold"
-                                        Text="{Binding PrecioFinalMayorista, Converter={StaticResource NumeroConverterHelper}}" />
-
-                                </StackPanel>
-
-                            </Border>
-
-                            <!--  DETALLES  -->
-                            <Grid RowSpacing="12">
-
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Opacity="0.7"
-                                    Text="Precio Base" />
-
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding PrecioBaseMayorista, Converter={StaticResource NumeroConverterHelper}}" />
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Opacity="0.7"
-                                    Text="ITBIS" />
-
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding Itbis, Converter={StaticResource NumeroConverterHelper}}" />
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Opacity="0.7"
-                                    Text="Ganancia" />
-
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding GananciaMayorista, Converter={StaticResource NumeroConverterHelper}}" />
-
-                                <TextBlock
-                                    Grid.Row="3"
-                                    Opacity="0.7"
-                                    Text="Porcentaje" />
-
-                                <TextBlock
-                                    Grid.Row="4"
-                                    Grid.Column="1"
-                                    FontWeight="SemiBold">
-
-                                    <Run Text="{Binding PorcentajeGananciaMayorista}" />
-                                    <Run Text="%" />
-
-                                </TextBlock>
-
-                            </Grid>
-
-                        </StackPanel>
-
-                    </Border>
 
                 </Grid>
 

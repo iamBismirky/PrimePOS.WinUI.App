@@ -66,7 +66,7 @@ public sealed partial class VentasPage : Page
     {
         if (args.ChosenSuggestion is ClienteVentaDto cliente)
         {
-            _vm.SeleccionarCliente(cliente);
+            _vm.SeleccionarClienteAsync(cliente);
         }
     }
     private async void txtBuscarCliente_SuggestionChosen(
@@ -75,7 +75,7 @@ public sealed partial class VentasPage : Page
     {
         if (args.SelectedItem is ClienteVentaDto cliente)
         {
-            _vm.SeleccionarCliente(cliente);
+            _vm.SeleccionarClienteAsync(cliente);
         }
     }
     private void Eliminar_Click(object sender, RoutedEventArgs e)
