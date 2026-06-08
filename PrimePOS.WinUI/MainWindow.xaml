@@ -88,7 +88,7 @@
                     <FontIcon
                         x:Name="iconTema"
                         FontFamily="Segoe MDL2 Assets"
-                        Glyph="&#xE708;" />
+                        Glyph="&#xE706;" /> 
                 </Button>
 
             </TitleBar.RightHeader>

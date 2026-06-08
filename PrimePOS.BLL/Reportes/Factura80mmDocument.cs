@@ -132,6 +132,8 @@ public class Factura80mmDocument : IDocument
                 column.Item().Text($"Efectivo: {_factura.Efectivo:N2}");
                 column.Item().Text($"Cambio: {_factura.Cambio:N2}");
                 column.Item().Text($"Balance Pendiente: {_factura.BalancePendiente:N2}");
+                column.Item().Text($"Estado: {_factura.EstadoFacturaNombre}");
+
 
                 column.Item()
                     .PaddingVertical(3)

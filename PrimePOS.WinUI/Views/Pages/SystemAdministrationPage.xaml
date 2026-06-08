@@ -1,0 +1,457 @@
+<Page
+    x:Class="PrimePOS.WinUI.Views.Pages.SystemAdministrationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="Page_Loaded"
+    mc:Ignorable="d">
+
+    <Grid
+        x:Name="MainRoot"
+        Padding="25"
+        RowSpacing="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ================================================= -->
+        <!-- HEADER -->
+        <!-- ================================================= -->
+
+        <Border Padding="10,5,10,10">
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Spacing="5">
+
+                    <TextBlock
+                        FontSize="32"
+                        FontWeight="Bold"
+                        Text="Empresas"/>
+
+                    <TextBlock
+                        Opacity="0.6"
+                        Text="Gestiona empresas, configuración y licencias"/>
+
+                </StackPanel>
+
+                <Button
+                    Grid.Column="1"
+                    Padding="25,10"
+                    Background="{StaticResource PrimePOSPrimaryBrush}"
+                    Command="{Binding NuevaEmpresaCommand}"
+                    Foreground="White">
+
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="8">
+
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE710;" />
+
+                        <TextBlock Text="Nueva Empresa"/>
+
+                    </StackPanel>
+
+                </Button>
+
+            </Grid>
+
+        </Border>
+
+        <!-- ================================================= -->
+        <!-- TOOLBAR -->
+        <!-- ================================================= -->
+
+        <Border
+            Grid.Row="1"
+            Padding="15"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            CornerRadius="14">
+
+            <Grid ColumnSpacing="15">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox
+                    PlaceholderText="Buscar empresa por nombre o RNC..."
+                    Text="{Binding Buscar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding FiltrarCommand}">
+
+                    <FontIcon
+                        FontSize="18"
+                        Glyph="&#xE721;" />
+
+                </Button>
+
+            </Grid>
+
+        </Border>
+
+        <!-- ================================================= -->
+        <!-- EMPRESAS -->
+        <!-- ================================================= -->
+
+        <!-- ================================================= -->
+        <!-- EMPRESAS -->
+        <!-- ================================================= -->
+
+        <ScrollViewer Grid.Row="2"
+              VerticalScrollBarVisibility="Auto">
+
+            <StackPanel Spacing="16">
+
+                <!-- HEADER -->
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Spacing="4">
+
+                        <TextBlock
+                    FontSize="24"
+                    FontWeight="SemiBold"
+                    Text="Empresas Registradas" />
+
+                        <TextBlock
+                    Opacity="0.6"
+                    Text="Administra todas las empresas del sistema" />
+
+                    </StackPanel>
+
+                    <Border
+                Grid.Column="1"
+                Padding="14,8"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="999">
+
+                        <TextBlock
+                    FontWeight="SemiBold"
+                    Text="{Binding Empresas.Count}" />
+
+                    </Border>
+
+                </Grid>
+
+                <!-- LISTADO CARDS -->
+                <ListView
+            ItemsSource="{Binding Empresas}"
+            SelectionMode="None"
+            IsItemClickEnabled="False">
+
+                    <ListView.ItemContainerStyle>
+
+                        <Style TargetType="ListViewItem">
+
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0,0,0,14"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+
+                        </Style>
+
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.ItemTemplate>
+
+                        <DataTemplate>
+
+                            <Border
+                        Padding="20"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="18">
+
+                                <Grid RowSpacing="18">
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- ========================================= -->
+                                    <!-- HEADER CARD -->
+                                    <!-- ========================================= -->
+
+                                    <Grid>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- LOGO -->
+                                        <Border
+                                    Width="60"
+                                    Height="60"
+                                    Background="{StaticResource PrimePOSPrimaryBrush}"
+                                    CornerRadius="16">
+
+                                            <Viewbox>
+
+                                                <FontIcon
+                                            Foreground="White"
+                                            Glyph="&#xE8D2;" />
+
+                                            </Viewbox>
+
+                                        </Border>
+
+                                        <!-- INFO -->
+                                        <StackPanel
+                                    Grid.Column="1"
+                                    Margin="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Spacing="4">
+
+                                            <TextBlock
+                                        FontSize="18"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding Nombre}" />
+
+                                            <TextBlock
+                                        Opacity="0.6"
+                                        Text="{Binding Correo}" />
+
+                                        </StackPanel>
+
+                                        <!-- ESTADO -->
+                                        <Border
+                                    Grid.Column="2"
+                                    Padding="14,6"
+                                    Background="#1E4D2B"
+                                    CornerRadius="999"
+                                    VerticalAlignment="Top">
+
+                                            <StackPanel
+                                        Orientation="Horizontal"
+                                        Spacing="6">
+
+                                                <Ellipse
+                                            Width="8"
+                                            Height="8"
+                                            Fill="#4CFF72"
+                                            VerticalAlignment="Center"/>
+
+                                                <TextBlock
+                                            Foreground="White"
+                                            FontWeight="SemiBold"
+                                            Text="Activa"/>
+
+                                            </StackPanel>
+
+                                        </Border>
+
+                                    </Grid>
+
+                                    <!-- ========================================= -->
+                                    <!-- INFORMACION -->
+                                    <!-- ========================================= -->
+
+                                    <Grid Grid.Row="1"
+                                  ColumnSpacing="25">
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- RNC -->
+                                        <StackPanel Spacing="4">
+
+                                            <TextBlock
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Opacity="0.6"
+                                        Text="RNC" />
+
+                                            <TextBlock
+                                        FontWeight="SemiBold"
+                                        Text="{Binding RNC}" />
+
+                                        </StackPanel>
+
+                                        <!-- TELEFONO -->
+                                        <StackPanel
+                                    Grid.Column="1"
+                                    Spacing="4">
+
+                                            <TextBlock
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Opacity="0.6"
+                                        Text="TELÉFONO" />
+
+                                            <TextBlock
+                                        FontWeight="SemiBold"
+                                        Text="{Binding Telefono}" />
+
+                                        </StackPanel>
+
+                                        <!-- DIRECCION -->
+                                        <StackPanel
+                                    Grid.Column="2"
+                                    Spacing="4">
+
+                                            <TextBlock
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Opacity="0.6"
+                                        Text="DIRECCIÓN" />
+
+                                            <TextBlock
+                                        FontWeight="SemiBold"
+                                        Text="{Binding Direccion}"
+                                        TextTrimming="CharacterEllipsis" />
+
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                    <!-- ========================================= -->
+                                    <!-- FOOTER -->
+                                    <!-- ========================================= -->
+
+                                    <Grid Grid.Row="2">
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- METRICAS -->
+                                        <StackPanel
+                                    Orientation="Horizontal"
+                                    Spacing="18">
+
+                                            <StackPanel>
+
+                                                <TextBlock
+                                            FontSize="11"
+                                            Opacity="0.6"
+                                            Text="SUCURSALES" />
+
+                                                <TextBlock
+                                            FontWeight="SemiBold"
+                                            Text="1" />
+
+                                            </StackPanel>
+
+                                            <StackPanel>
+
+                                                <TextBlock
+                                            FontSize="11"
+                                            Opacity="0.6"
+                                            Text="USUARIOS" />
+
+                                                <TextBlock
+                                            FontWeight="SemiBold"
+                                            Text="5" />
+
+                                            </StackPanel>
+
+                                            <StackPanel>
+
+                                                <TextBlock
+                                            FontSize="11"
+                                            Opacity="0.6"
+                                            Text="ITBIS" />
+
+                                                <TextBlock
+                                            FontWeight="SemiBold"
+                                            Text="{Binding ITBIS}" />
+
+                                            </StackPanel>
+
+                                        </StackPanel>
+
+                                        <!-- ACCIONES -->
+                                        <StackPanel
+                                    Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    Spacing="10">
+
+                                            <!-- EDITAR -->
+                                            <Button
+                                        Width="42"
+                                        Height="42"
+                                        Background="{StaticResource PrimePOSPrimaryBrush}"
+                                        Click="Editar_Click"
+                                        Tag="{Binding}">
+
+                                                <FontIcon
+                                            Foreground="White"
+                                            Glyph="&#xE70F;" />
+
+                                            </Button>
+
+                                            <!-- CONFIG -->
+                                            <Button
+                                        Width="42"
+                                        Height="42"
+                                        Click="Configurar_Click"
+                                        Tag="{Binding}">
+
+                                                <FontIcon
+                                            Glyph="&#xE713;" />
+
+                                            </Button>
+
+                                            <!-- DESACTIVAR -->
+                                            <Button
+                                        Width="42"
+                                        Height="42"
+                                        Background="{StaticResource PrimePOSDangerBrush}"
+                                        Click="Desactivar_Click"
+                                        Tag="{Binding}">
+
+                                                <FontIcon
+                                            Foreground="White"
+                                            Glyph="&#xE74D;" />
+
+                                            </Button>
+
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                </Grid>
+
+                            </Border>
+
+                        </DataTemplate>
+
+                    </ListView.ItemTemplate>
+
+                </ListView>
+
+            </StackPanel>
+
+        </ScrollViewer>
+      
+
+    </Grid>
+
+</Page>

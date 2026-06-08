@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrimePOS.DAL.Context;
 
@@ -11,9 +12,11 @@ using PrimePOS.DAL.Context;
 namespace PrimePOS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260602200645_AddNewEstadoFacturaId")]
+    partial class AddNewEstadoFacturaId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,12 +230,6 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<decimal>("BalancePendiente")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("CajaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CajaNombre")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("Cambio")
                         .HasColumnType("decimal(18,2)");
 
@@ -251,7 +248,7 @@ namespace PrimePOS.DAL.Migrations
                     b.Property<int>("EstadoFacturaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("EstadoFacturaNombre")
+                    b.Property<string>("EstadoNombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -271,10 +268,6 @@ namespace PrimePOS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NumeroComprobante")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("NumeroTurno")
                         .HasColumnType("int");
 
@@ -282,13 +275,6 @@ namespace PrimePOS.DAL.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("TipoFactura")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TipoPrecioId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TipoPrecioNombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

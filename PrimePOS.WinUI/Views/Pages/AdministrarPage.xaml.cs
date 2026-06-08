@@ -12,6 +12,11 @@ public sealed partial class AdministrarPage : Page
     {
         InitializeComponent();
     }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 }
 public partial class AdministrarPage
 {
@@ -38,5 +43,13 @@ public partial class AdministrarPage
     private void BtnGestionCajas_Click(object sender, RoutedEventArgs e)
     {
         Frame.Navigate(typeof(CajaPage));
+    }
+    private void BtnGestionEmpresa_Click(object sender, RoutedEventArgs e)
+    {
+        Frame.Navigate(typeof(EmpresaPage));
+    }
+    private void Btn_SystemAdministration_Click(object sender, RoutedEventArgs e)
+    {
+        Frame.Navigate(typeof(SystemAdministrationPage));
     }
 }

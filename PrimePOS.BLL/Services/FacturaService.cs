@@ -82,6 +82,12 @@ namespace PrimePOS.BLL.Services
                 TurnoId = venta.TurnoId,
                 NumeroTurno = turno?.NumeroTurno ?? 0,
 
+                CajaId = venta.CajaId,
+                CajaNombre = venta.CajaNombre,
+
+                TipoPrecioId = venta.TipoPrecioId,
+                TipoPrecioNombre = venta.TipoPrecioNombre,
+
                 Subtotal = venta.Subtotal,
                 Impuesto = venta.Impuesto,
                 Descuento = venta.Descuento,
@@ -93,7 +99,8 @@ namespace PrimePOS.BLL.Services
                 Efectivo = venta.MontoRecibido,
                 Cambio = venta.Cambio,
 
-                Estado = estadoVenta?.Codigo ?? "",
+                EstadoFacturaId = venta.EstadoVentaId,
+                EstadoFacturaNombre = estadoVenta?.Codigo ?? "",
 
                 BalancePendiente = venta.BalancePendiente,
 
@@ -131,7 +138,7 @@ namespace PrimePOS.BLL.Services
             if (factura == null)
                 throw new BusinessException("Factura no encontrada", StatusCodes.Status404NotFound);
 
-            factura.Estado = "Anulada";
+            factura.EstadoFacturaNombre = "Anulada";
 
             await _facturaRepository.GuardarCambiosAsync();
         }
@@ -154,6 +161,8 @@ namespace PrimePOS.BLL.Services
                 Cambio = factura.Cambio,
                 Descuento = factura.Descuento,
                 BalancePendiente = factura.BalancePendiente,
+                EstadoFacturaNombre = factura.EstadoFacturaNombre,
+                CajaNombre = factura.CajaNombre,
 
                 Detalles = factura.Detalles.Select(d => new FacturaDetalleDto
                 {
@@ -180,7 +189,7 @@ namespace PrimePOS.BLL.Services
                 UsuarioNombre = p.UsuarioNombre ?? "",
                 Fecha = p.Fecha,
                 TipoVenta = p.TipoFactura,
-                Estado = p.Estado,
+                Estado = p.EstadoFacturaNombre,
                 Total = p.Total
             }).ToList();
         }

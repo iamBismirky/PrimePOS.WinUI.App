@@ -1,12 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace PrimePOS.ENTITIES.Models.Seguridad
+﻿namespace PrimePOS.Contracts.DTOs.Empresa
 {
-    [Table("Empresas")]
-    public class Empresa
+    public class ActualizarEmpresaDto
     {
-        [Key]
         public int EmpresaId { get; set; }
         public string Nombre { get; set; } = "";
         public string RNC { get; set; } = "";
@@ -15,6 +10,5 @@ namespace PrimePOS.ENTITIES.Models.Seguridad
         public string Correo { get; set; } = "";
         public string Direccion { get; set; } = "";
         public bool Activa { get; set; }
-        public DateTime FechaRegistro { get; set; }
     }
 }

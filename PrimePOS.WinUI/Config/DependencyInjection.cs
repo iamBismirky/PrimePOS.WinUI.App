@@ -31,6 +31,7 @@ public static class DependencyInjection
         services.AddScoped<VentaApiService>();
         services.AddScoped<CatalogApiService>();
         services.AddScoped<DashboardApiService>();
+        services.AddScoped<EmpresaApiService>();
 
         // ViewModels
 
@@ -48,6 +49,7 @@ public static class DependencyInjection
         services.AddTransient<ReporVentaViewModel>();
         services.AddSingleton<DashboardViewModel>();
         services.AddTransient<FacturaViewModel>();
+        services.AddTransient<EmpresaViewModel>();
 
         //Overlays
         services.AddTransient<ClienteOverlayViewModel>();
@@ -61,6 +63,7 @@ public static class DependencyInjection
         services.AddTransient<AbrirTurnoOverlayViewModel>();
         services.AddTransient<CerrarTurnoOverlayViewModel>();
         services.AddTransient<CobrarOverlayViewModel>();
+        services.AddTransient<EmpresaOverlayViewModel>();
 
 
 

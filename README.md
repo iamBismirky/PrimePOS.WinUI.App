@@ -50,6 +50,8 @@ El proyecto sigue una arquitectura en capas:
 ![Dashboard](screenshots/Dashboard.png)
 ### Ventas
 ![Ventas](screenshots/Ventas.png)
+### Facturas
+![Facturas](screenshots/Facturas.png)
 ### Perfil
 ![Perfil](screenshots/Perfil.png)
 ### Administracion

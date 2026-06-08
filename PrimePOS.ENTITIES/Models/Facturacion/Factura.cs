@@ -21,16 +21,23 @@ namespace PrimePOS.ENTITIES.Models.Facturacion
         public string? ClienteNombre { get; set; }
         public int TurnoId { get; set; }
         public int NumeroTurno { get; set; }
+        public int CajaId { get; set; }
+        public string? CajaNombre { get; set; }
+        public int? TipoPrecioId { get; set; }
+        public string TipoPrecioNombre { get; set; } = "";
+        public string NumeroComprobante { get; set; } = "";
+
         public decimal Subtotal { get; set; }
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
         public decimal Efectivo { get; set; }
         public decimal Cambio { get; set; }
-        public string Estado { get; set; } = "";
+        public decimal BalancePendiente { get; set; }
+        public int EstadoFacturaId { get; set; }
+        public string EstadoFacturaNombre { get; set; } = "";
         public int MetodoPagoId { get; set; }
         public string? MetodoPago { get; set; }
-        public decimal BalancePendiente { get; set; }
 
         #region Navigation
         public Cliente? Cliente { get; set; }
