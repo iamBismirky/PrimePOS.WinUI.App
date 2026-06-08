@@ -45,14 +45,14 @@ El proyecto sigue una arquitectura en capas:
 ## 🖥️ Capturas de pantalla
 
 ### Login
-![Login](screenshots/Login.png)
+![Login](Screenshots/Login.png)
 ### Dashboard
-![Dashboard](screenshots/Dashboard.png)
+![Dashboard](Screenshots/Dashboard.png)
 ### Ventas
-![Ventas](screenshots/Ventas.png)
+![Ventas](Screenshots/Ventas.png)
 ### Facturas
-![Facturas](screenshots/Facturas.png)
+![Facturas](Screenshots/Facturas.png)
 ### Perfil
-![Perfil](screenshots/Perfil.png)
+![Perfil](Screenshots/Perfil.png)
 ### Administracion
-![Administracion](screenshots/Administracion.png)
+![Administracion](Screenshots/Administracion.png)
