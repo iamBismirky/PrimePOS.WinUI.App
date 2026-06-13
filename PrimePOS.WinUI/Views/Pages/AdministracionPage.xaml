@@ -1,0 +1,336 @@
+<Page
+    x:Class="PrimePOS.WinUI.Views.Pages.AdministracionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="Page_Loaded"
+    mc:Ignorable="d">
+
+
+        <Grid
+        Padding="24"
+        RowSpacing="16">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+
+            <Grid Grid.Row="0">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+
+                    <TextBlock
+                    FontSize="28"
+                    FontWeight="SemiBold"
+                    Text="Administración"/>
+
+                    <TextBlock
+                    Opacity="0.7"
+                    Text="Gestión de empresas y usuarios"/>
+
+                </StackPanel>
+
+                <Button
+                Grid.Column="1"
+                Command="{Binding NuevaEmpresaCommand}"
+                Content="+ Nueva Empresa"/>
+
+            </Grid>
+
+            <!-- Filtros -->
+
+            <Grid
+            Grid.Row="1"
+            ColumnSpacing="12">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <AutoSuggestBox
+                PlaceholderText="Buscar empresa..."
+                Text="{Binding BuscarEmpresa, Mode=TwoWay}" />
+
+                <Button
+                Grid.Column="1"
+                Content="Recargar"
+                Command="{Binding RecargarCommand}" />
+
+            </Grid>
+
+            <!-- Contenido -->
+
+            <Grid
+            Grid.Row="2"
+            ColumnSpacing="20">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Empresas -->
+
+                <Border
+                Grid.Column="0"
+                Padding="16"
+                CornerRadius="12">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                        Margin="0,0,0,16"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Text="Empresas"/>
+
+                        <ListView
+                        Grid.Row="1"
+                        ItemsSource="{Binding Empresas}"
+                        SelectedItem="{Binding EmpresaSeleccionada, Mode=TwoWay}">
+
+                            <ListView.ItemTemplate>
+
+                                <DataTemplate>
+
+                                    <Border
+                                    Margin="0,0,0,12"
+                                    Padding="16"
+                                    CornerRadius="10">
+
+                                        <Grid>
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="70"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Logo -->
+
+                                            <Border
+                                            Width="60"
+                                            Height="60"
+                                            CornerRadius="8">
+
+                                                <Image
+                                                Stretch="UniformToFill"
+                                                Source="{Binding LogoUrl}" />
+
+                                            </Border>
+
+                                            <!-- Datos -->
+
+                                            <StackPanel
+                                            Grid.Column="1"
+                                            Margin="12,0,0,0">
+
+                                                <TextBlock
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding Nombre}" />
+
+                                                <TextBlock
+                                                Opacity="0.7"
+                                                Text="{Binding RNC}" />
+
+                                                <TextBlock
+                                                Opacity="0.7"
+                                                Text="{Binding Telefono}" />
+
+                                            </StackPanel>
+
+                                            <!-- Acciones -->
+
+                                            <StackPanel
+                                            Grid.Column="2"
+                                            Orientation="Horizontal"
+                                            Spacing="8">
+
+                                                <Button
+                                                Command="{Binding DataContext.EditarEmpresaCommand, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                                CommandParameter="{Binding}"
+                                                Content="Editar" />
+
+                                                <ToggleSwitch
+                                                IsOn="{Binding Activa}" />
+
+                                            </StackPanel>
+
+                                        </Grid>
+
+                                    </Border>
+
+                                </DataTemplate>
+
+                            </ListView.ItemTemplate>
+
+                        </ListView>
+
+                    </Grid>
+
+                </Border>
+
+                <!-- Panel derecho -->
+
+                <Border
+                Grid.Column="1"
+                Padding="16"
+                CornerRadius="12">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Text="Detalle Empresa"/>
+
+                        <!-- Empresa seleccionada -->
+
+                        <StackPanel
+                        Grid.Row="1"
+                        Margin="0,16,0,16"
+                        Spacing="8">
+
+                            <TextBlock
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Text="{Binding EmpresaSeleccionada.Nombre}" />
+
+                            <TextBlock
+                            Text="{Binding EmpresaSeleccionada.RNC}" />
+
+                            <TextBlock
+                            Text="{Binding EmpresaSeleccionada.Email}" />
+
+                            <TextBlock
+                            Text="{Binding EmpresaSeleccionada.Telefono}" />
+
+                            <TextBlock
+                            Text="{Binding EmpresaSeleccionada.Direccion}" />
+
+                        </StackPanel>
+
+                        <!-- Usuarios -->
+
+                        <Grid Grid.Row="2">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="Usuarios" />
+
+                                <Button
+                                Grid.Column="1"
+                                Content="+ Usuario"
+                                Command="{Binding NuevoUsuarioCommand}" />
+
+                            </Grid>
+
+                            <ListView
+                            Grid.Row="1"
+                            Margin="0,12,0,0"
+                            ItemsSource="{Binding UsuariosEmpresaSeleccionada}">
+
+                                <ListView.ItemTemplate>
+
+                                    <DataTemplate>
+
+                                        <Border
+                                        Margin="0,0,0,8"
+                                        Padding="12"
+                                        CornerRadius="8">
+
+                                            <Grid>
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel>
+
+                                                    <TextBlock
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding NombreCompleto}" />
+
+                                                    <TextBlock
+                                                    Opacity="0.7"
+                                                    Text="{Binding Usuario}" />
+
+                                                    <TextBlock
+                                                    Opacity="0.7"
+                                                    Text="{Binding RolNombre}" />
+
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                Grid.Column="1"
+                                                Orientation="Horizontal"
+                                                Spacing="6">
+
+                                                    <Button
+                                                    Content="Editar" />
+
+                                                    <ToggleSwitch
+                                                    IsOn="{Binding Activo}" />
+
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </Border>
+
+                                    </DataTemplate>
+
+                                </ListView.ItemTemplate>
+
+                            </ListView>
+
+                        </Grid>
+
+                    </Grid>
+
+                </Border>
+
+            </Grid>
+
+        </Grid>
+
+   
+
+</Page>

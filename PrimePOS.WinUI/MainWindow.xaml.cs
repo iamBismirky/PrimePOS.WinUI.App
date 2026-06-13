@@ -179,7 +179,7 @@ public sealed partial class MainWindow : Window
                     contentFrame?.Navigate(typeof(ReportesPage));
                     break;
                 case "administrar":
-                    contentFrame?.Navigate(typeof(AdministrarPage));
+                    contentFrame?.Navigate(typeof(ConfiguracionPage));
                     break;
                 case "perfil":
                     contentFrame?.Navigate(typeof(PerfilPage));

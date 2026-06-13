@@ -39,13 +39,29 @@ public class EmpresasController : ControllerBase
         });
     }
     [HttpPost]
-    public async Task<IActionResult> CrearEmpresaAsync(CrearEmpresaDto dto)
+    public async Task<IActionResult> CrearEmpresaAsync([FromBody] CrearEmpresaDto dto)
     {
-        await _service.CrearAsync(dto);
+        var empresaId = await _service.CrearAsync(dto);
+
+        return Ok(new ApiResponse<int>
+        {
+            Success = true,
+            Data = empresaId,
+            Message = "Empresa creada exitosamente"
+        });
+    }
+
+    [HttpPost("{empresaId}/logo")]
+    public async Task<IActionResult> SubirLogoAsync(int empresaId, IFormFile logo)
+    {
+        await _service.SubirLogoAsync(
+            empresaId,
+            logo);
+
         return Ok(new ApiResponse<object>
         {
             Success = true,
-            Data = "Empresa creada exitosamente"
+            Message = "Logo actualizado"
         });
     }
     [HttpPut("{id}")]

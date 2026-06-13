@@ -50,6 +50,7 @@ public static class DependencyInjection
         services.AddSingleton<DashboardViewModel>();
         services.AddTransient<FacturaViewModel>();
         services.AddTransient<EmpresaViewModel>();
+        services.AddTransient<AdministracionViewModel>();
 
         //Overlays
         services.AddTransient<ClienteOverlayViewModel>();

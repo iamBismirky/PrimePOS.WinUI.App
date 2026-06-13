@@ -6,9 +6,9 @@ using Microsoft.UI.Xaml.Controls;
 namespace PrimePOS.WinUI.Views.Pages;
 
 
-public sealed partial class AdministrarPage : Page
+public sealed partial class ConfiguracionPage : Page
 {
-    public AdministrarPage()
+    public ConfiguracionPage()
     {
         InitializeComponent();
     }
@@ -18,7 +18,7 @@ public sealed partial class AdministrarPage : Page
 
     }
 }
-public partial class AdministrarPage
+public partial class ConfiguracionPage
 {
     private void BtnGestionUsuarios_Click(object sender, RoutedEventArgs e)
     {
@@ -50,6 +50,6 @@ public partial class AdministrarPage
     }
     private void Btn_SystemAdministration_Click(object sender, RoutedEventArgs e)
     {
-        Frame.Navigate(typeof(SystemAdministrationPage));
+        Frame.Navigate(typeof(AdministracionPage));
     }
 }

@@ -34,6 +34,7 @@ namespace PrimePOS.API.Config
             services.AddScoped<IDetalleRepository, DetalleRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICatalogRepository, CatalogRepository>();
+            services.AddScoped<IEmpresaRepository, EmpresaRepository>();
 
 
             //Services
@@ -52,6 +53,7 @@ namespace PrimePOS.API.Config
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPdfService, PdfService>();
+            services.AddScoped<IEmpresaService, EmpresaService>();
 
             //JWT
             services.AddSingleton<JwtHelper>();

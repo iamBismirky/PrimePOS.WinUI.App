@@ -1,12 +1,166 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
     x:Class="PrimePOS.WinUI.Views.Overlays.EmpresaOverlay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:PrimePOS.WinUI.Views.Overlays"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Grid />
+    <!--  Fondo del Overlay  -->
+    <Grid Background="#80000000">
+
+        <!--  Contenedor Principal  -->
+        <Border
+            Width="1000"
+            MaxWidth="1200"
+            Padding="24"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource SolidBackgroundFillColorBase}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="20">
+
+            <Grid RowSpacing="16">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  Encabezado  -->
+                <Grid Grid.Row="0">
+
+                    <TextBlock
+                        FontSize="24"
+                        FontWeight="SemiBold"
+                        Text="Empresa" />
+
+                </Grid>
+
+                <!--  Contenido  -->
+                <ScrollViewer Grid.Row="1">
+
+                    <Grid Padding="0,16,0,0" ColumnSpacing="24">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  INFORMACIÓN  -->
+                        <Border
+                            Grid.Column="0"
+                            Padding="24"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="16">
+
+                            <StackPanel Spacing="16">
+
+                                <TextBlock
+                                    FontSize="20"
+                                    FontWeight="SemiBold"
+                                    Text="Información General" />
+
+                                <TextBox Header="Nombre" Text="{Binding Nombre, Mode=TwoWay}" />
+
+                                <TextBox Header="RNC" Text="{Binding Rnc, Mode=TwoWay}" />
+
+                                <TextBox Header="Teléfono" Text="{Binding Telefono, Mode=TwoWay}" />
+
+                                <TextBox Header="Correo Electrónico" Text="{Binding Email, Mode=TwoWay}" />
+
+                                <TextBox
+                                    MinHeight="100"
+                                    AcceptsReturn="True"
+                                    Header="Dirección"
+                                    Text="{Binding Direccion, Mode=TwoWay}"
+                                    TextWrapping="Wrap" />
+
+                            </StackPanel>
+
+                        </Border>
+
+                        <!--  CONFIGURACIÓN  -->
+                        <Border
+                            Grid.Column="1"
+                            Padding="24"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="16">
+
+                            <StackPanel Spacing="20">
+
+                                <TextBlock
+                                    FontSize="20"
+                                    FontWeight="SemiBold"
+                                    Text="Configuración" />
+
+                                <!--  Logo  -->
+
+                                <StackPanel HorizontalAlignment="Center" Spacing="12">
+
+                                    <Border
+                                        Width="180"
+                                        Height="180"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="12">
+
+                                        <Grid>
+
+                                            <Image Source="{Binding LogoPath}" Stretch="UniformToFill" />
+
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Opacity="0.5"
+                                                Text="Sin Logo"
+                                                Visibility="{Binding TieneLogo, Converter={StaticResource InverseBooleanConverter}}" />
+
+                                        </Grid>
+
+                                    </Border>
+
+                                    <Button Command="{Binding SeleccionarLogoCommand}" Content="Seleccionar Logo" />
+
+                                </StackPanel>
+
+                                <ToggleSwitch Header="Empresa Activa" IsOn="{Binding Activa, Mode=TwoWay}" />
+
+                            </StackPanel>
+
+                        </Border>
+
+                    </Grid>
+
+                </ScrollViewer>
+
+                <!--  Acciones  -->
+                <Border
+                    Grid.Row="2"
+                    Padding="0,16,0,0"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="0,1,0,0">
+
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Spacing="12">
+
+                        <Button Command="{Binding CancelarCommand}" Content="Cancelar" />
+
+                        <Button Command="{Binding GuardarCommand}" Content="Guardar" />
+
+                    </StackPanel>
+
+                </Border>
+
+            </Grid>
+
+        </Border>
+
+    </Grid>
+
 </UserControl>

@@ -1,6 +1,7 @@
 ﻿using PrimePOS.Contracts.Common;
 using PrimePOS.Contracts.DTOs.Empresa;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -23,13 +24,34 @@ public class EmpresaApiService : BaseApiService
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/empresas/{id}");
         return SendAsync<EmpresaDto>(request);
     }
-    public Task<ApiResponse<object>> CrearEmpresaAsync(CrearEmpresaDto dto)
+    public Task<ApiResponse<int>> CrearEmpresaAsync(CrearEmpresaDto dto)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "api/empresas")
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            "api/empresas")
         {
             Content = JsonContent.Create(dto)
         };
-        return SendAsync<object>(request);
+
+        return SendAsync<int>(request);
+    }
+    public async Task<ApiResponse<object>> SubirLogoAsync(int empresaId, Stream stream, string fileName)
+    {
+        var form = new MultipartFormDataContent();
+
+        form.Add(
+            new StreamContent(stream),
+            "logo",
+            fileName);
+
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"api/empresas/{empresaId}/logo")
+        {
+            Content = form
+        };
+
+        return await SendAsync<object>(request);
     }
     public Task<ApiResponse<object>> ActualizarEmpresaAsync(int id, ActualizarEmpresaDto dto)
     {
